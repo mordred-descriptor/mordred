@@ -1,0 +1,8 @@
+__pycache__
+*.pyc
+*.egg-info/
+.DS_Store
+.ipynb_checkpoints
+/.envrc
+/.python3
+/dist
