@@ -2,12 +2,14 @@ from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 from six import with_metaclass
 from abc import ABCMeta, abstractproperty, abstractmethod
+from types import ModuleType
 
 import inspect
 
 
 __all__ =\
-    'Calculator',
+    'Calculator',\
+    'Descriptor',
 
 
 class Key(object):
@@ -37,7 +39,10 @@ class Key(object):
         return 'Key({!r}, *{!r})'.format(self.cls, self.args)
 
     def create(self):
-        return self.cls(*self.args)
+        try:
+            return self.cls(*self.args)
+        except TypeError:
+            raise ValueError('cannot create {!r} by {!r}'.format(self.cls, self.args))
 
     @property
     def descriptor_key(self):
@@ -170,10 +175,22 @@ class Calculator(object):
                 if isinstance(desc, type):
                     for args in desc.descriptor_defaults:
                         self._register_one(desc(*args))
+
+                elif isinstance(desc, ModuleType):
+                    for name in dir(desc):
+                        if name[:1] == '_':
+                            continue
+
+                        d = getattr(desc, name)
+                        if issubclass(d, Descriptor):
+                            self.register(d)
+
                 else:
                     self._register_one(desc)
+
             elif isinstance(desc, tuple) and isinstance(desc[0], type):
                 self._register_one(desc[0](*desc[1:]))
+
             else:
                 for d in desc:
                     self.register(d)
