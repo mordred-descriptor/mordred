@@ -210,7 +210,7 @@ def GetNumValenceElectrons(atom):
     hi = atom.GetNumImplicitHs()
     he = sum((1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1))
     h = hi + he
-    return (Zv - h) / (Z - Zv - 1)
+    return float(Zv - h) / float(Z - Zv - 1)
 
 
 def GetNumSigmaElectrons(atom):
