@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 import sys
 
 install_requires = [
-    'six',
-    'numpy',
-    'scipy',
-    'networkx',
+    'six>=1.10',
+    'numpy>=1.10',
+    'scipy>=0.16',
+    'networkx>=1.10',
 ]
 
 if sys.version_info < (3, 4, 0):
@@ -19,7 +19,9 @@ setup(
     install_requires=install_requires,
 
     extras_require=dict(
-        test=['nose', 'PyYaml']
+        test=['nose>=1.3',
+              'PyYaml>=3.11',
+              ]
     ),
 
     test_suite='nose.collector',
