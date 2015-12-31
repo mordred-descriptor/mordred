@@ -36,7 +36,7 @@ class barysz(BaryszMatrixDescriptor):
 
             pi = bond.GetBondTypeAsDouble()
 
-            w = (C ** 2 / (self.prop(a) * self.prop(b))) / pi
+            w = (C * C) / (self.prop(a) * self.prop(b) * pi)
             dmat[i, j] = w
             dmat[j, i] = w
 
@@ -58,7 +58,11 @@ class BaryszMatrix(BaryszMatrixDescriptor):
     @property
     def dependencies(self):
         return dict(result=method_dict[self.method].make_key(
-            barysz.make_key(self.prop), False, False))
+            barysz.make_key(self.prop),
+            self.explicitHydrogens,
+            self.gasteigerCharges,
+            self.kekulize,
+        ))
 
     @property
     def descriptor_name(self):
