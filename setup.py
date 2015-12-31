@@ -19,7 +19,7 @@ setup(
     install_requires=install_requires,
 
     extras_require=dict(
-        test=['nose']
+        test=['nose', 'PyYaml']
     ),
 
     test_suite='nose.collector',
