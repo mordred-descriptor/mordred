@@ -4,7 +4,7 @@ import numpy as np
 
 
 class BurdenMatrixDescriptor(Descriptor):
-    explicitHydrogens = False
+    explicit_hydrogens = False
 
 
 class burden(BurdenMatrixDescriptor):
@@ -39,16 +39,12 @@ class burden(BurdenMatrixDescriptor):
 
 class burden_eigen_values(BurdenMatrixDescriptor):
     @property
-    def gasteigerCharges(self):
-        return self.charge
-
-    @property
     def descriptor_key(self):
-        return self.make_key(self.prop, self.charge)
+        return self.make_key(self.prop, self.gasteiger_charges)
 
-    def __init__(self, prop, charge):
+    def __init__(self, prop, gasteiger_charges):
         self.prop = prop
-        self.charge = charge
+        self.gasteiger_charges = gasteiger_charges
 
     @property
     def dependencies(self):
@@ -65,10 +61,6 @@ class BCUT(BurdenMatrixDescriptor):
                            ('c', 1, False), ('c', 1, True)]
 
     @property
-    def gasteigerCharges(self):
-        return self.charge
-
-    @property
     def descriptor_name(self):
         hl = 'h' if self.from_high else 'l'
         return 'BCUT{}-{}{}'.format(self.prop_name, self.nth, hl)
@@ -81,17 +73,17 @@ class BCUT(BurdenMatrixDescriptor):
         if prop == 'c':
             self.prop_name = 'c'
             self.prop = _atomic_property.get_charge_implicitHs
-            self.charge = True
+            self.gasteiger_charges = True
         else:
             self.prop_name, self.prop = _atomic_property.getter(prop)
-            self.charge = False
+            self.gasteiger_charges = False
 
         self.nth = nth
         self.from_high = from_high
 
     @property
     def dependencies(self):
-        return dict(bev=burden_eigen_values.make_key(self.prop, self.charge))
+        return dict(bev=burden_eigen_values.make_key(self.prop, self.gasteiger_charges))
 
     def calculate(self, mol, bev):
         nth = self.nth - 1

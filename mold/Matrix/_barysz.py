@@ -7,7 +7,7 @@ from ._matrix_attributes import methods
 
 
 class BaryszMatrixDescriptor(Descriptor):
-    explicitHydrogens = False
+    explicit_hydrogens = False
 
 
 class barysz(BaryszMatrixDescriptor):
@@ -59,8 +59,8 @@ class BaryszMatrix(BaryszMatrixDescriptor):
     def dependencies(self):
         return dict(result=method_dict[self.method].make_key(
             barysz.make_key(self.prop),
-            self.explicitHydrogens,
-            self.gasteigerCharges,
+            self.explicit_hydrogens,
+            self.gasteiger_charges,
             self.kekulize,
         ))
 

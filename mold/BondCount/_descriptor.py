@@ -14,7 +14,7 @@ class BondCount(Descriptor):
         return 'nBonds{}'.format(self.bond_type)
 
     @property
-    def explicitHydrogens(self):
+    def explicit_hydrogens(self):
         return self.bond_type in set(['2', 'S', 'S2'])
 
     @property

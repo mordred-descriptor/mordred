@@ -5,11 +5,14 @@ from numpy import nan, pi
 def get_charge_explicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge')
 
+get_charge_explicitHs.gasteiger_charges = True
+
 
 def get_charge_implicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge') +\
         atom.GetDoubleProp('_GasteigerHCharge')
 
+get_charge_implicitHs.gasteiger_charges = True
 
 na = nan
 

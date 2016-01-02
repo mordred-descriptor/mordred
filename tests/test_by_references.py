@@ -32,11 +32,11 @@ def assert_almost_equal(decimal):
     return f
 
 
-def nan_to_0(f):
+def fill_na(v, f):
     @wraps(f)
     def g(actual, desired, name, desc):
-        actual = 0 if isnan(actual) else actual
-        desired = 0 if isnan(desired) else desired
+        actual = v if isnan(actual) else actual
+        desired = v if isnan(desired) else desired
 
         f(actual, desired, name, desc)
 
@@ -47,14 +47,14 @@ def all_(a):
     return True
 
 
-def exclude_(ns):
+def exclude_(*ns):
     def f(name):
         return name not in ns
 
     return f
 
 
-def only_(ns):
+def only_(*ns):
     def f(name):
         return name in ns
 
@@ -66,17 +66,17 @@ descriptors = [
     (assert_almost_equal(7),
      [[md.Autocorrelation.ATS(d, a),
        md.Autocorrelation.ATSC(d, a),
-       ] for a in 'mvepis' for d in range(9)], exclude_(['Cyanidin'])
+       ] for a in 'mvepis' for d in range(9)], exclude_('Cyanidin')
      ),
-    (nan_to_0(assert_almost_equal(7)),
+    (fill_na(0, assert_almost_equal(7)),
      [[md.Autocorrelation.AATS(d, a),
        md.Autocorrelation.AATSC(d, a),
-       ] for a in 'mvepis' for d in range(9)], exclude_(['Cyanidin'])
+       ] for a in 'mvepis' for d in range(9)], exclude_('Cyanidin')
      ),
-    (nan_to_0(assert_almost_equal(7)),
+    (fill_na(0, assert_almost_equal(7)),
      [[md.Autocorrelation.MATS(d, a),
        md.Autocorrelation.GATS(d, a),
-       ] for a in 'mvepis' for d in range(1, 9)], exclude_(['Cyanidin'])
+       ] for a in 'mvepis' for d in range(1, 9)], exclude_('Cyanidin')
      ),
 
     # (assert_equal, md.BondCount, []),
@@ -85,7 +85,7 @@ descriptors = [
 
     (assert_almost_equal(0), [md.Matrix.BCUT('m', 1, False),
                               md.Matrix.BCUT('m', 1, True),
-                              ], exclude_(['Cyanidin'])),
+                              ], exclude_('Cyanidin')),
 
     (assert_almost_equal(7),
      [md.Matrix.BaryszMatrix('Z', a)
@@ -94,11 +94,11 @@ descriptors = [
                 'EE', 'SM1',
                 'VE1', 'VE2',
                 'VR1', 'VR2', 'VR3']
-      ], only_(['Hexane'])),
+      ], only_('Hexane')),
 
     (assert_almost_equal(7), [md.Polarizability.APol(True),
                               md.Polarizability.BPol(True),
-                              ], exclude_(['Cyanidin'])),
+                              ], exclude_('Cyanidin')),
 
     (assert_equal, md.SmartsCount, all_),
 ]

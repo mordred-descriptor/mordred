@@ -5,11 +5,13 @@ import numpy as np
 
 
 class AutocorrelationBase(Descriptor):
-    explicitHydrogens = True
+    explicit_hydrogens = True
+
+    attribute = None
 
     @property
-    def gasteigerCharges(self):
-        return getattr(self, 'attribute', 0) == _atomic_property.get_charge_explicitHs
+    def gasteiger_charges(self):
+        return getattr(self.attribute, 'gasteiger_charges', True)
 
 
 class DistanceMatrix(AutocorrelationBase):

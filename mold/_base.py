@@ -70,8 +70,8 @@ class DescriptorMeta(ABCMeta):
 
 
 class Descriptor(with_metaclass(DescriptorMeta, object)):
-    explicitHydrogens = True
-    gasteigerCharges = False
+    explicit_hydrogens = True
+    gasteiger_charges = False
     kekulize = False
 
     descriptor_defaults = []
@@ -161,16 +161,15 @@ class Calculator(object):
         self.register(*descs)
 
     def _register_one(self, desc):
-        # check desc is descriptor or not
         if not isinstance(desc, Descriptor):
             raise ValueError('{!r} is not descriptor'.format(desc))
 
         self.descriptors.append(desc)
 
-        if desc.explicitHydrogens:
+        if desc.explicit_hydrogens:
             self.explicitH = True
 
-        if desc.gasteigerCharges:
+        if desc.gasteiger_charges:
             self.gasteiger = True
 
         if desc.kekulize:
@@ -213,8 +212,8 @@ class Calculator(object):
                 for name, dep in desc.dependencies.items()}
 
         mol = self.molecule.get(
-            explicitH=desc.explicitHydrogens,
-            gasteiger=desc.gasteigerCharges,
+            explicitH=desc.explicit_hydrogens,
+            gasteiger=desc.gasteiger_charges,
             kekulize=desc.kekulize,
         )
         r = desc.calculate(mol, **args)

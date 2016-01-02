@@ -3,7 +3,7 @@ from .._base import Descriptor
 
 
 class CarbonTypesBase(Descriptor):
-    explicitHydrogens = False
+    explicit_hydrogens = False
     kekulize = True
 
 

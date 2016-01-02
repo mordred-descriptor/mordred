@@ -15,36 +15,24 @@ def method(cls):
 
 class common(Descriptor):
     @property
-    def explicitHydrogens(self):
-        return self._explicitHydrogens
-
-    @property
-    def gasteigerCharges(self):
-        return self._gasteigerCharges
-
-    @property
-    def kekulize(self):
-        return self._kelulize
-
-    @property
     def descriptor_key(self):
         return self.make_key(
             self.matrix,
-            self.explicitHydrogens,
-            self.gasteigerCharges,
+            self.explicit_hydrogens,
+            self.gasteiger_charges,
             self.kekulize)
 
-    def __init__(self, matrix, explicitHydrogens, gasteigerCharges, kekulize):
+    def __init__(self, matrix, explicit_hydrogens, gasteiger_charges, kekulize):
         self.matrix = matrix
-        self._explicitHydrogens = explicitHydrogens
-        self._gasteigerCharges = gasteigerCharges
-        self._kelulize = kekulize
+        self.explicit_hydrogens = explicit_hydrogens
+        self.gasteiger_charges = gasteiger_charges
+        self.kelulize = kekulize
 
     @property
     def _key_args(self):
         return [self.matrix,
-                self.explicitHydrogens,
-                self.gasteigerCharges,
+                self.explicit_hydrogens,
+                self.gasteiger_charges,
                 self.kekulize]
 
     @property

@@ -9,7 +9,7 @@ class AtomCount(Descriptor):
     ]
 
     @property
-    def explicitHydrogens(self):
+    def explicit_hydrogens(self):
         return self.symbol in set(['H', 'Atom'])
 
     @property
@@ -24,20 +24,20 @@ class AtomCount(Descriptor):
         self.symbol = symbol
 
         if symbol == 'X':
-            self.f = self.calcX
+            self.f = self.calc_X
         elif symbol == 'Atom' or symbol == 'HeavyAtom':
-            self.f = self.calcAll
+            self.f = self.calc_all
         else:
             self.f = self.calc
 
-    def calcX(self, mol):
+    def calc_X(self, mol):
         X = set([9, 17, 35, 53, 85, 117])
         return sum((a.GetAtomicNum() in X for a in mol.GetAtoms()))
 
     def calc(self, mol):
         return sum((a.GetSymbol() == self.symbol for a in mol.GetAtoms()))
 
-    def calcAll(self, mol):
+    def calc_all(self, mol):
         return mol.GetNumAtoms()
 
     def calculate(self, mol):
