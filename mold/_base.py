@@ -208,7 +208,7 @@ class Calculator(object):
         if isinstance(desc, Key):
             desc = desc.create()
 
-        args = {name: self._calculate(dep, cache)
+        args = {name: self._calculate(dep, cache) if dep is not None else None
                 for name, dep in desc.dependencies.items()}
 
         mol = self.molecule.get(
