@@ -104,6 +104,8 @@ descriptors = [
      [md.Chi.Chi('path_cluster', l, a) for a in ['delta', 'delta_v'] for l in range(4, 6)],
      exclude_('Cyanidin')),
 
+    (assert_almost_equal(7), md.Constitutional, exclude_('Cyanidin')),
+
     (assert_almost_equal(7), [md.Polarizability.APol(True),
                               md.Polarizability.BPol(True),
                               ], exclude_('Cyanidin')),
