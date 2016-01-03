@@ -98,10 +98,10 @@ descriptors = [
       ], only_('Hexane')),
 
     (assert_almost_equal(7),
-     [md.Chi.Chi('path', l, a) for a in ['σ', 'σv'] for l in range(7)] +
-     [md.Chi.Chi('chain', l, a) for a in ['σ', 'σv'] for l in range(3, 7)] +
-     [md.Chi.Chi('cluster', l, a) for a in ['σ', 'σv'] for l in range(3, 7)] +
-     [md.Chi.Chi('path_cluster', l, a) for a in ['σ', 'σv'] for l in range(4, 6)],
+     [md.Chi.Chi('path', l, a) for a in ['delta', 'delta_v'] for l in range(7)] +
+     [md.Chi.Chi('chain', l, a) for a in ['delta', 'delta_v'] for l in range(3, 7)] +
+     [md.Chi.Chi('cluster', l, a) for a in ['delta', 'delta_v'] for l in range(3, 7)] +
+     [md.Chi.Chi('path_cluster', l, a) for a in ['delta', 'delta_v'] for l in range(4, 6)],
      exclude_('Cyanidin')),
 
     (assert_almost_equal(7), [md.Polarizability.APol(True),

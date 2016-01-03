@@ -102,7 +102,7 @@ def test_valence_sigma():
         '-Br': 0.26,
         '-I': 0.16,
     }
-    for test in make_cases(results, _atomic_property.get_sigma_valence_electrons, 2):
+    for test in make_cases(results, _atomic_property.get_valence_electrons, 2):
         yield test
 
 

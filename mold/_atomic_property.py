@@ -203,7 +203,7 @@ table = Chem.GetPeriodicTable()
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
-def get_sigma_valence_electrons(atom):
+def get_valence_electrons(atom):
     N = atom.GetAtomicNum()
     if N == 1:
         return 0
@@ -226,7 +226,7 @@ def get_sigma_electrons(atom):
 def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)
-    dv = get_sigma_valence_electrons(atom)
+    dv = get_valence_electrons(atom)
     return ((2./period[i]) ** 2 * dv + 1) / d
 
 
@@ -262,8 +262,8 @@ getters = dict(
     p=get_polarizability,
     i=get_ionpotential,
     s=get_intrinsic_state,
-    σ=get_sigma_electrons,
-    σv=get_sigma_valence_electrons,
+    delta=get_sigma_electrons,
+    delta_v=get_valence_electrons,
 )
 
 

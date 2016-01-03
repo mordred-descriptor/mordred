@@ -112,18 +112,18 @@ _chi_type_dict = {
     ChiType.cluster: 'C'
 }
 
-_attr_dict = dict(σ='S', σv='V')
+_attr_dict = dict(delta='S', delta_v='V')
 
 
-_sigmas = ['σ', 'σv']
+_deltas = ['delta', 'delta_v']
 
 
 class Chi(ChiBase):
     descriptor_defaults =\
-        [(ChiType.chain, l, a) for a in _sigmas for l in range(3, 8)] +\
-        [(ChiType.cluster, l, a) for a in _sigmas for l in range(3, 7)] +\
-        [(ChiType.path_cluster, l, a) for a in _sigmas for l in range(4, 7)] +\
-        [(ChiType.path, l, a, m) for a in _sigmas for m in [False, True] for l in range(8)]
+        [(ChiType.chain, l, a) for a in _deltas for l in range(3, 8)] +\
+        [(ChiType.cluster, l, a) for a in _deltas for l in range(3, 7)] +\
+        [(ChiType.path_cluster, l, a) for a in _deltas for l in range(4, 7)] +\
+        [(ChiType.path, l, a, m) for a in _deltas for m in [False, True] for l in range(8)]
 
     @property
     def descriptor_name(self):
@@ -142,7 +142,7 @@ class Chi(ChiBase):
         chi = ChiCache.make_key(self.length) if self.length > 0 else None
         return dict(chi=chi)
 
-    def __init__(self, chi_type=ChiType.path, length=0, attribute='σ', averaged=False):
+    def __init__(self, chi_type=ChiType.path, length=0, attribute='delta', averaged=False):
         self.length = length
         self.attr_name, self.attribute = _atomic_property.getter(attribute)
         self.chi_type = _parse_chi_type(chi_type)
