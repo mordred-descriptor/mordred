@@ -52,24 +52,7 @@ class Key(object):
         return self
 
 
-class DescriptorMeta(ABCMeta):
-    def __new__(cls, name, base, dic):
-        cls = ABCMeta.__new__(cls, name, base, dic)
-        if 'descriptor_defaults' not in dic:
-            try:
-                spec = getargspec(cls.__init__)
-            except TypeError:
-                spec = None
-
-            if spec is None or len(spec.args) == 1:
-                cls.descriptor_defaults = [()]
-            elif len(spec.args) - 1 == len(spec.defaults or []):
-                cls.descriptor_defaults = [spec.defaults]
-
-        return cls
-
-
-class Descriptor(with_metaclass(DescriptorMeta, object)):
+class Descriptor(with_metaclass(ABCMeta, object)):
     explicit_hydrogens = True
     gasteiger_charges = False
     kekulize = False
