@@ -2,17 +2,26 @@ from rdkit import Chem
 from numpy import nan, pi
 
 
+def attr(**attrs):
+    def proc(f):
+        for a, v in attrs.items():
+            setattr(f, a, v)
+
+        return f
+
+    return proc
+
+
+@attr(gasteiger_charges=True, symbol='c')
 def get_charge_explicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge')
 
-get_charge_explicitHs.gasteiger_charges = True
 
-
+@attr(gasteiger_charges=True, symbol='c')
 def get_charge_implicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge') +\
         atom.GetDoubleProp('_GasteigerHCharge')
 
-get_charge_implicitHs.gasteiger_charges = True
 
 na = nan
 
@@ -90,6 +99,78 @@ Sanderson = [
     0.220, 0.651,
     na, na, na, na, na, na, na, na, na, na, na, na, na, na, na,
     na, na, 0.98, na, na, na, na, na, 2.195, 2.246, 2.291, 2.342
+]
+
+# https://github.com/cdk/cdk/blob/master/misc/extra/src/main/resources/org/openscience/cdk/config/data/electroneg-pauling.txt
+
+Pauling = [
+    nan,
+    # 1
+    2.2, na,
+    # 2
+    0.98, 1.57, 2.04, 2.55, 3.04, 3.44, 3.98, na,
+    # 3
+    0.93, 1.31, 1.61, 1.9, 2.19, 2.58, 3.16, na,
+    # 4
+    0.82, 1.0, 1.36, 1.54, 1.63, 1.66, 1.55, 1.83, 1.88,
+    1.91, 1.9, 1.65, 1.81, 2.01, 2.18, 2.55, 2.96, 3.0,
+    # 5
+    0.82, 0.95, 1.22, 1.33, 1.6, 2.16, 1.9, 2.2, 2.28,
+    2.2, 1.93, 1.69, 1.78, 1.96, 2.05, 2.1, 2.66, 2.6,
+    # 6
+    0.79, 0.89,
+    1.1, 1.12, 1.13, 1.14, na, 1.17, na, 1.2, na, 1.22, 1.23, 1.24, 1.25, na, 1.27,
+    1.3, 1.5, 2.36, 1.9, 2.2, 2.2, 2.28, 2.54, 2.0, 1.62, 2.33, 2.02, 2.0, 2.2, na,
+
+    # 7
+    0.7, 0.9,
+    1.1, 1.3, 1.5, 1.38, 1.36, 1.28, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3,
+]
+
+# http://www.chm.davidson.edu/ronutt/che115/electroneg.htm
+Allred_Rocow = [
+    nan,
+    # 1
+    2.20, na,
+    # 2
+    0.97, 1.47, 2.01, 2.50, 3.07, 3.50, 4.10, na,
+    # 3
+    1.01, 1.23, 1.47, 1.74, 2.06, 2.44, 2.83, na,
+    # 4
+    0.91, 1.04, 1.20, 1.32, 1.45, 1.56, 1.60, 1.64, 1.70,
+    1.75, 1.75, 1.66, 1.82, 2.02, 2.20, 2.48, 2.74, na,
+    # 5
+    0.89, 0.99, 1.11, 1.22, 1.23, 1.30, 1.36, 1.42, 1.45,
+    1.35, 1.42, 1.46, 1.49, 1.72, 1.82, 2.01, 2.21, na,
+    # 6
+    0.86, 0.97,
+    1.08, na, na, na, na, na, na, na, na, na, na, na, na, na, na,
+    1.23, 1.33, 1.40, 1.46, 1.52, 1.55, 1.44, 1.42, 1.44, 1.44, 1.55, 1.67, 1.76, 1.90
+]
+
+
+[
+    nan,
+    # 1
+    2.2, na,
+    # 2
+    0.97, 1.47, 2.01, 2.50, 3.07, 3.50, 4.10, na,
+    # 3
+    0.93, 1.31, 1.61, 1.9, 2.19, 2.58, 3.16, na,
+    # 4
+    0.82, 1.0, 1.36, 1.54, 1.63, 1.66, 1.55, 1.83, 1.88,
+    1.91, 1.9, 1.65, 1.81, 2.01, 2.18, 2.55, 2.96, 3.0,
+    # 5
+    0.82, 0.95, 1.22, 1.33, 1.6, 2.16, 1.9, 2.2, 2.28,
+    2.2, 1.93, 1.69, 1.78, 1.96, 2.05, 2.1, 2.66, 2.6,
+    # 6
+    0.79, 0.89,
+    1.1, 1.12, 1.13, 1.14, na, 1.17, na, 1.2, na, 1.22, 1.23, 1.24, 1.25, na, 1.27,
+    1.3, 1.5, 2.36, 1.9, 2.2, 2.2, 2.28, 2.54, 2.0, 1.62, 2.33, 2.02, 2.0, 2.2, na,
+
+    # 7
+    0.7, 0.9,
+    1.1, 1.3, 1.5, 1.38, 1.36, 1.28, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3,
 ]
 
 
@@ -203,6 +284,7 @@ table = Chem.GetPeriodicTable()
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
+@attr(symbol='V')
 def get_valence_electrons(atom):
     N = atom.GetAtomicNum()
     if N == 1:
@@ -216,6 +298,7 @@ def get_valence_electrons(atom):
     return float(Zv - h) / float(Z - Zv - 1)
 
 
+@attr(symbol='S')
 def get_sigma_electrons(atom):
     return sum((1 for a in atom.GetNeighbors()
                 if a.GetAtomicNum() != 1))
@@ -223,6 +306,7 @@ def get_sigma_electrons(atom):
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
 # p. 283
+@attr(symbol='s')
 def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)
@@ -230,26 +314,42 @@ def get_intrinsic_state(atom):
     return ((2./period[i]) ** 2 * dv + 1) / d
 
 
+@attr(symbol='Z')
 def get_atomic_number(a):
     return a.GetAtomicNum()
 
 
+@attr(symbol='m')
 def get_mass(a):
     return mass[a.GetAtomicNum()]
 
 
+@attr(symbol='v')
 def get_vdw_volume(a):
     return Vvdw[a.GetAtomicNum()]
 
 
+@attr(symbol='e')
 def get_sanderson_en(a):
     return Sanderson[a.GetAtomicNum()]
 
 
+@attr(symbol='pe')
+def get_pauling_en(a):
+    return Pauling[a.GetAtomicNum()]
+
+
+@attr(symbol='are')
+def get_allred_rocow_en(a):
+    return Allred_Rocow[a.GetAtomicNum()]
+
+
+@attr(symbol='p')
 def get_polarizability(a):
     return Polarizabilities94[a.GetAtomicNum()]
 
 
+@attr(symbol='i')
 def get_ionpotential(a):
     return Ionpotentials[a.GetAtomicNum()]
 
@@ -259,6 +359,9 @@ getters = dict(
     m=get_mass,
     v=get_vdw_volume,
     e=get_sanderson_en,
+    se=get_sanderson_en,
+    pe=get_pauling_en,
+    are=get_allred_rocow_en,
     p=get_polarizability,
     i=get_ionpotential,
     s=get_intrinsic_state,
@@ -271,6 +374,7 @@ def getter(p):
     if hasattr(p, '__call__'):
         return p.__name__, p
     if p in getters:
-        return p, getters[p]
+        getter = getters[p]
+        return getattr(getter, 'symbol', p), getter
     else:
         raise ValueError('unknown atomic property: {!r}'.format(p))
