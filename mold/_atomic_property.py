@@ -203,69 +203,67 @@ table = Chem.GetPeriodicTable()
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
-def GetNumValenceElectrons(atom):
+def get_sigma_valence_electrons(atom):
     N = atom.GetAtomicNum()
     if N == 1:
         return 0
 
-    Zv = table.GetNOuterElecs(N)
+    Zv = table.GetNOuterElecs(N) - atom.GetFormalCharge()
     Z = atom.GetAtomicNum()
-    hi = atom.GetNumImplicitHs()
+    hi = atom.GetTotalNumHs()
     he = sum((1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1))
     h = hi + he
     return float(Zv - h) / float(Z - Zv - 1)
 
 
-def GetNumSigmaElectrons(atom):
+def get_sigma_electrons(atom):
     return sum((1 for a in atom.GetNeighbors()
                 if a.GetAtomicNum() != 1))
 
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
 # p. 283
-def IntrinsicState(atom):
+def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
-    d = GetNumSigmaElectrons(atom)
-    dv = GetNumValenceElectrons(atom)
+    d = get_sigma_electrons(atom)
+    dv = get_sigma_valence_electrons(atom)
     return ((2./period[i]) ** 2 * dv + 1) / d
 
 
-def getter_Z(a):
+def get_atomic_number(a):
     return a.GetAtomicNum()
 
 
-def getter_m(a):
+def get_mass(a):
     return mass[a.GetAtomicNum()]
 
 
-def getter_v(a):
+def get_vdw_volume(a):
     return Vvdw[a.GetAtomicNum()]
 
 
-def getter_e(a):
+def get_sanderson_en(a):
     return Sanderson[a.GetAtomicNum()]
 
 
-def getter_p(a):
+def get_polarizability(a):
     return Polarizabilities94[a.GetAtomicNum()]
 
 
-def getter_i(a):
+def get_ionpotential(a):
     return Ionpotentials[a.GetAtomicNum()]
 
 
-def getter_s(a):
-    return IntrinsicState(a)
-
-
 getters = dict(
-    Z=getter_Z,
-    m=getter_m,
-    v=getter_v,
-    e=getter_e,
-    p=getter_p,
-    i=getter_i,
-    s=getter_s
+    Z=get_atomic_number,
+    m=get_mass,
+    v=get_vdw_volume,
+    e=get_sanderson_en,
+    p=get_polarizability,
+    i=get_ionpotential,
+    s=get_intrinsic_state,
+    σ=get_sigma_electrons,
+    σv=get_sigma_valence_electrons,
 )
 
 

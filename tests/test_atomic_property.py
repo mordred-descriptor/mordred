@@ -72,7 +72,7 @@ def test_sigma():
         '-Br': 1,
         '-I': 1,
     }
-    for test in make_cases(results, _atomic_property.GetNumSigmaElectrons):
+    for test in make_cases(results, _atomic_property.get_sigma_electrons):
         yield test
 
 
@@ -102,7 +102,7 @@ def test_valence_sigma():
         '-Br': 0.26,
         '-I': 0.16,
     }
-    for test in make_cases(results, _atomic_property.GetNumValenceElectrons, 2):
+    for test in make_cases(results, _atomic_property.get_sigma_valence_electrons, 2):
         yield test
 
 
@@ -129,5 +129,5 @@ def test_IntrinsicState():
         '-F': 8.0,
     }
 
-    for test in make_cases(results, _atomic_property.IntrinsicState, 3):
+    for test in make_cases(results, _atomic_property.get_intrinsic_state, 3):
         yield test
