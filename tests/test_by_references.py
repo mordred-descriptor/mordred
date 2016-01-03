@@ -83,9 +83,10 @@ descriptors = [
 
     (assert_equal, md.CarbonTypes, all_),
 
-    (assert_almost_equal(0), [md.Matrix.BCUT('m', 1, False),
-                              md.Matrix.BCUT('m', 1, True),
-                              ], exclude_('Cyanidin')),
+    (assert_almost_equal(0),
+     [md.Matrix.BCUT('m', 1, False),
+      md.Matrix.BCUT('m', 1, True),
+      ], exclude_('Cyanidin')),
 
     (assert_almost_equal(7),
      [md.Matrix.BaryszMatrix('Z', a)
@@ -95,6 +96,13 @@ descriptors = [
                 'VE1', 'VE2',
                 'VR1', 'VR2', 'VR3']
       ], only_('Hexane')),
+
+    (assert_almost_equal(7),
+     [md.Chi.Chi('path', l, a) for a in ['σ', 'σv'] for l in range(7)] +
+     [md.Chi.Chi('chain', l, a) for a in ['σ', 'σv'] for l in range(3, 7)] +
+     [md.Chi.Chi('cluster', l, a) for a in ['σ', 'σv'] for l in range(3, 7)] +
+     [md.Chi.Chi('path_cluster', l, a) for a in ['σ', 'σv'] for l in range(4, 6)],
+     exclude_('Cyanidin')),
 
     (assert_almost_equal(7), [md.Polarizability.APol(True),
                               md.Polarizability.BPol(True),
