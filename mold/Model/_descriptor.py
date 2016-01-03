@@ -2,8 +2,10 @@ from .._base import Descriptor
 from rdkit.Chem import Crippen as _Crippen
 
 
-class Crippen(Descriptor):
+class WildmanCrippen(Descriptor):
     descriptor_defaults = [('LogP',), ('MR',)]
+
+    explicit_hydrogens = False
 
     def __init__(self, value='LogP'):
         assert value in ['LogP', 'MR']
@@ -23,5 +25,5 @@ class Crippen(Descriptor):
         else:
             return _Crippen.MolMR(mol)
 
-_descriptors = [Crippen]
+_descriptors = [WildmanCrippen]
 __all__ = [d.__name__ for d in _descriptors]
