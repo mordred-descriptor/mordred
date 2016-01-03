@@ -1,5 +1,7 @@
+import os
 import sys
 import csv
+from glob import glob
 import yaml
 try:
     from yaml import CLoader as Loader
@@ -20,7 +22,7 @@ def parse_int_or_float(s):
 def main(file_base):
     smi_file = file_base + '.smi'
     rename_file = file_base + '.rename'
-    override_file = file_base + '.yaml'
+    override_glob = os.path.join(file_base, '*.yaml')
     csv_file = file_base + '.csv'
 
     # read smiles file
@@ -36,7 +38,9 @@ def main(file_base):
         rename[src] = dst
 
     # read override file
-    overrides = yaml.load(open(override_file), Loader=Loader)
+    overrides_list = []
+    for override_file in glob(override_glob):
+        overrides_list.append(yaml.load(open(override_file), Loader=Loader))
 
     # read csv file
     reader = csv.reader(open(csv_file))
@@ -46,7 +50,9 @@ def main(file_base):
         name = row[0]
         smi = name_smi[name]
 
-        override = overrides.get(name, {})
+        override = {}
+        for overrides in overrides_list:
+            override.update(overrides.get(name, {}))
 
         print('- name: {}'.format(name))
         print('  smiles: {}'.format(smi))

@@ -1,20 +1,3 @@
-Cafeine:
-    nAromAtom: 9
-    nAromBond: 10
-
-Cyanidin:
-    nAromAtom: 16
-    nAromBond: 17
-    nAtom: 32
-    nH: 11
-    C2SP2: 13
-    C2SP3: 0
-    nBase: 1
-
-Ellagic Acid:
-    nAromAtom: 16
-    nAromBond: 19
-
 Allicin:
     VP-0: 6.840865696372484 # dragon
     VP-1: 5.365043969424329 # dragon
