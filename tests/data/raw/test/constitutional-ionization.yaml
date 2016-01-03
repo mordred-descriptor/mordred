@@ -1,0 +1,48 @@
+# bug of PaDEL descriptor: libPaDEL-Descriptor/src/libpadeldescriptor/ConstitutionalDescriptor.java:152
+Hexane:
+    Mi: 1.1453513760734615
+    Si: 22.90702752146923
+
+Benzene:
+    Mi: 1.103822411481044
+    Si: 13.245868937772528
+
+Cafeine:
+    Mi: 1.1524238919034129
+    Si: 27.658173405681907
+
+Lycopene:
+    Mi: 1.1211261467278872
+    Si: 107.62811008587718
+
+Epicatechin:
+    Mi: 1.118952684589728
+    Si: 39.16334396064048
+
+Limonene:
+    Mi: 1.1277814295151312
+    Si: 29.322317167393408
+
+Allicin:
+    Mi: 1.111891007858536
+    Si: 21.125929149312185
+
+Glutathione:
+    Mi: 1.1507713682439935
+    Si: 42.578540625027756
+
+Digoxin:
+    Mi: 1.1363081823051002
+    Si: 135.22067369430692
+
+Capsaicin:
+    Mi: 1.1331695244281563
+    Si: 55.525306696979655
+
+Ellagic Acid:
+    Mi: 1.1043199115476499
+    Si: 30.920957523334195
+
+Astaxanthin:
+    Mi: 1.121198698820934
+    Si: 107.63507508680965
