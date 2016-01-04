@@ -106,6 +106,8 @@ descriptors = [
 
     (assert_almost_equal(7), md.Constitutional, exclude_('Cyanidin')),
 
+    (assert_equal, md.HBond, all_),
+
     (assert_almost_equal(7), [md.Polarizability.APol(True),
                               md.Polarizability.BPol(True),
                               ], exclude_('Cyanidin')),

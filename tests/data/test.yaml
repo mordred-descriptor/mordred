@@ -5542,11 +5542,11 @@
     ETA_EtaP_B_RC: 0.03427
     FMF: 0.48484848484848486
     fragC: 109.06
-    nHBAcc: 1
+    nHBAcc: 5
     nHBAcc2: 6
     nHBAcc3: 6
     nHBAcc_Lipinski: 6
-    nHBDon: 6
+    nHBDon: 5
     nHBDon_Lipinski: 6
     HybRatio: 0.0
     IC0: 1.4949188482339508
@@ -8438,7 +8438,7 @@
     ETA_EtaP_B_RC: 0.03427
     FMF: 0.45714285714285713
     fragC: 109.06
-    nHBAcc: 1
+    nHBAcc: 6
     nHBAcc2: 6
     nHBAcc3: 6
     nHBAcc_Lipinski: 6
@@ -11334,7 +11334,7 @@
     ETA_EtaP_B_RC: 0.01177
     FMF: 0.0
     fragC: 8.03
-    nHBAcc: 1
+    nHBAcc: 2
     nHBAcc2: 1
     nHBAcc3: 1
     nHBAcc_Lipinski: 1
@@ -12782,11 +12782,11 @@
     ETA_EtaP_B_RC: 0.03205
     FMF: 0.0
     fragC: 19.1
-    nHBAcc: 9
+    nHBAcc: 6
     nHBAcc2: 9
     nHBAcc3: 7
     nHBAcc_Lipinski: 9
-    nHBDon: 5
+    nHBDon: 6
     nHBDon_Lipinski: 6
     HybRatio: 0.6
     IC0: 1.8859179127473338
@@ -15678,7 +15678,7 @@
     ETA_EtaP_B_RC: 0.02163
     FMF: 0.12244897959183673
     fragC: 22.04
-    nHBAcc: 2
+    nHBAcc: 3
     nHBAcc2: 4
     nHBAcc3: 3
     nHBAcc_Lipinski: 4
@@ -17126,7 +17126,7 @@
     ETA_EtaP_B_RC: 0.03915
     FMF: 0.5714285714285714
     fragC: 163.08
-    nHBAcc: 2
+    nHBAcc: 8
     nHBAcc2: 8
     nHBAcc3: 8
     nHBAcc_Lipinski: 8
