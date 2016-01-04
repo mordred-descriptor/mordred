@@ -12,7 +12,7 @@ if sys.version_info < (3, 4, 0):
     install_requires += ['enum34']
 
 setup(
-    name='mold',
+    name='mordred',
     version='0.0.0',
     packages=find_packages(),
 

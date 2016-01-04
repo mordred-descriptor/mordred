@@ -4,8 +4,8 @@ from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 from rdkit import Chem
 
-from mold import Calculator
-import mold.all
+from mordred import Calculator
+import mordred.all
 
 import yaml
 try:
@@ -21,13 +21,13 @@ data_dir = os.path.join(
 
 
 def test_by_references():
-    calc = Calculator(mold.all.descriptors)
+    calc = Calculator(mordred.all.descriptors)
 
     calc.descriptors = list(
-        filter(lambda x: x.__class__ not in [mold.all.Polarizability.APol,
-                                             mold.all.Polarizability.BPol], calc.descriptors))
-    calc.register(mold.all.Polarizability.APol(True),
-                  mold.all.Polarizability.BPol(True),
+        filter(lambda x: x.__class__ not in [mordred.all.Polarizability.APol,
+                                             mordred.all.Polarizability.BPol], calc.descriptors))
+    calc.register(mordred.all.Polarizability.APol(True),
+                  mordred.all.Polarizability.BPol(True),
                   )
 
     actuals = dict()

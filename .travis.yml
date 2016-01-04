@@ -27,7 +27,7 @@ install:
   - pip install coveralls
 
 script:
-  - nosetests --with-coverage --cover-package=mold
+  - nosetests tests --with-coverage --cover-package=mordred
 
 after_success:
   - coveralls

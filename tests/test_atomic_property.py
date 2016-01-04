@@ -1,5 +1,5 @@
 from rdkit import Chem
-from mold import _atomic_property
+from mordred import _atomic_property
 
 from numpy.testing import assert_almost_equal
 
