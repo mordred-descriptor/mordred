@@ -13,7 +13,7 @@ class CarbonTypesCache(CarbonTypesBase):
         return self.make_key()
 
     def calculate(self, mol):
-        r = defaultdict(int)
+        r = defaultdict(lambda: defaultdict(int))
         for a in mol.GetAtoms():
             if a.GetAtomicNum() != 6:
                 continue
@@ -43,7 +43,7 @@ class CarbonTypesCache(CarbonTypesBase):
             else:
                 SP = 3
 
-            r[carbon, SP] += 1
+            r[SP][carbon] += 1
 
         return r
 
@@ -72,7 +72,27 @@ class CarbonTypes(CarbonTypesBase):
         self.SP = SP
 
     def calculate(self, mol, CT):
-        return CT[self.nCarbon, self.SP]
+        return CT[self.SP][self.nCarbon]
 
-_descriptors = [CarbonTypes]
+
+class HybridizationRatio(CarbonTypesBase):
+    descriptor_defaults = [()]
+
+    descriptor_name = 'HybRatio'
+
+    @property
+    def descriptor_key(self):
+        return self.make_key()
+
+    @property
+    def dependencies(self):
+        return dict(CT=CarbonTypesCache.make_key())
+
+    def calculate(self, mol, CT):
+        Nsp3 = float(sum(CT[3].values()))
+        Nsp2 = float(sum(CT[2].values()))
+        return Nsp3 / (Nsp2 + Nsp3)
+
+
+_descriptors = [CarbonTypes, HybridizationRatio]
 __all__ = [d.__name__ for d in _descriptors]
