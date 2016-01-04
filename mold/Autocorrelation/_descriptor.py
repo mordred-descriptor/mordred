@@ -145,6 +145,9 @@ class ATS(Autocorrelation):
         return dict(avec=self._avec, gmat=self._gmat)
 
     def calculate(self, mol, avec, gmat):
+        if not gmat.any():
+            return np.nan
+
         r = float(avec.dot(gmat).dot(avec))
         return r if self.distance == 0 else r / 2.0
 
@@ -167,6 +170,9 @@ class ATSC(Autocorrelation):
         return dict(cavec=self._cavec, gmat=self._gmat)
 
     def calculate(self, mol, cavec, gmat):
+        if not gmat.any():
+            return np.nan
+
         r = float(cavec.dot(gmat).dot(cavec))
         return r if self.distance == 0 else r / 2.0
 
@@ -198,6 +204,9 @@ class GATS(MATS):
         return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)
 
     def calculate(self, mol, avec, gmat, gsum, cavec):
+        if not gmat.any():
+            return np.nan
+
         W = np.tile(avec, (len(avec), 1))
         n = (gmat * (W - W.T) ** 2).sum() / (2 * gsum)
         d = (cavec ** 2).sum() / (len(avec) - 1)

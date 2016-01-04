@@ -1,11 +1,11 @@
 import os
-from mold import Calculator
-import mold.all as md
-from functools import wraps
-
+from glob import glob
+from nose.tools import eq_
+from numpy.testing import assert_almost_equal
 from rdkit import Chem
-from math import isnan
-import numpy.testing as nt
+
+from mold import Calculator
+import mold.all
 
 import yaml
 try:
@@ -14,120 +14,47 @@ except ImportError:
     from yaml import Loader
 
 
-ref_file = os.path.join(
+data_dir = os.path.join(
     os.path.dirname(__file__),
-    'data', 'test.yaml'
+    'data'
 )
 
 
-def assert_equal(actual, desired, name, desc):
-    assert actual == desired,\
-        '{!r} != {!r}, {} of {}'.format(actual, desired, desc, name)
-
-
-def assert_almost_equal(decimal):
-    def f(actual, desired, name, desc):
-        nt.assert_almost_equal(
-            actual, desired, decimal, '{} of {}'.format(desc, name))
-    return f
-
-
-def fill_na(v, f):
-    @wraps(f)
-    def g(actual, desired, name, desc):
-        actual = v if isnan(actual) else actual
-        desired = v if isnan(desired) else desired
-
-        f(actual, desired, name, desc)
-
-    return g
-
-
-def all_(a):
-    return True
-
-
-def exclude_(*ns):
-    def f(name):
-        return name not in ns
-
-    return f
-
-
-def only_(*ns):
-    def f(name):
-        return name in ns
-
-    return f
-
-descriptors = [
-    (assert_equal, md.Aromatic, all_),
-    (assert_equal, md.AtomCount, all_),
-    (assert_almost_equal(7),
-     [[md.Autocorrelation.ATS(d, a),
-       md.Autocorrelation.ATSC(d, a),
-       ] for a in 'mvepis' for d in range(9)], exclude_('Cyanidin')
-     ),
-    (fill_na(0, assert_almost_equal(7)),
-     [[md.Autocorrelation.AATS(d, a),
-       md.Autocorrelation.AATSC(d, a),
-       ] for a in 'mvepis' for d in range(9)], exclude_('Cyanidin')
-     ),
-    (fill_na(0, assert_almost_equal(7)),
-     [[md.Autocorrelation.MATS(d, a),
-       md.Autocorrelation.GATS(d, a),
-       ] for a in 'mvepis' for d in range(1, 9)], exclude_('Cyanidin')
-     ),
-
-    # (assert_equal, md.BondCount, []),
-
-    (assert_equal, md.CarbonTypes, all_),
-
-    (assert_almost_equal(0),
-     [md.Matrix.BCUT('m', 1, False),
-      md.Matrix.BCUT('m', 1, True),
-      ], exclude_('Cyanidin')),
-
-    (assert_almost_equal(7),
-     [md.Matrix.BaryszMatrix('Z', a)
-      for a in ['SpAbs', 'SpMax', 'SpDiam',
-                'SpAD', 'SpMAD',
-                'EE', 'SM1',
-                'VE1', 'VE2',
-                'VR1', 'VR2', 'VR3']
-      ], only_('Hexane')),
-
-    (assert_almost_equal(7),
-     [md.Chi.Chi('path', l, a) for a in ['delta', 'delta_v'] for l in range(7)] +
-     [md.Chi.Chi('chain', l, a) for a in ['delta', 'delta_v'] for l in range(3, 7)] +
-     [md.Chi.Chi('cluster', l, a) for a in ['delta', 'delta_v'] for l in range(3, 7)] +
-     [md.Chi.Chi('path_cluster', l, a) for a in ['delta', 'delta_v'] for l in range(4, 6)],
-     exclude_('Cyanidin')),
-
-    (assert_almost_equal(7), md.Constitutional, exclude_('Cyanidin')),
-
-    (assert_equal, md.HBond, all_),
-
-    (assert_almost_equal(7), [md.Polarizability.APol(True),
-                              md.Polarizability.BPol(True),
-                              ], exclude_('Cyanidin')),
-
-    (assert_equal, md.SmartsCount, all_),
-]
-
-
 def test_by_references():
-    for data in yaml.load(open(ref_file), Loader=Loader):
-        name = data['name']
-        smi = data['smiles']
-        descs = data['descriptors']
+    calc = Calculator(mold.all.descriptors)
 
-        for check, desc, is_check in descriptors:
-            if not is_check(name):
-                continue
+    calc.descriptors = list(
+        filter(lambda x: x.__class__ not in [mold.all.Polarizability.APol,
+                                             mold.all.Polarizability.BPol], calc.descriptors))
+    calc.register(mold.all.Polarizability.APol(True),
+                  mold.all.Polarizability.BPol(True),
+                  )
 
-            calc = Calculator(desc)
-            for desc_name, actual in calc(Chem.MolFromSmiles(smi)):
-                desired = descs[desc_name]
+    actuals = dict()
+    for mol in Chem.SmilesMolSupplier(os.path.join(data_dir, 'test.smi'), titleLine=False):
+        actuals[mol.GetProp('_Name')] = dict(calc(mol))
 
-                yield check, actual, desired, name, desc_name
+    for path in glob(os.path.join(data_dir, '*.yaml')) + glob(os.path.join(data_dir, '**/*.yaml')):
+        for test in yaml.load(open(path), Loader=Loader):
+            dnames = test['names']
+            if not isinstance(dnames, list):
+                dnames = [dnames]
+
+            desireds = (
+                (mname, zip(dnames, values if isinstance(values, list) else [values]))
+                for mname, values in test['results'].items()
+            )
+
+            digit = test.get('digit')
+            if digit is None:
+                assert_f = eq_
+            else:
+                assert_f = lambda a, d, m: assert_almost_equal(a, d, digit, m)
+
+            for mname, descs in desireds:
+                for dname, desired in descs:
+                    if not desired == 'skip':
+                        yield assert_f,\
+                            actuals[mname][dname],\
+                            desired,\
+                            '{} of {}'.format(dname, mname)

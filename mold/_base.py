@@ -57,7 +57,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
     gasteiger_charges = False
     kekulize = False
 
-    descriptor_defaults = []
+    descriptor_defaults = [()]
 
     @classmethod
     def make_key(cls, *args):

@@ -36,12 +36,12 @@ class barysz(BaryszMatrixDescriptor):
 
             pi = bond.GetBondTypeAsDouble()
 
-            w = (C * C) / (self.prop(a) * self.prop(b) * pi)
+            w = float(C * C) / float(self.prop(a) * self.prop(b) * pi)
             dmat[i, j] = w
             dmat[j, i] = w
 
         sp = shortest_path(dmat)
-        np.fill_diagonal(sp, [1 - C / self.prop(a) for a in mol.GetAtoms()])
+        np.fill_diagonal(sp, [1. - float(C) / self.prop(a) for a in mol.GetAtoms()])
         return sp
 
 
