@@ -1,4 +1,5 @@
-# Si: bug of CDK: skip
+# PaDEL-descriptor
+# Si: bug of PaDEL: skip
 - names: [Sv, Sse, Spe, Sare, Sp]
   digit: 7
   results:
@@ -16,7 +17,7 @@
     EllagicAcid: [21.34387625, 30.30881282, 29.96862745, 30.48, 20.23757964]
     Astaxanthin: [56.94671932, 94.40640932, 90.25882353, 91.36, 62.68337485]
 
-# Mi: bug of CDK: skip
+# Mi: bug of PaDEL: skip
 - names: [Mv, Mse, Mpe, Mare, Mp]
   digit: 7
   results:

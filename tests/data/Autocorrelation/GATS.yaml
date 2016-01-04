@@ -1,3 +1,4 @@
+# PaDEL-descriptor
 - names: [GATS1m, GATS2m, GATS3m, GATS4m, GATS5m, GATS6m, GATS7m, GATS8m]
   digit: 5
   results:

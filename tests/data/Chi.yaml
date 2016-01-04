@@ -1,3 +1,4 @@
+# PaDEL-descriptor
 - names: [SCH-3, SCH-4, SCH-5, SCH-6, SCH-7, VCH-3, VCH-4, VCH-5, VCH-6, VCH-7]
   digit: 7
   results:
@@ -32,7 +33,7 @@
     EllagicAcid: [2.094262497, 0, 0.840231179, 0, 0.695635817, 0, 0.152970458, 0]
     Astaxanthin: [4.73256131, 0.40824829, 1.199506106, 0.166666667, 3.275643112, 0.353553391, 0.516823861, 0.102062073]
 
-# SPC-6, VPC-6: bug of PaDEL: skip
+# SPC-6, VPC-6: bug of CDK: skip
 - names: [SPC-4, SPC-5, VPC-4, VPC-5]
   digit: 7
   results:
@@ -49,7 +50,6 @@
     Capsaicin: [2.150859198, 2.556664913, 0.73005394, 0.726132773]
     EllagicAcid: [5.709048363, 9.189634902, 1.491700289, 2.10324973]
     Astaxanthin: [8.7947037, 13.20106797, 4.663012296, 6.477206384 ]
-
 
 - names: [SP-0, SP-1, SP-2, SP-3, SP-4, SP-5, SP-6, SP-7]
   digit: 7
