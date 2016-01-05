@@ -33,10 +33,7 @@ class Key(object):
         return self.cls is not other.cls or self.args != other.args
 
     def __str__(self):
-        if len(self.args) == 0:
-            return self.cls.__name__
-        else:
-            return self.cls.__name__ + str(hash(self.args))
+        return self.cls.__name__ + str(hash(tuple(self.args)))
 
     def __repr__(self):
         return 'Key({!r}, *{!r})'.format(self.cls, self.args)
