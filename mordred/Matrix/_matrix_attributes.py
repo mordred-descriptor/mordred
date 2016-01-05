@@ -142,7 +142,10 @@ class EE(common):
         return dict(eig=self._eig)
 
     def calculate(self, mol, eig):
-        return np.log(1+np.exp(eig.val).sum())
+        # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
+        a = np.maximum(eig.val.max(), 0)
+        sx = np.exp(eig.val - a).sum() + np.exp(-a)
+        return a + np.log(sx)
 
 
 @method
@@ -182,10 +185,10 @@ class VE3(common):
         return dict(VE1=self._VE1)
 
     def calculate(self, mol, VE1):
-        try:
-            return 0.1 * mol.GetNumAtoms() * np.log(VE1)
-        except ValueError:
+        if VE1 == 0:
             return 0.0
+        else:
+            return 0.1 * mol.GetNumAtoms() * np.log(VE1)
 
 
 @method
@@ -221,7 +224,9 @@ class VR3(common):
         return dict(VR1=self._VR1)
 
     def calculate(self, mol, VR1):
-        try:
-            return 0.1 * mol.GetNumAtoms() * np.log(VR1)
-        except ValueError:
+        if VR1 == 0:
             return 0.0
+        else:
+            return 0.1 * mol.GetNumAtoms() * np.log(VR1)
+
+
