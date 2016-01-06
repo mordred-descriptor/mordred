@@ -24,3 +24,30 @@ Installation
     ```
     $ conda install -c rdkit -c philopon/channel/dev mordred
     ```
+
+### pip
+
+1. install [rdkit](http://www.rdkit.org/) python package
+
+2. install mordred
+
+   ```
+   $ pip install git+https://github.com/philopon/mordred
+   ```
+
+example
+--
+
+```.py
+from rdkit import Chem
+
+from mordred import Calculator
+import mordred.all
+
+# create descriptor calculator with all descriptors
+calc = Calculator(mordred.all.descriptors)
+
+# calculate and print descriptors
+for name, value in calc(Chem.MolFromSmiles('c1ccccc1O')):
+   print(name, value)
+```
