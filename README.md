@@ -4,16 +4,23 @@ molecular descriptor calculator
 
 Installation
 --
-### use conda(recommended)
+### conda(recommended)
 
-#### stable
+1. install conda
 
-```
-$ conda install -c rdkit -c philopon mordred
-```
+    * [miniconda](http://conda.pydata.org/miniconda.html)
+    * [anaconda](https://www.continuum.io/why-anaconda)
 
-#### develop
+2. install mordred
 
-```
-$ conda install -c rdkit -c philopon/channel/dev mordred
-```
+    #### stable
+    
+    ```
+    $ conda install -c rdkit -c philopon mordred
+    ```
+    
+    #### develop
+    
+    ```
+    $ conda install -c rdkit -c philopon/channel/dev mordred
+    ```
