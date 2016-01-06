@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import sys
+import os
 
 install_requires = [
     'six>=1.10',
@@ -13,7 +14,7 @@ if sys.version_info < (3, 4, 0):
 
 setup(
     name='mordred',
-    version='0.0.0',
+    version=open(os.path.join(os.path.dirname(__file__), '__conda_version__.txt')).read().strip(),
     packages=find_packages(),
 
     install_requires=install_requires,
