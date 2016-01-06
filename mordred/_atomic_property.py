@@ -291,7 +291,7 @@ def get_valence_electrons(atom):
         return 0
 
     Zv = table.GetNOuterElecs(N) - atom.GetFormalCharge()
-    Z = atom.GetAtomicNum()
+    Z = atom.GetAtomicNum() - atom.GetFormalCharge()
     hi = atom.GetTotalNumHs()
     he = sum((1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1))
     h = hi + he
