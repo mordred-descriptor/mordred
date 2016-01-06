@@ -210,6 +210,4 @@ class Calculator(object):
 
         for desc in self.descriptors:
             self._calculate(desc, cache)
-
-        for d in self.descriptors:
-            yield d.descriptor_name, cache[d.descriptor_key]
+            yield desc.descriptor_name, cache[desc.descriptor_key]
