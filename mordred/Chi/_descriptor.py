@@ -154,10 +154,11 @@ class Chi(ChiBase):
 
         x = 0
         node_sets = getattr(chi, self.chi_type.name)
+        attributes = [self.attribute(a) for a in mol.GetAtoms()]
         for nodes in node_sets:
             c = 1
             for node in nodes:
-                c *= self.attribute(mol.GetAtomWithIdx(node))
+                c *= attributes[node]
 
             x += c ** (-0.5)
 
