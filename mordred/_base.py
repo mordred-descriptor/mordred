@@ -208,6 +208,5 @@ class Calculator(object):
         cache = {}
         self.molecule = Molecule(mol)
 
-        for desc in self.descriptors:
-            self._calculate(desc, cache)
-            yield desc.descriptor_name, cache[desc.descriptor_key]
+        return ((desc.descriptor_name, self._calculate(desc, cache))
+                 for desc in self.descriptors)
