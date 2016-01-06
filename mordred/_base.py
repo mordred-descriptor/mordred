@@ -77,7 +77,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
         pass
 
     def __call__(self, mol):
-        return Calculator(self)(mol)[0][1]
+        return next(Calculator(self)(mol))[1]
 
 
 class Molecule(object):
@@ -211,4 +211,5 @@ class Calculator(object):
         for desc in self.descriptors:
             self._calculate(desc, cache)
 
-        return [(d.descriptor_name, cache[d.descriptor_key]) for d in self.descriptors]
+        for d in self.descriptors:
+            yield d.descriptor_name, cache[d.descriptor_key]
