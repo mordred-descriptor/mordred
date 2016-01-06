@@ -11,3 +11,9 @@ C[C@@H]1[C@H]([C@H](C[C@@H](O1)O[C@@H]2[C@H](O[C@H](C[C@@H]2O)O[C@@H]3[C@H](O[C@
 CC(C)/C=C/CCCCC(=O)NCC1=CC(=C(C=C1)O)OC Capsaicin
 C1=C2C3=C(C(=C1O)O)OC(=O)C4=CC(=C(C(=C43)OC2=O)O)O EllagicAcid
 CC1=C(C(C[C@@H](C1=O)O)(C)C)/C=C/C(=C/C=C/C(=C/C=C/C=C(/C=C/C=C(/C=C/C2=C(C(=O)[C@H](CC2(C)C)O)C)\C)\C)/C)/C Astaxanthin
+CS(=O)C DMSO
+CCC(=S)CC DiethylThioketone
+C=CS(=O)(=O)O VinylsulfonicAcid
+c1cscc1 Thiophene
+CCOP(OCC)OCC Triethoxyphosphine
+CP(=O)(O)O MethylphosphonicAcid

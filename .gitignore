@@ -5,3 +5,5 @@ __pycache__
 .ipynb_checkpoints
 /dist
 .eggs/
+/.coverage
+/htmlcov
