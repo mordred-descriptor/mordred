@@ -2,6 +2,7 @@ from .._base import Descriptor
 from rdkit import Chem
 from .. import _atomic_property
 import numpy as np
+from .._common import DistanceMatrix
 
 
 class AutocorrelationBase(Descriptor):
@@ -12,15 +13,6 @@ class AutocorrelationBase(Descriptor):
     @property
     def gasteiger_charges(self):
         return getattr(self.attribute, 'gasteiger_charges', True)
-
-
-class DistanceMatrix(AutocorrelationBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
-    def calculate(self, mol):
-        return Chem.GetDistanceMatrix(mol)
 
 
 class AVec(AutocorrelationBase):
@@ -58,7 +50,7 @@ class GMat(AutocorrelationBase):
 
     @property
     def dependencies(self):
-        return dict(dmat=DistanceMatrix.make_key())
+        return dict(dmat=DistanceMatrix.make_key(True, False, False))
 
     def __init__(self, distance):
         self.distance = distance
