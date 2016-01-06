@@ -1,0 +1,31 @@
+package:
+  name: mordred
+  version: 0
+
+build:
+  number: 0
+  script:
+    - $PYTHON setup.py install
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+    - networkx
+    - numpy
+    - scipy
+    - six
+    - pyyaml
+    - rdkit
+    - enum34 [py27]
+
+  run:
+    - python
+    - networkx
+    - numpy
+    - scipy
+    - six
+    - pyyaml
+    - rdkit
+    - enum34 [py27]
