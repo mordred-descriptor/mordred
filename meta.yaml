@@ -29,3 +29,10 @@ requirements:
     - pyyaml
     - rdkit
     - enum34 [py27]
+
+test:
+  requires:
+    - nose
+
+  commands:
+    - cd $SRC_DIR/tests && nosetests
