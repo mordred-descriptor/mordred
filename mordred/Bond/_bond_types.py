@@ -59,6 +59,3 @@ class BondCount(Descriptor):
             return self.nBonds(4, mol)
         elif bt == 'M':
             return self.nBondsM(mol)
-
-_descriptors = [BondCount]
-__all__ = [d.__name__ for d in _descriptors]

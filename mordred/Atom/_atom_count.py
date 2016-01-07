@@ -42,6 +42,3 @@ class AtomCount(Descriptor):
 
     def calculate(self, mol):
         return self.f(mol)
-
-_descriptors = [AtomCount]
-__all__ = [d.__name__ for d in _descriptors]

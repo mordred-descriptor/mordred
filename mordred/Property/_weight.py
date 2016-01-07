@@ -24,7 +24,3 @@ class Weight(Descriptor):
             w /= mol.GetNumAtoms()
 
         return w
-
-
-_descriptors = [Weight]
-__all__ = [d.__name__ for d in _descriptors]

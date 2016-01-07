@@ -92,7 +92,3 @@ class HybridizationRatio(CarbonTypesBase):
         Nsp3 = float(sum(CT[3].values()))
         Nsp2 = float(sum(CT[2].values()))
         return Nsp3 / (Nsp2 + Nsp3)
-
-
-_descriptors = [CarbonTypes, HybridizationRatio]
-__all__ = [d.__name__ for d in _descriptors]

@@ -34,7 +34,3 @@ class HBondDonor(Descriptor):
 
     def calculate(self, mol):
         return rdMolDescriptors.CalcNumHBD(mol)
-
-
-_descriptors = [HBondAcceptor, HBondDonor]
-__all__ = [d.__name__ for d in _descriptors]
