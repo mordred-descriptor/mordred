@@ -13,3 +13,28 @@
     Capsaicin: 515
     EllagicAcid: 328
     Astaxanthin: 1932
+
+- names: Zagreb1
+  results:
+    Hexane: 18
+    Benzene: 24
+    Caffeine: 76
+    Cyanidin: 114
+    Lycopene: 170
+    Epicatechin: 114
+    Limonene: 46
+    Allicin: 32
+    Glutathione: 86
+    Digoxin: 320
+    Capsaicin: 98
+    EllagicAcid: 130
+    Astaxanthin: 218
+
+- names: [Zagreb1, Zagreb2]
+  results:
+    MethylCyclopropane: [18, 19]
+
+- names: [mZagreb1, mZagreb2]
+  digit: 2
+  results:
+    MethylCyclopropane: [1.61, 0.92]
