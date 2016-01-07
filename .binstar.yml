@@ -8,7 +8,11 @@ engine:
  - python=3
 
 script:
-  - "[ `git rev-parse --abbrev-ref HEAD` == release ] || sed -i -e 's/$/dev0/' __conda_version__.txt"
+  - if [[ `git rev-parse --abbrev-ref HEAD` == release ]]; then
+      cp mordred/version.txt > __conda_version__.txt;
+    else
+      sed 's/$/dev0/' mordred/version.txt > __conda_version__.txt;
+    fi
   - conda update --all -y
   - conda config --add channels https://conda.anaconda.org/rdkit
   - conda build .

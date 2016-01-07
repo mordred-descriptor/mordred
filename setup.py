@@ -14,8 +14,12 @@ if sys.version_info < (3, 4, 0):
 
 setup(
     name='mordred',
-    version=open(os.path.join(os.path.dirname(__file__), '__conda_version__.txt')).read().strip(),
+    version=open(os.path.join(os.path.dirname(__file__), 'mordred', 'version.txt')).read().strip(),
     packages=find_packages(),
+
+    package_data={
+        'mordred': ['version.txt']
+    },
 
     install_requires=install_requires,
 
