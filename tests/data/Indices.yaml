@@ -54,3 +54,7 @@
     Capsaicin: [1411, 26]
     EllagicAcid: [851, 48]
     Astaxanthin: [10234, 69]
+
+- names: Dt
+  results:
+    Benzene: 63

@@ -230,3 +230,7 @@ class VR3(common):
             return 0.1 * mol.GetNumAtoms() * np.log(VR1)
 
 
+method_dict = {m.__name__: m for m in methods}
+
+def get_method(n):
+    return method_dict[n]
