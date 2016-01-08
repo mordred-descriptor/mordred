@@ -34,6 +34,32 @@ class Eccentricity(DistanceMatrix):
         return D.max(axis=0)
 
 
+class Radius(Eccentricity):
+    @property
+    def dependencies(self):
+        return dict(E=Eccentricity.make_key(
+            self.explicit_hydrogens,
+            self.useBO,
+            self.useAtomWts,
+        ))
+
+    def calculate(self, mol, E):
+        return E.min()
+
+
+class Diameter(DistanceMatrix):
+    @property
+    def dependencies(self):
+        return dict(D=DistanceMatrix.make_key(
+            self.explicit_hydrogens,
+            self.useBO,
+            self.useAtomWts,
+        ))
+
+    def calculate(self, mol, D):
+        return D.max()
+
+
 class AdjacencyMatrix(Descriptor):
     @property
     def descriptor_key(self):

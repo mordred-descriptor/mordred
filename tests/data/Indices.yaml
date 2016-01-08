@@ -58,3 +58,37 @@
 - names: Dt
   results:
     Benzene: 63
+
+
+- names: [Radius, Diameter]
+  results:
+    Hexane: [3, 5]
+    Benzene: [3, 3]
+    Caffeine: [4, 6]
+    Cyanidin: [5, 10]
+    Lycopene: [16, 31]
+    Epicatechin: [5, 10]
+    Limonene: [3, 6]
+    Allicin: [4, 7]
+    Glutathione: [6, 12]
+    Digoxin: [14, 28]
+    Capsaicin: [8, 15]
+    EllagicAcid: [5, 9]
+    Astaxanthin: [14, 27]
+
+- names: TopoShapeIndex
+  digit: 7
+  results:
+    Hexane: 0.666666667
+    Benzene: 0
+    Caffeine: 0.5
+    Cyanidin: 1
+    Lycopene: 0.9375
+    Epicatechin: 1
+    Limonene: 1
+    Allicin: 0.75
+    Glutathione: 1
+    Digoxin: 1
+    Capsaicin: 0.875
+    EllagicAcid: 0.8
+    Astaxanthin: 0.928571429
