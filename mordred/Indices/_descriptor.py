@@ -3,7 +3,7 @@ from ._eccentric_connectivity import EccentricConnectivityIndex
 from ._zagreb import Zagreb
 from ._wiener import Wiener
 from ._detour import Detour
-from ._topological import Radius, Diameter, TopologicalShapeIndex
+from ._topological import Radius, Diameter, TopologicalShapeIndex, PetitjeanIndex
 
 
 _descriptors = [
@@ -11,6 +11,6 @@ _descriptors = [
     Zagreb,
     Wiener,
     Detour,
-    Radius, Diameter, TopologicalShapeIndex,
+    Radius, Diameter, TopologicalShapeIndex, PetitjeanIndex,
 ]
 __all__ = [d.__name__ for d in _descriptors]

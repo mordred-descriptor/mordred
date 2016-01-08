@@ -76,19 +76,19 @@
     EllagicAcid: [5, 9]
     Astaxanthin: [14, 27]
 
-- names: TopoShapeIndex
+- names: [TopoShapeIndex, PetitjeanIndex]
   digit: 7
   results:
-    Hexane: 0.666666667
-    Benzene: 0
-    Caffeine: 0.5
-    Cyanidin: 1
-    Lycopene: 0.9375
-    Epicatechin: 1
-    Limonene: 1
-    Allicin: 0.75
-    Glutathione: 1
-    Digoxin: 1
-    Capsaicin: 0.875
-    EllagicAcid: 0.8
-    Astaxanthin: 0.928571429
+    Hexane: [0.666666667, 0.4]
+    Benzene: [0, 0]
+    Caffeine: [0.5, 0.333333333]
+    Cyanidin: [1, 0.5]
+    Lycopene: [0.9375, 0.483870968]
+    Epicatechin: [1, 0.5]
+    Limonene: [1, 0.5]
+    Allicin: [0.75, 0.428571429]
+    Glutathione: [1, 0.5]
+    Digoxin: [1, 0.5]
+    Capsaicin: [0.875, 0.466666667]
+    EllagicAcid: [0.8, 0.444444444]
+    Astaxanthin: [0.928571429, 0.481481481]

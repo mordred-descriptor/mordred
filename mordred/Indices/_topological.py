@@ -70,3 +70,27 @@ class TopologicalShapeIndex(Descriptor):
 
     def calculate(self, mol, R, D):
         return float(D - R) / float(R)
+
+
+class PetitjeanIndex(Descriptor):
+    explicit_hydrogens = False
+
+    @property
+    def dependencies(self):
+        args = [self.explicit_hydrogens, False, False]
+
+        return dict(
+            R=_R.make_key(*args),
+            D=_D.make_key(*args)
+        )
+
+    @property
+    def descriptor_name(self):
+        return 'PetitjeanIndex'
+
+    @property
+    def descriptor_key(self):
+        return self.make_key()
+
+    def calculate(self, mol, R, D):
+        return float(D - R) / float(D)
