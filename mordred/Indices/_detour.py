@@ -2,7 +2,7 @@ from .._base import Descriptor
 from ..Matrix._detour import detour_matrix
 
 
-class Detour(Descriptor):
+class DetourIndex(Descriptor):
     explicit_hydrogens = False
 
     @property
@@ -13,7 +13,7 @@ class Detour(Descriptor):
 
     @property
     def descriptor_name(self):
-        return 'Dt'
+        return 'DetourIndex'
 
     @property
     def descriptor_key(self):

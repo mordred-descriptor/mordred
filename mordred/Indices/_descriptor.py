@@ -1,16 +1,16 @@
 from .._base import Descriptor
 from ._eccentric_connectivity import EccentricConnectivityIndex
-from ._zagreb import Zagreb
-from ._wiener import Wiener
-from ._detour import Detour
+from ._zagreb import ZagrebIndex
+from ._wiener import WienerIndex
+from ._detour import DetourIndex
 from ._topological import Radius, Diameter, TopologicalShapeIndex, PetitjeanIndex
 
 
 _descriptors = [
     EccentricConnectivityIndex,
-    Zagreb,
-    Wiener,
-    Detour,
+    ZagrebIndex,
+    WienerIndex,
+    DetourIndex,
     Radius, Diameter, TopologicalShapeIndex, PetitjeanIndex,
 ]
 __all__ = [d.__name__ for d in _descriptors]

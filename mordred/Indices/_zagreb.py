@@ -2,7 +2,7 @@ from .._base import Descriptor
 from .._common import Valence
 
 
-class Zagreb(Descriptor):
+class ZagrebIndex(Descriptor):
     explicit_hydrogens = False
 
     descriptor_defaults = [(1, 1), (2, 1), (1, -1), (2, -1)]

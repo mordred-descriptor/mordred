@@ -2,7 +2,7 @@ from .._base import Descriptor
 from .._common import DistanceMatrix
 
 
-class Wiener(Descriptor):
+class WienerIndex(Descriptor):
     explicit_hydrogens = False
 
     descriptor_defaults = [(False,), (True,)]
