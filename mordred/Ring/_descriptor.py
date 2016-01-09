@@ -44,7 +44,7 @@ class FusedRings(RingCountBase):
 
 def descriptor_defaults_gen():
     for fused in [False, True]:
-        for arom in [None, True]:
+        for arom in [None, True, False]:
             for hetero in [None, True]:
                 yield None, False, fused, arom, hetero
                 for n in range(4 if fused else 3, 13):

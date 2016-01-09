@@ -22,7 +22,7 @@ class Radius(Descriptor):
         return self.make_key()
 
     def calculate(self, mol, R):
-        return R
+        return int(R)
 
 
 class Diameter(Descriptor):
@@ -45,7 +45,7 @@ class Diameter(Descriptor):
         return self.make_key()
 
     def calculate(self, mol, D):
-        return D
+        return int(D)
 
 
 class TopologicalShapeIndex(Descriptor):

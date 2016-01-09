@@ -21,7 +21,7 @@ class EccentricConnectivityIndex(Descriptor):
 
     @property
     def descriptor_name(self):
-        return 'ECI'
+        return 'ECIndex'
 
     @property
     def descriptor_key(self):
