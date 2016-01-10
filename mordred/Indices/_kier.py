@@ -1,6 +1,6 @@
 from .._base import Descriptor
 from ..Chi._descriptor import ChiCache
-import math
+from numpy import nan
 
 
 class KappaShapeIndex(Descriptor):
@@ -30,7 +30,7 @@ class KappaShapeIndex(Descriptor):
     def calculate(self, mol, Chi):
         P = len(Chi.path)
         if P <= 0:
-            return math.nan
+            return nan
 
         A = mol.GetNumAtoms()
         Pmin = A - self.order
