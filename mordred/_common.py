@@ -66,14 +66,37 @@ class AdjacencyMatrix(Descriptor):
         return self.make_key(
             self.explicit_hydrogens,
             self.useBO,
+            self.order,
         )
 
-    def __init__(self, explicit_hydrogens, useBO):
+    def __init__(self, explicit_hydrogens, useBO, order=1):
         self.explicit_hydrogens = explicit_hydrogens
         self.useBO = useBO
+        self.order = order
 
-    def calculate(self, mol):
-        return Chem.GetAdjacencyMatrix(mol, useBO=self.useBO)
+    @property
+    def dependencies(self):
+        if self.order > 1:
+            return dict(
+                An=self.make_key(
+                    self.explicit_hydrogens,
+                    self.useBO,
+                    self.order - 1,
+                ),
+                A1=self.make_key(
+                    self.explicit_hydrogens,
+                    self.useBO,
+                    1
+                )
+            )
+        else:
+            return dict()
+
+    def calculate(self, mol, An=None, A1=None):
+        if self.order == 1:
+            return Chem.GetAdjacencyMatrix(mol, useBO=self.useBO)
+
+        return An.dot(A1)
 
 
 class Valence(AdjacencyMatrix):
