@@ -1,0 +1,67 @@
+from .._base import Descriptor
+from ..Ring._descriptor import Rings
+import networkx as nx
+
+
+class FrameworkBase(Descriptor):
+    pass
+
+
+class FrameworkCache(FrameworkBase):
+    @property
+    def descriptor_key(self):
+        return self.make_key()
+
+    @property
+    def dependencies(self):
+        return dict(
+            Rs=Rings.make_key()
+        )
+
+    def calculate(self, mol, Rs):
+        G = nx.Graph()
+        Rd = {i: ('R', Ri) for Ri, R in enumerate(Rs) for i in R}
+        R = list(set(Rd.values()))
+        NR = len(R)
+
+        for bond in mol.GetBonds():
+            a = bond.GetBeginAtomIdx()
+            b = bond.GetEndAtomIdx()
+
+            a = Rd.get(a, ('A', a))
+            b = Rd.get(b, ('A', b))
+
+            G.add_edge(a, b)
+
+        linkers = set()
+        for Ri, Rj in ((i, j) for i in range(NR) for j in range(i+1, NR)):
+            Ra, Rb = R[Ri], R[Rj]
+            linkers.update(i for t, i in nx.shortest_path(G, Ra, Rb) if t == 'A')
+
+        return linkers, Rs
+
+
+class Framework(FrameworkBase):
+    @property
+    def dependencies(self):
+        return dict(
+            F=FrameworkCache.make_key()
+        )
+
+    @property
+    def descriptor_name(self):
+        return 'fMF'
+
+    @property
+    def descriptor_key(self):
+        return self.make_key()
+
+    def calculate(self, mol, F):
+        linkers, rings = F
+        Nmf = len(linkers) + len({i for ring in rings for i in ring})
+        N = mol.GetNumAtoms()
+
+        return float(Nmf) / float(N)
+
+_descriptors = [Framework]
+__all__ = [d.__name__ for d in _descriptors]
