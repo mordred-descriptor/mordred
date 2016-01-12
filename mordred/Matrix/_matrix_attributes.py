@@ -3,7 +3,7 @@ import numpy as np
 from collections import namedtuple
 
 
-Eig = namedtuple('eigen', ['val', 'vec'])
+Eig = namedtuple('eigen', 'val vec min max')
 
 methods = []
 
@@ -67,13 +67,14 @@ class Eigen(common):
 
     def calculate(self, mol, matrix):
         w, v = np.linalg.eig(matrix)
-        idx = w.argsort()
-        w = w[idx]
-        v = v[:, idx]
+
+        i_min = np.argmin(w)
+        i_max = np.argmax(w)
+
         if np.iscomplexobj(v):
-            return Eig(w.real, v.real)
+            return Eig(w.real, v.real, i_min, i_max)
         else:
-            return Eig(w, v)
+            return Eig(w, v, i_min, i_max)
 
 
 @method
@@ -93,7 +94,7 @@ class SpMax(common):
         return dict(eig=self._eig)
 
     def calculate(self, mol, eig):
-        return eig.val[-1]
+        return eig.val[eig.max]
 
 
 @method
@@ -103,7 +104,7 @@ class SpDiam(common):
         return dict(eig=self._eig, SpMax=self._SpMax)
 
     def calculate(self, mol, SpMax, eig):
-        return SpMax - eig.val[0]
+        return SpMax - eig.val[eig.min]
 
 
 class SpMean(common):
@@ -143,7 +144,7 @@ class EE(common):
 
     def calculate(self, mol, eig):
         # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
-        a = np.maximum(eig.val.max(), 0)
+        a = np.maximum(eig.val[eig.max], 0)
         sx = np.exp(eig.val - a).sum() + np.exp(-a)
         return a + np.log(sx)
 
@@ -165,7 +166,7 @@ class VE1(common):
         return dict(eig=self._eig)
 
     def calculate(self, mol, eig):
-        return np.abs(eig.vec[:, 0].sum())
+        return np.abs(eig.vec[:, eig.max]).sum()
 
 
 @method
@@ -186,7 +187,7 @@ class VE3(common):
 
     def calculate(self, mol, VE1):
         if VE1 == 0:
-            return 0.0
+            return np.nan
         else:
             return 0.1 * mol.GetNumAtoms() * np.log(VE1)
 
@@ -198,13 +199,15 @@ class VR1(common):
         return dict(eig=self._eig)
 
     def calculate(self, mol, eig):
-        I, J = [], []
-        for bond in mol.GetBonds():
-            I.append(bond.GetBeginAtomIdx())
-            J.append(bond.GetEndAtomIdx())
+        s = 0
 
-        m = np.abs(eig.vec[I, 0] * eig.vec[J, 0])
-        return np.power(np.maximum(m, 1e-12), -0.5).sum()
+        for bond in mol.GetBonds():
+            i = bond.GetBeginAtomIdx()
+            j = bond.GetEndAtomIdx()
+
+            s += (eig.vec[i, eig.max] * eig.vec[j, eig.max]) ** -0.5
+
+        return s
 
 
 @method
@@ -225,12 +228,13 @@ class VR3(common):
 
     def calculate(self, mol, VR1):
         if VR1 == 0:
-            return 0.0
+            return np.nan
         else:
             return 0.1 * mol.GetNumAtoms() * np.log(VR1)
 
 
 method_dict = {m.__name__: m for m in methods}
+
 
 def get_method(n):
     return method_dict[n]
