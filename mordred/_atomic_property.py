@@ -295,15 +295,15 @@ def get_valence_electrons(atom):
     Zv = table.GetNOuterElecs(N) - atom.GetFormalCharge()
     Z = atom.GetAtomicNum() - atom.GetFormalCharge()
     hi = atom.GetTotalNumHs()
-    he = sum((1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1))
+    he = sum(1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1)
     h = hi + he
     return float(Zv - h) / float(Z - Zv - 1)
 
 
 @attr(symbol='S')
 def get_sigma_electrons(atom):
-    return sum((1 for a in atom.GetNeighbors()
-                if a.GetAtomicNum() != 1))
+    return sum(1 for a in atom.GetNeighbors()
+               if a.GetAtomicNum() != 1)
 
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html

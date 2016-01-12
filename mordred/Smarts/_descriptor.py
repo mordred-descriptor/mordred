@@ -16,7 +16,7 @@ class SmartsCount(Descriptor):
             self.mols.append(mol)
 
     def calculate(self, mol):
-        return sum((len(mol.GetSubstructMatches(q)) for q in self.mols))
+        return sum(len(mol.GetSubstructMatches(q)) for q in self.mols)
 
 
 class AcidicGroupCount(SmartsCount):

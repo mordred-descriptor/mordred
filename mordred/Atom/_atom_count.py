@@ -32,10 +32,10 @@ class AtomCount(Descriptor):
 
     def calc_X(self, mol):
         X = set([9, 17, 35, 53, 85, 117])
-        return sum((a.GetAtomicNum() in X for a in mol.GetAtoms()))
+        return sum(a.GetAtomicNum() in X for a in mol.GetAtoms())
 
     def calc(self, mol):
-        return sum((a.GetSymbol() == self.symbol for a in mol.GetAtoms()))
+        return sum(a.GetSymbol() == self.symbol for a in mol.GetAtoms())
 
     def calc_all(self, mol):
         return mol.GetNumAtoms()

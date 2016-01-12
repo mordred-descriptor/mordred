@@ -50,7 +50,7 @@ class VdwVolumeABC(Descriptor):
         return self.make_key()
 
     def calculate(self, mol, Nb, NRa, NRA):
-        ac = sum((atom_contrib[a.GetAtomicNum()]
-                  for a in mol.GetAtoms()))
+        ac = sum(atom_contrib[a.GetAtomicNum()]
+                 for a in mol.GetAtoms())
 
         return ac - 5.92 * Nb - 14.7 * NRa - 3.8 * NRA

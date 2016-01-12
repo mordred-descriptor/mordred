@@ -35,7 +35,7 @@ class TPSA(Descriptor):
     @staticmethod
     def _hydrogen_count(atom):
         return atom.GetTotalNumHs() + \
-            sum((1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1))
+            sum(1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1)
 
     @staticmethod
     def _bond_type_count(atom):

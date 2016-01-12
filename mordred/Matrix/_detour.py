@@ -130,9 +130,10 @@ class detour_matrix(DetourMatrixBase):
 
     def calculate(self, mol):
         G = networkx.Graph()
-        G.add_edges_from((
+        G.add_edges_from(
             (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
-            for b in mol.GetBonds()))
+            for b in mol.GetBonds()
+        )
 
         return calc_detour(G)()
 

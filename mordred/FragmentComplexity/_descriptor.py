@@ -15,7 +15,7 @@ class FragmentComplexity(Descriptor):
     def calculate(self, mol):
         A = mol.GetNumAtoms()
         B = mol.GetNumBonds()
-        H = sum((1 for a in mol.GetAtoms() if a.GetAtomicNum() != 6))
+        H = sum(1 for a in mol.GetAtoms() if a.GetAtomicNum() != 6)
         return abs(B ** 2 - A ** 2 + A) + float(H) / 100
 
 

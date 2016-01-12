@@ -26,9 +26,9 @@ class BondCount(Descriptor):
     def calculate(self, mol):
         bt = self.bond_type
         if bt in ['', 'O']:
-            return sum((1 for _ in mol.GetBonds()))
+            return sum(1 for _ in mol.GetBonds())
         elif bt == 'M':
-            return sum((1 for b in mol.GetBonds()
-                        if b.GetBondTypeAsDouble() > 1 or b.GetIsAromatic()))
+            return sum(1 for b in mol.GetBonds()
+                       if b.GetBondTypeAsDouble() > 1 or b.GetIsAromatic())
         else:
-            return sum((1 for b in mol.GetBonds() if b.GetBondType() == BondType.TRIPLE))
+            return sum(1 for b in mol.GetBonds() if b.GetBondType() == BondType.TRIPLE)

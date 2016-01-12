@@ -9,7 +9,7 @@ class AromaticAtomsCount(Descriptor):
         return self.make_key()
 
     def calculate(self, mol):
-        return sum((1 for a in mol.GetAtoms() if a.GetIsAromatic()))
+        return sum(1 for a in mol.GetAtoms() if a.GetIsAromatic())
 
 
 class AromaticBondsCount(Descriptor):
@@ -20,7 +20,7 @@ class AromaticBondsCount(Descriptor):
         return self.make_key()
 
     def calculate(self, mol):
-        return sum((1 for b in mol.GetBonds() if b.GetIsAromatic()))
+        return sum(1 for b in mol.GetBonds() if b.GetIsAromatic())
 
 _descriptors = [AromaticAtomsCount, AromaticBondsCount]
 __all__ = [d.__name__ for d in _descriptors]

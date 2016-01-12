@@ -37,7 +37,7 @@ class FusedRings(RingCountBase):
                 G.add_edge(i, j)
 
         return [
-            frozenset((j for i in ring_ids for j in Rings[i]))
+            frozenset(j for i in ring_ids for j in Rings[i])
             for ring_ids in networkx.connected_components(G)
         ]
 
@@ -117,7 +117,7 @@ class RingCount(RingCountBase):
         if self.aromatic is None:
             return True
 
-        is_arom = all((mol.GetAtomWithIdx(i).GetIsAromatic() for i in R))
+        is_arom = all(mol.GetAtomWithIdx(i).GetIsAromatic() for i in R)
 
         if self.aromatic:
             return is_arom
@@ -128,7 +128,7 @@ class RingCount(RingCountBase):
         if self.hetero is None:
             return True
 
-        has_hetero = any((mol.GetAtomWithIdx(i).GetAtomicNum() != 6 for i in R))
+        has_hetero = any(mol.GetAtomWithIdx(i).GetAtomicNum() != 6 for i in R)
 
         if self.hetero:
             return has_hetero
@@ -136,10 +136,10 @@ class RingCount(RingCountBase):
         return not has_hetero
 
     def calculate(self, mol, Rs):
-        return sum((
+        return sum(
             1 for R in Rs
             if self.check_length(R) and self.check_arom(mol, R) and self.check_hetero(mol, R)
-        ))
+        )
 
 
 _descriptors = [RingCount]

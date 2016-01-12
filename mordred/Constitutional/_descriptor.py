@@ -22,7 +22,7 @@ class Sum(Descriptor):
         return self.make_key(self.attribute)
 
     def calculate(self, mol):
-        return sum((self.attribute(a) / self.attribute(self._carbon) for a in mol.GetAtoms()))
+        return sum(self.attribute(a) / self.attribute(self._carbon) for a in mol.GetAtoms())
 
 
 class Mean(Sum):

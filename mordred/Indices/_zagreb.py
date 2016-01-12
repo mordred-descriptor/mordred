@@ -41,5 +41,6 @@ class ZagrebIndex(Descriptor):
             return (V ** (self.variable * 2)).sum()
         else:
             return sum(
-                ((V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self.variable
-                 for b in mol.GetBonds()))
+                (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self.variable
+                for b in mol.GetBonds()
+            )

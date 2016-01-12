@@ -13,7 +13,7 @@ class APol(Descriptor):
         self.table = Polarizabilities78 if use78 else Polarizabilities94
 
     def calculate(self, mol):
-        return sum((self.table[a.GetAtomicNum()] for a in mol.GetAtoms()))
+        return sum(self.table[a.GetAtomicNum()] for a in mol.GetAtoms())
 
 
 class BPol(Descriptor):

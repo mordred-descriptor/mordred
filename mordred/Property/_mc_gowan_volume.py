@@ -12,5 +12,5 @@ class McGowanVolume(Descriptor):
         return self.make_key()
 
     def calculate(self, mol):
-        a = sum((get_mc_gowan_volume(a) for a in mol.GetAtoms()))
+        a = sum(get_mc_gowan_volume(a) for a in mol.GetAtoms())
         return a - mol.GetNumBonds() * 6.56
