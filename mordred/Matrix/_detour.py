@@ -137,13 +137,7 @@ class detour_matrix(DetourMatrixBase):
 class DetourMatrix(DetourMatrixBase):
     @classmethod
     def preset(cls):
-        return [
-            ('SpMax',), ('SpDiam',),
-            ('SpAD',), ('SpMAD',),
-            ('EE',),
-            ('VE1',), ('VE2',), ('VE3',),
-            ('VR1',), ('VR2',), ('VR3',),
-        ]
+        return map(cls, ma.methods)
 
     @property
     def descriptor_key(self):
@@ -152,7 +146,7 @@ class DetourMatrix(DetourMatrixBase):
     @property
     def dependencies(self):
         return dict(
-            result=ma.get_method(self.method).make_key(
+            result=self.method.make_key(
                 detour_matrix.make_key(),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,
@@ -162,10 +156,10 @@ class DetourMatrix(DetourMatrixBase):
 
     @property
     def descriptor_name(self):
-        return '{}_Dt'.format(self.method)
+        return '{}_Dt'.format(self.method.__name__)
 
     def __init__(self, method='SpMax'):
-        self.method = method
+        self.method = ma.get_method(method)
 
     def calculate(self, mol, result):
         return result

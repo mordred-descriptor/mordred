@@ -56,7 +56,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
     @classmethod
     def preset(cls):
-        yield ()
+        yield cls()
 
     @classmethod
     def make_key(cls, *args):
@@ -161,8 +161,8 @@ class Calculator(object):
         for desc in descs:
             if not hasattr(desc, '__iter__'):
                 if isinstance(desc, type):
-                    for args in desc.preset():
-                        self._register_one(desc(*args))
+                    for d in desc.preset():
+                        self._register_one(d)
 
                 elif isinstance(desc, ModuleType):
                     for name in dir(desc):

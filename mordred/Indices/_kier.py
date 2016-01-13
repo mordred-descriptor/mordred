@@ -8,7 +8,7 @@ class KappaShapeIndex(Descriptor):
 
     @classmethod
     def preset(cls):
-        return [(1,), (2,), (3,)]
+        return map(cls, range(1, 4))
 
     def __init__(self, order=1):
         assert order in [1,2,3]

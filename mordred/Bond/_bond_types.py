@@ -5,9 +5,9 @@ from rdkit.Chem import BondType
 class BondCount(Descriptor):
     @classmethod
     def preset(cls):
-        return [
-            ('',), ('O',), ('T',), ('M',),
-        ]
+        return map(cls, [
+            '', 'O', 'T', 'M',
+        ])
 
     @property
     def descriptor_name(self):

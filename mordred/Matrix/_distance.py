@@ -8,7 +8,7 @@ class DistanceMatrix(Descriptor):
 
     @classmethod
     def preset(cls):
-        return ((m.__name__,) for m in methods)
+        return map(cls, methods)
 
     @property
     def descriptor_key(self):
@@ -17,7 +17,7 @@ class DistanceMatrix(Descriptor):
     @property
     def dependencies(self):
         return dict(
-            result=get_method(self.method).make_key(
+            result=self.method.make_key(
                 D.make_key(
                     self.explicit_hydrogens,
                     False,
@@ -31,10 +31,10 @@ class DistanceMatrix(Descriptor):
 
     @property
     def descriptor_name(self):
-        return '{}_D'.format(self.method)
+        return '{}_D'.format(self.method.__name__)
 
     def __init__(self, method='SpMax'):
-        self.method = method
+        self.method = get_method(method)
 
     def calculate(self, mol, result):
         return result

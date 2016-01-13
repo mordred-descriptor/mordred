@@ -47,11 +47,11 @@ class CarbonTypesCache(CarbonTypesBase):
 class CarbonTypes(CarbonTypesBase):
     @classmethod
     def preset(cls):
-        return [
+        return map(lambda args: cls(*args), [
             (1, 1), (2, 1),
             (1, 2), (2, 2), (3, 2),
             (1, 3), (2, 3), (3, 3), (4, 3),
-        ]
+        ])
 
     @property
     def descriptor_name(self):

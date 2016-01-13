@@ -7,7 +7,7 @@ class ZagrebIndex(Descriptor):
 
     @classmethod
     def preset(cls):
-        return [(1, 1), (2, 1), (1, -1), (2, -1)]
+        return (cls(v, x) for x in [1, -1] for v in [1, 2])
 
     @property
     def dependencies(self):

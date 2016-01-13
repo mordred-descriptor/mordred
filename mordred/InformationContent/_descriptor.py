@@ -93,7 +93,7 @@ class InformationContent(Descriptor):
     @classmethod
     def preset(cls):
         return (
-            (t, o)
+            cls(t, o)
             for t in ['', 'T', 'S', 'C', 'B', 'M', 'ZM']
             for o in range(6)
         )

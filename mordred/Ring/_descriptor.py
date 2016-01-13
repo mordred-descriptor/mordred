@@ -40,11 +40,11 @@ class RingCount(RingCountBase):
         for fused in [False, True]:
             for arom in [None, True, False]:
                 for hetero in [None, True]:
-                    yield None, False, fused, arom, hetero
+                    yield cls(None, False, fused, arom, hetero)
                     for n in range(4 if fused else 3, 13):
-                        yield n, False, fused, arom, hetero
+                        yield cls(n, False, fused, arom, hetero)
 
-                    yield 12, True, fused, arom, hetero
+                    yield cls(12, True, fused, arom, hetero)
 
     @property
     def descriptor_name(self):

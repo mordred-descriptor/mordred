@@ -4,11 +4,10 @@ from .._base import Descriptor
 class AtomCount(Descriptor):
     @classmethod
     def preset(cls):
-        return [
-            ('Atom',), ('HeavyAtom',),
-            ('H',), ('B',), ('C',), ('N',), ('O',), ('S',), ('P',),
-            ('F',), ('Cl',), ('Br',), ('I',), ('X',),
-        ]
+        return map(cls, [
+            'Atom', 'HeavyAtom',
+            'H', 'B', 'C', 'N', 'O', 'S', 'P', 'F', 'Cl', 'Br', 'I', 'X',
+        ])
 
     @property
     def explicit_hydrogens(self):

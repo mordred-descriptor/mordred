@@ -6,7 +6,8 @@ from collections import defaultdict
 class TPSA(Descriptor):
     @classmethod
     def preset(cls):
-        return [(True,), (False,)]
+        yield cls(True)
+        yield cls(False)
 
     @property
     def descriptor_name(self):

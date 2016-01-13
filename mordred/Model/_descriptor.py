@@ -5,7 +5,8 @@ from rdkit.Chem import Crippen as _Crippen
 class WildmanCrippen(Descriptor):
     @classmethod
     def preset(cls):
-        return [('LogP',), ('MR',)]
+        yield cls('LogP')
+        yield cls('MR')
 
     explicit_hydrogens = False
 

@@ -55,10 +55,7 @@ class burden_eigen_values(BurdenMatrixDescriptor):
 class BCUT(BurdenMatrixDescriptor):
     @classmethod
     def preset(cls):
-        return [
-            ('m', 1, False), ('m', 1, True),
-            ('c', 1, False), ('c', 1, True)
-        ]
+        return (cls(a, 1, h) for a in 'mc' for h in [False, True])
 
     @property
     def descriptor_name(self):

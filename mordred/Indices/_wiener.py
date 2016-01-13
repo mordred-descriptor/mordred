@@ -7,7 +7,8 @@ class WienerIndex(Descriptor):
 
     @classmethod
     def preset(cls):
-        return [(False,), (True,)]
+        yield cls(False)
+        yield cls(True)
 
     @property
     def dependencies(self):

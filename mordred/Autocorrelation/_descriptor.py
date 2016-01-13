@@ -132,7 +132,7 @@ MAX_DISTANCE = 8
 class ATS(Autocorrelation):
     @classmethod
     def preset(cls):
-        return ((d, a) for a in 'mvepis' for d in range(MAX_DISTANCE + 1))
+        return (cls(d, a) for a in 'mvepis' for d in range(MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):
@@ -159,7 +159,7 @@ class AATS(ATS):
 class ATSC(Autocorrelation):
     @classmethod
     def preset(cls):
-        return ((d, a) for a in 'cmvepis' for d in range(MAX_DISTANCE + 1))
+        return (cls(d, a) for a in 'cmvepis' for d in range(MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):
@@ -186,7 +186,7 @@ class AATSC(ATSC):
 class MATS(Autocorrelation):
     @classmethod
     def preset(cls):
-        return ((d, a) for a in 'cmvepis' for d in range(1, MAX_DISTANCE + 1))
+        return (cls(d, a) for a in 'cmvepis' for d in range(1, MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):

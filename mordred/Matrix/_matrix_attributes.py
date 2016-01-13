@@ -1,6 +1,7 @@
 from .._base import Descriptor
 import numpy as np
 from collections import namedtuple
+from six import string_types
 
 
 Eig = namedtuple('eigen', 'val vec min max')
@@ -237,4 +238,7 @@ method_dict = {m.__name__: m for m in methods}
 
 
 def get_method(n):
-    return method_dict[n]
+    if isinstance(n, string_types):
+        return method_dict[n]
+
+    return n

@@ -7,7 +7,8 @@ class Weight(Descriptor):
 
     @classmethod
     def preset(cls):
-        return [(False,), (True,)]
+        yield cls(False)
+        yield cls(True)
 
     @property
     def descriptor_name(self):

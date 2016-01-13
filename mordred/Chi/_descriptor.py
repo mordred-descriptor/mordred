@@ -4,6 +4,7 @@ from rdkit import Chem
 from networkx import Graph
 from collections import namedtuple
 from enum import Enum
+from itertools import chain
 
 
 class ChiType(Enum):
@@ -117,21 +118,12 @@ _deltas = ['delta', 'delta_v']
 class Chi(ChiBase):
     @classmethod
     def preset(cls):
-        for v in ((ChiType.chain, l, a) for a in _deltas for l in range(3, 8)):
-            yield v
-
-        for v in ((ChiType.cluster, l, a) for a in _deltas for l in range(3, 7)):
-            yield v
-
-        for v in ((ChiType.path_cluster, l, a) for a in _deltas for l in range(4, 7)):
-            yield v
-
-        for v in ((ChiType.path, l, a, m)
-                  for a in _deltas
-                  for m in [False, True]
-                  for l in range(8)):
-
-            yield v
+        return chain(
+            (cls(ChiType.chain, l, a) for a in _deltas for l in range(3, 8)),
+            (cls(ChiType.cluster, l, a) for a in _deltas for l in range(3, 7)),
+            (cls(ChiType.path_cluster, l, a) for a in _deltas for l in range(4, 7)),
+            (cls(ChiType.path, l, a, m) for a in _deltas for m in [False, True] for l in range(8)),
+        )
 
     @property
     def descriptor_name(self):

@@ -13,10 +13,12 @@ class DistanceEdge(Descriptor):
 
     @classmethod
     def preset(cls):
-        for e in [6, 8, 7]:
-            l = 11 - e
-            for v in ((a, b, e) for a in range(1, l) for b in range(a, l)):
-                yield v
+        return (
+            cls(a, b, e)
+            for e in [6,8,7]
+            for a in range(1, 11 - e)
+            for b in range(a, 11 - e)
+        )
 
     @property
     def dependencies(self):

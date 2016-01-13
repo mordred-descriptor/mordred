@@ -1,6 +1,7 @@
 from .._base import Descriptor
 from .._common import AdjacencyMatrix, DistanceMatrix
 from six import integer_types
+from itertools import chain
 
 import numpy as np
 
@@ -40,10 +41,10 @@ class TopologicalCharge(Descriptor):
 
     @classmethod
     def preset(cls):
-        for v in ((t, o) for t in ('raw', 'mean') for o in range(1, 11)):
-            yield v
-
-        yield 'global', 10
+        return chain(
+            (cls(t, o) for t in ('raw', 'mean') for o in range(1, 11)),
+            [cls('global', 10)]
+        )
 
     @property
     def dependencies(self):

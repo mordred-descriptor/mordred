@@ -10,9 +10,9 @@ class WalkCount(Descriptor):
     def preset(cls):
         for start, sr in [(1, False), (2, True)]:
             for l in range(start, 11):
-                yield l, False, sr
+                yield cls(l, False, sr)
 
-            yield 10, True, sr
+            yield cls(10, True, sr)
 
     def __init__(self, order=2, total=False, self_returning=False):
         self.order = order

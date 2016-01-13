@@ -49,7 +49,7 @@ class barysz(BaryszMatrixDescriptor):
 class BaryszMatrix(BaryszMatrixDescriptor):
     @classmethod
     def preset(cls):
-        return ((p, m.__name__) for p in 'Zmvepi' for m in methods)
+        return (cls(p, m) for p in 'Zmvepi' for m in methods)
 
     @property
     def descriptor_key(self):
@@ -57,7 +57,7 @@ class BaryszMatrix(BaryszMatrixDescriptor):
 
     @property
     def dependencies(self):
-        return dict(result=get_method(self.method).make_key(
+        return dict(result=self.method.make_key(
             barysz.make_key(self.prop),
             self.explicit_hydrogens,
             self.gasteiger_charges,
@@ -66,11 +66,11 @@ class BaryszMatrix(BaryszMatrixDescriptor):
 
     @property
     def descriptor_name(self):
-        return '{}_Dz{}'.format(self.method, self.prop_name)
+        return '{}_Dz{}'.format(self.method.__name__, self.prop_name)
 
     def __init__(self, prop='Z', method='SpMax'):
         self.prop_name, self.prop = _atomic_property.getter(prop)
-        self.method = method
+        self.method = get_method(method)
 
     def calculate(self, mol, result):
         return result
