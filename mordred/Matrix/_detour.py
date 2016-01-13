@@ -124,10 +124,6 @@ class DetourMatrixBase(Descriptor):
 
 
 class detour_matrix(DetourMatrixBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     def calculate(self, mol):
         G = networkx.Graph()
         G.add_edges_from(
@@ -139,13 +135,15 @@ class detour_matrix(DetourMatrixBase):
 
 
 class DetourMatrix(DetourMatrixBase):
-    descriptor_defaults = [
-        ('SpMax',), ('SpDiam',),
-        ('SpAD',), ('SpMAD',),
-        ('EE',),
-        ('VE1',), ('VE2',), ('VE3',),
-        ('VR1',), ('VR2',), ('VR3',),
-    ]
+    @classmethod
+    def preset(cls):
+        return [
+            ('SpMax',), ('SpDiam',),
+            ('SpAD',), ('SpMAD',),
+            ('EE',),
+            ('VE1',), ('VE2',), ('VE3',),
+            ('VR1',), ('VR2',), ('VR3',),
+        ]
 
     @property
     def descriptor_key(self):
@@ -166,7 +164,7 @@ class DetourMatrix(DetourMatrixBase):
     def descriptor_name(self):
         return '{}_Dt'.format(self.method)
 
-    def __init__(self, method):
+    def __init__(self, method='SpMax'):
         self.method = method
 
     def calculate(self, mol, result):

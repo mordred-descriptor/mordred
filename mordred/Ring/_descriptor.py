@@ -8,19 +8,11 @@ class RingCountBase(Descriptor):
 
 
 class Rings(RingCountBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     def calculate(self, mol):
         return [frozenset(s) for s in Chem.GetSymmSSSR(mol)]
 
 
 class FusedRings(RingCountBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     @property
     def dependencies(self):
         return dict(Rings=Rings.make_key())
@@ -42,19 +34,17 @@ class FusedRings(RingCountBase):
         ]
 
 
-def descriptor_defaults_gen():
-    for fused in [False, True]:
-        for arom in [None, True, False]:
-            for hetero in [None, True]:
-                yield None, False, fused, arom, hetero
-                for n in range(4 if fused else 3, 13):
-                    yield n, False, fused, arom, hetero
-
-                yield 12, True, fused, arom, hetero
-
-
 class RingCount(RingCountBase):
-    descriptor_defaults = list(descriptor_defaults_gen())
+    @classmethod
+    def preset(cls):
+        for fused in [False, True]:
+            for arom in [None, True, False]:
+                for hetero in [None, True]:
+                    yield None, False, fused, arom, hetero
+                    for n in range(4 if fused else 3, 13):
+                        yield n, False, fused, arom, hetero
+
+                    yield 12, True, fused, arom, hetero
 
     @property
     def descriptor_name(self):

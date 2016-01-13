@@ -2,11 +2,13 @@ from .._base import Descriptor
 
 
 class AtomCount(Descriptor):
-    descriptor_defaults = [
-        ('Atom',), ('HeavyAtom',),
-        ('H',), ('B',), ('C',), ('N',), ('O',), ('S',), ('P',),
-        ('F',), ('Cl',), ('Br',), ('I',), ('X',),
-    ]
+    @classmethod
+    def preset(cls):
+        return [
+            ('Atom',), ('HeavyAtom',),
+            ('H',), ('B',), ('C',), ('N',), ('O',), ('S',), ('P',),
+            ('F',), ('Cl',), ('Br',), ('I',), ('X',),
+        ]
 
     @property
     def explicit_hydrogens(self):
@@ -20,7 +22,7 @@ class AtomCount(Descriptor):
     def descriptor_key(self):
         return self.make_key(self.symbol)
 
-    def __init__(self, symbol):
+    def __init__(self, symbol='Atom'):
         self.symbol = symbol
 
         if symbol == 'X':

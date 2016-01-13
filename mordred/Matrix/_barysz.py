@@ -3,16 +3,17 @@ from .. import _atomic_property
 from rdkit import Chem
 from scipy.sparse.csgraph import shortest_path
 import numpy as np
-from ._matrix_attributes import methods
+from ._matrix_attributes import methods, get_method
 
 
 class BaryszMatrixDescriptor(Descriptor):
     explicit_hydrogens = False
 
 
-class barysz(BaryszMatrixDescriptor):
-    _carbon = Chem.Atom(6)
+_carbon = Chem.Atom(6)
 
+
+class barysz(BaryszMatrixDescriptor):
     @property
     def descriptor_key(self):
         return self.make_key(self.prop)
@@ -23,7 +24,7 @@ class barysz(BaryszMatrixDescriptor):
     def calculate(self, mol):
         N = mol.GetNumAtoms()
 
-        C = self.prop(self._carbon)
+        C = self.prop(_carbon)
 
         dmat = np.zeros((N, N))
 
@@ -45,11 +46,10 @@ class barysz(BaryszMatrixDescriptor):
         return sp
 
 
-method_dict = {m.__name__: m for m in methods}
-
-
 class BaryszMatrix(BaryszMatrixDescriptor):
-    descriptor_defaults = [(p, m.__name__) for p in 'Zmvepi' for m in methods]
+    @classmethod
+    def preset(cls):
+        return ((p, m.__name__) for p in 'Zmvepi' for m in methods)
 
     @property
     def descriptor_key(self):
@@ -57,7 +57,7 @@ class BaryszMatrix(BaryszMatrixDescriptor):
 
     @property
     def dependencies(self):
-        return dict(result=method_dict[self.method].make_key(
+        return dict(result=get_method(self.method).make_key(
             barysz.make_key(self.prop),
             self.explicit_hydrogens,
             self.gasteiger_charges,
@@ -68,7 +68,7 @@ class BaryszMatrix(BaryszMatrixDescriptor):
     def descriptor_name(self):
         return '{}_Dz{}'.format(self.method, self.prop_name)
 
-    def __init__(self, prop, method):
+    def __init__(self, prop='Z', method='SpMax'):
         self.prop_name, self.prop = _atomic_property.getter(prop)
         self.method = method
 

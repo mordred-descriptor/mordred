@@ -88,7 +88,7 @@ class Autocorrelation(AutocorrelationBase):
     def descriptor_key(self):
         return self.__class__.make_key(self.attribute, self.distance)
 
-    def __init__(self, distance, attribute):
+    def __init__(self, distance=0, attribute='m'):
         if attribute == 'c':
             self.attr_name = 'c'
             self.attribute = _atomic_property.get_charge_explicitHs
@@ -130,7 +130,9 @@ MAX_DISTANCE = 8
 
 
 class ATS(Autocorrelation):
-    descriptor_defaults = [(d, a) for a in 'mvepis' for d in range(MAX_DISTANCE + 1)]
+    @classmethod
+    def preset(cls):
+        return ((d, a) for a in 'mvepis' for d in range(MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):
@@ -155,7 +157,9 @@ class AATS(ATS):
 
 
 class ATSC(Autocorrelation):
-    descriptor_defaults = [(d, a) for a in 'cmvepis' for d in range(MAX_DISTANCE + 1)]
+    @classmethod
+    def preset(cls):
+        return ((d, a) for a in 'cmvepis' for d in range(MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):
@@ -180,7 +184,9 @@ class AATSC(ATSC):
 
 
 class MATS(Autocorrelation):
-    descriptor_defaults = [(d, a) for a in 'cmvepis' for d in range(1, MAX_DISTANCE + 1)]
+    @classmethod
+    def preset(cls):
+        return ((d, a) for a in 'cmvepis' for d in range(1, MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):

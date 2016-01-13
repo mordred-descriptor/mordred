@@ -8,10 +8,6 @@ class CarbonTypesBase(Descriptor):
 
 
 class CarbonTypesCache(CarbonTypesBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     def calculate(self, mol):
         r = defaultdict(lambda: defaultdict(int))
         for a in mol.GetAtoms():
@@ -49,11 +45,13 @@ class CarbonTypesCache(CarbonTypesBase):
 
 
 class CarbonTypes(CarbonTypesBase):
-    descriptor_defaults = [
-        (1, 1), (2, 1),
-        (1, 2), (2, 2), (3, 2),
-        (1, 3), (2, 3), (3, 3), (4, 3),
-    ]
+    @classmethod
+    def preset(cls):
+        return [
+            (1, 1), (2, 1),
+            (1, 2), (2, 2), (3, 2),
+            (1, 3), (2, 3), (3, 3), (4, 3),
+        ]
 
     @property
     def descriptor_name(self):
@@ -67,7 +65,7 @@ class CarbonTypes(CarbonTypesBase):
     def dependencies(self):
         return dict(CT=CarbonTypesCache.make_key())
 
-    def __init__(self, nCarbon, SP):
+    def __init__(self, nCarbon=1, SP=3):
         self.nCarbon = nCarbon
         self.SP = SP
 
@@ -76,13 +74,7 @@ class CarbonTypes(CarbonTypesBase):
 
 
 class HybridizationRatio(CarbonTypesBase):
-    descriptor_defaults = [()]
-
     descriptor_name = 'HybRatio'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
 
     @property
     def dependencies(self):

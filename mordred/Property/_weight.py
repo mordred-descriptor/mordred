@@ -5,7 +5,9 @@ from rdkit.Chem.Descriptors import ExactMolWt
 class Weight(Descriptor):
     explicit_hydrogens = True
 
-    descriptor_defaults = [(False,), (True,)]
+    @classmethod
+    def preset(cls):
+        return [(False,), (True,)]
 
     @property
     def descriptor_name(self):

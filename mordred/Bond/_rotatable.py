@@ -6,14 +6,7 @@ from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
 class RotatableBondsCount(Descriptor):
     explicit_hydrogens = False
-
-    @property
-    def descriptor_name(self):
-        return 'nRot'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
+    descriptor_name = 'nRot'
 
     def calculate(self, mol):
         return CalcNumRotatableBonds(mol)
@@ -21,14 +14,7 @@ class RotatableBondsCount(Descriptor):
 
 class RotatableBondsRatio(Descriptor):
     explicit_hydrogens = False
-
-    @property
-    def descriptor_name(self):
-        return 'RotRatio'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
+    descriptor_name = 'RotRatio'
 
     @property
     def dependencies(self):

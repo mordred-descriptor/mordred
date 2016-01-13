@@ -33,6 +33,8 @@ atom_contrib = {
 
 
 class VdwVolumeABC(Descriptor):
+    descriptor_name = 'Vabc'
+
     @property
     def dependencies(self):
         return dict(
@@ -40,14 +42,6 @@ class VdwVolumeABC(Descriptor):
             NRa=RingCount.make_key(None, False, False, True, None),
             NRA=RingCount.make_key(None, False, False, False, None),
         )
-
-    @property
-    def descriptor_name(self):
-        return 'Vabc'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
 
     def calculate(self, mol, Nb, NRa, NRA):
         ac = sum(atom_contrib[a.GetAtomicNum()]

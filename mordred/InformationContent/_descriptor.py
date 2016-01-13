@@ -5,10 +5,6 @@ from itertools import groupby
 import math
 
 
-class InformationContentBase(Descriptor):
-    pass
-
-
 class BFSTree(object):
     def __init__(self, mol, i):
         self.mol = mol
@@ -68,7 +64,7 @@ def neighborhood_code(mol, i, order):
     return tree.code
 
 
-class Ag(InformationContentBase):
+class Ag(Descriptor):
     @property
     def dependencies(self):
         return dict(D=DistanceMatrix.make_key(
@@ -93,12 +89,14 @@ class Ag(InformationContentBase):
             np.array([ag for _, ag in Ags])
 
 
-class InformationContent(InformationContentBase):
-    descriptor_defaults = [
-        (t, o)
-        for t in ['', 'T', 'S', 'C', 'B', 'M', 'ZM']
-        for o in range(6)
-    ]
+class InformationContent(Descriptor):
+    @classmethod
+    def preset(cls):
+        return (
+            (t, o)
+            for t in ['', 'T', 'S', 'C', 'B', 'M', 'ZM']
+            for o in range(6)
+        )
 
     @property
     def dependencies(self):

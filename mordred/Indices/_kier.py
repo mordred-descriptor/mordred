@@ -6,7 +6,9 @@ from numpy import nan
 class KappaShapeIndex(Descriptor):
     explicit_hydrogens = False
 
-    descriptor_defaults = [(1,), (2,), (3,)]
+    @classmethod
+    def preset(cls):
+        return [(1,), (2,), (3,)]
 
     def __init__(self, order=1):
         assert order in [1,2,3]

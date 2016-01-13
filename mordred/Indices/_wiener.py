@@ -5,7 +5,9 @@ from .._common import DistanceMatrix
 class WienerIndex(Descriptor):
     explicit_hydrogens = False
 
-    descriptor_defaults = [(False,), (True,)]
+    @classmethod
+    def preset(cls):
+        return [(False,), (True,)]
 
     @property
     def dependencies(self):

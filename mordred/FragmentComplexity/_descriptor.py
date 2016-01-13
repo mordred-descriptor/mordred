@@ -3,14 +3,7 @@ from .._base import Descriptor
 
 class FragmentComplexity(Descriptor):
     explicit_hydrogens = False
-
-    @property
-    def descriptor_name(self):
-        return 'fragCpx'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
+    descriptor_name = 'fragCpx'
 
     def calculate(self, mol):
         A = mol.GetNumAtoms()

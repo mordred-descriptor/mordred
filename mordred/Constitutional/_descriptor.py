@@ -4,7 +4,9 @@ from rdkit import Chem
 
 
 class Sum(Descriptor):
-    descriptor_defaults = [('v',), ('se',), ('pe',), ('are',), ('p',), ('i',)]
+    @classmethod
+    def preset(cls):
+        return [('v',), ('se',), ('pe',), ('are',), ('p',), ('i',)]
 
     _carbon = Chem.Atom(6)
 
@@ -26,7 +28,9 @@ class Sum(Descriptor):
 
 
 class Mean(Sum):
-    descriptor_defaults = [('v',), ('se',), ('pe',), ('are',), ('p',), ('i',)]
+    @classmethod
+    def preset(cls):
+        return [('v',), ('se',), ('pe',), ('are',), ('p',), ('i',)]
 
     @property
     def descriptor_name(self):

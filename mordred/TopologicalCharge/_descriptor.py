@@ -38,11 +38,12 @@ class ChargeTermMatrix(Descriptor):
 class TopologicalCharge(Descriptor):
     explicit_hydrogens = False
 
-    descriptor_defaults = [
-        (t, o)
-        for t in ('raw', 'mean')
-        for o in range(1, 11)
-    ] + [('global', 10)]
+    @classmethod
+    def preset(cls):
+        for v in ((t, o) for t in ('raw', 'mean') for o in range(1, 11)):
+            yield v
+
+        yield 'global', 10
 
     @property
     def dependencies(self):

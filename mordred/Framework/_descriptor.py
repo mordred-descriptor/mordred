@@ -3,15 +3,7 @@ from ..Ring._descriptor import Rings
 import networkx as nx
 
 
-class FrameworkBase(Descriptor):
-    pass
-
-
-class FrameworkCache(FrameworkBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
+class FrameworkCache(Descriptor):
     @property
     def dependencies(self):
         return dict(
@@ -41,20 +33,14 @@ class FrameworkCache(FrameworkBase):
         return linkers, Rs
 
 
-class Framework(FrameworkBase):
+class Framework(Descriptor):
+    descriptor_name = 'fMF'
+
     @property
     def dependencies(self):
         return dict(
             F=FrameworkCache.make_key()
         )
-
-    @property
-    def descriptor_name(self):
-        return 'fMF'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
 
     def calculate(self, mol, F):
         linkers, rings = F

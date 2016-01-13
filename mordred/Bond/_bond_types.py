@@ -3,9 +3,11 @@ from rdkit.Chem import BondType
 
 
 class BondCount(Descriptor):
-    descriptor_defaults = [
-        ('',), ('O',), ('T',), ('M',),
-    ]
+    @classmethod
+    def preset(cls):
+        return [
+            ('',), ('O',), ('T',), ('M',),
+        ]
 
     @property
     def descriptor_name(self):

@@ -3,10 +3,6 @@ from rdkit import Chem
 
 
 class SmartsCount(Descriptor):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     def __init__(self):
         self.mols = []
         for s in self.smarts:

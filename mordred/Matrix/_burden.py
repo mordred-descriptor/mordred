@@ -8,10 +8,6 @@ class BurdenMatrixDescriptor(Descriptor):
 
 
 class burden(BurdenMatrixDescriptor):
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     def calculate(self, mol):
         N = mol.GetNumAtoms()
 
@@ -26,7 +22,7 @@ class burden(BurdenMatrixDescriptor):
             try:
                 w = bond.GetBondTypeAsDouble() / 10.0
             except RuntimeError:
-                continue
+                w = 1.0
 
             if a.GetDegree() == 1 or b.GetDegree() == 1:
                 w += 0.01
@@ -57,8 +53,12 @@ class burden_eigen_values(BurdenMatrixDescriptor):
 
 
 class BCUT(BurdenMatrixDescriptor):
-    descriptor_defaults = [('m', 1, False), ('m', 1, True),
-                           ('c', 1, False), ('c', 1, True)]
+    @classmethod
+    def preset(cls):
+        return [
+            ('m', 1, False), ('m', 1, True),
+            ('c', 1, False), ('c', 1, True)
+        ]
 
     @property
     def descriptor_name(self):
@@ -69,7 +69,7 @@ class BCUT(BurdenMatrixDescriptor):
     def descriptor_key(self):
         return self.make_key(self.prop, self.nth, self.from_high)
 
-    def __init__(self, prop, nth, from_high):
+    def __init__(self, prop='m', nth=1, from_high=True):
         if prop == 'c':
             self.prop_name = 'c'
             self.prop = _atomic_property.get_charge_implicitHs

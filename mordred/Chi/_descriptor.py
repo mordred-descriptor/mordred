@@ -70,10 +70,6 @@ class ChiCache(ChiBase):
     def descriptor_key(self):
         return self.make_key(self.length)
 
-    @property
-    def dependencies(self):
-        return {}
-
     def __init__(self, length):
         self.length = length
 
@@ -119,11 +115,23 @@ _deltas = ['delta', 'delta_v']
 
 
 class Chi(ChiBase):
-    descriptor_defaults =\
-        [(ChiType.chain, l, a) for a in _deltas for l in range(3, 8)] +\
-        [(ChiType.cluster, l, a) for a in _deltas for l in range(3, 7)] +\
-        [(ChiType.path_cluster, l, a) for a in _deltas for l in range(4, 7)] +\
-        [(ChiType.path, l, a, m) for a in _deltas for m in [False, True] for l in range(8)]
+    @classmethod
+    def preset(cls):
+        for v in ((ChiType.chain, l, a) for a in _deltas for l in range(3, 8)):
+            yield v
+
+        for v in ((ChiType.cluster, l, a) for a in _deltas for l in range(3, 7)):
+            yield v
+
+        for v in ((ChiType.path_cluster, l, a) for a in _deltas for l in range(4, 7)):
+            yield v
+
+        for v in ((ChiType.path, l, a, m)
+                  for a in _deltas
+                  for m in [False, True]
+                  for l in range(8)):
+
+            yield v
 
     @property
     def descriptor_name(self):
@@ -139,8 +147,8 @@ class Chi(ChiBase):
 
     @property
     def dependencies(self):
-        chi = ChiCache.make_key(self.length) if self.length > 0 else None
-        return dict(chi=chi)
+        if self.length > 0:
+            return dict(chi=ChiCache.make_key(self.length))
 
     def __init__(self, chi_type=ChiType.path, length=0, attribute='delta', averaged=False):
         self.length = length
@@ -148,7 +156,7 @@ class Chi(ChiBase):
         self.chi_type = _parse_chi_type(chi_type)
         self.averaged = averaged
 
-    def calculate(self, mol, chi):
+    def calculate(self, mol, chi=None):
         if self.length <= 0:
             chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
 

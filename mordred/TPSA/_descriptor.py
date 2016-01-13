@@ -4,7 +4,9 @@ from collections import defaultdict
 
 
 class TPSA(Descriptor):
-    descriptor_defaults = [(True,), (False,)]
+    @classmethod
+    def preset(cls):
+        return [(True,), (False,)]
 
     @property
     def descriptor_name(self):

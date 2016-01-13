@@ -1,7 +1,7 @@
 from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 from six import with_metaclass
-from abc import ABCMeta, abstractproperty, abstractmethod
+from abc import ABCMeta, abstractmethod
 from types import ModuleType
 
 try:
@@ -54,7 +54,9 @@ class Descriptor(with_metaclass(ABCMeta, object)):
     gasteiger_charges = False
     kekulize = False
 
-    descriptor_defaults = [()]
+    @classmethod
+    def preset(cls):
+        yield ()
 
     @classmethod
     def make_key(cls, *args):
@@ -62,11 +64,11 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
     @property
     def dependencies(self):
-        return dict()
+        return None
 
-    @abstractproperty
+    @property
     def descriptor_key(self):
-        pass
+        return self.make_key()
 
     @property
     def descriptor_name(self):
@@ -159,7 +161,7 @@ class Calculator(object):
         for desc in descs:
             if not hasattr(desc, '__iter__'):
                 if isinstance(desc, type):
-                    for args in desc.descriptor_defaults:
+                    for args in desc.preset():
                         self._register_one(desc(*args))
 
                 elif isinstance(desc, ModuleType):
@@ -189,7 +191,7 @@ class Calculator(object):
             desc = desc.create()
 
         args = {name: self._calculate(dep, cache) if dep is not None else None
-                for name, dep in desc.dependencies.items()}
+                for name, dep in (desc.dependencies or {}).items()}
 
         mol = self.molecule.get(
             explicitH=desc.explicit_hydrogens,
@@ -208,5 +210,7 @@ class Calculator(object):
         cache = {}
         self.molecule = Molecule(mol)
 
-        return ((desc.descriptor_name, self._calculate(desc, cache))
-                 for desc in self.descriptors)
+        return (
+            (desc.descriptor_name, self._calculate(desc, cache))
+            for desc in self.descriptors
+        )

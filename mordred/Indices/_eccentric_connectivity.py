@@ -4,6 +4,7 @@ from .._common import Eccentricity, Valence
 
 class EccentricConnectivityIndex(Descriptor):
     explicit_hydrogens = False
+    descriptor_name = 'ECIndex'
 
     @property
     def dependencies(self):
@@ -18,14 +19,6 @@ class EccentricConnectivityIndex(Descriptor):
                 False,
             ),
         )
-
-    @property
-    def descriptor_name(self):
-        return 'ECIndex'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
 
     def calculate(self, mol, E, V):
         return (E.astype('int') * V).sum()

@@ -6,7 +6,9 @@ from ._matrix_attributes import methods, get_method
 class DistanceMatrix(Descriptor):
     explicit_hydrogens = False
 
-    descriptor_defaults = [(m.__name__,) for m in methods]
+    @classmethod
+    def preset(cls):
+        return ((m.__name__,) for m in methods)
 
     @property
     def descriptor_key(self):
@@ -31,7 +33,7 @@ class DistanceMatrix(Descriptor):
     def descriptor_name(self):
         return '{}_D'.format(self.method)
 
-    def __init__(self, method):
+    def __init__(self, method='SpMax'):
         self.method = method
 
     def calculate(self, mol, result):

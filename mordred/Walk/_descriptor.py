@@ -3,18 +3,16 @@ from .._common import AdjacencyMatrix
 import numpy as np
 
 
-def walk_count_defaults():
-    for start, sr in [(1, False), (2, True)]:
-        for l in range(start, 11):
-            yield l, False, sr
-
-        yield 10, True, sr
-
-
 class WalkCount(Descriptor):
     explicit_hydrogens = False
 
-    descriptor_defaults = list(walk_count_defaults())
+    @classmethod
+    def preset(cls):
+        for start, sr in [(1, False), (2, True)]:
+            for l in range(start, 11):
+                yield l, False, sr
+
+            yield 10, True, sr
 
     def __init__(self, order=2, total=False, self_returning=False):
         self.order = order

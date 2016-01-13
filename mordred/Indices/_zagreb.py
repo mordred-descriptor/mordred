@@ -5,7 +5,9 @@ from .._common import Valence
 class ZagrebIndex(Descriptor):
     explicit_hydrogens = False
 
-    descriptor_defaults = [(1, 1), (2, 1), (1, -1), (2, -1)]
+    @classmethod
+    def preset(cls):
+        return [(1, 1), (2, 1), (1, -1), (2, -1)]
 
     @property
     def dependencies(self):

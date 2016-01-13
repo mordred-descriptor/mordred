@@ -4,6 +4,7 @@ from .._common import Radius as _R, Diameter as _D
 
 class Radius(Descriptor):
     explicit_hydrogens = False
+    descriptor_name = 'Radius'
 
     @property
     def dependencies(self):
@@ -13,20 +14,13 @@ class Radius(Descriptor):
                 False, False)
         )
 
-    @property
-    def descriptor_name(self):
-        return 'Radius'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     def calculate(self, mol, R):
         return int(R)
 
 
 class Diameter(Descriptor):
     explicit_hydrogens = False
+    descriptor_name = 'Diameter'
 
     @property
     def dependencies(self):
@@ -36,20 +30,13 @@ class Diameter(Descriptor):
                 False, False)
         )
 
-    @property
-    def descriptor_name(self):
-        return 'Diameter'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
     def calculate(self, mol, D):
         return int(D)
 
 
 class TopologicalShapeIndex(Descriptor):
     explicit_hydrogens = False
+    descriptor_name = 'TopoShapeIndex'
 
     @property
     def dependencies(self):
@@ -59,14 +46,6 @@ class TopologicalShapeIndex(Descriptor):
             R=_R.make_key(*args),
             D=_D.make_key(*args)
         )
-
-    @property
-    def descriptor_name(self):
-        return 'TopoShapeIndex'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
 
     def calculate(self, mol, R, D):
         return float(D - R) / float(R)
@@ -74,6 +53,7 @@ class TopologicalShapeIndex(Descriptor):
 
 class PetitjeanIndex(Descriptor):
     explicit_hydrogens = False
+    descriptor_name = 'PetitjeanIndex'
 
     @property
     def dependencies(self):
@@ -83,14 +63,6 @@ class PetitjeanIndex(Descriptor):
             R=_R.make_key(*args),
             D=_D.make_key(*args)
         )
-
-    @property
-    def descriptor_name(self):
-        return 'PetitjeanIndex'
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
 
     def calculate(self, mol, R, D):
         return float(D - R) / float(D)

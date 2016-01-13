@@ -11,17 +11,12 @@ table = Chem.GetPeriodicTable()
 class DistanceEdge(Descriptor):
     explicit_hydrogens = False
 
-    descriptor_defaults = [
-        (1, 1, 6), (1, 2, 6), (1, 3, 6), (1, 4, 6),
-        (2, 2, 6), (2, 3, 6), (2, 4, 6),
-        (3, 3, 6), (3, 4, 6),
-        (4, 4, 6),
-        (1, 1, 8), (1, 2, 8),
-        (2, 2, 8),
-        (1, 1, 7), (1, 2, 7), (1, 3, 7),
-        (2, 2, 7), (2, 3, 7),
-        (3, 3, 7),
-    ]
+    @classmethod
+    def preset(cls):
+        for e in [6, 8, 7]:
+            l = 11 - e
+            for v in ((a, b, e) for a in range(1, l) for b in range(a, l)):
+                yield v
 
     @property
     def dependencies(self):
