@@ -21,6 +21,10 @@ before_install:
   - git config --global user.email "philopon.dependence@gmail.com"
   - git config --global user.name "philopon"
 
+  - if [[ `git rev-parse --abbrev-ref HEAD` != release ]]; then
+      sed -i -e 's/$/b0/' mordred/version.txt;
+    fi
+
 install:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -46,7 +50,7 @@ script:
 
 after_success:
   - coveralls
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]]; then
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
       pip install sphinx;
 
       cd docs;
