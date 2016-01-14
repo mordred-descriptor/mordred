@@ -1,1 +1,1 @@
-from ._base import Calculator
+from ._base import Descriptor, Calculator

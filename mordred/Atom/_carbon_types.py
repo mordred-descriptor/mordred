@@ -45,6 +45,16 @@ class CarbonTypesCache(CarbonTypesBase):
 
 
 class CarbonTypes(CarbonTypesBase):
+    r'''
+    carbon types descriptor
+
+    Parameters:
+        nCarbon(int): count `n`-carbon bonded carbon
+        SP(int): count :math:`{\rm SP}n` carbon
+
+    Returns:
+        int: count
+    '''
     @classmethod
     def preset(cls):
         return map(lambda args: cls(*args), [
@@ -66,6 +76,8 @@ class CarbonTypes(CarbonTypesBase):
         return dict(CT=CarbonTypesCache.make_key())
 
     def __init__(self, nCarbon=1, SP=3):
+        assert SP in [1, 2, 3]
+
         self.nCarbon = nCarbon
         self.SP = SP
 
@@ -74,6 +86,17 @@ class CarbonTypes(CarbonTypesBase):
 
 
 class HybridizationRatio(CarbonTypesBase):
+    r'''
+    hybridization ratio descriptor
+
+    .. math::
+
+        {\rm HybRatio} = \frac{N_{\rm SP3}}{N_{\rm SP2} + N_{\rm SP3}}
+
+    Returns:
+        float: hybridization ratio
+    '''
+
     descriptor_name = 'HybRatio'
 
     @property
