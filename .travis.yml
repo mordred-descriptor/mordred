@@ -2,7 +2,7 @@ language: python
 
 env:
   global:
-    - REMOTE=git@github.com:philopon/mordred.git
+    - REMOTE=git@github.com:mordred-descriptor/mordred.git
 
 python:
   - "2.7"
