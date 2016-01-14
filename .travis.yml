@@ -49,7 +49,7 @@ after_success:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]]; then
       pip install sphinx;
 
-      cd doc;
+      cd docs;
       make html;
 
       git clone -b gh-pages $REMOTE gh-pages;
