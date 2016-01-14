@@ -2,7 +2,7 @@ language: python
 
 env:
   global:
-    - REMOTE=git@github.com:philopon/mordred.git
+    - DOC_REMOTE=git@github.com:mordred-descriptor/documentation.git
 
 python:
   - "2.7"
@@ -52,12 +52,12 @@ after_success:
       cd docs;
       make html;
 
-      git clone -b gh-pages $REMOTE gh-pages;
+      git clone -b gh-pages $DOC_REMOTE gh-pages;
       rm -r gh-pages/$TRAVIS_BRANCH;
       cp -r _build/html gh-pages/$TRAVIS_BRANCH;
 
       cd gh-pages;
       git add .;
-      git commit -m "update documentation to $TRAVIS_COMMIT";
+      git commit -m "update documentation to mordred-descriptor/mordred@$TRAVIS_COMMIT";
       git push origin gh-pages;
     fi
