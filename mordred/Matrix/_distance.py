@@ -4,6 +4,16 @@ from ._matrix_attributes import methods, get_method
 
 
 class DistanceMatrix(Descriptor):
+    r'''
+    distance matrix descriptor
+
+    Parameters:
+        method(str): matrix aggregate method
+
+    Returns:
+        float: result
+    '''
+
     explicit_hydrogens = False
 
     @classmethod

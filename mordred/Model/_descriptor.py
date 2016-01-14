@@ -3,6 +3,16 @@ from rdkit.Chem import Crippen as _Crippen
 
 
 class WildmanCrippen(Descriptor):
+    r'''
+    Wildman-Crippen LogP/MR descriptor
+
+    Parameters:
+        value(str): 'LogP' or 'MR'
+
+    Returns:
+        float: LogP or MR value
+    '''
+
     @classmethod
     def preset(cls):
         yield cls('LogP')

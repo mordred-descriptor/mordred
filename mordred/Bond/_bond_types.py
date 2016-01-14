@@ -3,6 +3,20 @@ from rdkit.Chem import BondType
 
 
 class BondCount(Descriptor):
+    '''
+    bond count descriptor
+
+    Parameters:
+        bond_type(str):
+            * '' - any
+            * 'O' - any, not include bond which connect to hydrogen
+            * 'T' - triple,
+            * 'M' - multiple, include aromatic
+
+    Returns:
+        int: bond count
+    '''
+
     @classmethod
     def preset(cls):
         return map(cls, [

@@ -3,6 +3,13 @@ from rdkit.Chem import rdMolDescriptors
 
 
 class HBondAcceptor(Descriptor):
+    '''
+    hydrogen bond acceptor descriptor
+
+    Returns:
+        int: hydrogen bond acceptor count
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'nHBAcc'
 
@@ -11,6 +18,13 @@ class HBondAcceptor(Descriptor):
 
 
 class HBondDonor(Descriptor):
+    '''
+    hydrogen bond donor descriptor
+
+    Returns:
+        int: hydrogen bond donor count
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'nHBDon'
 

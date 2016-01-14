@@ -69,17 +69,17 @@ ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
 class ChiCache(ChiBase):
     @property
     def descriptor_key(self):
-        return self.make_key(self.length)
+        return self.make_key(self.order)
 
-    def __init__(self, length):
-        self.length = length
+    def __init__(self, order):
+        self.order = order
 
     def calculate(self, mol):
         chain = list()
         path = list()
         path_cluster = list()
         cluster = list()
-        for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self.length):
+        for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self.order):
 
             G = Graph()
             nodes = set()
@@ -109,13 +109,32 @@ _chi_type_dict = {
     ChiType.cluster: 'C'
 }
 
-_attr_dict = dict(delta='S', delta_v='V')
+_prop_dict = dict(delta='S', delta_v='V')
 
 
 _deltas = ['delta', 'delta_v']
 
 
 class Chi(ChiBase):
+    '''
+    chi descriptor
+
+    Parameters:
+        chi_type(str):
+
+            * 'path'
+            * 'path-cluster'
+            * 'cluster'
+            * 'chain'
+
+        prop(str, function): atomic property
+
+        averaged(bool): averaged by number of subgraphs
+
+    Returns:
+        float: chi value
+    '''
+
     @classmethod
     def preset(cls):
         return chain(
@@ -127,40 +146,40 @@ class Chi(ChiBase):
 
     @property
     def descriptor_name(self):
-        attr = _attr_dict.get(self.attr_name, self.attr_name)
+        prop = _prop_dict.get(self.prop_name, self.prop_name)
         ct = _chi_type_dict[self.chi_type]
         p = 'A' if self.averaged else ''
 
-        return '{}{}{}-{}'.format(p, attr, ct, self.length)
+        return '{}{}{}-{}'.format(p, prop, ct, self.order)
 
     @property
     def descriptor_key(self):
-        return self.make_key(self.chi_type, self.length, self.attribute, self.averaged)
+        return self.make_key(self.chi_type, self.order, self.prop, self.averaged)
 
     @property
     def dependencies(self):
-        if self.length > 0:
-            return dict(chi=ChiCache.make_key(self.length))
+        if self.order > 0:
+            return dict(chi=ChiCache.make_key(self.order))
 
-    def __init__(self, chi_type=ChiType.path, length=0, attribute='delta', averaged=False):
-        self.length = length
-        self.attr_name, self.attribute = _atomic_property.getter(attribute)
+    def __init__(self, chi_type='path', order=0, prop='delta', averaged=False):
+        self.order = order
+        self.prop_name, self.prop = _atomic_property.getter(prop)
         self.chi_type = _parse_chi_type(chi_type)
         self.averaged = averaged
 
     def calculate(self, mol, chi=None):
-        if self.length <= 0:
+        if self.order <= 0:
             chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
 
         x = 0
         node_sets = getattr(chi, self.chi_type.name)
-        attributes = [self.attribute(a) for a in mol.GetAtoms()]
+        props = [self.prop(a) for a in mol.GetAtoms()]
         for nodes in node_sets:
             c = 1
             for node in nodes:
-                c *= attributes[node]
+                c *= props[node]
 
-            x += c ** (-0.5)
+            x += c ** -0.5
 
         if self.averaged:
             x /= len(node_sets) or 1

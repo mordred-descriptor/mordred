@@ -90,6 +90,22 @@ class Ag(Descriptor):
 
 
 class InformationContent(Descriptor):
+    r'''
+    information content descriptor
+
+    Parameters:
+        ic_type(str):
+            * '' - normal IC
+            * 'T'
+            * 'S'
+            * 'C'
+            * 'B'
+            * 'M'
+            * 'ZM'
+
+        order(int): order(number of edge) of subgraph
+    '''
+
     @classmethod
     def preset(cls):
         return (

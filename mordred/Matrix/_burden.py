@@ -53,6 +53,18 @@ class burden_eigen_values(BurdenMatrixDescriptor):
 
 
 class BCUT(BurdenMatrixDescriptor):
+    r'''
+    BCUT descriptor
+
+    Parameters:
+        prop(str, function): atomic property
+        from_high(bool): n-th eigen value from high
+        nth(int): n-th eigen value
+
+    Returns:
+        float: result
+    '''
+
     @classmethod
     def preset(cls):
         return (cls(a, 1, h) for a in 'mc' for h in [False, True])

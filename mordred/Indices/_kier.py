@@ -4,6 +4,16 @@ from numpy import nan
 
 
 class KappaShapeIndex(Descriptor):
+    r'''
+    kappa shape index descriptor
+
+    Parameters:
+        order(int): order of kier, [1,3]
+
+    Returns:
+        float: kappa shape index
+    '''
+
     explicit_hydrogens = False
 
     @classmethod

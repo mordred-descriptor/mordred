@@ -5,6 +5,13 @@ from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
 
 class RotatableBondsCount(Descriptor):
+    '''
+    ratatable bonds count descriptor
+
+    Returns:
+        int: rotatable bonds count
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'nRot'
 
@@ -13,6 +20,16 @@ class RotatableBondsCount(Descriptor):
 
 
 class RotatableBondsRatio(Descriptor):
+    r'''
+    rotatable bonds ratio descriptor
+
+    .. math::
+        {\rm RotRatio} = \frac{N_{\rm rotatable bonds}}{N_{\rm bonds}}
+
+    Returns:
+        float: rotatable bonds ratio
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'RotRatio'
 

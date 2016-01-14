@@ -2,6 +2,16 @@ from .._base import Descriptor
 from .._atomic_property import Polarizabilities78, Polarizabilities94
 
 class APol(Descriptor):
+    r'''
+    atomic polarizability descriptor
+
+    Parameters:
+        use78(bool): use old atomic polarizability data
+
+    Returns:
+        float: sum of atomic polarizability
+    '''
+
     descriptor_name = 'apol'
 
     @property
@@ -17,6 +27,16 @@ class APol(Descriptor):
 
 
 class BPol(Descriptor):
+    r'''
+    bond polarizability descriptor
+
+    Parameters:
+        use78(bool): use old atomic polarizability data
+
+    Returns:
+        float: sum of bond polarizability
+    '''
+
     descriptor_name = 'bpol'
 
     @property

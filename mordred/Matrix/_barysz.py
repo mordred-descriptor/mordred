@@ -47,6 +47,17 @@ class barysz(BaryszMatrixDescriptor):
 
 
 class BaryszMatrix(BaryszMatrixDescriptor):
+    r'''
+    barysz matrix descriptor
+
+    Parameters:
+        prop(str, function): atomic property
+        method(str): matrix aggregate method
+
+    Returns:
+        float: result
+    '''
+
     @classmethod
     def preset(cls):
         return (cls(p, m) for p in 'Zmvepi' for m in methods)

@@ -9,3 +9,4 @@ __pycache__
 /htmlcov
 /.id_rsa
 /.id_rsa.pub
+/docs/_build

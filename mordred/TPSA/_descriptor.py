@@ -4,6 +4,19 @@ from collections import defaultdict
 
 
 class TPSA(Descriptor):
+    r'''
+    topological polar surface area descriptor
+
+    Parameters:
+        no_only(bool):
+
+            * True: N,O only TPSA
+            * False: all(N,O,S,P) TPSA
+
+    Returns:
+        float: TPSA value
+    '''
+
     @classmethod
     def preset(cls):
         yield cls(True)

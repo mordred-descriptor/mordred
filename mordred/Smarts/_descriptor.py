@@ -16,6 +16,13 @@ class SmartsCount(Descriptor):
 
 
 class AcidicGroupCount(SmartsCount):
+    r'''
+    acidic group count descriptor
+
+    Returns:
+        int: number of acidic groups
+    '''
+
     descriptor_name = 'nAcid'
     smarts = [
         "[$([O;H1]-[C,S,P]=O)]",
@@ -26,6 +33,13 @@ class AcidicGroupCount(SmartsCount):
 
 
 class BasicGroupCount(SmartsCount):
+    r'''
+    basic group count descriptor
+
+    Returns:
+        int: number of basic groups
+    '''
+
     descriptor_name = 'nBase'
     smarts = [
         "[$([NH2]-[CX4])]",

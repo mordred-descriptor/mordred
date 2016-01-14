@@ -35,6 +35,26 @@ class FusedRings(RingCountBase):
 
 
 class RingCount(RingCountBase):
+    r'''
+    ring count descriptor
+
+    Parameters:
+        length(int or None): number of bonds in ring
+        greater(bool): count length or greater rings
+        fused(bool): count fused rings
+        aromatic(bool, None):
+            * True: count aromatic rings
+            * False: count non-aromatic rings
+            * None: count any rings
+        hetero(boo, None):
+            * True: count hetero rings
+            * False: count carbon rings
+            * None: count any rings
+
+    Returns:
+        int: ring count
+    '''
+
     @classmethod
     def preset(cls):
         for fused in [False, True]:

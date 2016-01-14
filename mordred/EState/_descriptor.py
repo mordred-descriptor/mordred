@@ -34,6 +34,22 @@ class EStateCache(EStateBase):
 
 
 class AtomTypeEState(EStateBase):
+    '''
+    atom type e-state descriptor
+
+    Parameters:
+        aggregate(str):
+            * 'count'
+            * 'sum'
+            * 'max'
+            * 'min'
+
+        atom_type(str): e-state atom type
+
+    Returns:
+        int or float: e-state value
+    '''
+
     @classmethod
     def preset(cls):
         return (
@@ -50,29 +66,29 @@ class AtomTypeEState(EStateBase):
 
     @property
     def descriptor_name(self):
-        if self.aggrigate == 'count':
+        if self.aggregate == 'count':
             aggr = 'n'
         else:
-            aggr = self.aggrigate
+            aggr = self.aggregate
 
         return aggr + self.atom_type[:1].upper() + self.atom_type[1:]
 
-    def __init__(self, aggrigate='count', atom_type='sLi'):
-        assert aggrigate in ['count', 'sum', 'max', 'min']
+    def __init__(self, aggregate='count', atom_type='sLi'):
+        assert aggregate in ['count', 'sum', 'max', 'min']
         assert atom_type in es_type_set
 
-        self.aggrigate = aggrigate
+        self.aggregate = aggregate
         self.atom_type = atom_type
 
     @property
     def descriptor_key(self):
         return self.make_key(
-            self.aggrigate,
+            self.aggregate,
             self.atom_type,
         )
 
     def calculate(self, mol, E):
-        if self.aggrigate == 'count':
+        if self.aggregate == 'count':
             return reduce(lambda a, b: a + b, E[0]).count(self.atom_type)
 
         indices = map(
@@ -81,7 +97,7 @@ class AtomTypeEState(EStateBase):
         )
 
         try:
-            return float(getattr(builtins, self.aggrigate)(indices))
+            return float(getattr(builtins, self.aggregate)(indices))
         except ValueError:  # min, max to empty list
             return nan
 

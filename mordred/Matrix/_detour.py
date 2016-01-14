@@ -135,6 +135,16 @@ class detour_matrix(DetourMatrixBase):
 
 
 class DetourMatrix(DetourMatrixBase):
+    r'''
+    detour matrix descriptor
+
+    Parameters:
+        method(str): matrix aggregate method
+
+    Returns:
+        float: result
+    '''
+
     @classmethod
     def preset(cls):
         return map(cls, ma.methods)

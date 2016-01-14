@@ -3,6 +3,16 @@ from .._common import DistanceMatrix
 
 
 class WienerIndex(Descriptor):
+    r'''
+    Wiener index
+
+    Parameters:
+        polarity(bool): use polarity Wiener index
+
+    Returns:
+        int: Wiener index
+    '''
+
     explicit_hydrogens = False
 
     @classmethod

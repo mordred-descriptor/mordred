@@ -37,6 +37,18 @@ class ChargeTermMatrix(Descriptor):
 
 
 class TopologicalCharge(Descriptor):
+    r'''
+    topological charge descriptor
+
+    Parameters:
+        type(str):
+            * 'sum': sum of order-distance atom pairs coefficient
+            * 'mean': mean of order-distance atom pairs coefficient
+            * 'global': sum of mean-topoCharge over 0 to order
+
+        order(int): distance of atom pairs
+    '''
+
     explicit_hydrogens = False
 
     @classmethod

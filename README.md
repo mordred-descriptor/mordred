@@ -19,7 +19,7 @@ Installation
     $ conda install -c rdkit -c mordred-descriptor mordred
     ```
     
-    #### develop
+    #### beta
     
     ```
     $ conda install -c rdkit -c mordred-descriptor/channel/dev mordred
@@ -51,3 +51,8 @@ calc = Calculator(mordred.all.descriptors)
 for name, value in calc(Chem.MolFromSmiles('c1ccccc1O')):
    print(name, value)
 ```
+
+documentation
+--
+* [stable](http://mordred-descriptor.github.io/documentation/release)
+* [beta](http://mordred-descriptor.github.io/documentation/master)

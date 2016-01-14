@@ -34,6 +34,21 @@ class FrameworkCache(Descriptor):
 
 
 class Framework(Descriptor):
+    r'''
+    molecular framework ratio descriptor
+
+    .. math::
+
+        f_{\rm MF} = \frac{N_{\rm MF}}{N}
+
+    where
+    :math:`N_{\rm MF}` is number of atoms in molecular framework,
+    :math:`N` is number of all atoms.
+
+    Returns:
+        float: fMF value
+    '''
+
     descriptor_name = 'fMF'
 
     @property

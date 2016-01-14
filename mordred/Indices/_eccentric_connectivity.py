@@ -3,6 +3,20 @@ from .._common import Eccentricity, Valence
 
 
 class EccentricConnectivityIndex(Descriptor):
+    r'''
+    eccentric connectivity index descriptor
+
+    .. math::
+        I_{\rm EC} = \sum^A_i {\boldsymbol E}{\boldsymbol V}
+
+    where
+    :math:`E` is eccentricity of atoms,
+    :math:`V` is valences of atoms.
+
+    Returns:
+        int: eccentric connectivity index
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'ECIndex'
 

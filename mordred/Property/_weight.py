@@ -3,6 +3,16 @@ from rdkit.Chem.Descriptors import ExactMolWt
 
 
 class Weight(Descriptor):
+    r'''
+    molecular weight descriptor
+
+    Parameters:
+        averaged(bool): averaged by number of atom
+
+    Returns:
+        float: exact molecular weight
+    '''
+
     explicit_hydrogens = True
 
     @classmethod

@@ -3,6 +3,26 @@ from .._common import Valence
 
 
 class ZagrebIndex(Descriptor):
+    r'''
+    Zagreb index descriptor
+
+    .. math::
+
+        {}^\lambda M_1 = \sum_{atoms} d_i^\lambda
+
+        {}^\lambda M_2 = \sum_{edges} \left(d_i \cdot d_j \right)^\lambda
+
+    where
+    :math:`d_i` is degree of i-th atom
+
+    Parameters:
+        version(int): Zagreb index version. 1 or 2.
+        variable(int): lambda value.
+
+    Returns:
+        int: Zagreb index
+    '''
+
     explicit_hydrogens = False
 
     @classmethod

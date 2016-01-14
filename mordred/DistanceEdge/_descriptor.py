@@ -9,13 +9,26 @@ table = Chem.GetPeriodicTable()
 
 
 class DistanceEdge(Descriptor):
+    '''
+    molecular distance edge descriptor
+
+    Parameters:
+        valence1(int): valence of first atom
+        valence2(int): valence of second atom
+
+        element(str, int): atomic symbol or atomic number
+
+    Returns:
+        float: MDE value
+    '''
+
     explicit_hydrogens = False
 
     @classmethod
     def preset(cls):
         return (
             cls(a, b, e)
-            for e in [6,8,7]
+            for e in [6, 8, 7]
             for a in range(1, 11 - e)
             for b in range(a, 11 - e)
         )

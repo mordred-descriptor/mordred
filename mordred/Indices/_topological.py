@@ -3,6 +3,13 @@ from .._common import Radius as _R, Diameter as _D
 
 
 class Radius(Descriptor):
+    '''
+    radius descriptor
+
+    Returns:
+        int: graph radius
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'Radius'
 
@@ -19,6 +26,13 @@ class Radius(Descriptor):
 
 
 class Diameter(Descriptor):
+    '''
+    diameter descriptor
+
+    Returns:
+        int: graph diameter
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'Diameter'
 
@@ -35,6 +49,21 @@ class Diameter(Descriptor):
 
 
 class TopologicalShapeIndex(Descriptor):
+    r'''
+    topological shape index descriptor
+
+    .. math::
+
+        I_{\rm topo} = \frac{D - R}{R}
+
+    where
+    :math:`R` is graph radius,
+    :math:`D` is graph diameter.
+
+    Returns:
+        float: topological shape index
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'TopoShapeIndex'
 
@@ -52,6 +81,21 @@ class TopologicalShapeIndex(Descriptor):
 
 
 class PetitjeanIndex(Descriptor):
+    r'''
+    Petitjean index descriptor
+
+    .. math::
+
+        I_{\rm Petitjean} = \frac{D - R}{D}
+
+    where
+    :math:`R` is graph radius,
+    :math:`D` is graph diameter.
+
+    Returns:
+        float: Petitjean index
+    '''
+
     explicit_hydrogens = False
     descriptor_name = 'PetitjeanIndex'
 

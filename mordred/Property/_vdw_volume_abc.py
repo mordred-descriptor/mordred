@@ -33,6 +33,13 @@ atom_contrib = {
 
 
 class VdwVolumeABC(Descriptor):
+    r'''
+    van der waals volume(ABC) descriptor
+
+    Returns:
+        float: VABC value
+    '''
+
     descriptor_name = 'Vabc'
 
     @property

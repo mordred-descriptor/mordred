@@ -12,6 +12,18 @@ from rdkit.Chem import Lipinski as L
 
 
 class LipinskiLike(Descriptor):
+    '''
+    Lipinski like descriptor
+
+    Parameters:
+        variant(str):
+            * Lipinski
+            * GooseFilter
+
+    Returns:
+        bool: filter result
+    '''
+
     @property
     def descriptor_name(self):
         return self.variant

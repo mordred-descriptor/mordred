@@ -4,6 +4,18 @@ import numpy as np
 
 
 class WalkCount(Descriptor):
+    r'''
+    walk count descriptor
+
+    Parameters:
+        order(int): walk length
+        total(bool): sum of walk count over 1 to order
+        self_returning(bool): use self returning walk only
+
+    Returns:
+        int: walk count
+    '''
+
     explicit_hydrogens = False
 
     @classmethod
