@@ -24,7 +24,7 @@ class FusedRings(RingCountBase):
         G = networkx.Graph()
 
         l = len(Rings)
-        for i, j in ((i, j) for i in range(l) for j in range(i+1, l)):
+        for i, j in ((i, j) for i in range(l) for j in range(i + 1, l)):
             if len(Rings[i] & Rings[j]) >= 2:
                 G.add_edge(i, j)
 

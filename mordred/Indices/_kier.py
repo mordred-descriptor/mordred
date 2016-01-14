@@ -21,7 +21,7 @@ class KappaShapeIndex(Descriptor):
         return map(cls, range(1, 4))
 
     def __init__(self, order=1):
-        assert order in [1,2,3]
+        assert order in [1, 2, 3]
 
         self.order = order
 
@@ -41,7 +41,7 @@ class KappaShapeIndex(Descriptor):
 
     def calculate(self, mol, Chi):
         P = len(Chi.path)
-        if P <= 0:
+        if P == 0:
             return nan
 
         A = mol.GetNumAtoms()

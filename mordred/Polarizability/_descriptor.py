@@ -1,6 +1,7 @@
 from .._base import Descriptor
 from .._atomic_property import Polarizabilities78, Polarizabilities94
 
+
 class APol(Descriptor):
     r'''
     atomic polarizability descriptor

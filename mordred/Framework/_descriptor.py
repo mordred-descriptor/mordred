@@ -26,7 +26,7 @@ class FrameworkCache(Descriptor):
             G.add_edge(a, b)
 
         linkers = set()
-        for Ri, Rj in ((i, j) for i in range(NR) for j in range(i+1, NR)):
+        for Ri, Rj in ((i, j) for i in range(NR) for j in range(i + 1, NR)):
             Ra, Rb = R[Ri], R[Rj]
             linkers.update(i for t, i in nx.shortest_path(G, Ra, Rb) if t == 'A')
 

@@ -5,6 +5,7 @@ from networkx import Graph
 from collections import namedtuple
 from enum import Enum
 from itertools import chain
+import numpy as np
 
 
 class ChiType(Enum):
@@ -171,7 +172,7 @@ class Chi(ChiBase):
         if self.order <= 0:
             chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
 
-        x = 0
+        x = 0.0
         node_sets = getattr(chi, self.chi_type.name)
         props = [self.prop(a) for a in mol.GetAtoms()]
         for nodes in node_sets:
@@ -182,7 +183,7 @@ class Chi(ChiBase):
             x += c ** -0.5
 
         if self.averaged:
-            x /= len(node_sets) or 1
+            x /= len(node_sets) or np.nan
 
         return x
 

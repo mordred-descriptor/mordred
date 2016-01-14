@@ -75,9 +75,8 @@ class GSum(AutocorrelationBase):
 
     def calculate(self, mol, gmat):
         s = gmat.sum()
-        if s == 0:
-            return np.nan
-        elif self.distance == 0:
+
+        if self.distance == 0:
             return s
         else:
             return s / 2
@@ -176,13 +175,10 @@ class ATS(Autocorrelation):
         return dict(avec=self._avec, gmat=self._gmat)
 
     def calculate(self, mol, avec, gmat):
-        if not gmat.any():
-            return np.nan
-
         if self.distance == 0:
             return float((avec ** 2).sum())
-        else:
-            return 0.5 * avec.dot(gmat).dot(avec)
+
+        return 0.5 * avec.dot(gmat).dot(avec)
 
 
 class AATS(ATS):
@@ -208,7 +204,7 @@ class AATS(ATS):
         return dict(ATS=self._ATS, gsum=self._gsum)
 
     def calculate(self, mol, ATS, gsum):
-        return ATS / gsum
+        return ATS / (gsum or np.nan)
 
 
 class ATSC(Autocorrelation):
@@ -237,13 +233,10 @@ class ATSC(Autocorrelation):
         return dict(cavec=self._cavec, gmat=self._gmat)
 
     def calculate(self, mol, cavec, gmat):
-        if not gmat.any():
-            return np.nan
-
         if self.distance == 0:
             return float((cavec ** 2).sum())
-        else:
-            return 0.5 * cavec.dot(gmat).dot(cavec)
+
+        return 0.5 * cavec.dot(gmat).dot(cavec)
 
 
 class AATSC(ATSC):
@@ -269,7 +262,7 @@ class AATSC(ATSC):
         return dict(ATSC=self._ATSC, gsum=self._gsum)
 
     def calculate(self, mol, ATSC, gsum):
-        return ATSC / gsum
+        return ATSC / (gsum or np.nan)
 
 
 class MATS(Autocorrelation):
@@ -319,11 +312,8 @@ class GATS(MATS):
         return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)
 
     def calculate(self, mol, avec, gmat, gsum, cavec):
-        if not gmat.any():
-            return np.nan
-
         W = np.tile(avec, (len(avec), 1))
-        n = (gmat * (W - W.T) ** 2).sum() / (4 * gsum)
+        n = (gmat * (W - W.T) ** 2).sum() / (4 * (gsum or np.nan))
         d = (cavec ** 2).sum() / (len(avec) - 1)
         return n / d
 

@@ -27,7 +27,7 @@ table = Chem.GetPeriodicTable()
 
 
 atom_contrib = {
-    table.GetAtomicNumber(s): 4./3.*pi*r**3
+    table.GetAtomicNumber(s): 4. / 3. * pi * r ** 3
     for s, r in bondi_radii.items()
 }
 
