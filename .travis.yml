@@ -58,6 +58,6 @@ after_success:
 
       cd gh-pages;
       git add .;
-      git commit -m "update documentation to $TRAVIS_COMMIT";
+      git commit -m "update documentation to mordred-descriptor/mordred@$TRAVIS_COMMIT";
       git push origin gh-pages;
     fi
