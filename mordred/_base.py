@@ -50,12 +50,22 @@ class Key(object):
 
 
 class Descriptor(with_metaclass(ABCMeta, object)):
+    '''
+    abstruct base class of descriptors
+    '''
+
     explicit_hydrogens = True
     gasteiger_charges = False
     kekulize = False
 
     @classmethod
     def preset(cls):
+        '''
+        generate preset descriptor instances
+
+        Returns:
+            iterable: descriptors
+        '''
         yield cls()
 
     @classmethod
@@ -72,6 +82,12 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
     @property
     def descriptor_name(self):
+        '''
+        get descriptor name
+
+        Returns:
+            str: descriptor name
+        '''
         return str(self.descriptor_key)
 
     @abstractmethod
@@ -79,6 +95,12 @@ class Descriptor(with_metaclass(ABCMeta, object)):
         pass
 
     def __call__(self, mol):
+        '''
+        calculate single descriptor value
+
+        Returns:
+            scalar: descriptor result
+        '''
         return next(Calculator(self)(mol))[1]
 
 
@@ -134,6 +156,13 @@ class Molecule(object):
 
 
 class Calculator(object):
+    '''
+    descriptor calculator
+
+    Parameters:
+        descs: see `register`
+    '''
+
     def __init__(self, *descs):
         self.descriptors = []
         self.explicitH = False
@@ -158,6 +187,13 @@ class Calculator(object):
             self.kekulize = True
 
     def register(self, *descs):
+        '''
+        register descriptors
+
+        Parameters:
+            descs (module, descriptor class/instance, iterable): descriptors to register
+        '''
+
         for desc in descs:
             if not hasattr(desc, '__iter__'):
                 if isinstance(desc, type):
@@ -207,6 +243,12 @@ class Calculator(object):
         return r
 
     def __call__(self, mol):
+        '''
+        calculate descriptors
+
+        Returns:
+            iterator<str, scalar>: iterator of descriptor name and value
+        '''
         cache = {}
         self.molecule = Molecule(mol)
 

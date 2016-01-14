@@ -2,6 +2,16 @@ from .._base import Descriptor
 
 
 class AtomCount(Descriptor):
+    '''
+    atom count descriptor
+
+    Parameters:
+        symbol(str): target to count. 'Atom', 'HeavyAtom', 'X'(all halogen), or element symbol.
+
+    Returns:
+        int: count
+    '''
+
     @classmethod
     def preset(cls):
         return map(cls, [
