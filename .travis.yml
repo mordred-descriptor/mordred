@@ -1,11 +1,26 @@
 language: python
 
+env:
+  global:
+    - REMOTE=git@github.com:philopon/mordred.git
+
 python:
   - "2.7"
   - "3.4"
   - "3.5"
 
 sudo: false
+
+before_install:
+  - eval "$(ssh-agent -s)"
+  - ssh-add -D
+  - openssl aes-256-cbc -K $encrypted_8d665ddaa7bd_key -iv $encrypted_8d665ddaa7bd_iv -in .id_rsa.enc -out ~/.ssh/.id_rsa -d
+  - chmod 600 ~/.ssh/.id_rsa
+  - ssh-add ~/.ssh/.id_rsa
+
+  - git config --global user.email "philopon.dependence@gmail.com"
+  - git config --global user.name "philopon"
+
 install:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -31,3 +46,18 @@ script:
 
 after_success:
   - coveralls
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]]; then
+      pip install sphinx;
+
+      cd doc;
+      make html;
+
+      git clone -b gh-pages $REMOTE gh-pages;
+      rm -r gh-pages/$TRAVIS_BRANCH;
+      cp -r _build/html gh-pages/$TRAVIS_BRANCH;
+
+      cd gh-pages;
+      git add .;
+      git commit -m "update documentation to $TRAVIS_COMMIT";
+      git push origin gh-pages;
+    fi

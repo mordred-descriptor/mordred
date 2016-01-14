@@ -7,3 +7,5 @@ __pycache__
 .eggs/
 /.coverage
 /htmlcov
+/.id_rsa
+/.id_rsa.pub
