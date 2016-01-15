@@ -3,8 +3,11 @@ from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 from six import with_metaclass
 from abc import ABCMeta, abstractmethod
 from types import ModuleType
+import os
+from importlib import import_module
 
 from inspect import getsourcelines
+
 try:
     from inspect import getfullargspec as getargspec
 except ImportError:
@@ -274,3 +277,21 @@ class Calculator(object):
             (desc.descriptor_name, self._calculate(desc, cache))
             for desc in self.descriptors
         )
+
+
+def all_descriptors():
+    r'''
+    yield all descriptors
+
+    Returns:
+        iterator<module>: all modules
+    '''
+
+    base_dir = os.path.dirname(__file__)
+
+    for name in os.listdir(base_dir):
+        name, ext = os.path.splitext(name)
+        if name[:1] == '_' or ext != '.py':
+            continue
+
+        yield import_module('..' + name, __name__)

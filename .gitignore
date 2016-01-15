@@ -10,3 +10,4 @@ __pycache__
 /.id_rsa
 /.id_rsa.pub
 /docs/_build
+/docs/api
