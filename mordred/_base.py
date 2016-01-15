@@ -7,16 +7,12 @@ import os
 from importlib import import_module
 
 from inspect import getsourcelines
+from sys import maxsize
 
 try:
     from inspect import getfullargspec as getargspec
 except ImportError:
     from inspect import getargspec
-
-try:
-    from sys import maxsize
-except ImportError:
-    from sys import maxint as maxsize
 
 
 class Key(object):

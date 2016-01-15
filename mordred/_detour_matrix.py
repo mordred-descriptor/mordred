@@ -44,15 +44,6 @@ class LongestSimplePath(object):
                 for s in self.G.nodes_iter()
                 for g, w in self._start(s).items()}
 
-    def detour(self):
-        result = np.empty((self.N, self.N))
-        C = self()
-        for i, j in ((i, j) for i in range(self.N) for j in range(i, self.N)):
-            result[i, j] = C[(i, j)]
-            result[j, i] = C[(i, j)]
-
-        return result
-
 
 class calc_detour(object):
     def __init__(self, G, weight='weight'):

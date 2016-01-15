@@ -7,8 +7,6 @@ class SmartsCount(Descriptor):
         self.mols = []
         for s in self.smarts:
             mol = Chem.MolFromSmarts(s)
-            if mol is None:
-                raise ValueError('invalid smarts: {}'.format(s))
             self.mols.append(mol)
 
     def calculate(self, mol):
