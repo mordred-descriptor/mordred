@@ -4,12 +4,16 @@ from six import with_metaclass
 from abc import ABCMeta, abstractmethod
 from types import ModuleType
 
-from sys import int_info
 from inspect import getsourcelines
 try:
     from inspect import getfullargspec as getargspec
 except ImportError:
     from inspect import getargspec
+
+try:
+    from sys import maxsize
+except ImportError:
+    from sys import maxint as maxsize
 
 
 __all__ =\
@@ -228,7 +232,7 @@ class Calculator(object):
             try:
                 return getsourcelines(d)[1]
             except IOError:
-                return 2 ** int_info.bits_per_digit
+                return maxsize
 
         descs.sort(key=key_by_def)
         return descs
