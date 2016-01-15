@@ -55,7 +55,7 @@ clean:
 
 .PHONY: apidoc
 apidoc:
-	$(SPHINXAPIDOC) -o api --separate ../mordred
+	$(SPHINXAPIDOC) -o api --separate --module-first ../mordred
 	sed -i.bak -e 's/:undoc-members:/:imported-members:/g' api/*
 	rm api/*.bak
 
