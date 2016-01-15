@@ -1,5 +1,19 @@
 from ._base import Descriptor
 from rdkit.Chem import BondType
+from itertools import chain
+
+
+bond_type_dict = {
+    'heavy': ('O', lambda _: True),
+    'any': ('', lambda _: True),
+
+    'single': ('S', lambda b: b.GetBondType() == BondType.SINGLE),
+    'double': ('D', lambda b: b.GetBondType() == BondType.DOUBLE),
+    'triple': ('T', lambda b: b.GetBondType() == BondType.TRIPLE),
+    'aromatic': ('A', lambda b: b.GetIsAromatic() or b.GetBondType() == BondType.AROMATIC),
+
+    'multiple': ('M', lambda b: b.GetIsAromatic() or b.GetBondType() != BondType.SINGLE),
+}
 
 
 class BondCount(Descriptor):
@@ -8,10 +22,17 @@ class BondCount(Descriptor):
 
     Parameters:
         bond_type(str):
-            * '' - any
-            * 'O' - any, not include bond which connect to hydrogen
-            * 'T' - triple,
-            * 'M' - multiple, include aromatic
+            * 'any' - any
+            * 'heavy' - any, not include bond which connect to hydrogen
+
+            * 'single' - single bonds
+            * 'double' - double bonds
+            * 'triple' - triple bonds
+            * 'aromatic' - aromatic bonds
+
+            * 'multiple' - multiple, include aromatic
+
+        kekulize(bool): use kekulized structure
 
     Returns:
         int: bond count
@@ -19,32 +40,33 @@ class BondCount(Descriptor):
 
     @classmethod
     def preset(cls):
-        return map(cls, [
-            '', 'O', 'T', 'M',
-        ])
+        return chain(
+            map(lambda t: cls(t, False), [
+                'any', 'heavy',
+                'single', 'double', 'triple', 'aromatic',
+                'multiple',
+            ]),
+            map(lambda t: cls(t, True), [
+                'single', 'double',
+            ])
+        )
 
     @property
     def descriptor_name(self):
-        return 'nBonds{}'.format(self.bond_type)
+        K = 'K' if self.kekulize else ''
+        return 'nBonds{}{}'.format(K, self.bond_name)
 
     @property
     def explicit_hydrogens(self):
-        return self.bond_type == ''
+        return self.bond_name in ['', 'S']
 
     @property
     def descriptor_key(self):
-        return self.make_key(self.bond_type)
+        return self.make_key(self.bond_name, self.kekulize)
 
-    def __init__(self, bond_type=''):
-        assert bond_type in set(['', 'O', 'T', 'M'])
-        self.bond_type = bond_type
+    def __init__(self, bond_type='any', kekulize=False):
+        self.bond_name, self.check_bond = bond_type_dict[bond_type.lower()]
+        self.kekulize = kekulize
 
     def calculate(self, mol):
-        bt = self.bond_type
-        if bt in ['', 'O']:
-            return sum(1 for _ in mol.GetBonds())
-        elif bt == 'M':
-            return sum(1 for b in mol.GetBonds()
-                       if b.GetBondTypeAsDouble() > 1 or b.GetIsAromatic())
-        else:
-            return sum(1 for b in mol.GetBonds() if b.GetBondType() == BondType.TRIPLE)
+        return sum(1 for b in mol.GetBonds() if self.check_bond(b))

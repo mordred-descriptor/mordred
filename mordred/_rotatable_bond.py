@@ -37,7 +37,7 @@ class RotatableBondsRatio(Descriptor):
     def dependencies(self):
         return dict(
             nRot=RotatableBondsCount.make_key(),
-            nB=BondCount.make_key('O'),
+            nB=BondCount.make_key('heavy'),
         )
 
     def calculate(self, mol, nRot, nB):
