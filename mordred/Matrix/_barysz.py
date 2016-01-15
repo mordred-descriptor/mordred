@@ -60,7 +60,7 @@ class BaryszMatrix(BaryszMatrixDescriptor):
 
     @classmethod
     def preset(cls):
-        return (cls(p, m) for p in 'Zmvepi' for m in methods)
+        return (cls(p, m) for p in _atomic_property.get_properties() for m in methods)
 
     @property
     def descriptor_key(self):

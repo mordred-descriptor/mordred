@@ -376,6 +376,14 @@ getters = dict(
 )
 
 
+def get_properties(istate=False):
+    v = ['Z', 'm', 'v', 'e', 'pe', 'are', 'p', 'i']
+    if istate:
+        v += ['s']
+
+    return v
+
+
 def getter(p):
     if hasattr(p, '__call__'):
         return p.__name__, p

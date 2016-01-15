@@ -23,7 +23,7 @@ class Sum(Descriptor):
 
     @classmethod
     def preset(cls):
-        return map(cls, ['v', 'se', 'pe', 'are', 'p', 'i'])
+        return map(cls, _atomic_property.get_properties())
 
     _carbon = Chem.Atom(6)
 
@@ -60,7 +60,7 @@ class Mean(Sum):
 
     @classmethod
     def preset(cls):
-        return map(cls, ['v', 'se', 'pe', 'are', 'p', 'i'])
+        return map(cls, _atomic_property.get_properties())
 
     @property
     def descriptor_name(self):

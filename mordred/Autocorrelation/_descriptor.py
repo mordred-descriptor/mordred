@@ -168,7 +168,9 @@ class ATS(Autocorrelation):
 
     @classmethod
     def preset(cls):
-        return (cls(d, a) for a in 'mvepis' for d in range(MAX_DISTANCE + 1))
+        return (cls(d, a)
+                for a in _atomic_property.get_properties(istate=True)
+                for d in range(MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):

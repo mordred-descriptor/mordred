@@ -67,7 +67,7 @@ class BCUT(BurdenMatrixDescriptor):
 
     @classmethod
     def preset(cls):
-        return (cls(a, 1, h) for a in 'mc' for h in [False, True])
+        return (cls(a, 1, h) for a in _atomic_property.get_properties(istate=True) for h in [False, True])
 
     @property
     def descriptor_name(self):
