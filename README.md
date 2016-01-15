@@ -41,11 +41,10 @@ example
 ```.py
 from rdkit import Chem
 
-from mordred import Calculator
-import mordred.all
+from mordred import Calculator, all_descriptors
 
 # create descriptor calculator with all descriptors
-calc = Calculator(mordred.all.descriptors)
+calc = Calculator(all_descriptors())
 
 # calculate and print descriptors
 for name, value in calc(Chem.MolFromSmiles('c1ccccc1O')):
