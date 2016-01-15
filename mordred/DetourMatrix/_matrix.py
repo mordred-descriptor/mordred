@@ -1,7 +1,7 @@
 import networkx
 import numpy as np
 from .._base import Descriptor
-from . import _matrix_attributes as ma
+from .. import _matrix_attributes as ma
 
 
 class LongestSimplePath(object):

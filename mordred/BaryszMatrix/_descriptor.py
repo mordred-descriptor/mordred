@@ -3,7 +3,7 @@ from .. import _atomic_property
 from rdkit import Chem
 from scipy.sparse.csgraph import shortest_path
 import numpy as np
-from ._matrix_attributes import methods, get_method
+from .._matrix_attributes import methods, get_method
 
 
 class BaryszMatrixDescriptor(Descriptor):
@@ -85,3 +85,7 @@ class BaryszMatrix(BaryszMatrixDescriptor):
 
     def calculate(self, mol, result):
         return result
+
+
+_descriptors = [BaryszMatrix]
+__all__ = [d.__name__ for d in _descriptors]

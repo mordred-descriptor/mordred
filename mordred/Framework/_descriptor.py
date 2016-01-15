@@ -1,5 +1,5 @@
 from .._base import Descriptor
-from ..Ring._descriptor import Rings
+from ..RingCount._descriptor import Rings
 import networkx as nx
 
 

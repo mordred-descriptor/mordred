@@ -1,4 +1,4 @@
-from .._base import Descriptor
+from ._base import Descriptor
 
 
 class AromaticAtomsCount(Descriptor):

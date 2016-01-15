@@ -1,4 +1,4 @@
-from .._base import Descriptor
+from ._base import Descriptor
 import numpy as np
 from collections import namedtuple
 from six import string_types

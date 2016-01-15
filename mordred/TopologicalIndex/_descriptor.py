@@ -110,3 +110,13 @@ class PetitjeanIndex(Descriptor):
 
     def calculate(self, mol, R, D):
         return float(D - R) / float(D)
+
+
+_descriptors = [
+    Radius,
+    Diameter,
+    TopologicalShapeIndex,
+    PetitjeanIndex,
+]
+
+__all__ = [d.__name__ for d in _descriptors]

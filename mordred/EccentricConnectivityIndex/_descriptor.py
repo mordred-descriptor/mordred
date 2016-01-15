@@ -36,3 +36,7 @@ class EccentricConnectivityIndex(Descriptor):
 
     def calculate(self, mol, E, V):
         return (E.astype('int') * V).sum()
+
+
+_descriptors = [EccentricConnectivityIndex]
+__all__ = [d.__name__ for d in _descriptors]

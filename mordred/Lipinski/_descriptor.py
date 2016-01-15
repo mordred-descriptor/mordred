@@ -1,6 +1,5 @@
 from .._base import Descriptor
-from ..Model import WildmanCrippen
-from ..Property import Weight
+from ..Property import Weight, WildmanCrippenLogP
 
 from rdkit.Chem import Lipinski as L
 
@@ -47,16 +46,16 @@ class LipinskiLike(Descriptor):
     @property
     def dependencies(self):
         return dict(
-            CLogP=WildmanCrippen.make_key('LogP'),
+            LogP=WildmanCrippenLogP.make_key('LogP'),
             Weight=Weight.make_key(),
         )
 
-    def Lipinski(self, mol, CLogP, Weight, **other):
+    def Lipinski(self, mol, LogP, Weight, **other):
         return\
             L.NumHDonors(mol) <= 5 and\
             L.NumHAcceptors(mol) <= 10 and\
             Weight <= 500 and\
-            CLogP <= 5
+            LogP <= 5
 
     def calculate(self, mol, **deps):
         return getattr(self, self.variant)(mol, **deps)

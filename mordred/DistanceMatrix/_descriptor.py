@@ -1,6 +1,6 @@
 from .._base import Descriptor
 from .._common import DistanceMatrix as D
-from ._matrix_attributes import methods, get_method
+from .._matrix_attributes import methods, get_method
 
 
 class DistanceMatrix(Descriptor):
@@ -48,3 +48,7 @@ class DistanceMatrix(Descriptor):
 
     def calculate(self, mol, result):
         return result
+
+
+_descriptors = [DistanceMatrix]
+__all__ = [d.__name__ for d in _descriptors]

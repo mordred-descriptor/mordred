@@ -1,6 +1,6 @@
 from .._base import Descriptor
 from ..Bond import BondCount
-from ..Ring import RingCount
+from ..RingCount import RingCount
 
 from rdkit import Chem
 from math import pi

@@ -102,3 +102,7 @@ class BCUT(BurdenMatrixDescriptor):
             return np.sort(bev)[nth]
         else:
             return np.nan
+
+
+_descriptors = [BCUT]
+__all__ = [d.__name__ for d in _descriptors]

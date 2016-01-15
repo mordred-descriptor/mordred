@@ -2,7 +2,7 @@ from .._base import Descriptor
 from rdkit.Chem import Crippen as _Crippen
 
 
-class WildmanCrippen(Descriptor):
+class WildmanCrippenLogP(Descriptor):
     r'''
     Wildman-Crippen LogP/MR descriptor
 
@@ -38,5 +38,5 @@ class WildmanCrippen(Descriptor):
         else:
             return _Crippen.MolMR(mol)
 
-_descriptors = [WildmanCrippen]
+_descriptors = [WildmanCrippenLogP]
 __all__ = [d.__name__ for d in _descriptors]

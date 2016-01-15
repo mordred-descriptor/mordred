@@ -66,3 +66,7 @@ class ZagrebIndex(Descriptor):
                 (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self.variable
                 for b in mol.GetBonds()
             )
+
+
+_descriptors = [ZagrebIndex]
+__all__ = [d.__name__ for d in _descriptors]

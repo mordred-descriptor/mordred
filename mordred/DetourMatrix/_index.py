@@ -1,5 +1,5 @@
 from .._base import Descriptor
-from ..Matrix._detour import detour_matrix
+from ._matrix import detour_matrix
 
 
 class DetourIndex(Descriptor):

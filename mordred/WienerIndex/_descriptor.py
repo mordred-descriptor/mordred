@@ -46,3 +46,7 @@ class WienerIndex(Descriptor):
             return int(0.5 * (D == 3).sum())
         else:
             return int(0.5 * D.sum())
+
+
+_descriptors = [WienerIndex]
+__all__ = [d.__name__ for d in _descriptors]
