@@ -27,6 +27,3 @@ class AromaticBondsCount(Descriptor):
 
     def calculate(self, mol):
         return sum(1 for b in mol.GetBonds() if b.GetIsAromatic())
-
-_descriptors = [AromaticAtomsCount, AromaticBondsCount]
-__all__ = [d.__name__ for d in _descriptors]

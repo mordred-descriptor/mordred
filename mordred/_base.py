@@ -19,11 +19,6 @@ except ImportError:
     from sys import maxint as maxsize
 
 
-__all__ =\
-    'Calculator',\
-    'Descriptor',
-
-
 class Key(object):
     __slots__ = 'cls', 'args'
 

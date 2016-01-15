@@ -2,6 +2,7 @@ from mordred.Property import WildmanCrippenLogP as LogP
 from rdkit import Chem
 from numpy.testing import assert_almost_equal
 
+
 def test_WildmanCrippen1():
     mol = Chem.MolFromSmiles('Oc1ccccc1OC')
     yield assert_almost_equal, LogP('LogP')(mol), 1.4, 2
