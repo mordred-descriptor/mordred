@@ -4,6 +4,8 @@ from six import with_metaclass
 from abc import ABCMeta, abstractmethod
 from types import ModuleType
 
+from sys import int_info
+from inspect import getsourcelines
 try:
     from inspect import getfullargspec as getargspec
 except ImportError:
@@ -196,28 +198,40 @@ class Calculator(object):
 
         for desc in descs:
             if not hasattr(desc, '__iter__'):
-                if isinstance(desc, type):
+                if isinstance(desc, type) and issubclass(desc, Descriptor):
                     for d in desc.preset():
                         self._register_one(d)
 
                 elif isinstance(desc, ModuleType):
-                    for name in dir(desc):
-                        if name[:1] == '_':
-                            continue
-
-                        d = getattr(desc, name)
-                        if issubclass(d, Descriptor):
-                            self.register(d)
+                    self.register(self.get_descriptors_from_module(desc))
 
                 else:
                     self._register_one(desc)
 
-            elif isinstance(desc, tuple) and isinstance(desc[0], type):
-                self._register_one(desc[0](*desc[1:]))
-
             else:
                 for d in desc:
                     self.register(d)
+
+    @staticmethod
+    def get_descriptors_from_module(mdl):
+        descs = []
+
+        for name in dir(mdl):
+            if name[:1] == '_':
+                continue
+
+            desc = getattr(mdl, name)
+            if issubclass(desc, Descriptor):
+                descs.append(desc)
+
+        def key_by_def(d):
+            try:
+                return getsourcelines(d)[1]
+            except IOError:
+                return 2 ** int_info.bits_per_digit
+
+        descs.sort(key=key_by_def)
+        return descs
 
     def _calculate(self, desc, cache):
         if desc.descriptor_key in cache:
