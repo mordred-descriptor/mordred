@@ -33,6 +33,14 @@ class EStateCache(EStateBase):
         return ES.TypeAtoms(mol), ES.EStateIndices(mol)
 
 
+aggr_name_dict = dict(
+    count='N',
+    sum='S',
+    max='MAX',
+    min='MIN',
+)
+
+
 class AtomTypeEState(EStateBase):
     '''
     atom type e-state descriptor
@@ -66,12 +74,9 @@ class AtomTypeEState(EStateBase):
 
     @property
     def descriptor_name(self):
-        if self.aggregate == 'count':
-            aggr = 'n'
-        else:
-            aggr = self.aggregate
+        aggr = aggr_name_dict[self.aggregate]
 
-        return aggr + self.atom_type[:1].upper() + self.atom_type[1:]
+        return aggr + self.atom_type
 
     def __init__(self, aggregate='count', atom_type='sLi'):
         assert aggregate in ['count', 'sum', 'max', 'min']
