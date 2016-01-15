@@ -19,3 +19,4 @@ CCOP(OCC)OCC Triethoxyphosphine
 CP(=O)(O)O MethylphosphonicAcid
 CC1CC1 MethylCyclopropane
 CC#N Acetonitrile
+C1=C(NC=N1)CC(C(=O)O)N Histidine

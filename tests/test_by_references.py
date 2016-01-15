@@ -31,7 +31,7 @@ def test_by_references():
                   )
 
     actuals = dict()
-    for mol in Chem.SmilesMolSupplier(os.path.join(data_dir, 'test.smi'), titleLine=False):
+    for mol in Chem.SmilesMolSupplier(os.path.join(data_dir, 'structures.smi'), titleLine=False):
         actuals[mol.GetProp('_Name')] = dict(calc(mol))
 
     for path in glob(os.path.join(data_dir, '*.yaml')) + glob(os.path.join(data_dir, '**/*.yaml')):
