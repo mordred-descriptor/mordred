@@ -64,7 +64,11 @@ def neighborhood_code(mol, i, order):
     return tree.code
 
 
-class Ag(Descriptor):
+class InformationContentBase(Descriptor):
+    kekulize = True
+
+
+class Ag(InformationContentBase):
     @property
     def dependencies(self):
         return dict(D=DistanceMatrix.make_key(
@@ -89,7 +93,7 @@ class Ag(Descriptor):
             np.array([ag for _, ag in Ags])
 
 
-class InformationContent(Descriptor):
+class InformationContent(InformationContentBase):
     r'''
     information content descriptor
 

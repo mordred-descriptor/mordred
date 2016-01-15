@@ -106,53 +106,46 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
 class Molecule(object):
     def __init__(self, orig):
-        Chem.Kekulize(orig)
+        Chem.SanitizeMol(orig)
         self.orig = orig
-        self.cache = dict()
-
-    def key(self, explicitH=True, kekulize=False, gasteiger=False):
-        return (explicitH, kekulize, gasteiger)
+        self.hydration_cache = dict()
+        self.kekulize_cache = dict()
+        self.gasteiger_cache = dict()
 
     def hydration(self, explicitH):
-        key = self.key(explicitH=explicitH)
-        if key in self.cache:
-            return self.cache[key]
+        if explicitH in self.hydration_cache:
+            return self.hydration_cache[explicitH]
 
         mol = Chem.AddHs(self.orig) if explicitH else Chem.RemoveHs(self.orig)
-        self.cache[key] = mol
+        self.hydration_cache[explicitH] = mol
         return mol
 
-    def kekulize(self, explicitH):
-        key = self.key(explicitH=explicitH, kekulize=True)
-        if key in self.cache:
-            return self.cache[key]
+    def kekulize(self, mol, explicitH):
+        if explicitH in self.kekulize_cache:
+            return self.kekulize_cache[explicitH]
 
-        mol = Chem.Mol(self.hydration(explicitH))
+        mol = Chem.Mol(mol)
         Chem.Kekulize(mol)
-        self.cache[key] = mol
+        self.kekulize_cache[explicitH] = mol
         return mol
 
-    def gasteiger(self, explicitH, kekulize):
-        key = self.key(explicitH=explicitH, kekulize=kekulize, gasteiger=True)
-        if key in self.cache:
-            return self.cache[key]
+    def gasteiger(self, mol, explicitH, kekulize):
+        key = explicitH, kekulize
+        if key in self.gasteiger_cache:
+            return self.gasteiger_cache[key]
 
-        mol = self.kekulize(explicitH) if kekulize else self.hydration(explicitH)
         ComputeGasteigerCharges(mol)
-        self.cache[key] = mol
+        self.gasteiger_cache[key] = mol
         return mol
 
     def get(self, explicitH, kekulize, gasteiger):
-        key = self.key(explicitH=explicitH, kekulize=kekulize, gasteiger=gasteiger)
-        if key in self.cache:
-            return self.cache[key]
-
+        mol = self.hydration(explicitH)
+        if kekulize:
+            mol = self.kekulize(mol, explicitH)
         if gasteiger:
-            return self.gasteiger(explicitH, kekulize)
-        elif kekulize:
-            return self.kekulize(explicitH)
-        else:
-            return self.hydration(explicitH)
+            mol = self.gasteiger(mol, explicitH, kekulize)
+
+        return mol
 
 
 class Calculator(object):
