@@ -88,5 +88,5 @@ for desc, value in calc(Chem.MolFromSmiles('c1ccccc1O')):
 
 Documentation
 --
-### [stable](http://mordred-descriptor.github.io/documentation/release)
-### [beta](http://mordred-descriptor.github.io/documentation/master)
+* [stable](http://mordred-descriptor.github.io/documentation/release)
+* [beta](http://mordred-descriptor.github.io/documentation/master)
