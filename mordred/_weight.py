@@ -20,16 +20,13 @@ class Weight(Descriptor):
         yield cls(False)
         yield cls(True)
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         return 'AMW' if self.averaged else 'MW'
+
+    descriptor_keys = 'averaged',
 
     def __init__(self, averaged=False):
         self.averaged = averaged
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.averaged)
 
     def calculate(self, mol):
         w = ExactMolWt(mol)

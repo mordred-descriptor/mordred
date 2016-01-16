@@ -68,9 +68,7 @@ ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
 
 
 class ChiCache(ChiBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.order)
+    descriptor_keys = 'order',
 
     def __init__(self, order):
         self.order = order
@@ -117,11 +115,11 @@ _deltas = ['delta', 'delta_v']
 
 
 class Chi(ChiBase):
-    '''
+    r'''
     chi descriptor
 
     Parameters:
-        chi_type(str):
+        type(str):
 
             * 'path'
             * 'path-cluster'
@@ -145,35 +143,36 @@ class Chi(ChiBase):
             (cls(ChiType.path, l, a, m) for a in _deltas for m in [False, True] for l in range(8)),
         )
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         prop = _prop_dict.get(self.prop_name, self.prop_name)
-        ct = _chi_type_dict[self.chi_type]
+        ct = _chi_type_dict[self.type]
         p = 'A' if self.averaged else ''
 
         return '{}{}{}-{}'.format(p, prop, ct, self.order)
 
     @property
-    def descriptor_key(self):
-        return self.make_key(self.chi_type, self.order, self.prop, self.averaged)
+    def gasteiger_charges(self):
+        return getattr(self.prop, 'gasteiger_charges', False)
+
+    descriptor_keys = 'type', 'order', 'prop', 'averaged'
+
+    def __init__(self, type='path', order=0, prop='delta', averaged=False):
+        self.order = order
+        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self.type = _parse_chi_type(type)
+        self.averaged = averaged
 
     @property
     def dependencies(self):
         if self.order > 0:
-            return dict(chi=ChiCache.make_key(self.order))
-
-    def __init__(self, chi_type='path', order=0, prop='delta', averaged=False):
-        self.order = order
-        self.prop_name, self.prop = _atomic_property.getter(prop)
-        self.chi_type = _parse_chi_type(chi_type)
-        self.averaged = averaged
+            return dict(chi=ChiCache(self.order))
 
     def calculate(self, mol, chi=None):
         if self.order <= 0:
             chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
 
         x = 0.0
-        node_sets = getattr(chi, self.chi_type.name)
+        node_sets = getattr(chi, self.type.name)
         props = [self.prop(a) for a in mol.GetAtoms()]
         for nodes in node_sets:
             c = 1

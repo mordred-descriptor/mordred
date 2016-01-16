@@ -3,7 +3,7 @@ from rdkit.Chem import rdMolDescriptors
 
 
 class HBondAcceptor(Descriptor):
-    '''
+    r'''
     hydrogen bond acceptor descriptor
 
     Returns:
@@ -11,14 +11,16 @@ class HBondAcceptor(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'nHBAcc'
+
+    def __str__(self):
+        return 'nHBAcc'
 
     def calculate(self, mol):
         return rdMolDescriptors.CalcNumHBA(mol)
 
 
 class HBondDonor(Descriptor):
-    '''
+    r'''
     hydrogen bond donor descriptor
 
     Returns:
@@ -26,7 +28,9 @@ class HBondDonor(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'nHBDon'
+
+    def __str__(self):
+        return 'nHBDon'
 
     def calculate(self, mol):
         return rdMolDescriptors.CalcNumHBD(mol)

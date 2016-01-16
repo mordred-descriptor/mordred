@@ -55,6 +55,7 @@ class CarbonTypes(CarbonTypesBase):
     Returns:
         int: count
     '''
+
     @classmethod
     def preset(cls):
         return map(lambda args: cls(*args), [
@@ -63,23 +64,20 @@ class CarbonTypes(CarbonTypesBase):
             (1, 3), (2, 3), (3, 3), (4, 3),
         ])
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         return 'C{}SP{}'.format(self.nCarbon, self.SP)
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.nCarbon, self.SP)
-
-    @property
-    def dependencies(self):
-        return dict(CT=CarbonTypesCache.make_key())
+    descriptor_keys = 'nCarbon', 'SP'
 
     def __init__(self, nCarbon=1, SP=3):
         assert SP in [1, 2, 3]
 
         self.nCarbon = nCarbon
         self.SP = SP
+
+    @property
+    def dependencies(self):
+        return dict(CT=CarbonTypesCache())
 
     def calculate(self, mol, CT):
         return CT[self.SP][self.nCarbon]
@@ -97,11 +95,12 @@ class HybridizationRatio(CarbonTypesBase):
         float: hybridization ratio
     '''
 
-    descriptor_name = 'HybRatio'
+    def __str__(self):
+        return 'HybRatio'
 
     @property
     def dependencies(self):
-        return dict(CT=CarbonTypesCache.make_key())
+        return dict(CT=CarbonTypesCache())
 
     def calculate(self, mol, CT):
         Nsp3 = float(sum(CT[3].values()))

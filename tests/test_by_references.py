@@ -32,7 +32,7 @@ def test_by_references():
 
     actuals = dict()
     for mol in Chem.SmilesMolSupplier(os.path.join(data_dir, 'structures.smi'), titleLine=False):
-        actuals[mol.GetProp('_Name')] = dict(calc(mol))
+        actuals[mol.GetProp('_Name')] = {str(d): v for d, v in calc(mol)}
 
     for path in glob(os.path.join(data_dir, '*.yaml')) + glob(os.path.join(data_dir, '**/*.yaml')):
         for test in yaml.load(open(path), Loader=Loader):

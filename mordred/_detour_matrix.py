@@ -140,27 +140,24 @@ class DetourMatrix(DetourMatrixBase):
     def preset(cls):
         return map(cls, ma.methods)
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.method)
+    def __str__(self):
+        return '{}_Dt'.format(self.method.__name__)
+
+    descriptor_keys = 'method',
+
+    def __init__(self, method='SpMax'):
+        self.method = ma.get_method(method)
 
     @property
     def dependencies(self):
         return dict(
-            result=self.method.make_key(
-                detour_matrix.make_key(),
+            result=self.method(
+                detour_matrix(),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,
                 self.kekulize,
             )
         )
-
-    @property
-    def descriptor_name(self):
-        return '{}_Dt'.format(self.method.__name__)
-
-    def __init__(self, method='SpMax'):
-        self.method = ma.get_method(method)
 
     def calculate(self, mol, result):
         return result

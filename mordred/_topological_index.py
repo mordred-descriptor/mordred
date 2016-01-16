@@ -3,7 +3,7 @@ from ._common import Radius as _R, Diameter as _D
 
 
 class Radius(Descriptor):
-    '''
+    r'''
     radius descriptor
 
     Returns:
@@ -11,14 +11,17 @@ class Radius(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'Radius'
+
+    def __str__(self):
+        return 'Radius'
 
     @property
     def dependencies(self):
         return dict(
-            R=_R.make_key(
+            R=_R(
                 self.explicit_hydrogens,
-                False, False)
+                False, False,
+            )
         )
 
     def calculate(self, mol, R):
@@ -26,7 +29,7 @@ class Radius(Descriptor):
 
 
 class Diameter(Descriptor):
-    '''
+    r'''
     diameter descriptor
 
     Returns:
@@ -34,12 +37,14 @@ class Diameter(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'Diameter'
+
+    def __str__(self):
+        return 'Diameter'
 
     @property
     def dependencies(self):
         return dict(
-            D=_D.make_key(
+            D=_D(
                 self.explicit_hydrogens,
                 False, False)
         )
@@ -65,15 +70,17 @@ class TopologicalShapeIndex(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'TopoShapeIndex'
+
+    def __str__(self):
+        return 'TopoShapeIndex'
 
     @property
     def dependencies(self):
         args = [self.explicit_hydrogens, False, False]
 
         return dict(
-            R=_R.make_key(*args),
-            D=_D.make_key(*args)
+            R=_R(*args),
+            D=_D(*args)
         )
 
     def calculate(self, mol, R, D):
@@ -97,15 +104,17 @@ class PetitjeanIndex(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'PetitjeanIndex'
+
+    def __str__(self):
+        return 'PetitjeanIndex'
 
     @property
     def dependencies(self):
         args = [self.explicit_hydrogens, False, False]
 
         return dict(
-            R=_R.make_key(*args),
-            D=_D.make_key(*args)
+            R=_R(*args),
+            D=_D(*args)
         )
 
     def calculate(self, mol, R, D):

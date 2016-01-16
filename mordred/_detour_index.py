@@ -19,12 +19,14 @@ class DetourIndex(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'DetourIndex'
+
+    def __str__(self):
+        return 'DetourIndex'
 
     @property
     def dependencies(self):
         return dict(
-            D=detour_matrix.make_key()
+            D=detour_matrix()
         )
 
     def calculate(self, mol, D):

@@ -7,7 +7,7 @@ class FrameworkCache(Descriptor):
     @property
     def dependencies(self):
         return dict(
-            Rs=Rings.make_key()
+            Rs=Rings()
         )
 
     def calculate(self, mol, Rs):
@@ -49,12 +49,13 @@ class Framework(Descriptor):
         float: fMF value
     '''
 
-    descriptor_name = 'fMF'
+    def __str__(self):
+        return 'fMF'
 
     @property
     def dependencies(self):
         return dict(
-            F=FrameworkCache.make_key()
+            F=FrameworkCache()
         )
 
     def calculate(self, mol, F):

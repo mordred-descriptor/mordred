@@ -9,14 +9,16 @@ from ._matrix_attributes import methods, get_method
 class BaryszMatrixDescriptor(Descriptor):
     explicit_hydrogens = False
 
+    @property
+    def gasteiger_charges(self):
+        return getattr(self.prop, 'gasteiger_charges', False)
+
 
 _carbon = Chem.Atom(6)
 
 
 class barysz(BaryszMatrixDescriptor):
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.prop)
+    descriptor_keys = 'prop',
 
     def __init__(self, prop):
         self.prop = prop
@@ -62,26 +64,25 @@ class BaryszMatrix(BaryszMatrixDescriptor):
     def preset(cls):
         return (cls(p, m) for p in _atomic_property.get_properties() for m in methods)
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.prop, self.method)
+    def __str__(self):
+        return '{}_Dz{}'.format(self.method.__name__, self.prop_name)
+
+    descriptor_keys = 'prop', 'method'
+
+    def __init__(self, prop='Z', method='SpMax'):
+        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self.method = get_method(method)
 
     @property
     def dependencies(self):
-        return dict(result=self.method.make_key(
-            barysz.make_key(self.prop),
-            self.explicit_hydrogens,
-            self.gasteiger_charges,
-            self.kekulize,
-        ))
-
-    @property
-    def descriptor_name(self):
-        return '{}_Dz{}'.format(self.method.__name__, self.prop_name)
-
-    def __init__(self, prop='Z', method='SpMax'):
-        self.prop_name, self.prop = _atomic_property.getter(prop)
-        self.method = get_method(method)
+        return dict(
+            result=self.method(
+                barysz(self.prop),
+                self.explicit_hydrogens,
+                self.gasteiger_charges,
+                self.kekulize,
+            )
+        )
 
     def calculate(self, mol, result):
         return result

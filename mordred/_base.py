@@ -15,40 +15,6 @@ except ImportError:
     from inspect import getargspec
 
 
-class Key(object):
-    __slots__ = 'cls', 'args'
-
-    def __init__(self, cls, *args):
-        assert isinstance(cls, type)
-        self.cls = cls
-        self.args = args
-
-    def __hash__(self):
-        return hash((self.cls, self.args))
-
-    def __eq__(self, other):
-        return self.cls is other.cls and self.args == other.args
-
-    def __ne__(self, other):
-        return self.cls is not other.cls or self.args != other.args
-
-    def __str__(self):
-        return self.cls.__name__ + str(hash(tuple(self.args)))
-
-    def __repr__(self):
-        return 'Key({!r}, *{!r})'.format(self.cls, self.args)
-
-    def create(self):
-        try:
-            return self.cls(*self.args)
-        except TypeError:
-            raise ValueError('cannot create {!r} by {!r}'.format(self.cls, self.args))
-
-    @property
-    def descriptor_key(self):
-        return self
-
-
 class Descriptor(with_metaclass(ABCMeta, object)):
     '''
     abstruct base class of descriptors
@@ -57,6 +23,19 @@ class Descriptor(with_metaclass(ABCMeta, object)):
     explicit_hydrogens = True
     gasteiger_charges = False
     kekulize = False
+
+    descriptor_keys = ()
+
+    def __hash__(self):
+        return hash(tuple(map(lambda k: getattr(self, k), self.descriptor_keys)))
+
+    def __eq__(self, other):
+        return\
+            self.__class__ is other.__class__ and\
+            all(getattr(self, k) == getattr(other, k) for k in self.descriptor_keys)
+
+    def __ne__(self, other):
+        return not self == other
 
     @classmethod
     def preset(cls):
@@ -68,27 +47,9 @@ class Descriptor(with_metaclass(ABCMeta, object)):
         '''
         yield cls()
 
-    @classmethod
-    def make_key(cls, *args):
-        return Key(cls, *args)
-
     @property
     def dependencies(self):
         return None
-
-    @property
-    def descriptor_key(self):
-        return self.make_key()
-
-    @property
-    def descriptor_name(self):
-        '''
-        get descriptor name
-
-        Returns:
-            str: descriptor name
-        '''
-        return str(self.descriptor_key)
 
     @abstractmethod
     def calculate(self, mol):
@@ -225,14 +186,14 @@ class Calculator(object):
         return descs
 
     def _calculate(self, desc, cache):
-        if desc.descriptor_key in cache:
-            return cache[desc.descriptor_key]
+        if desc in cache:
+            return cache[desc]
 
-        if isinstance(desc, Key):
-            desc = desc.create()
-
-        args = {name: self._calculate(dep, cache) if dep is not None else None
-                for name, dep in (desc.dependencies or {}).items()}
+        args = {
+            name: self._calculate(dep, cache)
+            if dep is not None else None
+            for name, dep in (desc.dependencies or {}).items()
+        }
 
         mol = self.molecule.get(
             explicitH=desc.explicit_hydrogens,
@@ -241,10 +202,7 @@ class Calculator(object):
         )
         r = desc.calculate(mol, **args)
 
-        if desc.descriptor_key is None:
-            raise ValueError('[bug] descriptor key not provided: {!r}'.format(desc))
-
-        cache[desc.descriptor_key] = r
+        cache[desc] = r
         return r
 
     def __call__(self, mol):
@@ -258,7 +216,7 @@ class Calculator(object):
         self.molecule = Molecule(mol)
 
         return (
-            (desc.descriptor_name, self._calculate(desc, cache))
+            (desc, self._calculate(desc, cache))
             for desc in self.descriptors
         )
 

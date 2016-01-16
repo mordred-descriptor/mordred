@@ -2,11 +2,11 @@ from ._base import Descriptor
 
 
 class AtomCount(Descriptor):
-    '''
+    r'''
     atom count descriptor
 
     Parameters:
-        symbol(str): target to count. 'Atom', 'HeavyAtom', 'X'(all halogen), or element symbol.
+        target(str): target to count. 'Atom', 'HeavyAtom', 'X'(all halogen), or element symbol.
 
     Returns:
         int: count
@@ -21,35 +21,30 @@ class AtomCount(Descriptor):
 
     @property
     def explicit_hydrogens(self):
-        return self.symbol in set(['H', 'Atom'])
+        return self.target in set(['H', 'Atom'])
 
-    @property
-    def descriptor_name(self):
-        return 'n' + self.symbol
+    def __str__(self):
+        return 'n' + self.target
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.symbol)
+    descriptor_keys = 'target',
 
-    def __init__(self, symbol='Atom'):
-        self.symbol = symbol
+    def __init__(self, target='Atom'):
+        self.target = target
 
-        if symbol == 'X':
-            self.f = self.calc_X
-        elif symbol == 'Atom' or symbol == 'HeavyAtom':
-            self.f = self.calc_all
-        else:
-            self.f = self.calc
-
-    def calc_X(self, mol):
+    def _calc_X(self, mol):
         X = set([9, 17, 35, 53, 85, 117])
         return sum(a.GetAtomicNum() in X for a in mol.GetAtoms())
 
-    def calc(self, mol):
-        return sum(a.GetSymbol() == self.symbol for a in mol.GetAtoms())
+    def _calc(self, mol):
+        return sum(a.GetSymbol() == self.target for a in mol.GetAtoms())
 
-    def calc_all(self, mol):
+    def _calc_all(self, mol):
         return mol.GetNumAtoms()
 
     def calculate(self, mol):
-        return self.f(mol)
+        if self.target == 'X':
+            return self._calc_X(mol)
+        elif self.target in ['Atom', 'HeavyAtom']:
+            return self._calc_all(mol)
+        else:
+            return self._calc(mol)

@@ -18,7 +18,9 @@ class FragmentComplexity(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'fragCpx'
+
+    def __str__(self):
+        return 'fragCpx'
 
     def calculate(self, mol):
         A = mol.GetNumAtoms()

@@ -27,18 +27,15 @@ class Sum(Descriptor):
 
     _carbon = Chem.Atom(6)
 
+    descriptor_keys = 'prop',
+
     def __init__(self, prop='v'):
-        self.prop_name, self.prop = _atomic_property.getter(prop)
+        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
         if self.prop == _atomic_property.get_sanderson_en:
             self.prop_name = 'se'
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         return 'S{}'.format(self.prop_name)
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.prop)
 
     def calculate(self, mol):
         return sum(self.prop(a) / self.prop(self._carbon) for a in mol.GetAtoms())
@@ -62,13 +59,12 @@ class Mean(Sum):
     def preset(cls):
         return map(cls, _atomic_property.get_properties())
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         return 'M{}'.format(self.prop_name)
 
     @property
     def dependencies(self):
-        return dict(S=Sum.make_key(self.prop))
+        return dict(S=Sum(self.prop))
 
     def calculate(self, mol, S):
         return S / mol.GetNumAtoms()

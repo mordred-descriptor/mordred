@@ -18,17 +18,19 @@ class EccentricConnectivityIndex(Descriptor):
     '''
 
     explicit_hydrogens = False
-    descriptor_name = 'ECIndex'
+
+    def __str__(self):
+        return 'ECIndex'
 
     @property
     def dependencies(self):
         return dict(
-            E=Eccentricity.make_key(
+            E=Eccentricity(
                 self.explicit_hydrogens,
                 False,
                 False,
             ),
-            V=Valence.make_key(
+            V=Valence(
                 self.explicit_hydrogens,
                 False,
             ),

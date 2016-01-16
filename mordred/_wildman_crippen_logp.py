@@ -20,17 +20,14 @@ class WildmanCrippenLogP(Descriptor):
 
     explicit_hydrogens = False
 
+    def __str__(self):
+        return 'Crippen{}'.format(self.value)
+
+    descriptor_keys = 'value',
+
     def __init__(self, value='LogP'):
         assert value in ['LogP', 'MR']
         self.value = value
-
-    @property
-    def descriptor_name(self):
-        return 'Crippen{}'.format(self.value)
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.value)
 
     def calculate(self, mol):
         if self.value == 'LogP':

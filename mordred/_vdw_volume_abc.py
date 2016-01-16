@@ -40,18 +40,21 @@ class VdwVolumeABC(Descriptor):
         float: VABC value
     '''
 
-    descriptor_name = 'Vabc'
+    def __str__(self):
+        return 'Vabc'
 
     @property
     def dependencies(self):
         return dict(
-            Nb=BondCount.make_key(),
-            NRa=RingCount.make_key(None, False, False, True, None),
-            NRA=RingCount.make_key(None, False, False, False, None),
+            Nb=BondCount(),
+            NRa=RingCount(None, False, False, True, None),
+            NRA=RingCount(None, False, False, False, None),
         )
 
     def calculate(self, mol, Nb, NRa, NRA):
-        ac = sum(atom_contrib[a.GetAtomicNum()]
-                 for a in mol.GetAtoms())
+        ac = sum(
+            atom_contrib[a.GetAtomicNum()]
+            for a in mol.GetAtoms()
+        )
 
         return ac - 5.92 * Nb - 14.7 * NRa - 3.8 * NRA

@@ -376,19 +376,28 @@ getters = dict(
 )
 
 
-def get_properties(istate=False):
-    v = ['Z', 'm', 'v', 'e', 'pe', 'are', 'p', 'i']
+def get_properties(charge=False, istate=False):
+    if charge:
+        yield 'c'
+
+    for p in ['Z', 'm', 'v', 'e', 'pe', 'are', 'p', 'i']:
+        yield p
+
     if istate:
-        v += ['s']
-
-    return v
+        yield 's'
 
 
-def getter(p):
-    if hasattr(p, '__call__'):
-        return p.__name__, p
+def getter(p, explicit_hydrogens):
     if p in getters:
-        getter = getters[p]
-        return getattr(getter, 'symbol', p), getter
-    else:
-        raise ValueError('unknown atomic property: {!r}'.format(p))
+        p = getters[p]
+
+    if p == 'c':
+        if explicit_hydrogens:
+            p = get_charge_explicitHs
+        else:
+            p = get_charge_implicitHs
+
+    if hasattr(p, '__call__'):
+        return getattr(p, 'symbol', p.__name__), p
+
+    raise ValueError('atomic property is not callable: {!r}'.format(p))

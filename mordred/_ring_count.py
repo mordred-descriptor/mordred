@@ -15,7 +15,7 @@ class Rings(RingCountBase):
 class FusedRings(RingCountBase):
     @property
     def dependencies(self):
-        return dict(Rings=Rings.make_key())
+        return dict(Rings=Rings())
 
     def calculate(self, mol, Rings):
         if len(Rings) < 2:
@@ -39,7 +39,7 @@ class RingCount(RingCountBase):
     ring count descriptor
 
     Parameters:
-        length(int or None): number of bonds in ring
+        order(int or None): number of bonds in ring
         greater(bool): count length or greater rings
         fused(bool): count fused rings
         aromatic(bool, None):
@@ -66,15 +66,14 @@ class RingCount(RingCountBase):
 
                     yield cls(12, True, fused, arom, hetero)
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         attrs = []
 
         if self.greater:
             attrs.append('G')
 
-        if self.length is not None:
-            attrs.append(str(self.length))
+        if self.order is not None:
+            attrs.append(str(self.order))
 
         if self.fused:
             attrs.append('F')
@@ -91,39 +90,31 @@ class RingCount(RingCountBase):
 
         return 'n{}Ring'.format(''.join(attrs))
 
-    def __init__(self, length=None, greater=False, fused=False, aromatic=None, hetero=None):
-        self.length = length
+    descriptor_keys = 'order', 'greater', 'fused', 'aromatic', 'hetero'
+
+    def __init__(self, order=None, greater=False, fused=False, aromatic=None, hetero=None):
+        self.order = order
         self.greater = greater
         self.fused = fused
         self.aromatic = aromatic
         self.hetero = hetero
 
     @property
-    def descriptor_key(self):
-        return self.make_key(
-            self.length,
-            self.greater,
-            self.fused,
-            self.aromatic,
-            self.hetero,
-        )
-
-    @property
     def dependencies(self):
         return dict(
-            Rs=(FusedRings if self.fused else Rings).make_key()
+            Rs=(FusedRings if self.fused else Rings)()
         )
 
-    def check_length(self, R):
-        if self.length is None:
+    def _check_order(self, R):
+        if self.order is None:
             return True
 
         if self.greater:
-            return len(R) >= self.length
+            return len(R) >= self.order
         else:
-            return len(R) == self.length
+            return len(R) == self.order
 
-    def check_arom(self, mol, R):
+    def _check_arom(self, mol, R):
         if self.aromatic is None:
             return True
 
@@ -134,7 +125,7 @@ class RingCount(RingCountBase):
 
         return not is_arom
 
-    def check_hetero(self, mol, R):
+    def _check_hetero(self, mol, R):
         if self.hetero is None:
             return True
 
@@ -148,5 +139,5 @@ class RingCount(RingCountBase):
     def calculate(self, mol, Rs):
         return sum(
             1 for R in Rs
-            if self.check_length(R) and self.check_arom(mol, R) and self.check_hetero(mol, R)
+            if self._check_order(R) and self._check_arom(mol, R) and self._check_hetero(mol, R)
         )

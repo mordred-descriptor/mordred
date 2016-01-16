@@ -9,7 +9,7 @@ table = Chem.GetPeriodicTable()
 
 
 class MolecularDistanceEdge(Descriptor):
-    '''
+    r'''
     molecular distance edge descriptor
 
     Parameters:
@@ -33,19 +33,14 @@ class MolecularDistanceEdge(Descriptor):
             for b in range(a, 11 - e)
         )
 
-    @property
-    def dependencies(self):
-        return dict(
-            D=DistanceMatrix.make_key(
-                self.explicit_hydrogens,
-                False,
-                False,
-            ),
-            V=Valence.make_key(
-                False,
-                False,
-            )
+    def __str__(self):
+        return 'MDE{}-{}{}'.format(
+            table.GetElementSymbol(self.atomic_num),
+            self.valence1,
+            self.valence2,
         )
+
+    descriptor_keys = 'valence1', 'valence2', 'atomic_num'
 
     def __init__(self, valence1=1, valence2=1, element='C'):
         self.valence1 = min(valence1, valence2)
@@ -58,17 +53,17 @@ class MolecularDistanceEdge(Descriptor):
             raise ValueError('element must be atomic number or atomic symbol')
 
     @property
-    def descriptor_name(self):
-        return 'MDE{}-{}{}'.format(
-            table.GetElementSymbol(self.atomic_num),
-            self.valence1,
-            self.valence2,
-        )
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(
-            self.valence1, self.valence2, self.atomic_num
+    def dependencies(self):
+        return dict(
+            D=DistanceMatrix(
+                self.explicit_hydrogens,
+                False,
+                False,
+            ),
+            V=Valence(
+                False,
+                False,
+            )
         )
 
     def calculate(self, mol, D, V):

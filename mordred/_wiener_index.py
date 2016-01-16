@@ -20,26 +20,23 @@ class WienerIndex(Descriptor):
         yield cls(False)
         yield cls(True)
 
-    @property
-    def dependencies(self):
-        return dict(
-            D=DistanceMatrix.make_key(
-                self.explicit_hydrogens,
-                False,
-                False,
-            )
-        )
-
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         return 'WPol' if self.polarity else 'WPath'
+
+    descriptor_keys = 'polarity',
 
     def __init__(self, polarity=False):
         self.polarity = polarity
 
     @property
-    def descriptor_key(self):
-        return self.make_key(self.polarity)
+    def dependencies(self):
+        return dict(
+            D=DistanceMatrix(
+                self.explicit_hydrogens,
+                False,
+                False,
+            )
+        )
 
     def calculate(self, mol, D):
         if self.polarity:

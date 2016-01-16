@@ -3,13 +3,7 @@ from rdkit import Chem
 
 
 class DistanceMatrix(Descriptor):
-    @property
-    def descriptor_key(self):
-        return self.make_key(
-            self.explicit_hydrogens,
-            self.useBO,
-            self.useAtomWts,
-        )
+    descriptor_keys = 'explicit_hydrogens', 'useBO', 'useAtomWts'
 
     def __init__(self, explicit_hydrogens, useBO, useAtomWts):
         self.explicit_hydrogens = explicit_hydrogens
@@ -18,17 +12,20 @@ class DistanceMatrix(Descriptor):
 
     def calculate(self, mol):
         return Chem.GetDistanceMatrix(
-            mol, useBO=self.useBO, useAtomWts=self.useAtomWts)
+            mol, useBO=self.useBO, useAtomWts=self.useAtomWts
+        )
 
 
 class Eccentricity(DistanceMatrix):
     @property
     def dependencies(self):
-        return dict(D=DistanceMatrix.make_key(
-            self.explicit_hydrogens,
-            self.useBO,
-            self.useAtomWts,
-        ))
+        return dict(
+            D=DistanceMatrix(
+                self.explicit_hydrogens,
+                self.useBO,
+                self.useAtomWts,
+            )
+        )
 
     def calculate(self, mol, D):
         return D.max(axis=0)
@@ -37,11 +34,13 @@ class Eccentricity(DistanceMatrix):
 class Radius(Eccentricity):
     @property
     def dependencies(self):
-        return dict(E=Eccentricity.make_key(
-            self.explicit_hydrogens,
-            self.useBO,
-            self.useAtomWts,
-        ))
+        return dict(
+            E=Eccentricity(
+                self.explicit_hydrogens,
+                self.useBO,
+                self.useAtomWts,
+            )
+        )
 
     def calculate(self, mol, E):
         return E.min()
@@ -50,24 +49,20 @@ class Radius(Eccentricity):
 class Diameter(DistanceMatrix):
     @property
     def dependencies(self):
-        return dict(D=DistanceMatrix.make_key(
-            self.explicit_hydrogens,
-            self.useBO,
-            self.useAtomWts,
-        ))
+        return dict(
+            D=DistanceMatrix(
+                self.explicit_hydrogens,
+                self.useBO,
+                self.useAtomWts,
+            )
+        )
 
     def calculate(self, mol, D):
         return D.max()
 
 
 class AdjacencyMatrix(Descriptor):
-    @property
-    def descriptor_key(self):
-        return self.make_key(
-            self.explicit_hydrogens,
-            self.useBO,
-            self.order,
-        )
+    descriptor_keys = 'explicit_hydrogens', 'useBO', 'order'
 
     def __init__(self, explicit_hydrogens, useBO, order=1):
         self.explicit_hydrogens = explicit_hydrogens
@@ -78,12 +73,12 @@ class AdjacencyMatrix(Descriptor):
     def dependencies(self):
         if self.order > 1:
             return dict(
-                An=self.make_key(
+                An=self.__class__(
                     self.explicit_hydrogens,
                     self.useBO,
                     self.order - 1,
                 ),
-                A1=self.make_key(
+                A1=self.__class__(
                     self.explicit_hydrogens,
                     self.useBO,
                     1
@@ -102,10 +97,12 @@ class AdjacencyMatrix(Descriptor):
 class Valence(AdjacencyMatrix):
     @property
     def dependencies(self):
-        return dict(D=AdjacencyMatrix.make_key(
-            self.explicit_hydrogens,
-            self.useBO,
-        ))
+        return dict(
+            D=AdjacencyMatrix(
+                self.explicit_hydrogens,
+                self.useBO,
+            )
+        )
 
     def calculate(self, mol, D):
         return D.sum(axis=0)

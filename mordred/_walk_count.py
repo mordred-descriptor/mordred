@@ -26,6 +26,12 @@ class WalkCount(Descriptor):
 
             yield cls(10, True, sr)
 
+    def __str__(self):
+        T = '{}SRW{:02d}' if self.self_returning else '{}MWC{:02d}'
+        return T.format('T' if self.total else '', self.order)
+
+    descriptor_keys = 'order', 'total', 'self_returning'
+
     def __init__(self, order=2, total=False, self_returning=False):
         self.order = order
         self.total = total
@@ -34,17 +40,17 @@ class WalkCount(Descriptor):
     @property
     def dependencies(self):
         if self.total:
-            W = ('W', self.make_key(
+            W = ('W', self.__class__(
                 self.order,
                 False,
                 self.self_returning,
             ))
 
             if self.order > 1:
-                T = ('T', self.make_key(
+                T = ('T', self.__class__(
                     self.order - 1,
                     True,
-                    self.self_returning
+                    self.self_returning,
                 ))
 
                 return dict([W, T])
@@ -52,24 +58,11 @@ class WalkCount(Descriptor):
             return dict([W])
 
         return dict(
-            An=AdjacencyMatrix.make_key(
+            An=AdjacencyMatrix(
                 self.explicit_hydrogens,
                 False,
                 self.order,
             )
-        )
-
-    @property
-    def descriptor_name(self):
-        T = '{}SRW{:02d}' if self.self_returning else '{}MWC{:02d}'
-        return T.format('T' if self.total else '', self.order)
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(
-            self.order,
-            self.total,
-            self.self_returning,
         )
 
     def calculate(self, mol, An=None, T=None, W=None):

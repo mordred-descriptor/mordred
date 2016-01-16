@@ -6,14 +6,8 @@ from .TPSA import TPSA
 from rdkit.Chem import Lipinski as L
 
 
-# Bioavailability: PSA, fusedAromaticRingCount
-# LeadLikeness: LogD, ringCount
-# MueggeFilter: ringCount, PSA
-# VeberFilter: PSA
-
-
 class LipinskiLike(Descriptor):
-    '''
+    r'''
     Lipinski like descriptor
 
     LogP: WildmanCrippenLogP
@@ -27,18 +21,15 @@ class LipinskiLike(Descriptor):
         bool: filter result
     '''
 
-    @property
-    def descriptor_name(self):
-        return self.variant
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.variant)
-
     @classmethod
     def preset(cls):
         yield cls('Lipinski')
         yield cls('GhoseFilter')
+
+    def __str__(self):
+        return self.variant
+
+    descriptor_keys = 'variant',
 
     def __init__(self, variant='Lipinski'):
         assert variant in set([
@@ -55,7 +46,6 @@ class LipinskiLike(Descriptor):
             for prop, key in deps_keys.items()
             if prop in deps_dict[self.variant]
         }
-
 
     def Lipinski(self, mol, LogP, MW, HBDon, HBAcc):
         return\
@@ -80,11 +70,11 @@ deps_dict = dict(
 )
 
 deps_keys = dict(
-    LogP=WildmanCrippenLogP.make_key('LogP'),
-    MR=WildmanCrippenLogP.make_key('MR'),
+    LogP=WildmanCrippenLogP('LogP'),
+    MR=WildmanCrippenLogP('MR'),
 
-    MW=Weight.make_key(),
+    MW=Weight(),
 
-    HBDon=HBondDonor.make_key(),
-    HBAcc=HBondAcceptor.make_key(),
+    HBDon=HBondDonor(),
+    HBAcc=HBondAcceptor(),
 )

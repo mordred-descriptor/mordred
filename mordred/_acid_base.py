@@ -3,14 +3,13 @@ from rdkit import Chem
 
 
 class SmartsCount(Descriptor):
-    def __init__(self):
-        self.mols = []
-        for s in self.smarts:
-            mol = Chem.MolFromSmarts(s)
-            self.mols.append(mol)
+    def get_smarts(self):
+        self.mols = [Chem.MolFromSmarts(s) for s in self.smarts]
+        return self.mols
 
     def calculate(self, mol):
-        return sum(len(mol.GetSubstructMatches(q)) for q in self.mols)
+        mols = getattr(self, 'mols', None) or self.get_smarts()
+        return sum(len(mol.GetSubstructMatches(q)) for q in mols)
 
 
 class AcidicGroupCount(SmartsCount):
@@ -21,7 +20,9 @@ class AcidicGroupCount(SmartsCount):
         int: number of acidic groups
     '''
 
-    descriptor_name = 'nAcid'
+    def __str__(self):
+        return 'nAcid'
+
     smarts = [
         "[$([O;H1]-[C,S,P]=O)]",
         "[$([*;-;!$(*~[*;+])])]",
@@ -38,7 +39,9 @@ class BasicGroupCount(SmartsCount):
         int: number of basic groups
     '''
 
-    descriptor_name = 'nBase'
+    def __str__(self):
+        return 'nBase'
+
     smarts = [
         "[$([NH2]-[CX4])]",
         "[$([NH](-[CX4])-[CX4])]",

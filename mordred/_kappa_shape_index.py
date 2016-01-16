@@ -20,6 +20,11 @@ class KappaShapeIndex(Descriptor):
     def preset(cls):
         return map(cls, range(1, 4))
 
+    def __str__(self):
+        return 'Kier{}'.format(self.order)
+
+    descriptor_keys = 'order',
+
     def __init__(self, order=1):
         assert order in [1, 2, 3]
 
@@ -28,16 +33,8 @@ class KappaShapeIndex(Descriptor):
     @property
     def dependencies(self):
         return dict(
-            Chi=ChiCache.make_key(self.order)
+            Chi=ChiCache(self.order)
         )
-
-    @property
-    def descriptor_name(self):
-        return 'Kier{}'.format(self.order)
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.order)
 
     def calculate(self, mol, Chi):
         P = len(Chi.path)

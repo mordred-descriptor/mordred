@@ -6,18 +6,15 @@ from ._common import DistanceMatrix
 
 class AutocorrelationBase(Descriptor):
     explicit_hydrogens = True
-
     prop = None
 
     @property
     def gasteiger_charges(self):
-        return getattr(self.prop, 'gasteiger_charges', True)
+        return getattr(self.prop, 'gasteiger_charges', False)
 
 
 class AVec(AutocorrelationBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.prop)
+    descriptor_keys = 'prop',
 
     def __init__(self, prop):
         self.prop = prop
@@ -27,107 +24,99 @@ class AVec(AutocorrelationBase):
 
 
 class CAVec(AutocorrelationBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.prop)
-
-    @property
-    def dependencies(self):
-        return dict(avec=AVec.make_key(self.prop))
+    descriptor_keys = 'prop',
 
     def __init__(self, prop):
         self.prop = prop
+
+    @property
+    def dependencies(self):
+        return dict(avec=AVec(self.prop))
 
     def calculate(self, mol, avec):
         return avec - avec.mean()
 
 
 class GMat(AutocorrelationBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.distance)
+    descriptor_keys = 'order',
+
+    def __init__(self, order):
+        self.order = order
 
     @property
     def dependencies(self):
-        return dict(dmat=DistanceMatrix.make_key(
-            self.explicit_hydrogens,
-            False,
-            False))
-
-    def __init__(self, distance):
-        self.distance = distance
+        return dict(
+            dmat=DistanceMatrix(
+                self.explicit_hydrogens,
+                False,
+                False,
+            )
+        )
 
     def calculate(self, mol, dmat):
-        return dmat == self.distance
+        return dmat == self.order
 
 
 class GSum(AutocorrelationBase):
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.distance)
+    descriptor_keys = 'order',
+
+    def __init__(self, order):
+        self.order = order
 
     @property
     def dependencies(self):
-        return dict(gmat=GMat.make_key(self.distance))
-
-    def __init__(self, distance):
-        self.distance = distance
+        return dict(gmat=GMat(self.order))
 
     def calculate(self, mol, gmat):
         s = gmat.sum()
 
-        if self.distance == 0:
+        if self.order == 0:
             return s
         else:
             return s / 2
 
 
 class Autocorrelation(AutocorrelationBase):
-    @property
-    def descriptor_name(self):
-        return '{}{}{}'.format(self.__class__.__name__, self.distance, self.prop_name)
+    def __str__(self):
+        return '{}{}{}'.format(
+            self.__class__.__name__,
+            self.order,
+            self.prop_name
+        )
 
-    @property
-    def descriptor_key(self):
-        return self.__class__.make_key(self.prop, self.distance)
+    descriptor_keys = 'prop', 'order'
 
-    def __init__(self, distance=0, prop='m'):
-        if prop == 'c':
-            self.prop_name = 'c'
-            self.prop = _atomic_property.get_charge_explicitHs
-
-        else:
-            self.prop_name, self.prop = _atomic_property.getter(prop)
-
-        self.distance = distance
+    def __init__(self, order=0, prop='m'):
+        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self.order = order
 
     @property
     def _avec(self):
-        return AVec.make_key(self.prop)
+        return AVec(self.prop)
 
     @property
     def _cavec(self):
-        return CAVec.make_key(self.prop)
+        return CAVec(self.prop)
 
     @property
     def _gmat(self):
-        return GMat.make_key(self.distance)
+        return GMat(self.order)
 
     @property
     def _gsum(self):
-        return GSum.make_key(self.distance)
+        return GSum(self.order)
 
     @property
     def _ATS(self):
-        return ATS.make_key(self.distance, self.prop)
+        return ATS(self.order, self.prop)
 
     @property
     def _ATSC(self):
-        return ATSC.make_key(self.distance, self.prop)
+        return ATSC(self.order, self.prop)
 
     @property
     def _AATSC(self):
-        return AATSC.make_key(self.distance, self.prop)
+        return AATSC(self.order, self.prop)
 
 MAX_DISTANCE = 8
 
@@ -156,10 +145,10 @@ class ATS(Autocorrelation):
 
     where
     :math:`{\boldsymbol w}` is atomic property vector,
-    :math:`d_{ij}` is graph distance.
+    :math:`d_{ij}` is graph distance(smallest number of bonds between atom i and j).
 
     Parameters:
-        distance(int): graph distance(:math:`k`)
+        order(int): order(:math:`k`)
         property(str, function): atomic property
 
     Returns:
@@ -177,7 +166,7 @@ class ATS(Autocorrelation):
         return dict(avec=self._avec, gmat=self._gmat)
 
     def calculate(self, mol, avec, gmat):
-        if self.distance == 0:
+        if self.order == 0:
             return float((avec ** 2).sum())
 
         return 0.5 * avec.dot(gmat).dot(avec)
@@ -192,7 +181,7 @@ class AATS(ATS):
         {\rm AATS}_k = \frac{{\rm ATS}_k}{\Delta_k}
 
     where
-    :math:`\Delta_k` is number of vertex pairs at distance equal to :math:`k`.
+    :math:`\Delta_k` is number of vertex pairs at order equal to :math:`k`.
 
     Parameters:
         parameters: see ATS
@@ -228,14 +217,16 @@ class ATSC(Autocorrelation):
 
     @classmethod
     def preset(cls):
-        return (cls(d, a) for a in 'cmvepis' for d in range(MAX_DISTANCE + 1))
+        return (cls(d, a)
+                for a in _atomic_property.get_properties(charge=True, istate=True)
+                for d in range(MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):
         return dict(cavec=self._cavec, gmat=self._gmat)
 
     def calculate(self, mol, cavec, gmat):
-        if self.distance == 0:
+        if self.order == 0:
             return float((cavec ** 2).sum())
 
         return 0.5 * cavec.dot(gmat).dot(cavec)
@@ -250,7 +241,7 @@ class AATSC(ATSC):
         {\rm AATSC}_k = \frac{{\rm ATSC}_k}{\Delta_k}
 
     where
-    :math:`\Delta_k` is number of vertex pairs at distance equal to :math:`k`.
+    :math:`\Delta_k` is number of vertex pairs at order equal to :math:`k`.
 
     Parameters:
         parameters: see ATS
@@ -288,7 +279,9 @@ class MATS(Autocorrelation):
 
     @classmethod
     def preset(cls):
-        return (cls(d, a) for a in 'cmvepis' for d in range(1, MAX_DISTANCE + 1))
+        return (cls(d, a)
+                for a in _atomic_property.get_properties(charge=True, istate=True)
+                for d in range(1, MAX_DISTANCE + 1))
 
     @property
     def dependencies(self):

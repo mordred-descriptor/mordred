@@ -42,7 +42,7 @@ aggr_name_dict = dict(
 
 
 class AtomTypeEState(EStateBase):
-    '''
+    r'''
     atom type e-state descriptor
 
     Parameters:
@@ -66,17 +66,12 @@ class AtomTypeEState(EStateBase):
             for t in es_types
         )
 
-    @property
-    def dependencies(self):
-        return dict(
-            E=EStateCache.make_key()
-        )
-
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         aggr = aggr_name_dict[self.aggregate]
 
         return aggr + self.atom_type
+
+    descriptor_keys = 'aggregate', 'atom_type'
 
     def __init__(self, aggregate='count', atom_type='sLi'):
         assert aggregate in ['count', 'sum', 'max', 'min']
@@ -86,11 +81,8 @@ class AtomTypeEState(EStateBase):
         self.atom_type = atom_type
 
     @property
-    def descriptor_key(self):
-        return self.make_key(
-            self.aggregate,
-            self.atom_type,
-        )
+    def dependencies(self):
+        return dict(E=EStateCache())
 
     def calculate(self, mol, E):
         if self.aggregate == 'count':

@@ -29,22 +29,14 @@ class ZagrebIndex(Descriptor):
     def preset(cls):
         return (cls(v, x) for x in [1, -1] for v in [1, 2])
 
-    @property
-    def dependencies(self):
-        return dict(
-            V=Valence.make_key(
-                self.explicit_hydrogens,
-                False,
-            ),
-        )
-
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         if self.variable in [1, -1]:
             m = '' if self.variable == 1 else 'm'
             return '{}Zagreb{}'.format(m, self.version)
 
         return 'Zagreb{}_{}'.format(self.version, self.variable)
+
+    descriptor_keys = 'version', 'variable'
 
     def __init__(self, version=1, variable=1):
         assert version in [1, 2]
@@ -52,8 +44,13 @@ class ZagrebIndex(Descriptor):
         self.variable = variable
 
     @property
-    def descriptor_key(self):
-        return self.make_key(self.version, self.variable)
+    def dependencies(self):
+        return dict(
+            V=Valence(
+                self.explicit_hydrogens,
+                False,
+            ),
+        )
 
     def calculate(self, mol, V):
         if not isinstance(self.variable, int) or self.variable < 0:

@@ -15,13 +15,7 @@ def method(cls):
 
 
 class common(Descriptor):
-    @property
-    def descriptor_key(self):
-        return self.make_key(
-            self.matrix,
-            self.explicit_hydrogens,
-            self.gasteiger_charges,
-            self.kekulize)
+    descriptor_keys = 'matrix', 'explicit_hydrogens', 'gasteiger_charges', 'kekulize'
 
     def __init__(self, matrix, explicit_hydrogens, gasteiger_charges, kekulize):
         self.matrix = matrix
@@ -31,34 +25,36 @@ class common(Descriptor):
 
     @property
     def _key_args(self):
-        return [self.matrix,
-                self.explicit_hydrogens,
-                self.gasteiger_charges,
-                self.kekulize]
+        return [
+            self.matrix,
+            self.explicit_hydrogens,
+            self.gasteiger_charges,
+            self.kekulize
+        ]
 
     @property
     def _eig(self):
-        return Eigen.make_key(*self._key_args)
+        return Eigen(*self._key_args)
 
     @property
     def _SpMax(self):
-        return SpMax.make_key(*self._key_args)
+        return SpMax(*self._key_args)
 
     @property
     def _SpMean(self):
-        return SpMean.make_key(*self._key_args)
+        return SpMean(*self._key_args)
 
     @property
     def _SpAD(self):
-        return SpAD.make_key(*self._key_args)
+        return SpAD(*self._key_args)
 
     @property
     def _VE1(self):
-        return VE1.make_key(*self._key_args)
+        return VE1(*self._key_args)
 
     @property
     def _VR1(self):
-        return VR1.make_key(*self._key_args)
+        return VR1(*self._key_args)
 
 
 class Eigen(common):

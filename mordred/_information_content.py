@@ -69,20 +69,21 @@ class InformationContentBase(Descriptor):
 
 
 class Ag(InformationContentBase):
-    @property
-    def dependencies(self):
-        return dict(D=DistanceMatrix.make_key(
-            self.explicit_hydrogens,
-            False,
-            False,
-        ))
+
+    descriptor_keys = 'order',
 
     def __init__(self, order):
         self.order = order
 
     @property
-    def descriptor_key(self):
-        return self.make_key(self.order)
+    def dependencies(self):
+        return dict(
+            D=DistanceMatrix(
+                self.explicit_hydrogens,
+                False,
+                False,
+            )
+        )
 
     def calculate(self, mol, D):
         atoms = [neighborhood_code(mol, i, self.order) for i in range(mol.GetNumAtoms())]
@@ -98,7 +99,7 @@ class InformationContent(InformationContentBase):
     information content descriptor
 
     Parameters:
-        ic_type(str):
+        type(str):
             * '' - normal IC
             * 'T'
             * 'S'
@@ -118,39 +119,36 @@ class InformationContent(InformationContentBase):
             for o in range(6)
         )
 
-    @property
-    def dependencies(self):
-        if self.ic_type in ['T', 'S', 'C', 'B']:
-            return dict(
-                ICm=self.make_key('', self.order)
-            )
-        else:
-            return dict(
-                iAgs=Ag.make_key(self.order)
-            )
+    def __str__(self):
+        return '{}IC{}'.format(self.type, self.order)
 
-    def __init__(self, ic_type='', order=0):
-        assert ic_type in ['', 'T', 'S', 'C', 'B', 'M', 'ZM']
-        self.ic_type = ic_type
+    descriptor_keys = 'type', 'order'
+
+    def __init__(self, type='', order=0):
+        assert type in ['', 'T', 'S', 'C', 'B', 'M', 'ZM']
+        self.type = type
         self.order = order
 
     @property
-    def descriptor_name(self):
-        return '{}IC{}'.format(self.ic_type, self.order)
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.ic_type, self.order)
+    def dependencies(self):
+        if self.type in ['T', 'S', 'C', 'B']:
+            return dict(
+                ICm=self.__class__('', self.order)
+            )
+        else:
+            return dict(
+                iAgs=Ag(self.order)
+            )
 
     def calculate(self, mol, iAgs=None, ICm=None):
         N = mol.GetNumAtoms()
-        if self.ic_type in ['', 'M', 'ZM']:
+        if self.type in ['', 'M', 'ZM']:
             ids = iAgs[0]
             Ags = iAgs[1]
 
-            if self.ic_type == '':
+            if self.type == '':
                 w = 1
-            elif self.ic_type == 'M':
+            elif self.type == 'M':
                 w = np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetMass())(ids)
             else:
                 w = Ags * np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
@@ -158,13 +156,13 @@ class InformationContent(InformationContentBase):
             e = np.vectorize(lambda Ag: entropy_term(float(Ag) / N))(Ags)
             return -np.sum(w * e)
 
-        if self.ic_type == 'T':
+        if self.type == 'T':
             return N * ICm
-        elif self.ic_type == 'S':
+        elif self.type == 'S':
             return ICm / math.log(N, 2)
-        elif self.ic_type == 'C':
+        elif self.type == 'C':
             return math.log(N, 2) - ICm
-        elif self.ic_type == 'B':
+        elif self.type == 'B':
             bts = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
             return ICm / math.log(bts, 2)
 

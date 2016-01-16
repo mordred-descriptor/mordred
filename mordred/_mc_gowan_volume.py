@@ -10,7 +10,8 @@ class McGowanVolume(Descriptor):
         float: McGowan volume
     '''
 
-    descriptor_name = 'McGowan'
+    def __str__(self):
+        return 'VMcGowan'
 
     def calculate(self, mol):
         a = sum(get_mc_gowan_volume(a) for a in mol.GetAtoms())

@@ -13,11 +13,10 @@ class APol(Descriptor):
         float: sum of atomic polarizability
     '''
 
-    descriptor_name = 'apol'
+    def __str__(self):
+        return 'apol78' if self.use78 else 'apol'
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.use78)
+    descriptor_keys = 'use78',
 
     def __init__(self, use78=False):
         self.use78 = use78
@@ -38,11 +37,10 @@ class BPol(Descriptor):
         float: sum of bond polarizability
     '''
 
-    descriptor_name = 'bpol'
+    def __str__(self):
+        return 'bpol78' if self.use78 else 'bpol'
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.use78)
+    descriptor_keys = 'use78',
 
     def __init__(self, use78=False):
         self.use78 = use78

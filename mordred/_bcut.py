@@ -34,9 +34,7 @@ class burden(BurdenMatrixDescriptor):
 
 
 class burden_eigen_values(BurdenMatrixDescriptor):
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.prop, self.gasteiger_charges)
+    descriptor_keys = 'prop', 'gasteiger_charges'
 
     def __init__(self, prop, gasteiger_charges):
         self.prop = prop
@@ -44,7 +42,7 @@ class burden_eigen_values(BurdenMatrixDescriptor):
 
     @property
     def dependencies(self):
-        return dict(burden=burden.make_key())
+        return dict(burden=burden())
 
     def calculate(self, mol, burden):
         bmat = burden.copy()
@@ -58,8 +56,7 @@ class BCUT(BurdenMatrixDescriptor):
 
     Parameters:
         prop(str, function): atomic property
-        from_high(bool): n-th eigen value from high
-        nth(int): n-th eigen value
+        nth(int): n-th eigen value. 0 is highest, -1 is lowest.
 
     Returns:
         float: result
@@ -68,41 +65,33 @@ class BCUT(BurdenMatrixDescriptor):
     @classmethod
     def preset(cls):
         return (
-            cls(a, 1, h)
-            for a in _atomic_property.get_properties(istate=True)
-            for h in [False, True]
+            cls(a, n)
+            for a in _atomic_property.get_properties(istate=True, charge=True)
+            for n in [0, -1]
         )
 
     @property
-    def descriptor_name(self):
-        hl = 'h' if self.from_high else 'l'
-        return 'BCUT{}-{}{}'.format(self.prop_name, self.nth, hl)
+    def gasteiger_charges(self):
+        return getattr(self.prop, 'gasteiger_charges', False)
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.prop, self.nth, self.from_high)
-
-    def __init__(self, prop='m', nth=1, from_high=True):
-        if prop == 'c':
-            self.prop_name = 'c'
-            self.prop = _atomic_property.get_charge_implicitHs
-            self.gasteiger_charges = True
+    def __str__(self):
+        if self.nth < 0:
+            return 'BCUT{}-{}l'.format(self.prop_name, np.abs(self.nth))
         else:
-            self.prop_name, self.prop = _atomic_property.getter(prop)
-            self.gasteiger_charges = False
+            return 'BCUT{}-{}h'.format(self.prop_name, self.nth + 1)
 
+    descriptor_keys = 'prop', 'nth'
+
+    def __init__(self, prop='m', nth=0):
+        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
         self.nth = nth
-        self.from_high = from_high
 
     @property
     def dependencies(self):
-        return dict(bev=burden_eigen_values.make_key(self.prop, self.gasteiger_charges))
+        return dict(bev=burden_eigen_values(self.prop, self.gasteiger_charges))
 
     def calculate(self, mol, bev):
-        nth = self.nth - 1
-        if 0 <= nth < len(bev):
-            if self.from_high:
-                nth = len(bev) - nth - 1
-            return np.sort(bev)[nth]
-        else:
+        try:
+            return np.sort(bev)[-1::-1][self.nth]
+        except IndexError:
             return np.nan

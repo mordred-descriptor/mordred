@@ -17,7 +17,7 @@ bond_type_dict = {
 
 
 class BondCount(Descriptor):
-    '''
+    r'''
     bond count descriptor
 
     Parameters:
@@ -51,8 +51,7 @@ class BondCount(Descriptor):
             ])
         )
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         K = 'K' if self.kekulize else ''
         return 'nBonds{}{}'.format(K, self.bond_name)
 
@@ -60,9 +59,7 @@ class BondCount(Descriptor):
     def explicit_hydrogens(self):
         return self.bond_name in ['', 'S']
 
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.bond_name, self.kekulize)
+    descriptor_keys = 'bond_name', 'kekulize'
 
     def __init__(self, bond_type='any', kekulize=False):
         self.bond_name, self.check_bond = bond_type_dict[bond_type.lower()]

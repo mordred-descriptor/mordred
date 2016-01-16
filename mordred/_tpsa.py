@@ -22,16 +22,13 @@ class TPSA(Descriptor):
         yield cls(True)
         yield cls(False)
 
-    @property
-    def descriptor_name(self):
+    def __str__(self):
         return 'TPSA(NO)' if self.no_only else 'TPSA'
+
+    descriptor_keys = 'no_only',
 
     def __init__(self, no_only=True):
         self.no_only = no_only
-
-    @property
-    def descriptor_key(self):
-        return self.make_key(self.no_only)
 
     def calculate(self, mol):
         tpsa = rdMolDescriptors.CalcTPSA(mol)
