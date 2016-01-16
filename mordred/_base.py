@@ -232,10 +232,6 @@ class Calculator(object):
             for desc in self.descriptors
         )
 
-    def _worker(self, args):
-        mol, = args
-        return list(self(mol))
-
     def parallel(self, mols, processes=None):
         u'''
         parallel calculate descriptors
@@ -252,11 +248,16 @@ class Calculator(object):
         try:
             pool = Pool(processes)
             return pool.map(
-                self._worker,
-                ((m,) for m in mols)
+                worker,
+                ((self, m.ToBinary()) for m in mols)
             )
         finally:
             pool.terminate()
+
+
+def worker(args):
+    calc, binary = args
+    return list(calc(Chem.Mol(binary)))
 
 
 def all_descriptors():
