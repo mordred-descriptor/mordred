@@ -8,7 +8,7 @@ class DistanceMatrix(Descriptor):
     distance matrix descriptor
 
     Parameters:
-        method(str): matrix aggregate method
+        type(str): matrix aggregating method
 
     Returns:
         float: result
@@ -21,17 +21,17 @@ class DistanceMatrix(Descriptor):
         return map(cls, methods)
 
     def __str__(self):
-        return '{}_D'.format(self.method.__name__)
+        return '{}_D'.format(self.type.__name__)
 
-    descriptor_keys = 'method',
+    descriptor_keys = 'type',
 
-    def __init__(self, method='SpMax'):
-        self.method = get_method(method)
+    def __init__(self, type='SpMax'):
+        self.type = get_method(type)
 
     @property
     def dependencies(self):
         return dict(
-            result=self.method(
+            result=self.type(
                 D(
                     self.explicit_hydrogens,
                     False,

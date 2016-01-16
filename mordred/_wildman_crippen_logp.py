@@ -7,7 +7,7 @@ class WildmanCrippenLogP(Descriptor):
     Wildman-Crippen LogP/MR descriptor
 
     Parameters:
-        value(str): 'LogP' or 'MR'
+        prop(str): 'LogP' or 'MR'
 
     Returns:
         float: LogP or MR value
@@ -21,16 +21,16 @@ class WildmanCrippenLogP(Descriptor):
     explicit_hydrogens = False
 
     def __str__(self):
-        return 'Crippen{}'.format(self.value)
+        return 'Crippen{}'.format(self.prop)
 
-    descriptor_keys = 'value',
+    descriptor_keys = 'prop',
 
-    def __init__(self, value='LogP'):
-        assert value in ['LogP', 'MR']
-        self.value = value
+    def __init__(self, prop='LogP'):
+        assert prop in ['LogP', 'MR']
+        self.prop = prop
 
     def calculate(self, mol):
-        if self.value == 'LogP':
+        if self.prop == 'LogP':
             return _Crippen.MolLogP(mol)
         else:
             return _Crippen.MolMR(mol)

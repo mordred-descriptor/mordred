@@ -54,7 +54,7 @@ class BaryszMatrix(BaryszMatrixDescriptor):
 
     Parameters:
         prop(str, function): atomic property
-        method(str): matrix aggregate method
+        type(str): matrix aggregateing method
 
     Returns:
         float: result
@@ -65,18 +65,18 @@ class BaryszMatrix(BaryszMatrixDescriptor):
         return (cls(p, m) for p in _atomic_property.get_properties() for m in methods)
 
     def __str__(self):
-        return '{}_Dz{}'.format(self.method.__name__, self.prop_name)
+        return '{}_Dz{}'.format(self.type.__name__, self.prop_name)
 
-    descriptor_keys = 'prop', 'method'
+    descriptor_keys = 'prop', 'type'
 
-    def __init__(self, prop='Z', method='SpMax'):
+    def __init__(self, prop='Z', type='SpMax'):
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.method = get_method(method)
+        self.type = get_method(type)
 
     @property
     def dependencies(self):
         return dict(
-            result=self.method(
+            result=self.type(
                 barysz(self.prop),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,

@@ -130,7 +130,7 @@ class DetourMatrix(DetourMatrixBase):
     detour matrix descriptor
 
     Parameters:
-        method(str): matrix aggregate method
+        type(str): matrix aggregating method
 
     Returns:
         float: result
@@ -141,17 +141,17 @@ class DetourMatrix(DetourMatrixBase):
         return map(cls, ma.methods)
 
     def __str__(self):
-        return '{}_Dt'.format(self.method.__name__)
+        return '{}_Dt'.format(self.type.__name__)
 
-    descriptor_keys = 'method',
+    descriptor_keys = 'type',
 
-    def __init__(self, method='SpMax'):
-        self.method = ma.get_method(method)
+    def __init__(self, type='SpMax'):
+        self.type = ma.get_method(type)
 
     @property
     def dependencies(self):
         return dict(
-            result=self.method(
+            result=self.type(
                 detour_matrix(),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,

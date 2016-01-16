@@ -21,7 +21,7 @@ class BondCount(Descriptor):
     bond count descriptor
 
     Parameters:
-        bond_type(str):
+        type(str):
             * 'any' - any
             * 'heavy' - any, not include bond which connect to hydrogen
 
@@ -61,8 +61,8 @@ class BondCount(Descriptor):
 
     descriptor_keys = 'bond_name', 'kekulize'
 
-    def __init__(self, bond_type='any', kekulize=False):
-        self.bond_name, self.check_bond = bond_type_dict[bond_type.lower()]
+    def __init__(self, type='any', kekulize=False):
+        self.bond_name, self.check_bond = bond_type_dict[type.lower()]
         self.kekulize = kekulize
 
     def calculate(self, mol):

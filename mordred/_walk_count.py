@@ -32,7 +32,7 @@ class WalkCount(Descriptor):
 
     descriptor_keys = 'order', 'total', 'self_returning'
 
-    def __init__(self, order=2, total=False, self_returning=False):
+    def __init__(self, order=1, total=False, self_returning=False):
         self.order = order
         self.total = total
         self.self_returning = self_returning

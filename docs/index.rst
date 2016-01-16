@@ -13,6 +13,8 @@ Contents:
 
    api/mordred.rst
 
+   matrix.rst
+   atomic_prop.rst
 
 
 Indices and tables

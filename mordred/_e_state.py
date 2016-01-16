@@ -46,13 +46,13 @@ class AtomTypeEState(EStateBase):
     atom type e-state descriptor
 
     Parameters:
-        aggregate(str):
+        type(str):
             * 'count'
             * 'sum'
             * 'max'
             * 'min'
 
-        atom_type(str): e-state atom type
+        estate(str): e-state atom type
 
     Returns:
         int or float: e-state value
@@ -67,33 +67,33 @@ class AtomTypeEState(EStateBase):
         )
 
     def __str__(self):
-        aggr = aggr_name_dict[self.aggregate]
+        aggr = aggr_name_dict[self.type]
 
-        return aggr + self.atom_type
+        return aggr + self.estate
 
-    descriptor_keys = 'aggregate', 'atom_type'
+    descriptor_keys = 'type', 'estate'
 
-    def __init__(self, aggregate='count', atom_type='sLi'):
-        assert aggregate in ['count', 'sum', 'max', 'min']
-        assert atom_type in es_type_set
+    def __init__(self, type='count', estate='sLi'):
+        assert type in ['count', 'sum', 'max', 'min']
+        assert estate in es_type_set
 
-        self.aggregate = aggregate
-        self.atom_type = atom_type
+        self.type = type
+        self.estate = estate
 
     @property
     def dependencies(self):
         return dict(E=EStateCache())
 
     def calculate(self, mol, E):
-        if self.aggregate == 'count':
-            return reduce(lambda a, b: a + b, E[0]).count(self.atom_type)
+        if self.type == 'count':
+            return reduce(lambda a, b: a + b, E[0]).count(self.estate)
 
         indices = map(
             lambda e: e[1],
-            filter(lambda e: self.atom_type in e[0], zip(*E))
+            filter(lambda e: self.estate in e[0], zip(*E))
         )
 
         try:
-            return float(getattr(builtins, self.aggregate)(indices))
+            return float(getattr(builtins, self.type)(indices))
         except ValueError:  # min, max to empty list
             return nan
