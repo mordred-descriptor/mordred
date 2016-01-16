@@ -59,9 +59,10 @@ class BondCount(Descriptor):
     def explicit_hydrogens(self):
         return self.bond_name in ['', 'S']
 
-    descriptor_keys = 'bond_name', 'kekulize'
+    descriptor_keys = 'type', 'kekulize'
 
     def __init__(self, type='any', kekulize=False):
+        self.type = type
         self.bond_name, self.check_bond = bond_type_dict[type.lower()]
         self.kekulize = kekulize
 

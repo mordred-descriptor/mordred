@@ -84,7 +84,7 @@ class Autocorrelation(AutocorrelationBase):
             self.prop_name
         )
 
-    descriptor_keys = 'prop', 'order'
+    descriptor_keys = 'order', 'prop'
 
     def __init__(self, order=0, prop='m'):
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)

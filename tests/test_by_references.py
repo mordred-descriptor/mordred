@@ -30,9 +30,13 @@ def test_by_references():
                   Polarizability.BPol(True),
                   )
 
+    smi_path = os.path.join(data_dir, 'structures.smi')
+
     actuals = dict()
-    for mol in Chem.SmilesMolSupplier(os.path.join(data_dir, 'structures.smi'), titleLine=False):
-        actuals[mol.GetProp('_Name')] = {str(d): v for d, v in calc(mol)}
+    mols = [m for m in Chem.SmilesMolSupplier(smi_path, titleLine=False)]
+
+    for mol, desc in zip(mols, calc.parallel(mols)):
+        actuals[mol.GetProp('_Name')] = {str(d): v for d, v in desc}
 
     for path in glob(os.path.join(data_dir, '*.yaml')) + glob(os.path.join(data_dir, '**/*.yaml')):
         for test in yaml.load(open(path), Loader=Loader):

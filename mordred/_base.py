@@ -26,6 +26,10 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
     descriptor_keys = ()
 
+    def __reduce_ex__(self, version):
+        return self.__class__,\
+            tuple(map(lambda k: getattr(self, k), self.descriptor_keys))
+
     def __hash__(self):
         return hash(tuple(map(lambda k: getattr(self, k), self.descriptor_keys)))
 
@@ -125,6 +129,9 @@ class Calculator(object):
 
         self.register(*descs)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, tuple(self.descriptors)
+
     def _register_one(self, desc):
         if not isinstance(desc, Descriptor):
             raise ValueError('{!r} is not descriptor'.format(desc))
@@ -209,8 +216,13 @@ class Calculator(object):
         '''
         calculate descriptors
 
+        Parameters:
+            mol(rdkit.Chem.Mol): molecular
+
         Returns:
-            iterator<str, scalar>: iterator of descriptor name and value
+            iterator of descriptor and value
+
+        :rtype: iterator of (Descriptor, scalar)
         '''
         cache = {}
         self.molecule = Molecule(mol)
@@ -219,6 +231,29 @@ class Calculator(object):
             (desc, self._calculate(desc, cache))
             for desc in self.descriptors
         )
+
+    def _worker(self, args):
+        mol, = args
+        return list(self(mol))
+
+    def parallel(self, mols, processes=None):
+        u'''
+        parallel calculate descriptors
+
+        Parameters:
+            mols(iterable<rdkit.Chem.Mol>): moleculars
+            processes(int or None): number of process. None is multiprocessing.cpu_count()
+
+        :rtype: [[(Descriptor, scalar)]]
+        '''
+
+        from multiprocessing import Pool
+
+        with Pool(processes) as pool:
+            return pool.map(
+                self._worker,
+                ((m,) for m in mols)
+            )
 
 
 def all_descriptors():
