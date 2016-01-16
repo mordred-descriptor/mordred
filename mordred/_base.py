@@ -38,6 +38,11 @@ class Descriptor(with_metaclass(ABCMeta, object)):
             self.__class__ is other.__class__ and\
             all(getattr(self, k) == getattr(other, k) for k in self.descriptor_keys)
 
+    def __lt__(self, other):
+        sk = tuple([self.__class__] + [getattr(self, k) for k in self.descriptor_keys])
+        ok = tuple([other.__class__] + [getattr(other, k) for k in other.descriptor_keys])
+        return sk.__lt__(ok)
+
     def __ne__(self, other):
         return not self == other
 

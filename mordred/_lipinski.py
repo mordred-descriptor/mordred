@@ -1,9 +1,6 @@
 from ._base import Descriptor
 from .Bond import HBondDonor, HBondAcceptor
 from .Property import Weight, WildmanCrippenLogP
-from .TPSA import TPSA
-
-from rdkit.Chem import Lipinski as L
 
 
 class LipinskiLike(Descriptor):
