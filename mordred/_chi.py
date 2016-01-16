@@ -3,12 +3,12 @@ from . import _atomic_property
 from rdkit import Chem
 from networkx import Graph
 from collections import namedtuple
-from enum import Enum
+from enum import IntEnum
 from itertools import chain
 import numpy as np
 
 
-class ChiType(Enum):
+class ChiType(IntEnum):
     path = 1
     cluster = 2
     path_cluster = 3
