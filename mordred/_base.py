@@ -249,11 +249,14 @@ class Calculator(object):
 
         from multiprocessing import Pool
 
-        with Pool(processes) as pool:
+        try:
+            pool = Pool(processes)
             return pool.map(
                 self._worker,
                 ((m,) for m in mols)
             )
+        finally:
+            pool.terminate()
 
 
 def all_descriptors():
