@@ -3,7 +3,7 @@ from . import _atomic_property
 from rdkit import Chem
 
 
-class Sum(Descriptor):
+class ConstitutionalSum(Descriptor):
     r'''
     sum of constitutional descriptor
 
@@ -41,7 +41,7 @@ class Sum(Descriptor):
         return sum(self.prop(a) / self.prop(self._carbon) for a in mol.GetAtoms())
 
 
-class Mean(Sum):
+class ConstitutionalMean(ConstitutionalSum):
     r'''
     mean of constitutional descriptor
 
@@ -64,7 +64,7 @@ class Mean(Sum):
 
     @property
     def dependencies(self):
-        return dict(S=Sum(self.prop))
+        return dict(S=ConstitutionalSum(self.prop))
 
     def calculate(self, mol, S):
         return S / mol.GetNumAtoms()
