@@ -26,10 +26,10 @@ SpMAD
 .. math::
     {\rm SpMAD} = \frac{\rm SpAD}{A}
 
-EE
+LogEE
 --
 .. math::
-    {\rm EE} = \log(\sum_{i = 1}^N \exp(\lambda_i))
+    {\rm LogEE} = \log(\sum_{i = 1}^N \exp(\lambda_i))
 
 SM1
 ---
@@ -40,6 +40,8 @@ VE1
 ---
 .. math::
     {\rm VE1} = \sum_{i = 1}^N \left| \ell_i \right|
+
+where :math:`\ell_i` is eigenvector elements corresponding to leading eigenvalue.
 
 VE2
 ---

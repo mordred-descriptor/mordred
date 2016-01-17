@@ -1,4 +1,4 @@
-- names: [SpMax_Dt, SpDiam_Dt, SpAD_Dt, SpMAD_Dt, EE_Dt]
+- names: [SpMax_Dt, SpDiam_Dt, SpAD_Dt, SpMAD_Dt, LogEE_Dt]
   digit: 5
   results:
     Hexane: [12.1093115, 19.57341312, 24.21862301, 4.036437168, 12.10932554]

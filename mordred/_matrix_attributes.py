@@ -134,7 +134,7 @@ class SpMAD(common):
 
 
 @method
-class EE(common):
+class LogEE(common):
     @property
     def dependencies(self):
         return dict(eig=self._eig)

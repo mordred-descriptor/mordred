@@ -1,5 +1,5 @@
 # padel
-- names: [SpMax_D, SpDiam_D, SpAD_D, SpMAD_D, EE_D]
+- names: [SpMax_D, SpDiam_D, SpAD_D, SpMAD_D, LogEE_D]
   digit: 5
   results:
     Hexane: [12.1093115, 19.57341312, 24.21862301, 4.036437168, 12.10932554, 2.22E-16]

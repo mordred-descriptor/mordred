@@ -1,5 +1,5 @@
 # PaDEL-descriptor
-- names: [SpAbs_DzZ, SpMax_DzZ, SpDiam_DzZ, SpAD_DzZ, SpMAD_DzZ, EE_DzZ, SM1_DzZ]
+- names: [SpAbs_DzZ, SpMax_DzZ, SpDiam_DzZ, SpAD_DzZ, SpMAD_DzZ, LogEE_DzZ, SM1_DzZ]
   digit: 6
   results:
     Hexane: [24.21862301, 12.1093115, 19.57341312, 24.21862301, 4.036437168, 12.10932554, -3.55E-15]
