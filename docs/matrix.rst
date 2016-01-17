@@ -6,6 +6,8 @@ SpAbs
 .. math::
     {\rm SpAbs} = \sum_{i = 1}^N \left| \lambda_i \right|
 
+where :math:`\lambda_i` is :math:`i`-th eigenvalue.
+
 SpMax
 -----
 .. math::
@@ -26,8 +28,10 @@ SpMAD
 .. math::
     {\rm SpMAD} = \frac{\rm SpAD}{A}
 
+where :math:`A` is number of atoms.
+
 LogEE
---
+-----
 .. math::
     {\rm LogEE} = \log(\sum_{i = 1}^N \exp(\lambda_i))
 
@@ -51,12 +55,12 @@ VE2
 VE3
 ---
 .. math::
-    {\rm VE3} = \frac{A}{10} \log({\rm VE1})
+    {\rm VE3} = \log(\frac{A}{10} \cdot {\rm VE1})
 
 VR1
 ---
 .. math::
-    {\rm VR1} = \sum_{(i, j) \in {\rm binds}} \left( \ell_i \cdot \ell_j \right)^{-1/2}
+    {\rm VR1} = \sum_{(i, j) \in {\rm bonds}} \left( \ell_i \cdot \ell_j \right)^{-1/2}
 
 VR2
 ---
@@ -66,4 +70,4 @@ VR2
 VR3
 ---
 .. math::
-    {\rm VR3} = \frac{A}{10} \log({\rm VR1})
+    {\rm VR3} = \log(\frac{A}{10} \cdot {\rm VR1})
