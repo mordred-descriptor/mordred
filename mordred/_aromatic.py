@@ -1,7 +1,11 @@
 from ._base import Descriptor
 
 
-class AromaticAtomsCount(Descriptor):
+class AromaticBase(Descriptor):
+    require_connected = False
+
+
+class AromaticAtomsCount(AromaticBase):
     r'''
     aromatic atoms count descriptor
 
@@ -16,7 +20,7 @@ class AromaticAtomsCount(Descriptor):
         return sum(1 for a in mol.GetAtoms() if a.GetIsAromatic())
 
 
-class AromaticBondsCount(Descriptor):
+class AromaticBondsCount(AromaticBase):
     r'''
     aromatic bonds count descriptor
 

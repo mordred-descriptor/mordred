@@ -26,6 +26,7 @@ es_type_set = set(es_types)
 
 class EStateBase(Descriptor):
     explicit_hydrogens = False
+    require_connected = False
 
 
 class EStateCache(EStateBase):

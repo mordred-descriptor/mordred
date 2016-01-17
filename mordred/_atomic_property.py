@@ -308,7 +308,7 @@ def get_sigma_electrons(atom):
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
 # p. 283
-@attr(symbol='s')
+@attr(require_connected=True, symbol='s')
 def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)

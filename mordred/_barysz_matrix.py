@@ -6,7 +6,7 @@ import numpy as np
 from ._matrix_attributes import methods, get_method
 
 
-class BaryszMatrixDescriptor(Descriptor):
+class BaryszMatrixBase(Descriptor):
     explicit_hydrogens = False
 
     @property
@@ -17,7 +17,7 @@ class BaryszMatrixDescriptor(Descriptor):
 _carbon = Chem.Atom(6)
 
 
-class barysz(BaryszMatrixDescriptor):
+class barysz(BaryszMatrixBase):
     descriptor_keys = 'prop',
 
     def __init__(self, prop):
@@ -48,7 +48,7 @@ class barysz(BaryszMatrixDescriptor):
         return sp
 
 
-class BaryszMatrix(BaryszMatrixDescriptor):
+class BaryszMatrix(BaryszMatrixBase):
     r'''
     barysz matrix descriptor
 

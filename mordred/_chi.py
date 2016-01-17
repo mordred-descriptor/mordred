@@ -61,6 +61,7 @@ class _dfs(object):
 
 
 class ChiBase(Descriptor):
+    require_connected = False
     explicit_hydrogens = False
 
 
@@ -178,6 +179,9 @@ class Chi(ChiBase):
             c = 1
             for node in nodes:
                 c *= props[node]
+
+            if c == 0:
+                return np.nan
 
             x += c ** -0.5
 

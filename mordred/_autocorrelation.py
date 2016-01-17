@@ -12,6 +12,10 @@ class AutocorrelationBase(Descriptor):
     def gasteiger_charges(self):
         return getattr(self.prop, 'gasteiger_charges', False)
 
+    @property
+    def require_connected(self):
+        return getattr(self.prop, 'require_connected', False)
+
 
 class AVec(AutocorrelationBase):
     descriptor_keys = 'prop',

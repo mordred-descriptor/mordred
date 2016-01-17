@@ -2,15 +2,18 @@ from ._base import Descriptor
 from rdkit.Chem import rdMolDescriptors
 
 
-class HBondAcceptor(Descriptor):
+class HBondBase(Descriptor):
+    explicit_hydrogens = False
+    require_connected =False
+
+
+class HBondAcceptor(HBondBase):
     r'''
     hydrogen bond acceptor descriptor
 
     Returns:
         int: hydrogen bond acceptor count
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'nHBAcc'
@@ -19,15 +22,13 @@ class HBondAcceptor(Descriptor):
         return rdMolDescriptors.CalcNumHBA(mol)
 
 
-class HBondDonor(Descriptor):
+class HBondDonor(HBondBase):
     r'''
     hydrogen bond donor descriptor
 
     Returns:
         int: hydrogen bond donor count
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'nHBDon'

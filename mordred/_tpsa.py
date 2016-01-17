@@ -17,6 +17,8 @@ class TPSA(Descriptor):
         float: TPSA value
     '''
 
+    require_connected = False
+
     @classmethod
     def preset(cls):
         yield cls(True)

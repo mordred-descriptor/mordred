@@ -5,6 +5,7 @@ from abc import ABCMeta, abstractmethod
 from types import ModuleType
 import os
 from importlib import import_module
+import numpy as np
 
 from inspect import getsourcelines
 from sys import maxsize
@@ -39,6 +40,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
     explicit_hydrogens = True
     gasteiger_charges = False
     kekulize = False
+    require_connected = True
 
     descriptor_keys = ()
 
@@ -97,6 +99,7 @@ class Molecule(object):
         self.hydration_cache = dict()
         self.kekulize_cache = dict()
         self.gasteiger_cache = dict()
+        self.is_connected = len(Chem.GetMolFrags(orig)) == 1
 
     def hydration(self, explicitH):
         if explicitH in self.hydration_cache:
@@ -216,6 +219,10 @@ class Calculator(object):
     def _calculate(self, desc, cache, parent=None):
         if desc in cache:
             return cache[desc]
+
+        if desc.require_connected and not self.molecule.is_connected:
+            cache[desc] = np.nan
+            return np.nan
 
         args = {
             name: self._calculate(dep, cache, parent or desc)

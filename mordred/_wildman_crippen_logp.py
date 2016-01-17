@@ -19,6 +19,7 @@ class WildmanCrippenLogP(Descriptor):
         yield cls('MR')
 
     explicit_hydrogens = False
+    require_connected = False
 
     def __str__(self):
         return 'Crippen{}'.format(self.prop)

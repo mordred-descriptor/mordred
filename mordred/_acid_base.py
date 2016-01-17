@@ -3,6 +3,8 @@ from rdkit import Chem
 
 
 class SmartsCount(Descriptor):
+    require_connected = False
+
     def get_smarts(self):
         self.mols = [Chem.MolFromSmarts(s) for s in self.smarts]
         return self.mols

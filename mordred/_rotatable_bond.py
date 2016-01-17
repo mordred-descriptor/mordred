@@ -4,15 +4,18 @@ from ._bond_types import BondCount
 from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
 
-class RotatableBondsCount(Descriptor):
+class RotatableBondsBase(Descriptor):
+    explicit_hydrogens = False
+    require_connected = False
+
+
+class RotatableBondsCount(RotatableBondsBase):
     r'''
     ratatable bonds count descriptor
 
     Returns:
         int: rotatable bonds count
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'nRot'
@@ -21,7 +24,7 @@ class RotatableBondsCount(Descriptor):
         return CalcNumRotatableBonds(mol)
 
 
-class RotatableBondsRatio(Descriptor):
+class RotatableBondsRatio(RotatableBondsBase):
     r'''
     rotatable bonds ratio descriptor
 
@@ -31,8 +34,6 @@ class RotatableBondsRatio(Descriptor):
     Returns:
         float: rotatable bonds ratio
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'RotRatio'

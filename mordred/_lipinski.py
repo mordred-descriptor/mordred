@@ -18,6 +18,8 @@ class LipinskiLike(Descriptor):
         bool: filter result
     '''
 
+    require_connected = False
+
     @classmethod
     def preset(cls):
         yield cls('Lipinski')

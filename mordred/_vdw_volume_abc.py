@@ -41,6 +41,8 @@ class VdwVolumeABC(Descriptor):
         float: VABC value
     '''
 
+    require_connected = False
+
     def __str__(self):
         return 'Vabc'
 

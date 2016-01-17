@@ -66,6 +66,7 @@ def neighborhood_code(mol, i, order):
 
 class InformationContentBase(Descriptor):
     kekulize = True
+    require_connected = False
 
 
 class Ag(InformationContentBase):

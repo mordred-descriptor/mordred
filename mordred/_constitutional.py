@@ -21,6 +21,8 @@ class ConstitutionalSum(Descriptor):
         float: sum of constitutional
     '''
 
+    require_connected = False
+
     @classmethod
     def preset(cls):
         return map(cls, _atomic_property.get_properties())

@@ -13,6 +13,8 @@ class APol(Descriptor):
         float: sum of atomic polarizability
     '''
 
+    require_connected = False
+
     def __str__(self):
         return 'apol78' if self.use78 else 'apol'
 
@@ -36,6 +38,8 @@ class BPol(Descriptor):
     Returns:
         float: sum of bond polarizability
     '''
+
+    require_connected = False
 
     def __str__(self):
         return 'bpol78' if self.use78 else 'bpol'

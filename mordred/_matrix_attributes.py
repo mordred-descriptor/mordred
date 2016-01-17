@@ -17,7 +17,7 @@ def method(cls):
 class common(Descriptor):
     descriptor_keys = 'matrix', 'explicit_hydrogens', 'gasteiger_charges', 'kekulize'
 
-    def __init__(self, matrix, explicit_hydrogens, gasteiger_charges, kekulize):
+    def __init__(self, matrix, explicit_hydrogens=True, gasteiger_charges=False, kekulize=False):
         self.matrix = matrix
         self.explicit_hydrogens = explicit_hydrogens
         self.gasteiger_charges = gasteiger_charges

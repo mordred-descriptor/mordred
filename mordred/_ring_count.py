@@ -5,6 +5,7 @@ import networkx
 
 class RingCountBase(Descriptor):
     explicit_hydrogens = False
+    require_connected = False
 
 
 class Rings(RingCountBase):

@@ -3,7 +3,11 @@ from ._ring_count import Rings
 import networkx as nx
 
 
-class FrameworkCache(Descriptor):
+class FrameworkBase(Descriptor):
+    require_connected = False
+
+
+class FrameworkCache(FrameworkBase):
     @property
     def dependencies(self):
         return dict(
@@ -28,12 +32,15 @@ class FrameworkCache(Descriptor):
         linkers = set()
         for Ri, Rj in ((i, j) for i in range(NR) for j in range(i + 1, NR)):
             Ra, Rb = R[Ri], R[Rj]
-            linkers.update(i for t, i in nx.shortest_path(G, Ra, Rb) if t == 'A')
+            try:
+                linkers.update(i for t, i in nx.shortest_path(G, Ra, Rb) if t == 'A')
+            except nx.NetworkXNoPath:
+                pass
 
         return linkers, Rs
 
 
-class Framework(Descriptor):
+class Framework(FrameworkBase):
     r'''
     molecular framework ratio descriptor
 

@@ -1,10 +1,12 @@
 from collections import defaultdict
 from ._base import Descriptor
+import numpy as np
 
 
 class CarbonTypesBase(Descriptor):
     explicit_hydrogens = False
     kekulize = True
+    require_connected = False
 
 
 class CarbonTypesCache(CarbonTypesBase):
@@ -105,4 +107,8 @@ class HybridizationRatio(CarbonTypesBase):
     def calculate(self, mol, CT):
         Nsp3 = float(sum(CT[3].values()))
         Nsp2 = float(sum(CT[2].values()))
+
+        if Nsp3 == Nsp2 == 0:
+            return np.nan
+
         return Nsp3 / (Nsp2 + Nsp3)

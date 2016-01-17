@@ -10,6 +10,8 @@ class McGowanVolume(Descriptor):
         float: McGowan volume
     '''
 
+    require_connected = False
+
     def __str__(self):
         return 'VMcGowan'
 

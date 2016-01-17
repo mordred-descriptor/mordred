@@ -8,6 +8,7 @@ import numpy as np
 
 class ChargeTermMatrix(Descriptor):
     explicit_hydrogens = False
+    require_connected = False
 
     @property
     def dependencies(self):
@@ -46,6 +47,7 @@ class TopologicalCharge(Descriptor):
     '''
 
     explicit_hydrogens = False
+    require_connected = False
 
     @classmethod
     def preset(cls):

@@ -38,6 +38,8 @@ class BondCount(Descriptor):
         int: bond count
     '''
 
+    require_connected = False
+
     @classmethod
     def preset(cls):
         return chain(

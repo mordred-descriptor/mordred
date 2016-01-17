@@ -2,15 +2,18 @@ from ._base import Descriptor
 from ._common import Radius as _R, Diameter as _D
 
 
-class Radius(Descriptor):
+class TopologicalIndexBase(Descriptor):
+    explicit_hydrogens = False
+    require_connected = False
+
+
+class Radius(TopologicalIndexBase):
     r'''
     radius descriptor
 
     Returns:
         int: graph radius
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'Radius'
@@ -28,15 +31,13 @@ class Radius(Descriptor):
         return int(R)
 
 
-class Diameter(Descriptor):
+class Diameter(TopologicalIndexBase):
     r'''
     diameter descriptor
 
     Returns:
         int: graph diameter
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'Diameter'
@@ -53,7 +54,7 @@ class Diameter(Descriptor):
         return int(D)
 
 
-class TopologicalShapeIndex(Descriptor):
+class TopologicalShapeIndex(TopologicalIndexBase):
     r'''
     topological shape index descriptor
 
@@ -68,8 +69,6 @@ class TopologicalShapeIndex(Descriptor):
     Returns:
         float: topological shape index
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'TopoShapeIndex'
@@ -87,7 +86,7 @@ class TopologicalShapeIndex(Descriptor):
         return float(D - R) / float(R)
 
 
-class PetitjeanIndex(Descriptor):
+class PetitjeanIndex(TopologicalIndexBase):
     r'''
     Petitjean index descriptor
 
@@ -102,8 +101,6 @@ class PetitjeanIndex(Descriptor):
     Returns:
         float: Petitjean index
     '''
-
-    explicit_hydrogens = False
 
     def __str__(self):
         return 'PetitjeanIndex'

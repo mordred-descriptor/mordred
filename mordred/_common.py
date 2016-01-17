@@ -3,6 +3,7 @@ from rdkit import Chem
 
 
 class DistanceMatrix(Descriptor):
+    require_connected = False
     descriptor_keys = 'explicit_hydrogens', 'useBO', 'useAtomWts'
 
     def __init__(self, explicit_hydrogens, useBO, useAtomWts):
@@ -62,6 +63,7 @@ class Diameter(DistanceMatrix):
 
 
 class AdjacencyMatrix(Descriptor):
+    require_connected = False
     descriptor_keys = 'explicit_hydrogens', 'useBO', 'order'
 
     def __init__(self, explicit_hydrogens, useBO, order=1):

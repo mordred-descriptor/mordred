@@ -14,6 +14,7 @@ class Weight(Descriptor):
     '''
 
     explicit_hydrogens = True
+    require_connected = False
 
     @classmethod
     def preset(cls):
