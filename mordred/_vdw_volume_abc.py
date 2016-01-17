@@ -5,6 +5,7 @@ from .RingCount import RingCount
 from rdkit import Chem
 from math import pi
 
+import numpy as np
 
 bondi_radii = {
     'H': 1.20,
@@ -53,7 +54,7 @@ class VdwVolumeABC(Descriptor):
 
     def calculate(self, mol, Nb, NRa, NRA):
         ac = sum(
-            atom_contrib[a.GetAtomicNum()]
+            atom_contrib.get(a.GetAtomicNum(), np.nan)
             for a in mol.GetAtoms()
         )
 

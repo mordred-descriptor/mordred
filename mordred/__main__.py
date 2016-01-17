@@ -11,6 +11,10 @@ def smiles_parser(f):
     for line in f:
         smi, name = line.strip().split()
         mol = Chem.MolFromSmiles(smi)
+        if mol is None:
+            sys.stderr.write('read failure: {}\n'.format(name))
+            continue
+
         mol.SetProp('_Name', name)
         yield mol
 

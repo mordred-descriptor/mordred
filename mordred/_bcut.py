@@ -46,8 +46,13 @@ class burden_eigen_values(BurdenMatrixDescriptor):
 
     def calculate(self, mol, burden):
         bmat = burden.copy()
-        np.fill_diagonal(bmat, [self.prop(a) for a in mol.GetAtoms()])
-        return np.linalg.eig(bmat)[0]
+        ps = np.array([self.prop(a) for a in mol.GetAtoms()])
+        if np.any(np.isnan(ps)):
+            return np.array([np.nan])
+
+        np.fill_diagonal(bmat, ps)
+        ev = np.linalg.eig(bmat)[0]
+        return np.sort(ev)[-1::-1]
 
 
 class BCUT(BurdenMatrixDescriptor):
@@ -92,6 +97,6 @@ class BCUT(BurdenMatrixDescriptor):
 
     def calculate(self, mol, bev):
         try:
-            return np.sort(bev)[-1::-1][self.nth]
+            return bev[self.nth]
         except IndexError:
             return np.nan

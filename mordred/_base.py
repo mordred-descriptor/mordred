@@ -10,6 +10,27 @@ from inspect import getsourcelines
 from sys import maxsize
 
 
+class DescriptorException(Exception):
+    def __init__(self, desc, e, parent):
+        self.desc = desc
+        self.e = e
+        self.parent = parent
+
+    def __str__(self):
+        if self.parent is None:
+            return '{}.{}: {}'.format(
+                self.desc.__class__.__name__,
+                self.desc,
+                self.e
+            )
+
+        return '{}.{}({}): {}'.format(
+            self.desc.__class__.__name__,
+            self.desc,
+            self.parent,
+            self.e
+        )
+
 class Descriptor(with_metaclass(ABCMeta, object)):
     '''
     abstruct base class of descriptors
@@ -192,12 +213,12 @@ class Calculator(object):
         descs.sort(key=key_by_def)
         return descs
 
-    def _calculate(self, desc, cache):
+    def _calculate(self, desc, cache, parent=None):
         if desc in cache:
             return cache[desc]
 
         args = {
-            name: self._calculate(dep, cache)
+            name: self._calculate(dep, cache, parent or desc)
             if dep is not None else None
             for name, dep in (desc.dependencies or {}).items()
         }
@@ -207,7 +228,11 @@ class Calculator(object):
             gasteiger=desc.gasteiger_charges,
             kekulize=desc.kekulize,
         )
-        r = desc.calculate(mol, **args)
+
+        try:
+            r = desc.calculate(mol, **args)
+        except Exception as e:
+            raise DescriptorException(desc, e, parent)
 
         cache[desc] = r
         return r
