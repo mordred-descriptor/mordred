@@ -267,10 +267,9 @@ class Calculator(object):
                 initargs=(self,),
             )
 
-            return pool.map(
-                worker,
-                ((m.ToBinary(),) for m in mols)
-            )
+            for result in [pool.apply_async(worker, (m.ToBinary(),)) for m in mols]:
+                yield result.get()
+
         finally:
             pool.terminate()
 
@@ -282,11 +281,11 @@ class Calculator(object):
             mols(iterable<rdkit.Chem.Mol>): moleculars
             processes(int or None): number of process. None is multiprocessing.cpu_count()
 
-        :rtype: [[(Descriptor, scalar)]]
+        :rtype: iterator([(Descriptor, scalar)]])
         '''
 
         if processes == 1:
-            return [list(self(m)) for m in mols]
+            return (list(self(m)) for m in mols)
         else:
             return self._parallel(mols, processes)
 
@@ -296,8 +295,7 @@ def initializer(calc):
     calculate = calc
 
 
-def worker(args):
-    binary, = args
+def worker(binary):
     return list(calculate(Chem.Mol(binary)))
 
 
