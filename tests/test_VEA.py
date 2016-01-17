@@ -4,7 +4,7 @@ from numpy.testing import assert_almost_equal
 
 # Balaban, A. T.; Ciubotariu, D.; Medeleanu, M.
 # Topological indices and real number vertex invariants based on graph eigenvalues or eigenvectors.
-# J. Chem. Inf. Comput. Sci. 1991, 31 (4), 517–523 DOI: 10.1021/ci00004a014.
+# J. Chem. Inf. Comput. Sci. 1991, 31 (4), 517-523 DOI: 10.1021/ci00004a014.
 
 descs = '          VE1_A     VE3_A       VE1_D     VE3_D       VR1_A       VR1_D'.strip().split()
 data = '''
