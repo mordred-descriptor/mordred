@@ -31,7 +31,7 @@ def main(descs):
 
     parser.add_argument(
         '-p', '--processes', metavar='N',
-        default=None,
+        default=None, type=int,
         help='number of processes to use',
     )
 
@@ -46,7 +46,7 @@ def main(descs):
 
         writer.writerow(['name'] + list(map(str, calc.descriptors)))
 
-        for mol, val in zip(mols, calc.parallel(mols, args.processes)):
+        for mol, val in zip(mols, calc.map(mols, args.processes)):
             writer.writerow([mol.GetProp('_Name')] + list(map(lambda r: str(r[1]), val)))
 
     return 0

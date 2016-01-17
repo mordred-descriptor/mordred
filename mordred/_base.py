@@ -9,11 +9,6 @@ from importlib import import_module
 from inspect import getsourcelines
 from sys import maxsize
 
-try:
-    from inspect import getfullargspec as getargspec
-except ImportError:
-    from inspect import getargspec
-
 
 class Descriptor(with_metaclass(ABCMeta, object)):
     '''
@@ -237,9 +232,26 @@ class Calculator(object):
             for desc in self.descriptors
         )
 
-    def parallel(self, mols, processes=None):
+    def _parallel(self, mols, processes=None):
+        from multiprocessing import Pool
+
+        try:
+            pool = Pool(
+                processes,
+                initializer=initializer,
+                initargs=(self,),
+            )
+
+            return pool.map(
+                worker,
+                ((m.ToBinary(),) for m in mols)
+            )
+        finally:
+            pool.terminate()
+
+    def map(self, mols, processes=None):
         u'''
-        parallel calculate descriptors
+        calculate descriptors over mols
 
         Parameters:
             mols(iterable<rdkit.Chem.Mol>): moleculars
@@ -248,21 +260,20 @@ class Calculator(object):
         :rtype: [[(Descriptor, scalar)]]
         '''
 
-        from multiprocessing import Pool
+        if processes == 1:
+            return [list(self(m)) for m in mols]
+        else:
+            return self._parallel(mols, processes)
 
-        try:
-            pool = Pool(processes)
-            return pool.map(
-                worker,
-                ((self, m.ToBinary()) for m in mols)
-            )
-        finally:
-            pool.terminate()
+
+def initializer(calc):
+    global calculate
+    calculate = calc
 
 
 def worker(args):
-    calc, binary = args
-    return list(calc(Chem.Mol(binary)))
+    binary, = args
+    return list(calculate(Chem.Mol(binary)))
 
 
 def all_descriptors():

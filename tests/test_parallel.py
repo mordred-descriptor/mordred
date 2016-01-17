@@ -9,7 +9,7 @@ def test_parallel():
     mol = Chem.MolFromSmiles('C1=CC(=C(C=C1C2=C(C=C3C(=CC(=CC3=[O+]2)O)O)O)O)O')
 
     serial = calc(mol)
-    parallel = calc.parallel([mol])[0]
+    parallel = calc.map([mol])[0]
 
     eq_([kv[0] for kv in serial], [kv[0] for kv in parallel])
 
