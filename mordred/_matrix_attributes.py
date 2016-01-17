@@ -65,13 +65,16 @@ class Eigen(common):
     def calculate(self, mol, matrix):
         w, v = np.linalg.eig(matrix)
 
+        if np.iscomplexobj(w):
+            w = w.real
+
+        if np.iscomplexobj(v):
+            v = v.real
+
         i_min = np.argmin(w)
         i_max = np.argmax(w)
 
-        if np.iscomplexobj(v):
-            return Eig(w.real, v.real, i_min, i_max)
-        else:
-            return Eig(w, v, i_min, i_max)
+        return Eig(w, v, i_min, i_max)
 
 
 @method
@@ -186,7 +189,7 @@ class VE3(common):
         if VE1 == 0:
             return np.nan
         else:
-            return 0.1 * mol.GetNumAtoms() * np.log(VE1)
+            return np.log(0.1 * mol.GetNumAtoms() * VE1)
 
 
 @method
@@ -227,7 +230,7 @@ class VR3(common):
         if VR1 == 0:
             return np.nan
         else:
-            return 0.1 * mol.GetNumAtoms() * np.log(VR1)
+            return np.log(0.1 * mol.GetNumAtoms() * VR1)
 
 
 method_dict = {m.__name__: m for m in methods}
