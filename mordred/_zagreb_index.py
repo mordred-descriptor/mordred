@@ -1,5 +1,6 @@
 from ._base import Descriptor
 from ._common import Valence
+import numpy as np
 
 
 class ZagrebIndex(Descriptor):
@@ -58,6 +59,9 @@ class ZagrebIndex(Descriptor):
             V = V.astype('float')
 
         if self.version == 1:
+            if np.any(V == 0):
+                return np.nan
+
             return (V ** (self.variable * 2)).sum()
         else:
             return sum(

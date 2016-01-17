@@ -2,7 +2,6 @@ from ._base import Descriptor
 from ._common import DistanceMatrix
 import numpy as np
 from itertools import groupby
-import math
 
 
 class BFSTree(object):
@@ -160,13 +159,16 @@ class InformationContent(InformationContentBase):
         if self.type == 'T':
             return N * ICm
         elif self.type == 'S':
-            return ICm / math.log(N, 2)
+            return ICm / np.log2(N)
         elif self.type == 'C':
-            return math.log(N, 2) - ICm
+            return np.log2(N) - ICm
         elif self.type == 'B':
             bts = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
-            return ICm / math.log(bts, 2)
+            if bts <= 1:
+                return np.nan
+
+            return ICm / np.log2(bts)
 
 
 def entropy_term(a):
-    return a * math.log(a, 2)
+    return a * np.log2(a)
