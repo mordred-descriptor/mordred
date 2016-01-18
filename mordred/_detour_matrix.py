@@ -147,7 +147,6 @@ class DetourMatrix(DetourMatrixBase):
     def __init__(self, type='SpMax'):
         self.type = ma.get_method(type)
 
-    @property
     def dependencies(self):
         return dict(
             result=self.type(

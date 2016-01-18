@@ -78,7 +78,6 @@ class CarbonTypes(CarbonTypesBase):
         self.nCarbon = nCarbon
         self.SP = SP
 
-    @property
     def dependencies(self):
         return dict(CT=CarbonTypesCache())
 
@@ -100,7 +99,6 @@ class HybridizationRatio(CarbonTypesBase):
     def __str__(self):
         return 'HybRatio'
 
-    @property
     def dependencies(self):
         return dict(CT=CarbonTypesCache())
 

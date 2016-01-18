@@ -40,7 +40,6 @@ class burden_eigen_values(BurdenMatrixDescriptor):
         self.prop = prop
         self.gasteiger_charges = gasteiger_charges
 
-    @property
     def dependencies(self):
         return dict(burden=burden())
 
@@ -96,7 +95,6 @@ class BCUT(BurdenMatrixDescriptor):
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
         self.nth = nth
 
-    @property
     def dependencies(self):
         return dict(bev=burden_eigen_values(self.prop, self.gasteiger_charges))
 

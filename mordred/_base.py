@@ -222,7 +222,7 @@ class Calculator(object):
         args = {
             name: self._calculate(dep, cache, parent or desc)
             if dep is not None else None
-            for name, dep in (desc.dependencies or {}).items()
+            for name, dep in (desc.dependencies() or {}).items()
         }
 
         mol = self.molecule.get(

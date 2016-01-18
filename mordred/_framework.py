@@ -8,7 +8,6 @@ class FrameworkBase(Descriptor):
 
 
 class FrameworkCache(FrameworkBase):
-    @property
     def dependencies(self):
         return dict(
             Rs=Rings()
@@ -58,7 +57,6 @@ class Framework(FrameworkBase):
     def __str__(self):
         return 'fMF'
 
-    @property
     def dependencies(self):
         return dict(
             F=FrameworkCache()

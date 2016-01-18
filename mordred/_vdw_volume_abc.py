@@ -45,7 +45,6 @@ class VdwVolumeABC(Descriptor):
     def __str__(self):
         return 'Vabc'
 
-    @property
     def dependencies(self):
         return dict(
             Nb=BondCount(),

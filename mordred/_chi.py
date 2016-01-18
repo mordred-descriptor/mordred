@@ -163,7 +163,6 @@ class Chi(ChiBase):
         self.type = _parse_chi_type(type)
         self.averaged = averaged
 
-    @property
     def dependencies(self):
         if self.order > 0:
             return dict(chi=ChiCache(self.order))

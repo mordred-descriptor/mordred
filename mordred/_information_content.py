@@ -75,7 +75,6 @@ class Ag(InformationContentBase):
     def __init__(self, order):
         self.order = order
 
-    @property
     def dependencies(self):
         return dict(
             D=DistanceMatrix(
@@ -132,7 +131,6 @@ class InformationContent(InformationContentBase):
         self.type = type
         self.order = order
 
-    @property
     def dependencies(self):
         if self.type in ['T', 'S', 'C', 'B']:
             return dict(

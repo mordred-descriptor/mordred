@@ -14,7 +14,6 @@ class Rings(RingCountBase):
 
 
 class FusedRings(RingCountBase):
-    @property
     def dependencies(self):
         return dict(Rings=Rings())
 
@@ -107,7 +106,6 @@ class RingCount(RingCountBase):
         self.aromatic = aromatic
         self.hetero = hetero
 
-    @property
     def dependencies(self):
         return dict(
             Rs=(FusedRings if self.fused else Rings)()

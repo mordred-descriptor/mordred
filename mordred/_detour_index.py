@@ -22,7 +22,6 @@ class DetourIndex(Descriptor):
     def __str__(self):
         return 'DetourIndex'
 
-    @property
     def dependencies(self):
         return dict(
             D=detour_matrix()

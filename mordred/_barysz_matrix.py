@@ -74,7 +74,6 @@ class BaryszMatrix(BaryszMatrixBase):
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
         self.type = get_method(type)
 
-    @property
     def dependencies(self):
         return dict(
             result=self.type(

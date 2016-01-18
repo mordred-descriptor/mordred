@@ -37,7 +37,6 @@ class LipinskiLike(Descriptor):
 
         self.variant = variant
 
-    @property
     def dependencies(self):
         return {
             prop: key

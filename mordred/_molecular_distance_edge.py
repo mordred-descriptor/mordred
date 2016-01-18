@@ -55,7 +55,6 @@ class MolecularDistanceEdge(Descriptor):
         else:
             raise ValueError('element must be atomic number or atomic symbol')
 
-    @property
     def dependencies(self):
         return dict(
             D=DistanceMatrix(

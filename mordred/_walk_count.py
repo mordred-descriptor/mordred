@@ -40,7 +40,6 @@ class WalkCount(Descriptor):
         self.total = total
         self.self_returning = self_returning
 
-    @property
     def dependencies(self):
         if self.total:
             W = ('W', self.__class__(

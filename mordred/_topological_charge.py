@@ -10,7 +10,6 @@ class ChargeTermMatrix(Descriptor):
     explicit_hydrogens = False
     require_connected = False
 
-    @property
     def dependencies(self):
         return dict(
             A=AdjacencyMatrix(
@@ -76,7 +75,6 @@ class TopologicalCharge(Descriptor):
         self.type = type
         self.order = order
 
-    @property
     def dependencies(self):
         return dict(
             CT=ChargeTermMatrix(),

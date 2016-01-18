@@ -22,7 +22,6 @@ class EccentricConnectivityIndex(Descriptor):
     def __str__(self):
         return 'ECIndex'
 
-    @property
     def dependencies(self):
         return dict(
             E=Eccentricity(

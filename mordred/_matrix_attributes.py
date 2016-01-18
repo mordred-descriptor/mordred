@@ -58,7 +58,6 @@ class common(Descriptor):
 
 
 class Eigen(common):
-    @property
     def dependencies(self):
         return dict(matrix=self.matrix)
 
@@ -79,7 +78,6 @@ class Eigen(common):
 
 @method
 class SpAbs(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -89,7 +87,6 @@ class SpAbs(common):
 
 @method
 class SpMax(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -99,7 +96,6 @@ class SpMax(common):
 
 @method
 class SpDiam(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig, SpMax=self._SpMax)
 
@@ -108,7 +104,6 @@ class SpDiam(common):
 
 
 class SpMean(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -118,7 +113,6 @@ class SpMean(common):
 
 @method
 class SpAD(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig, SpMean=self._SpMean)
 
@@ -128,7 +122,6 @@ class SpAD(common):
 
 @method
 class SpMAD(common):
-    @property
     def dependencies(self):
         return dict(SpAD=self._SpAD)
 
@@ -138,7 +131,6 @@ class SpMAD(common):
 
 @method
 class LogEE(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -151,7 +143,6 @@ class LogEE(common):
 
 @method
 class SM1(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -161,7 +152,6 @@ class SM1(common):
 
 @method
 class VE1(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -171,7 +161,6 @@ class VE1(common):
 
 @method
 class VE2(common):
-    @property
     def dependencies(self):
         return dict(VE1=self._VE1)
 
@@ -181,7 +170,6 @@ class VE2(common):
 
 @method
 class VE3(common):
-    @property
     def dependencies(self):
         return dict(VE1=self._VE1)
 
@@ -194,7 +182,6 @@ class VE3(common):
 
 @method
 class VR1(common):
-    @property
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -212,7 +199,6 @@ class VR1(common):
 
 @method
 class VR2(common):
-    @property
     def dependencies(self):
         return dict(VR1=self._VR1)
 
@@ -222,7 +208,6 @@ class VR2(common):
 
 @method
 class VR3(common):
-    @property
     def dependencies(self):
         return dict(VR1=self._VR1)
 

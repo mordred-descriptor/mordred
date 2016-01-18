@@ -18,7 +18,6 @@ class DistanceMatrix(Descriptor):
 
 
 class Eccentricity(DistanceMatrix):
-    @property
     def dependencies(self):
         return dict(
             D=DistanceMatrix(
@@ -33,7 +32,6 @@ class Eccentricity(DistanceMatrix):
 
 
 class Radius(Eccentricity):
-    @property
     def dependencies(self):
         return dict(
             E=Eccentricity(
@@ -48,7 +46,6 @@ class Radius(Eccentricity):
 
 
 class Diameter(DistanceMatrix):
-    @property
     def dependencies(self):
         return dict(
             D=DistanceMatrix(
@@ -71,7 +68,6 @@ class AdjacencyMatrix(Descriptor):
         self.useBO = useBO
         self.order = order
 
-    @property
     def dependencies(self):
         if self.order > 1:
             return dict(
@@ -97,7 +93,6 @@ class AdjacencyMatrix(Descriptor):
 
 
 class Valence(AdjacencyMatrix):
-    @property
     def dependencies(self):
         return dict(
             D=AdjacencyMatrix(

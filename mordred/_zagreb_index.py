@@ -46,7 +46,6 @@ class ZagrebIndex(Descriptor):
         self.version = version
         self.variable = variable
 
-    @property
     def dependencies(self):
         return dict(
             V=Valence(

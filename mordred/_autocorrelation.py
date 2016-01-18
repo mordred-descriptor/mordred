@@ -33,7 +33,6 @@ class CAVec(AutocorrelationBase):
     def __init__(self, prop):
         self.prop = prop
 
-    @property
     def dependencies(self):
         return dict(avec=AVec(self.prop))
 
@@ -47,7 +46,6 @@ class GMat(AutocorrelationBase):
     def __init__(self, order):
         self.order = order
 
-    @property
     def dependencies(self):
         return dict(
             dmat=DistanceMatrix(
@@ -67,7 +65,6 @@ class GSum(AutocorrelationBase):
     def __init__(self, order):
         self.order = order
 
-    @property
     def dependencies(self):
         return dict(gmat=GMat(self.order))
 
@@ -166,7 +163,6 @@ class ATS(Autocorrelation):
                 for a in _atomic_property.get_properties(istate=True)
                 for d in range(MAX_DISTANCE + 1))
 
-    @property
     def dependencies(self):
         return dict(avec=self._avec, gmat=self._gmat)
 
@@ -193,7 +189,6 @@ class AATS(ATS):
     :rtype: float
     '''
 
-    @property
     def dependencies(self):
         return dict(ATS=self._ATS, gsum=self._gsum)
 
@@ -221,7 +216,6 @@ class ATSC(Autocorrelation):
                 for a in _atomic_property.get_properties(charge=True, istate=True)
                 for d in range(MAX_DISTANCE + 1))
 
-    @property
     def dependencies(self):
         return dict(cavec=self._cavec, gmat=self._gmat)
 
@@ -248,7 +242,6 @@ class AATSC(ATSC):
     :rtype: float
     '''
 
-    @property
     def dependencies(self):
         return dict(ATSC=self._ATSC, gsum=self._gsum)
 
@@ -279,7 +272,6 @@ class MATS(Autocorrelation):
                 for a in _atomic_property.get_properties(charge=True, istate=True)
                 for d in range(1, MAX_DISTANCE + 1))
 
-    @property
     def dependencies(self):
         return dict(avec=self._avec, AATSC=self._AATSC, cavec=self._cavec)
 
@@ -296,7 +288,6 @@ class GATS(MATS):
     :rtype: float
     '''
 
-    @property
     def dependencies(self):
         return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)
 

@@ -36,7 +36,6 @@ class RotatableBondsRatio(RotatableBondsBase):
     def __str__(self):
         return 'RotRatio'
 
-    @property
     def dependencies(self):
         return dict(
             nRot=RotatableBondsCount(),

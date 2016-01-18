@@ -62,7 +62,6 @@ class ConstitutionalMean(ConstitutionalSum):
     def __str__(self):
         return 'M{}'.format(self.prop_name)
 
-    @property
     def dependencies(self):
         return dict(S=ConstitutionalSum(self.prop))
 

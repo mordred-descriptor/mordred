@@ -28,7 +28,6 @@ class WienerIndex(Descriptor):
     def __init__(self, polarity=False):
         self.polarity = polarity
 
-    @property
     def dependencies(self):
         return dict(
             D=DistanceMatrix(

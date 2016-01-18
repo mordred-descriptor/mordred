@@ -30,7 +30,6 @@ class KappaShapeIndex(Descriptor):
 
         self.order = order
 
-    @property
     def dependencies(self):
         return dict(
             Chi=ChiCache(self.order)

@@ -17,7 +17,6 @@ class Radius(TopologicalIndexBase):
     def __str__(self):
         return 'Radius'
 
-    @property
     def dependencies(self):
         return dict(
             R=_R(
@@ -40,7 +39,6 @@ class Diameter(TopologicalIndexBase):
     def __str__(self):
         return 'Diameter'
 
-    @property
     def dependencies(self):
         return dict(
             D=_D(
@@ -70,7 +68,6 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     def __str__(self):
         return 'TopoShapeIndex'
 
-    @property
     def dependencies(self):
         args = [self.explicit_hydrogens, False, False]
 
@@ -101,7 +98,6 @@ class PetitjeanIndex(TopologicalIndexBase):
     def __str__(self):
         return 'PetitjeanIndex'
 
-    @property
     def dependencies(self):
         args = [self.explicit_hydrogens, False, False]
 

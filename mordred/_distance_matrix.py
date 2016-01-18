@@ -27,7 +27,6 @@ class DistanceMatrix(Descriptor):
     def __init__(self, type='SpMax'):
         self.type = get_method(type)
 
-    @property
     def dependencies(self):
         return dict(
             result=self.type(

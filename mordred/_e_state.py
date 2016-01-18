@@ -81,7 +81,6 @@ class AtomTypeEState(EStateBase):
         self.type = type
         self.estate = estate
 
-    @property
     def dependencies(self):
         return dict(E=EStateCache())
 
