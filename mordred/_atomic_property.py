@@ -12,12 +12,12 @@ def attr(**attrs):
     return proc
 
 
-@attr(gasteiger_charges=True, symbol='c')
+@attr(gasteiger_charges=True, name='c')
 def get_charge_explicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge')
 
 
-@attr(gasteiger_charges=True, symbol='c')
+@attr(gasteiger_charges=True, name='c')
 def get_charge_implicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge') +\
         atom.GetDoubleProp('_GasteigerHCharge')
@@ -286,7 +286,7 @@ table = Chem.GetPeriodicTable()
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
-@attr(symbol='V')
+@attr(name='delta_v')
 def get_valence_electrons(atom):
     N = atom.GetAtomicNum()
     if N == 1:
@@ -300,7 +300,7 @@ def get_valence_electrons(atom):
     return float(Zv - h) / float(Z - Zv - 1)
 
 
-@attr(symbol='S')
+@attr(name='delta')
 def get_sigma_electrons(atom):
     return sum(1 for a in atom.GetNeighbors()
                if a.GetAtomicNum() != 1)
@@ -308,7 +308,7 @@ def get_sigma_electrons(atom):
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
 # p. 283
-@attr(require_connected=True, symbol='s')
+@attr(require_connected=True, name='s')
 def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)
@@ -316,42 +316,42 @@ def get_intrinsic_state(atom):
     return ((2. / period[i]) ** 2 * dv + 1) / d
 
 
-@attr(symbol='Z')
+@attr(name='Z')
 def get_atomic_number(a):
     return a.GetAtomicNum()
 
 
-@attr(symbol='m')
+@attr(name='m')
 def get_mass(a):
     return mass[a.GetAtomicNum()]
 
 
-@attr(symbol='v')
+@attr(name='v')
 def get_vdw_volume(a):
     return Vvdw[a.GetAtomicNum()]
 
 
-@attr(symbol='e')
+@attr(name='e')
 def get_sanderson_en(a):
     return Sanderson[a.GetAtomicNum()]
 
 
-@attr(symbol='pe')
+@attr(name='pe')
 def get_pauling_en(a):
     return Pauling[a.GetAtomicNum()]
 
 
-@attr(symbol='are')
+@attr(name='are')
 def get_allred_rocow_en(a):
     return Allred_Rocow[a.GetAtomicNum()]
 
 
-@attr(symbol='p')
+@attr(name='p')
 def get_polarizability(a):
     return Polarizabilities94[a.GetAtomicNum()]
 
 
-@attr(symbol='i')
+@attr(name='i')
 def get_ionpotential(a):
     return Ionpotentials[a.GetAtomicNum()]
 
@@ -398,6 +398,6 @@ def getter(p, explicit_hydrogens):
             p = get_charge_implicitHs
 
     if hasattr(p, '__call__'):
-        return getattr(p, 'symbol', p.__name__), p
+        return getattr(p, 'name', p.__name__), p
 
     raise ValueError('atomic property is not callable: {!r}'.format(p))

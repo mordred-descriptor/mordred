@@ -11,6 +11,11 @@ from inspect import getsourcelines
 from sys import maxsize
 
 
+def pretty(a):
+    p = getattr(a, 'name', None)
+    return repr(a if p is None else p)
+
+
 class Descriptor(with_metaclass(ABCMeta, object)):
     r'''
     abstruct base class of descriptors
@@ -23,12 +28,20 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
     descriptor_keys = ()
 
+    def _get_keys(self):
+        return (getattr(self, k) for k in self.descriptor_keys)
+
     def __reduce_ex__(self, version):
-        return self.__class__,\
-            tuple(map(lambda k: getattr(self, k), self.descriptor_keys))
+        return self.__class__, tuple(self._get_keys())
+
+    def __repr__(self):
+        return '{}({})'.format(
+            self.__class__.__name__,
+            ', '.join(map(pretty, self._get_keys()))
+        )
 
     def __hash__(self):
-        return hash(tuple(map(lambda k: getattr(self, k), self.descriptor_keys)))
+        return hash(tuple(self._get_keys()))
 
     def __eq__(self, other):
         return\
@@ -36,8 +49,8 @@ class Descriptor(with_metaclass(ABCMeta, object)):
             all(getattr(self, k) == getattr(other, k) for k in self.descriptor_keys)
 
     def __lt__(self, other):
-        sk = tuple([self.__class__] + [getattr(self, k) for k in self.descriptor_keys])
-        ok = tuple([other.__class__] + [getattr(other, k) for k in other.descriptor_keys])
+        sk = self.__reduce_ex__(3)
+        ok = other.__reduce_ex__(3)
         return sk.__lt__(ok)
 
     def __ne__(self, other):
@@ -173,7 +186,7 @@ class Calculator(object):
                         self._register_one(d)
 
                 elif isinstance(desc, ModuleType):
-                    self.register(self.get_descriptors_from_module(desc))
+                    self.register(get_descriptors_from_module(desc))
 
                 else:
                     self._register_one(desc)
@@ -181,35 +194,6 @@ class Calculator(object):
             else:
                 for d in desc:
                     self.register(d)
-
-    @staticmethod
-    def get_descriptors_from_module(mdl):
-        r'''
-        get descriptors from module
-
-        :type mdl: module
-
-        :rtype: [Descriptor]
-        '''
-
-        descs = []
-
-        for name in dir(mdl):
-            if name[:1] == '_':
-                continue
-
-            desc = getattr(mdl, name)
-            if issubclass(desc, Descriptor):
-                descs.append(desc)
-
-        def key_by_def(d):
-            try:
-                return getsourcelines(d)[1]
-            except IOError:
-                return maxsize
-
-        descs.sort(key=key_by_def)
-        return descs
 
     def _calculate(self, desc, cache, parent=None):
         if desc in cache:
@@ -319,3 +303,32 @@ def all_descriptors():
             continue
 
         yield import_module('..' + name, __name__)
+
+
+def get_descriptors_from_module(mdl):
+    r'''
+    get descriptors from module
+
+    :type mdl: module
+
+    :rtype: [Descriptor]
+    '''
+
+    descs = []
+
+    for name in dir(mdl):
+        if name[:1] == '_':
+            continue
+
+        desc = getattr(mdl, name)
+        if issubclass(desc, Descriptor):
+            descs.append(desc)
+
+    def key_by_def(d):
+        try:
+            return getsourcelines(d)[1]
+        except IOError:
+            return maxsize
+
+    descs.sort(key=key_by_def)
+    return descs
