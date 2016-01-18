@@ -12,7 +12,7 @@ def test_parallel():
         Chem.MolFromSmiles('CCCCCC'),
     ]
 
-    for serial, parallel in zip(calc.map(mols, processes=1), calc.map(mols)):
+    for (_, serial), (_, parallel) in zip(calc.map(mols, processes=1), calc.map(mols)):
         for (d, s), (f, p) in zip(serial, parallel):
             yield eq_, d, f
             yield assert_almost_equal, s, p
