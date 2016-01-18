@@ -32,6 +32,7 @@ class DescriptorException(Exception):
             self.e
         )
 
+
 class Descriptor(with_metaclass(ABCMeta, object)):
     '''
     abstruct base class of descriptors
@@ -274,8 +275,8 @@ class Calculator(object):
                 initargs=(self,),
             )
 
-            for result in [pool.apply_async(worker, (m.ToBinary(),)) for m in mols]:
-                yield result.get()
+            for m, result in [(m, pool.apply_async(worker, (m.ToBinary(),))) for m in mols]:
+                yield m, result.get()
 
         finally:
             pool.terminate()
@@ -288,11 +289,11 @@ class Calculator(object):
             mols(iterable<rdkit.Chem.Mol>): moleculars
             processes(int or None): number of process. None is multiprocessing.cpu_count()
 
-        :rtype: iterator([(Descriptor, scalar)]])
+        :rtype: iterator((rdkit.Chem.Mol, [(Descriptor, scalar)]]))
         '''
 
         if processes == 1:
-            return (list(self(m)) for m in mols)
+            return ((m, list(self(m))) for m in mols)
         else:
             return self._parallel(mols, processes)
 
