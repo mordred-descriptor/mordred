@@ -1,11 +1,13 @@
-from ._base import Descriptor
-from .Bond import BondCount
-from .RingCount import RingCount
-
-from rdkit import Chem
 from math import pi
 
 import numpy as np
+
+from rdkit import Chem
+
+from .Bond import BondCount
+from .RingCount import RingCount
+
+from ._base import Descriptor
 
 bondi_radii = {
     'H': 1.20,
@@ -34,11 +36,10 @@ atom_contrib = {
 
 
 class VdwVolumeABC(Descriptor):
-    r'''
-    van der waals volume(ABC) descriptor
+    r"""van der waals volume(ABC) descriptor.
 
     :rtype: float
-    '''
+    """
 
     require_connected = False
 

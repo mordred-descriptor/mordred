@@ -1,7 +1,8 @@
-from ._base import Descriptor
-from rdkit.Chem import BondType
 from itertools import chain
 
+from rdkit.Chem import BondType
+
+from ._base import Descriptor
 
 bond_type_dict = {
     'heavy': ('O', lambda _: True),
@@ -17,8 +18,7 @@ bond_type_dict = {
 
 
 class BondCount(Descriptor):
-    r'''
-    bond count descriptor
+    r"""bond count descriptor.
 
     :type type: str
     :param type:
@@ -36,7 +36,7 @@ class BondCount(Descriptor):
     :param kekulize: use kekulized structure
 
     :rtype: int
-    '''
+    """
 
     require_connected = False
 

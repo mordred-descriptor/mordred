@@ -1,11 +1,11 @@
-from ._base import Descriptor
-from . import _atomic_property
 from rdkit import Chem
+
+from . import _atomic_property
+from ._base import Descriptor
 
 
 class ConstitutionalSum(Descriptor):
-    r'''
-    sum of constitutional descriptor
+    r"""sum of constitutional descriptor.
 
     .. math::
         S_p = \sum^A_{i=1} \frac{p_i}{p_{\rm C}}
@@ -18,7 +18,7 @@ class ConstitutionalSum(Descriptor):
     :param prop: atomic property
 
     :rtype: float
-    '''
+    """
 
     require_connected = False
 
@@ -43,8 +43,7 @@ class ConstitutionalSum(Descriptor):
 
 
 class ConstitutionalMean(ConstitutionalSum):
-    r'''
-    mean of constitutional descriptor
+    r"""mean of constitutional descriptor.
 
     .. math::
         M_p = \frac{S_p}{A}
@@ -53,7 +52,7 @@ class ConstitutionalMean(ConstitutionalSum):
     :param prop: atomic property
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):

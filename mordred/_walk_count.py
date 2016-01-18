@@ -1,11 +1,11 @@
+import numpy as np
+
 from ._base import Descriptor
 from ._common import AdjacencyMatrix
-import numpy as np
 
 
 class WalkCount(Descriptor):
-    r'''
-    walk count descriptor
+    r"""walk count descriptor.
 
     :type order: int
     :param order: walk length
@@ -17,7 +17,7 @@ class WalkCount(Descriptor):
     :param self_returning: use self returning walk only
 
     :rtype: int
-    '''
+    """
 
     explicit_hydrogens = False
 

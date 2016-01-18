@@ -1,5 +1,6 @@
-from ._base import Descriptor
 from rdkit import Chem
+
+from ._base import Descriptor
 
 
 class SmartsCount(Descriptor):
@@ -15,11 +16,10 @@ class SmartsCount(Descriptor):
 
 
 class AcidicGroupCount(SmartsCount):
-    r'''
-    acidic group count descriptor
+    r"""acidic group count descriptor.
 
     :rtype: int
-    '''
+    """
 
     def __str__(self):
         return 'nAcid'
@@ -33,11 +33,10 @@ class AcidicGroupCount(SmartsCount):
 
 
 class BasicGroupCount(SmartsCount):
-    r'''
-    basic group count descriptor
+    r"""basic group count descriptor.
 
     :rtype: int
-    '''
+    """
 
     def __str__(self):
         return 'nBase'

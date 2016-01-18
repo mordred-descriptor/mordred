@@ -1,7 +1,9 @@
+from itertools import groupby
+
+import numpy as np
+
 from ._base import Descriptor
 from ._common import DistanceMatrix
-import numpy as np
-from itertools import groupby
 
 
 class BFSTree(object):
@@ -94,8 +96,7 @@ class Ag(InformationContentBase):
 
 
 class InformationContent(InformationContentBase):
-    r'''
-    information content descriptor
+    r"""information content descriptor.
 
     :type type: str
     :param type:
@@ -111,7 +112,7 @@ class InformationContent(InformationContentBase):
     :param order: order(number of edge) of subgraph
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):

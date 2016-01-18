@@ -1,8 +1,10 @@
-from ._base import Descriptor
-import numpy as np
 from collections import namedtuple
+
+import numpy as np
+
 from six import string_types
 
+from ._base import Descriptor
 
 Eig = namedtuple('eigen', 'val vec min max')
 
@@ -15,7 +17,7 @@ def method(cls):
     return cls
 
 
-class common(Descriptor):
+class Common(Descriptor):
     descriptor_keys = 'matrix', 'explicit_hydrogens', 'gasteiger_charges', 'kekulize'
 
     def __init__(self, matrix, explicit_hydrogens=True, gasteiger_charges=False, kekulize=False):
@@ -58,7 +60,7 @@ class common(Descriptor):
         return VR1(*self._key_args)
 
 
-class Eigen(common):
+class Eigen(Common):
     def dependencies(self):
         return dict(matrix=self.matrix)
 
@@ -78,7 +80,7 @@ class Eigen(common):
 
 
 @method
-class SpAbs(common):
+class SpAbs(Common):
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -87,7 +89,7 @@ class SpAbs(common):
 
 
 @method
-class SpMax(common):
+class SpMax(Common):
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -96,7 +98,7 @@ class SpMax(common):
 
 
 @method
-class SpDiam(common):
+class SpDiam(Common):
     def dependencies(self):
         return dict(eig=self._eig, SpMax=self._SpMax)
 
@@ -104,7 +106,7 @@ class SpDiam(common):
         return SpMax - eig.val[eig.min]
 
 
-class SpMean(common):
+class SpMean(Common):
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -113,7 +115,7 @@ class SpMean(common):
 
 
 @method
-class SpAD(common):
+class SpAD(Common):
     def dependencies(self):
         return dict(eig=self._eig, SpMean=self._SpMean)
 
@@ -122,7 +124,7 @@ class SpAD(common):
 
 
 @method
-class SpMAD(common):
+class SpMAD(Common):
     def dependencies(self):
         return dict(SpAD=self._SpAD)
 
@@ -131,7 +133,7 @@ class SpMAD(common):
 
 
 @method
-class LogEE(common):
+class LogEE(Common):
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -143,7 +145,7 @@ class LogEE(common):
 
 
 @method
-class SM1(common):
+class SM1(Common):
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -152,7 +154,7 @@ class SM1(common):
 
 
 @method
-class VE1(common):
+class VE1(Common):
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -161,7 +163,7 @@ class VE1(common):
 
 
 @method
-class VE2(common):
+class VE2(Common):
     def dependencies(self):
         return dict(VE1=self._VE1)
 
@@ -170,7 +172,7 @@ class VE2(common):
 
 
 @method
-class VE3(common):
+class VE3(Common):
     def dependencies(self):
         return dict(VE1=self._VE1)
 
@@ -182,7 +184,7 @@ class VE3(common):
 
 
 @method
-class VR1(common):
+class VR1(Common):
     def dependencies(self):
         return dict(eig=self._eig)
 
@@ -199,7 +201,7 @@ class VR1(common):
 
 
 @method
-class VR2(common):
+class VR2(Common):
     def dependencies(self):
         return dict(VR1=self._VR1)
 
@@ -208,7 +210,7 @@ class VR2(common):
 
 
 @method
-class VR3(common):
+class VR3(Common):
     def dependencies(self):
         return dict(VR1=self._VR1)
 

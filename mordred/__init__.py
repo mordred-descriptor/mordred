@@ -1,5 +1,7 @@
-from ._base import Descriptor, Calculator, all_descriptors, get_descriptors_from_module
+r"""modred descriptor calculator."""
+
+from ._base import all_descriptors, Calculator, Descriptor, get_descriptors_from_module
 
 __all__ = (
-    'Descriptor', 'Calculator', 'all_descriptors', 'get_descriptors_from_module',
+    'all_descriptors', 'Calculator', 'Descriptor', 'get_descriptors_from_module',
 )

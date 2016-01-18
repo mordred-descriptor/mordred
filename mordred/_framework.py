@@ -1,6 +1,7 @@
+import networkx as nx
+
 from ._base import Descriptor
 from ._ring_count import Rings
-import networkx as nx
 
 
 class FrameworkBase(Descriptor):
@@ -40,8 +41,7 @@ class FrameworkCache(FrameworkBase):
 
 
 class Framework(FrameworkBase):
-    r'''
-    molecular framework ratio descriptor
+    r"""molecular framework ratio descriptor.
 
     .. math::
 
@@ -52,7 +52,7 @@ class Framework(FrameworkBase):
     :math:`N` is number of all atoms.
 
     :rtype: float
-    '''
+    """
 
     def __str__(self):
         return 'fMF'

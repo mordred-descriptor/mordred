@@ -1,7 +1,7 @@
 import argparse
 import csv
-import sys
 import os
+import sys
 
 from rdkit import Chem
 

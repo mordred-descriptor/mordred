@@ -1,5 +1,6 @@
-from ._base import Descriptor
 from rdkit import Chem
+
+from ._base import Descriptor
 
 
 class DistanceMatrix(Descriptor):

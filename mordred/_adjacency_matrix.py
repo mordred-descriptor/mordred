@@ -1,17 +1,16 @@
 from ._base import Descriptor
 from ._common import AdjacencyMatrix as A
-from ._matrix_attributes import methods, get_method
+from ._matrix_attributes import get_method, methods
 
 
 class AdjacencyMatrix(Descriptor):
-    r'''
-    adjacency matrix descriptor
+    r"""adjacency matrix descriptor.
 
     :type type: str
     :param type: matrix aggregating method
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = False
 

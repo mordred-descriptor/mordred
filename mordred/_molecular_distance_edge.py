@@ -1,16 +1,17 @@
+from numpy import nan, product
+
+from rdkit import Chem
+
+from six import integer_types, string_types
+
 from ._base import Descriptor
 from ._common import DistanceMatrix, Valence
-from six import integer_types, string_types
-from rdkit import Chem
-from numpy import product, nan
-
 
 table = Chem.GetPeriodicTable()
 
 
 class MolecularDistanceEdge(Descriptor):
-    r'''
-    molecular distance edge descriptor
+    r"""molecular distance edge descriptor.
 
     :type valence1: int
     :param valence1: valence of first atom
@@ -22,7 +23,7 @@ class MolecularDistanceEdge(Descriptor):
     :param element: atomic symbol or atomic number
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = False
     require_connected = False
@@ -74,8 +75,8 @@ class MolecularDistanceEdge(Descriptor):
             D[i, j]
             for i in range(N)
             for j in range(i + 1, N)
-            if (V[i] == self.valence1 and V[j] == self.valence2)
-            or (V[j] == self.valence1 and V[i] == self.valence2)
+            if (V[i] == self.valence1 and V[j] == self.valence2) or
+            (V[j] == self.valence1 and V[i] == self.valence2)
             if mol.GetAtomWithIdx(i).GetAtomicNum() ==
             mol.GetAtomWithIdx(j).GetAtomicNum() ==
             self.atomic_num

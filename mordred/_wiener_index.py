@@ -3,14 +3,13 @@ from ._common import DistanceMatrix
 
 
 class WienerIndex(Descriptor):
-    r'''
-    Wiener index
+    r"""Wiener index.
 
     :type polarity: bool
     :param polarity: use polarity Wiener index
 
     :rtype: int
-    '''
+    """
 
     explicit_hydrogens = False
     require_connected = False

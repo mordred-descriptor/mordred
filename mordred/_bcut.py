@@ -1,13 +1,14 @@
-from ._base import Descriptor
-from . import _atomic_property
 import numpy as np
+
+from . import _atomic_property
+from ._base import Descriptor
 
 
 class BurdenMatrixDescriptor(Descriptor):
     explicit_hydrogens = False
 
 
-class burden(BurdenMatrixDescriptor):
+class Burden(BurdenMatrixDescriptor):
     def calculate(self, mol):
         N = mol.GetNumAtoms()
 
@@ -33,7 +34,7 @@ class burden(BurdenMatrixDescriptor):
         return mat
 
 
-class burden_eigen_values(BurdenMatrixDescriptor):
+class BurdenEigenValues(BurdenMatrixDescriptor):
     descriptor_keys = 'prop', 'gasteiger_charges'
 
     def __init__(self, prop, gasteiger_charges):
@@ -41,7 +42,7 @@ class burden_eigen_values(BurdenMatrixDescriptor):
         self.gasteiger_charges = gasteiger_charges
 
     def dependencies(self):
-        return dict(burden=burden())
+        return dict(burden=Burden())
 
     def calculate(self, mol, burden):
         bmat = burden.copy()
@@ -55,8 +56,7 @@ class burden_eigen_values(BurdenMatrixDescriptor):
 
 
 class BCUT(BurdenMatrixDescriptor):
-    r'''
-    BCUT descriptor
+    r"""BCUT descriptor.
 
     :type prop: str or function
     :param prop: atomic property
@@ -65,7 +65,7 @@ class BCUT(BurdenMatrixDescriptor):
     :param nth: n-th eigen value. 0 is highest, -1 is lowest.
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):
@@ -77,10 +77,6 @@ class BCUT(BurdenMatrixDescriptor):
 
     @property
     def gasteiger_charges(self):
-        r'''
-        inherit atomic property
-        '''
-
         return getattr(self.prop, 'gasteiger_charges', False)
 
     def __str__(self):
@@ -96,7 +92,7 @@ class BCUT(BurdenMatrixDescriptor):
         self.nth = nth
 
     def dependencies(self):
-        return dict(bev=burden_eigen_values(self.prop, self.gasteiger_charges))
+        return dict(bev=BurdenEigenValues(self.prop, self.gasteiger_charges))
 
     def calculate(self, mol, bev):
         try:

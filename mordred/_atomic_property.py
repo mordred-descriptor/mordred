@@ -1,5 +1,6 @@
-from rdkit import Chem
 from numpy import nan, pi
+
+from rdkit import Chem
 
 
 def attr(**attrs):

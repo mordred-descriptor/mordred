@@ -1,11 +1,15 @@
-from ._base import Descriptor
-from . import _atomic_property
-from rdkit import Chem
-from networkx import Graph
 from collections import namedtuple
 from enum import IntEnum
 from itertools import chain
+
+from networkx import Graph
+
 import numpy as np
+
+from rdkit import Chem
+
+from . import _atomic_property
+from ._base import Descriptor
 
 
 class ChiType(IntEnum):
@@ -22,7 +26,7 @@ def _parse_chi_type(a):
         return ChiType(a)
 
 
-class _dfs(object):
+class DFS(object):
     def __init__(self, G):
         self.G = G
         self.visited = set()
@@ -31,7 +35,7 @@ class _dfs(object):
         self.degrees = set()
 
     @classmethod
-    def _edge_key(self, u, v):
+    def _edge_key(cls, u, v):
         return min(u, v), max(u, v)
 
     def _dfs(self, u):
@@ -90,7 +94,7 @@ class ChiCache(ChiBase):
                 nodes.add(a)
                 nodes.add(b)
 
-            typ = _dfs(G)()
+            typ = DFS(G)()
             if typ == ChiType.chain:
                 chain.append(nodes)
             elif typ == ChiType.path:
@@ -116,8 +120,7 @@ _deltas = ['delta', 'delta_v']
 
 
 class Chi(ChiBase):
-    r'''
-    chi descriptor
+    r"""chi descriptor.
 
     :type type: str
     :param type:
@@ -133,7 +136,7 @@ class Chi(ChiBase):
     :param averaged: averaged by number of subgraphs
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):

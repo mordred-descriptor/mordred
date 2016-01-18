@@ -2,8 +2,7 @@ from ._base import Descriptor
 
 
 class FragmentComplexity(Descriptor):
-    r'''
-    fragment complexity descriptor
+    r"""fragment complexity descriptor.
 
     .. math::
         {\rm fragCpx} = \left| B^2 - A^2 + A \right| + \frac{H}{100}
@@ -14,7 +13,7 @@ class FragmentComplexity(Descriptor):
     :math:`H` is number of hetero atoms
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = False
     require_connected = False

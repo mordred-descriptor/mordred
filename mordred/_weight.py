@@ -1,16 +1,16 @@
-from ._base import Descriptor
 from rdkit.Chem.Descriptors import ExactMolWt
+
+from ._base import Descriptor
 
 
 class Weight(Descriptor):
-    r'''
-    molecular weight descriptor
+    r"""molecular weight descriptor.
 
     :type averaged: bool
     :param averaged: averaged by number of atom
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = True
     require_connected = False

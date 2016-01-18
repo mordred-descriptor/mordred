@@ -1,16 +1,15 @@
-from ._base import Descriptor
 from ._atomic_property import Polarizabilities78, Polarizabilities94
+from ._base import Descriptor
 
 
 class APol(Descriptor):
-    r'''
-    atomic polarizability descriptor
+    r"""atomic polarizability descriptor.
 
     :type use78: bool
     :param use78: use old atomic polarizability data
 
     :rtype: float
-    '''
+    """
 
     require_connected = False
 
@@ -28,14 +27,13 @@ class APol(Descriptor):
 
 
 class BPol(Descriptor):
-    r'''
-    bond polarizability descriptor
+    r"""bond polarizability descriptor.
 
     :type use78: bool
     :param use78: use old atomic polarizability data
 
     :rtype: float
-    '''
+    """
 
     require_connected = False
 

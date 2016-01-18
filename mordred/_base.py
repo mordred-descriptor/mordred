@@ -1,14 +1,38 @@
-from rdkit import Chem
-from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
-from six import with_metaclass
-from abc import ABCMeta, abstractmethod
-from types import ModuleType
 import os
+from abc import ABCMeta, abstractmethod
 from importlib import import_module
-import numpy as np
-
 from inspect import getsourcelines
 from sys import maxsize
+from types import ModuleType
+
+import numpy as np
+
+from rdkit import Chem
+from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+
+from six import with_metaclass
+
+
+class DescriptorException(Exception):
+    def __init__(self, desc, e, parent):
+        self.desc = desc
+        self.e = e
+        self.parent = parent
+
+    def __str__(self):
+        if self.parent is None:
+            return '{}.{}: {}'.format(
+                self.desc.__class__.__name__,
+                self.desc,
+                self.e
+            )
+
+        return '{}.{}({}): {}'.format(
+            self.desc.__class__.__name__,
+            self.desc,
+            self.parent,
+            self.e
+        )
 
 
 def pretty(a):
@@ -17,9 +41,7 @@ def pretty(a):
 
 
 class Descriptor(with_metaclass(ABCMeta, object)):
-    r'''
-    abstruct base class of descriptors
-    '''
+    r"""abstruct base class of descriptors."""
 
     explicit_hydrogens = True
     gasteiger_charges = False
@@ -58,38 +80,33 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
     @classmethod
     def preset(cls):
-        r'''
-        generate preset descriptor instances
+        r"""generate preset descriptor instances.
 
         :rtype: iterable
-        '''
+        """
         yield cls()
 
     def dependencies(self):
-        r'''
-        descriptor dependencies
+        r"""descriptor dependencies.
 
         :rtype: {str: (Descriptor or None)} or None
-        '''
-
+        """
         return None
 
     @abstractmethod
     def calculate(self, mol):
-        r'''
-        [abstruct method]
+        r"""calculate descriptor value.
 
-        calculate descriptor value
-        '''
+        (abstruct method)
+        """
         pass
 
     def __call__(self, mol):
-        r'''
-        calculate single descriptor value
+        r"""calculate single descriptor value.
 
-        Returns:
-            scalar: descriptor result
-        '''
+        :returns: descriptor result
+        :rtype: scalar
+        """
         return next(Calculator(self)(mol))[1]
 
 
@@ -139,11 +156,10 @@ class Molecule(object):
 
 
 class Calculator(object):
-    r'''
-    descriptor calculator
+    r"""descriptor calculator.
 
     :param descs: see `register` method
-    '''
+    """
 
     def __init__(self, *descs):
         self.descriptors = []
@@ -172,13 +188,11 @@ class Calculator(object):
             self.kekulize = True
 
     def register(self, *descs):
-        r'''
-        register descriptors
+        r"""register descriptors.
 
         :param descs: descriptors to register
         :type descs: module, descriptor class/instance, iterable
-        '''
-
+        """
         for desc in descs:
             if not hasattr(desc, '__iter__'):
                 if isinstance(desc, type) and issubclass(desc, Descriptor):
@@ -224,8 +238,7 @@ class Calculator(object):
         return r
 
     def __call__(self, mol):
-        r'''
-        calculate descriptors
+        r"""calculate descriptors.
 
         Parameters:
             mol(rdkit.Chem.Mol): molecular
@@ -234,7 +247,7 @@ class Calculator(object):
             iterator of descriptor and value
 
         :rtype: iterator of (Descriptor, scalar)
-        '''
+        """
         cache = {}
         self.molecule = Molecule(mol)
 
@@ -260,8 +273,7 @@ class Calculator(object):
             pool.terminate()
 
     def map(self, mols, processes=None):
-        r'''
-        calculate descriptors over mols
+        r"""calculate descriptors over mols.
 
         :param mols: moleculars
         :type mols: iterable(rdkit.Chem.Mol)
@@ -270,12 +282,14 @@ class Calculator(object):
         :type processes: int or None
 
         :rtype: iterator((rdkit.Chem.Mol, [(Descriptor, scalar)]]))
-        '''
-
+        """
         if processes == 1:
             return ((m, list(self(m))) for m in mols)
         else:
             return self._parallel(mols, processes)
+
+
+calculate = None
 
 
 def initializer(calc):
@@ -288,13 +302,11 @@ def worker(binary):
 
 
 def all_descriptors():
-    r'''
-    yield all descriptors
+    r"""yield all descriptors.
 
     :returns: all modules
     :rtype: iterator(module)
-    '''
-
+    """
     base_dir = os.path.dirname(__file__)
 
     for name in os.listdir(base_dir):
@@ -306,14 +318,12 @@ def all_descriptors():
 
 
 def get_descriptors_from_module(mdl):
-    r'''
-    get descriptors from module
+    r"""get descriptors from module.
 
     :type mdl: module
 
     :rtype: [Descriptor]
-    '''
-
+    """
     descs = []
 
     for name in dir(mdl):

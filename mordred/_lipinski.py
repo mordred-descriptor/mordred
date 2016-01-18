@@ -1,11 +1,10 @@
-from ._base import Descriptor
-from .Bond import HBondDonor, HBondAcceptor
+from .Bond import HBondAcceptor, HBondDonor
 from .Property import Weight, WildmanCrippenLogP
+from ._base import Descriptor
 
 
 class LipinskiLike(Descriptor):
-    r'''
-    Lipinski like descriptor
+    r"""Lipinski like descriptor.
 
     LogP: WildmanCrippenLogP
 
@@ -15,7 +14,7 @@ class LipinskiLike(Descriptor):
         * 'GhoseFilter'
 
     :rtype: bool
-    '''
+    """
 
     require_connected = False
 

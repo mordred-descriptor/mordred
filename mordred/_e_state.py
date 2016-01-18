@@ -1,7 +1,10 @@
-from ._base import Descriptor
-from rdkit.Chem import EState as ES
-from numpy import nan
 from functools import reduce
+
+from numpy import nan
+
+from rdkit.Chem import EState
+
+from ._base import Descriptor
 
 try:
     import builtins
@@ -31,7 +34,7 @@ class EStateBase(Descriptor):
 
 class EStateCache(EStateBase):
     def calculate(self, mol):
-        return ES.TypeAtoms(mol), ES.EStateIndices(mol)
+        return EState.TypeAtoms(mol), EState.EStateIndices(mol)
 
 
 aggr_name_dict = dict(
@@ -43,8 +46,7 @@ aggr_name_dict = dict(
 
 
 class AtomTypeEState(EStateBase):
-    r'''
-    atom type e-state descriptor
+    r"""atom type e-state descriptor.
 
     :type type: str
     :param type:
@@ -57,7 +59,7 @@ class AtomTypeEState(EStateBase):
     :param estate: e-state atom type
 
     :rtype: int('count') or float(other)
-    '''
+    """
 
     @classmethod
     def preset(cls):

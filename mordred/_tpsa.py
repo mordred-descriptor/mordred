@@ -1,11 +1,12 @@
-from ._base import Descriptor
-from rdkit.Chem import rdMolDescriptors, BondType
 from collections import defaultdict
+
+from rdkit.Chem import BondType, rdMolDescriptors
+
+from ._base import Descriptor
 
 
 class TPSA(Descriptor):
-    r'''
-    topological polar surface area descriptor
+    r"""topological polar surface area descriptor.
 
     :type no_only: bool
     :param no_only:
@@ -13,7 +14,7 @@ class TPSA(Descriptor):
         * False: all(N,O,S,P) TPSA
 
     :rtype: float
-    '''
+    """
 
     require_connected = False
 
@@ -62,9 +63,9 @@ class TPSA(Descriptor):
         return dict(cnt)
 
     @classmethod
-    def _get_phosphorus_contrib(self, atom):
-        nH = self._hydrogen_count(atom)
-        cnt = self._bond_type_count(atom)
+    def _get_phosphorus_contrib(cls, atom):
+        nH = cls._hydrogen_count(atom)
+        cnt = cls._bond_type_count(atom)
 
         if atom.GetFormalCharge() != 0 or atom.GetIsAromatic():
             return 0.0
@@ -82,9 +83,9 @@ class TPSA(Descriptor):
         return 0.0
 
     @classmethod
-    def _get_sulfur_contrib(self, atom):
-        nH = self._hydrogen_count(atom)
-        cnt = self._bond_type_count(atom)
+    def _get_sulfur_contrib(cls, atom):
+        nH = cls._hydrogen_count(atom)
+        cnt = cls._bond_type_count(atom)
 
         if atom.GetFormalCharge() != 0:
             return 0.0

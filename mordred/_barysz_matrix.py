@@ -1,9 +1,12 @@
-from ._base import Descriptor
-from . import _atomic_property
-from rdkit import Chem
-from scipy.sparse.csgraph import shortest_path
 import numpy as np
-from ._matrix_attributes import methods, get_method
+
+from rdkit import Chem
+
+from scipy.sparse.csgraph import shortest_path
+
+from . import _atomic_property
+from ._base import Descriptor
+from ._matrix_attributes import get_method, methods
 
 
 class BaryszMatrixBase(Descriptor):
@@ -17,7 +20,7 @@ class BaryszMatrixBase(Descriptor):
 _carbon = Chem.Atom(6)
 
 
-class barysz(BaryszMatrixBase):
+class Barysz(BaryszMatrixBase):
     descriptor_keys = 'prop',
 
     def __init__(self, prop):
@@ -31,15 +34,15 @@ class barysz(BaryszMatrixBase):
         dmat = np.zeros((N, N))
 
         for bond in mol.GetBonds():
-            a = bond.GetBeginAtom()
-            b = bond.GetEndAtom()
+            ai = bond.GetBeginAtom()
+            aj = bond.GetEndAtom()
 
-            i = a.GetIdx()
-            j = b.GetIdx()
+            i = ai.GetIdx()
+            j = aj.GetIdx()
 
             pi = bond.GetBondTypeAsDouble()
 
-            w = float(C * C) / float(self.prop(a) * self.prop(b) * pi)
+            w = float(C * C) / float(self.prop(ai) * self.prop(aj) * pi)
             dmat[i, j] = w
             dmat[j, i] = w
 
@@ -49,8 +52,7 @@ class barysz(BaryszMatrixBase):
 
 
 class BaryszMatrix(BaryszMatrixBase):
-    r'''
-    barysz matrix descriptor
+    r"""barysz matrix descriptor.
 
     :type prop: str or function
     :param prop: atomic property
@@ -59,7 +61,7 @@ class BaryszMatrix(BaryszMatrixBase):
     :param type: matrix aggregateing method
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):
@@ -77,7 +79,7 @@ class BaryszMatrix(BaryszMatrixBase):
     def dependencies(self):
         return dict(
             result=self.type(
-                barysz(self.prop),
+                Barysz(self.prop),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,
                 self.kekulize,

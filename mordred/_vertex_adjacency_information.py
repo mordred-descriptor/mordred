@@ -1,10 +1,10 @@
-from ._base import Descriptor
 import numpy as np
+
+from ._base import Descriptor
 
 
 class VertexAdjacencyInformation(Descriptor):
-    r'''
-    vertex adjacency information descriptor
+    r"""vertex adjacency information descriptor.
 
     .. math::
         {\rm VAdjMat} = 1 + \log_2(m)
@@ -12,7 +12,7 @@ class VertexAdjacencyInformation(Descriptor):
     where :math:`m` is number of heavy-heavy bonds.
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = False
     require_connected = False

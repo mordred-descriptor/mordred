@@ -1,17 +1,17 @@
+from numpy import nan
+
 from ._base import Descriptor
 from ._chi import ChiCache
-from numpy import nan
 
 
 class KappaShapeIndex(Descriptor):
-    r'''
-    kappa shape index descriptor
+    r"""kappa shape index descriptor.
 
     :type order: int
     :param order: order of kier, [1,3]
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = False
     require_connected = False

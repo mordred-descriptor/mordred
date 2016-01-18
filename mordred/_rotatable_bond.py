@@ -1,7 +1,7 @@
+from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
+
 from ._base import Descriptor
 from ._bond_types import BondCount
-
-from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
 
 class RotatableBondsBase(Descriptor):
@@ -10,11 +10,10 @@ class RotatableBondsBase(Descriptor):
 
 
 class RotatableBondsCount(RotatableBondsBase):
-    r'''
-    ratatable bonds count descriptor
+    r"""ratatable bonds count descriptor.
 
     :rtype: int
-    '''
+    """
 
     def __str__(self):
         return 'nRot'
@@ -24,14 +23,13 @@ class RotatableBondsCount(RotatableBondsBase):
 
 
 class RotatableBondsRatio(RotatableBondsBase):
-    r'''
-    rotatable bonds ratio descriptor
+    r"""rotatable bonds ratio descriptor.
 
     .. math::
         {\rm RotRatio} = \frac{N_{\rm rotatable bonds}}{N_{\rm bonds}}
 
     :rtype: float
-    '''
+    """
 
     def __str__(self):
         return 'RotRatio'

@@ -1,6 +1,7 @@
-from ._base import Descriptor
-from . import _atomic_property
 import numpy as np
+
+from . import _atomic_property
+from ._base import Descriptor
 from ._common import DistanceMatrix
 
 
@@ -123,8 +124,7 @@ MAX_DISTANCE = 8
 
 
 class ATS(Autocorrelation):
-    r'''
-    Autocorrelation of Topological Structure descriptor
+    r"""Autocorrelation of Topological Structure descriptor.
 
     a.k.a. Moreau-Broto autocorrelation descriptor
 
@@ -155,7 +155,7 @@ class ATS(Autocorrelation):
     :param property: atomic property
 
     :type: float
-    '''
+    """
 
     @classmethod
     def preset(cls):
@@ -174,8 +174,7 @@ class ATS(Autocorrelation):
 
 
 class AATS(ATS):
-    r'''
-    averaged ATS descriptor
+    r"""averaged ATS descriptor.
 
     .. math::
 
@@ -187,7 +186,7 @@ class AATS(ATS):
     :Parameters: see ATS
 
     :rtype: float
-    '''
+    """
 
     def dependencies(self):
         return dict(ATS=self._ATS, gsum=self._gsum)
@@ -197,8 +196,7 @@ class AATS(ATS):
 
 
 class ATSC(Autocorrelation):
-    r'''
-    centered ATS descriptor
+    r"""centered ATS descriptor.
 
     ATS with :math:`{\boldsymbol w}_{\rm c}` property
 
@@ -208,7 +206,7 @@ class ATSC(Autocorrelation):
     :Parameters: see ATS
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):
@@ -227,8 +225,7 @@ class ATSC(Autocorrelation):
 
 
 class AATSC(ATSC):
-    r'''
-    averaged ATSC descriptor
+    r"""averaged ATSC descriptor.
 
     .. math::
 
@@ -240,7 +237,7 @@ class AATSC(ATSC):
     :Parameters: see ATS
 
     :rtype: float
-    '''
+    """
 
     def dependencies(self):
         return dict(ATSC=self._ATSC, gsum=self._gsum)
@@ -250,8 +247,7 @@ class AATSC(ATSC):
 
 
 class MATS(Autocorrelation):
-    r'''
-    Moran coefficient descriptor
+    r"""Moran coefficient descriptor.
 
     .. math::
 
@@ -264,7 +260,7 @@ class MATS(Autocorrelation):
     :Parameters: see ATS
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):
@@ -280,13 +276,12 @@ class MATS(Autocorrelation):
 
 
 class GATS(MATS):
-    r'''
-    Geary coefficient descriptor
+    r"""Geary coefficient descriptor.
 
     :Parameters: see ATS
 
     :rtype: float
-    '''
+    """
 
     def dependencies(self):
         return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)

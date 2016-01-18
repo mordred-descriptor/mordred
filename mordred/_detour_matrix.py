@@ -1,7 +1,9 @@
 import networkx
+
 import numpy as np
-from ._base import Descriptor
+
 from . import _matrix_attributes as ma
+from ._base import Descriptor
 
 
 class LongestSimplePath(object):
@@ -45,7 +47,7 @@ class LongestSimplePath(object):
                 for g, w in self._start(s).items()}
 
 
-class calc_detour(object):
+class CalcDetour(object):
     def __init__(self, G, weight='weight'):
         self.N = G.number_of_nodes()
         self.Q = []
@@ -114,7 +116,7 @@ class DetourMatrixBase(Descriptor):
     explicit_hydrogens = False
 
 
-class detour_matrix(DetourMatrixBase):
+class DetourMatrixCache(DetourMatrixBase):
     def calculate(self, mol):
         G = networkx.Graph()
         G.add_edges_from(
@@ -122,18 +124,17 @@ class detour_matrix(DetourMatrixBase):
             for b in mol.GetBonds()
         )
 
-        return calc_detour(G)()
+        return CalcDetour(G)()
 
 
 class DetourMatrix(DetourMatrixBase):
-    r'''
-    detour matrix descriptor
+    r"""detour matrix descriptor.
 
     :type type: str
     :param type: matrix aggregating method
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):
@@ -150,7 +151,7 @@ class DetourMatrix(DetourMatrixBase):
     def dependencies(self):
         return dict(
             result=self.type(
-                detour_matrix(),
+                DetourMatrixCache(),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,
                 self.kekulize,

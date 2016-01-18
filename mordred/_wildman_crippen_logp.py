@@ -1,16 +1,16 @@
-from ._base import Descriptor
 from rdkit.Chem import Crippen as _Crippen
+
+from ._base import Descriptor
 
 
 class WildmanCrippenLogP(Descriptor):
-    r'''
-    Wildman-Crippen LogP/MR descriptor
+    r"""Wildman-Crippen LogP/MR descriptor.
 
     :type prop: str
     :param type: 'LogP' or 'MR'
 
     :rtype: float
-    '''
+    """
 
     @classmethod
     def preset(cls):

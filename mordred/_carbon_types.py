@@ -1,6 +1,8 @@
 from collections import defaultdict
-from ._base import Descriptor
+
 import numpy as np
+
+from ._base import Descriptor
 
 
 class CarbonTypesBase(Descriptor):
@@ -47,8 +49,7 @@ class CarbonTypesCache(CarbonTypesBase):
 
 
 class CarbonTypes(CarbonTypesBase):
-    r'''
-    carbon types descriptor
+    r"""carbon types descriptor.
 
     :type nCarbon: int
     :param nCarbon: count `n`-carbon bonded carbon
@@ -57,7 +58,7 @@ class CarbonTypes(CarbonTypesBase):
     :param SP: count :math:`{\rm SP}n` carbon
 
     :rtype: int
-    '''
+    """
 
     @classmethod
     def preset(cls):
@@ -86,15 +87,14 @@ class CarbonTypes(CarbonTypesBase):
 
 
 class HybridizationRatio(CarbonTypesBase):
-    r'''
-    hybridization ratio descriptor
+    r"""hybridization ratio descriptor.
 
     .. math::
 
         {\rm HybRatio} = \frac{N_{\rm SP3}}{N_{\rm SP2} + N_{\rm SP3}}
 
     :rtype: float
-    '''
+    """
 
     def __str__(self):
         return 'HybRatio'

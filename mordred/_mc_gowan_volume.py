@@ -1,13 +1,12 @@
-from ._base import Descriptor
 from ._atomic_property import get_mc_gowan_volume
+from ._base import Descriptor
 
 
 class McGowanVolume(Descriptor):
-    r'''
-    McGowan volume descriptor
+    r"""McGowan volume descriptor.
 
     :rtype: float
-    '''
+    """
 
     require_connected = False
 

@@ -1,17 +1,16 @@
 from ._base import Descriptor
 from ._common import DistanceMatrix as D
-from ._matrix_attributes import methods, get_method
+from ._matrix_attributes import get_method, methods
 
 
 class DistanceMatrix(Descriptor):
-    r'''
-    distance matrix descriptor
+    r"""distance matrix descriptor.
 
     :type type: str
     :param type: matrix aggregating method
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = False
 

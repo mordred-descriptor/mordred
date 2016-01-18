@@ -1,6 +1,8 @@
-from ._base import Descriptor
-from rdkit import Chem
 import networkx
+
+from rdkit import Chem
+
+from ._base import Descriptor
 
 
 class RingCountBase(Descriptor):
@@ -35,8 +37,7 @@ class FusedRings(RingCountBase):
 
 
 class RingCount(RingCountBase):
-    r'''
-    ring count descriptor
+    r"""ring count descriptor.
 
     :type order: int or None
     :param order: number of bonds in ring
@@ -60,7 +61,7 @@ class RingCount(RingCountBase):
         * None: count any rings
 
     :rtype: int
-    '''
+    """
 
     @classmethod
     def preset(cls):

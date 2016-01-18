@@ -1,5 +1,6 @@
 from ._base import Descriptor
-from ._common import Radius as _R, Diameter as _D
+from ._common import Diameter as CDiameter
+from ._common import Radius as CRadius
 
 
 class TopologicalIndexBase(Descriptor):
@@ -8,18 +9,17 @@ class TopologicalIndexBase(Descriptor):
 
 
 class Radius(TopologicalIndexBase):
-    r'''
-    radius descriptor
+    r"""radius descriptor.
 
     :rtype: int
-    '''
+    """
 
     def __str__(self):
         return 'Radius'
 
     def dependencies(self):
         return dict(
-            R=_R(
+            R=CRadius(
                 self.explicit_hydrogens,
                 False, False,
             )
@@ -30,18 +30,17 @@ class Radius(TopologicalIndexBase):
 
 
 class Diameter(TopologicalIndexBase):
-    r'''
-    diameter descriptor
+    r"""diameter descriptor.
 
     :rtype: int
-    '''
+    """
 
     def __str__(self):
         return 'Diameter'
 
     def dependencies(self):
         return dict(
-            D=_D(
+            D=CDiameter(
                 self.explicit_hydrogens,
                 False, False)
         )
@@ -51,8 +50,7 @@ class Diameter(TopologicalIndexBase):
 
 
 class TopologicalShapeIndex(TopologicalIndexBase):
-    r'''
-    topological shape index descriptor
+    r"""topological shape index descriptor.
 
     .. math::
 
@@ -63,7 +61,7 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     :math:`D` is graph diameter.
 
     :rtype: float
-    '''
+    """
 
     def __str__(self):
         return 'TopoShapeIndex'
@@ -72,8 +70,8 @@ class TopologicalShapeIndex(TopologicalIndexBase):
         args = [self.explicit_hydrogens, False, False]
 
         return dict(
-            R=_R(*args),
-            D=_D(*args)
+            R=CRadius(*args),
+            D=CDiameter(*args)
         )
 
     def calculate(self, mol, R, D):
@@ -81,8 +79,7 @@ class TopologicalShapeIndex(TopologicalIndexBase):
 
 
 class PetitjeanIndex(TopologicalIndexBase):
-    r'''
-    Petitjean index descriptor
+    r"""Petitjean index descriptor.
 
     .. math::
 
@@ -93,7 +90,7 @@ class PetitjeanIndex(TopologicalIndexBase):
     :math:`D` is graph diameter.
 
     :rtype: float
-    '''
+    """
 
     def __str__(self):
         return 'PetitjeanIndex'
@@ -102,8 +99,8 @@ class PetitjeanIndex(TopologicalIndexBase):
         args = [self.explicit_hydrogens, False, False]
 
         return dict(
-            R=_R(*args),
-            D=_D(*args)
+            R=CRadius(*args),
+            D=CDiameter(*args)
         )
 
     def calculate(self, mol, R, D):

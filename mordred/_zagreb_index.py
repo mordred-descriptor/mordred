@@ -1,11 +1,11 @@
+import numpy as np
+
 from ._base import Descriptor
 from ._common import Valence
-import numpy as np
 
 
 class ZagrebIndex(Descriptor):
-    r'''
-    Zagreb index descriptor
+    r"""Zagreb index descriptor.
 
     .. math::
 
@@ -23,7 +23,7 @@ class ZagrebIndex(Descriptor):
     :param variable: lambda value.
 
     :rtype: int
-    '''
+    """
 
     explicit_hydrogens = False
     require_connected = False

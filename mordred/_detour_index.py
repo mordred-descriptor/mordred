@@ -1,10 +1,9 @@
 from ._base import Descriptor
-from ._detour_matrix import detour_matrix
+from ._detour_matrix import DetourMatrixCache
 
 
 class DetourIndex(Descriptor):
-    r'''
-    detour index descriptor
+    r"""detour index descriptor.
 
     .. math::
 
@@ -15,7 +14,7 @@ class DetourIndex(Descriptor):
     :math:`A` is number of atoms.
 
     :rtype: int
-    '''
+    """
 
     explicit_hydrogens = False
 
@@ -24,7 +23,7 @@ class DetourIndex(Descriptor):
 
     def dependencies(self):
         return dict(
-            D=detour_matrix()
+            D=DetourMatrixCache()
         )
 
     def calculate(self, mol, D):

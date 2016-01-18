@@ -1,9 +1,11 @@
-from ._base import Descriptor
-from ._common import AdjacencyMatrix, DistanceMatrix
-from six import integer_types
 from itertools import chain
 
 import numpy as np
+
+from six import integer_types
+
+from ._base import Descriptor
+from ._common import AdjacencyMatrix, DistanceMatrix
 
 
 class ChargeTermMatrix(Descriptor):
@@ -33,8 +35,7 @@ class ChargeTermMatrix(Descriptor):
 
 
 class TopologicalCharge(Descriptor):
-    r'''
-    topological charge descriptor
+    r"""topological charge descriptor.
 
     :type type: str
     :param type:
@@ -46,7 +47,7 @@ class TopologicalCharge(Descriptor):
     :param order: int
 
     :rtype: float
-    '''
+    """
 
     explicit_hydrogens = False
     require_connected = False

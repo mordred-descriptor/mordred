@@ -1,18 +1,18 @@
-from ._base import Descriptor
 from rdkit.Chem import rdMolDescriptors
+
+from ._base import Descriptor
 
 
 class HBondBase(Descriptor):
     explicit_hydrogens = False
-    require_connected =False
+    require_connected = False
 
 
 class HBondAcceptor(HBondBase):
-    r'''
-    hydrogen bond acceptor descriptor
+    r"""hydrogen bond acceptor descriptor.
 
     :rtype: int
-    '''
+    """
 
     def __str__(self):
         return 'nHBAcc'
@@ -22,11 +22,10 @@ class HBondAcceptor(HBondBase):
 
 
 class HBondDonor(HBondBase):
-    r'''
-    hydrogen bond donor descriptor
+    r"""hydrogen bond donor descriptor.
 
     :rtype: int
-    '''
+    """
 
     def __str__(self):
         return 'nHBDon'

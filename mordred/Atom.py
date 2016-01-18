@@ -1,5 +1,5 @@
-from ._atom_count import AtomCount
 from ._aromatic import AromaticAtomsCount
+from ._atom_count import AtomCount
 from ._carbon_types import CarbonTypes, HybridizationRatio
 
 __all__ = (
