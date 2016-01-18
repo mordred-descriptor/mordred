@@ -37,13 +37,16 @@ class TopologicalCharge(Descriptor):
     r'''
     topological charge descriptor
 
-    Parameters:
-        type(str):
-            * 'sum': sum of order-distance atom pairs coefficient
-            * 'mean': mean of order-distance atom pairs coefficient
-            * 'global': sum of mean-topoCharge over 0 to order
+    :type type: str
+    :param type:
+        * 'sum': sum of order-distance atom pairs coefficient
+        * 'mean': mean of order-distance atom pairs coefficient
+        * 'global': sum of mean-topoCharge over 0 to order
 
-        order(int): distance of atom pairs
+    :type order: int
+    :param order: int
+
+    :rtype: float
     '''
 
     explicit_hydrogens = False

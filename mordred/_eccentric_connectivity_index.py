@@ -13,8 +13,7 @@ class EccentricConnectivityIndex(Descriptor):
     :math:`E` is eccentricity of atoms,
     :math:`V` is valences of atoms.
 
-    Returns:
-        int: eccentric connectivity index
+    :rtype: int
     '''
 
     explicit_hydrogens = False

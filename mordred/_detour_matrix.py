@@ -129,11 +129,10 @@ class DetourMatrix(DetourMatrixBase):
     r'''
     detour matrix descriptor
 
-    Parameters:
-        type(str): matrix aggregating method
+    :type type: str
+    :param type: matrix aggregating method
 
-    Returns:
-        float: result
+    :rtype: float
     '''
 
     @classmethod

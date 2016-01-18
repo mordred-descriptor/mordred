@@ -6,11 +6,10 @@ class WienerIndex(Descriptor):
     r'''
     Wiener index
 
-    Parameters:
-        polarity(bool): use polarity Wiener index
+    :type polarity: bool
+    :param polarity: use polarity Wiener index
 
-    Returns:
-        int: Wiener index
+    :rtype: int
     '''
 
     explicit_hydrogens = False

@@ -9,13 +9,12 @@ class LipinskiLike(Descriptor):
 
     LogP: WildmanCrippenLogP
 
-    Parameters:
-        variant(str):
-            * Lipinski
-            * GhoseFilter
+    :type variant: str
+    :param variant:
+        * 'Lipinski'
+        * 'GhoseFilter'
 
-    Returns:
-        bool: filter result
+    :rtype: bool
     '''
 
     require_connected = False
@@ -46,14 +45,14 @@ class LipinskiLike(Descriptor):
             if prop in deps_dict[self.variant]
         }
 
-    def Lipinski(self, mol, LogP, MW, HBDon, HBAcc):
+    def _Lipinski(self, mol, LogP, MW, HBDon, HBAcc):
         return\
             HBDon <= 5 and\
             HBAcc <= 10 and\
             MW <= 500 and\
             LogP <= 5
 
-    def GhoseFilter(self, mol, MW, LogP, MR):
+    def _GhoseFilter(self, mol, MW, LogP, MR):
         return\
             (160 <= MW <= 480) and\
             (20 <= mol.GetNumAtoms() <= 70) and\
@@ -61,7 +60,7 @@ class LipinskiLike(Descriptor):
             (40 <= MR <= 130)
 
     def calculate(self, mol, **deps):
-        return getattr(self, self.variant)(mol, **deps)
+        return getattr(self, '_' + self.variant)(mol, **deps)
 
 deps_dict = dict(
     Lipinski=set(['LogP', 'MW', 'HBDon', 'HBAcc']),

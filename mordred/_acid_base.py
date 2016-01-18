@@ -6,7 +6,7 @@ class SmartsCount(Descriptor):
     require_connected = False
 
     def get_smarts(self):
-        self.mols = [Chem.MolFromSmarts(s) for s in self.smarts]
+        self.mols = [Chem.MolFromSmarts(s) for s in self.SMARTS]
         return self.mols
 
     def calculate(self, mol):
@@ -18,14 +18,13 @@ class AcidicGroupCount(SmartsCount):
     r'''
     acidic group count descriptor
 
-    Returns:
-        int: number of acidic groups
+    :rtype: int
     '''
 
     def __str__(self):
         return 'nAcid'
 
-    smarts = [
+    SMARTS = [
         "[$([O;H1]-[C,S,P]=O)]",
         "[$([*;-;!$(*~[*;+])])]",
         "[$([NH](S(=O)=O)C(F)(F)F)]",
@@ -37,14 +36,13 @@ class BasicGroupCount(SmartsCount):
     r'''
     basic group count descriptor
 
-    Returns:
-        int: number of basic groups
+    :rtype: int
     '''
 
     def __str__(self):
         return 'nBase'
 
-    smarts = [
+    SMARTS = [
         "[$([NH2]-[CX4])]",
         "[$([NH](-[CX4])-[CX4])]",
         "[$(N(-[CX4])(-[CX4])-[CX4])]",

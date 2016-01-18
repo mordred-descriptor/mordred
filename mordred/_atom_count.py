@@ -5,11 +5,10 @@ class AtomCount(Descriptor):
     r'''
     atom count descriptor
 
-    Parameters:
-        type(str): type to count. 'Atom', 'HeavyAtom', 'X'(all halogen), or element symbol.
+    :type type: str
+    :param type: type to count. 'Atom', 'HeavyAtom', 'X'(all halogen), or element symbol.
 
-    Returns:
-        int: count
+    :rtype: int
     '''
 
     require_connected = False
@@ -23,6 +22,10 @@ class AtomCount(Descriptor):
 
     @property
     def explicit_hydrogens(self):
+        u'''
+        require explicit_hydrogens when type is 'H' or 'Atom'
+        '''
+
         return self.type in set(['H', 'Atom'])
 
     def __str__(self):

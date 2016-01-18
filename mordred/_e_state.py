@@ -46,17 +46,17 @@ class AtomTypeEState(EStateBase):
     r'''
     atom type e-state descriptor
 
-    Parameters:
-        type(str):
-            * 'count'
-            * 'sum'
-            * 'max'
-            * 'min'
+    :type type: str
+    :param type:
+        * 'count'
+        * 'sum'
+        * 'max'
+        * 'min'
 
-        estate(str): e-state atom type
+    :type estate: str
+    :param estate: e-state atom type
 
-    Returns:
-        int or float: e-state value
+    :rtype: int('count') or float(other)
     '''
 
     @classmethod

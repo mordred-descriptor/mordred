@@ -13,8 +13,7 @@ class RotatableBondsCount(RotatableBondsBase):
     r'''
     ratatable bonds count descriptor
 
-    Returns:
-        int: rotatable bonds count
+    :rtype: int
     '''
 
     def __str__(self):
@@ -31,8 +30,7 @@ class RotatableBondsRatio(RotatableBondsBase):
     .. math::
         {\rm RotRatio} = \frac{N_{\rm rotatable bonds}}{N_{\rm bonds}}
 
-    Returns:
-        float: rotatable bonds ratio
+    :rtype: float
     '''
 
     def __str__(self):

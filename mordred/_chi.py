@@ -119,20 +119,20 @@ class Chi(ChiBase):
     r'''
     chi descriptor
 
-    Parameters:
-        type(str):
+    :type type: str
+    :param type:
+        * 'path'
+        * 'path-cluster'
+        * 'cluster'
+        * 'chain'
 
-            * 'path'
-            * 'path-cluster'
-            * 'cluster'
-            * 'chain'
+    :type prop: str or function
+    :param prop: atomic property
 
-        prop(str, function): atomic property
+    :type averaged: bool
+    :param averaged: averaged by number of subgraphs
 
-        averaged(bool): averaged by number of subgraphs
-
-    Returns:
-        float: chi value
+    :rtype: float
     '''
 
     @classmethod

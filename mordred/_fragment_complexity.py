@@ -13,8 +13,7 @@ class FragmentComplexity(Descriptor):
     :math:`B` is number of bonds,
     :math:`H` is number of hetero atoms
 
-    Returns:
-        float: fragment complexity
+    :rtype: float
     '''
 
     explicit_hydrogens = False

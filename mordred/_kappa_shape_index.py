@@ -7,11 +7,10 @@ class KappaShapeIndex(Descriptor):
     r'''
     kappa shape index descriptor
 
-    Parameters:
-        order(int): order of kier, [1,3]
+    :type order: int
+    :param order: order of kier, [1,3]
 
-    Returns:
-        float: kappa shape index
+    :rtype: float
     '''
 
     explicit_hydrogens = False

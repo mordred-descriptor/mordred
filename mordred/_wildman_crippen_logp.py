@@ -6,11 +6,10 @@ class WildmanCrippenLogP(Descriptor):
     r'''
     Wildman-Crippen LogP/MR descriptor
 
-    Parameters:
-        prop(str): 'LogP' or 'MR'
+    :type prop: str
+    :param type: 'LogP' or 'MR'
 
-    Returns:
-        float: LogP or MR value
+    :rtype: float
     '''
 
     @classmethod

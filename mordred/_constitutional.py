@@ -14,11 +14,10 @@ class ConstitutionalSum(Descriptor):
     :math:`p_i` is atomic property of i-th atom,
     :math:`p_{\rm C}` is atomic property of carbon
 
-    Parameters:
-        prop(str, function): atomic property
+    :type prop: str or function
+    :param prop: atomic property
 
-    Returns:
-        float: sum of constitutional
+    :rtype: float
     '''
 
     require_connected = False
@@ -50,11 +49,10 @@ class ConstitutionalMean(ConstitutionalSum):
     .. math::
         M_p = \frac{S_p}{A}
 
-    Parameters:
-        prop(str, function): atomic property
+    :type prop: str or function
+    :param prop: atomic property
 
-    Returns:
-        float: mean of constitutional
+    :rtype: float
     '''
 
     @classmethod

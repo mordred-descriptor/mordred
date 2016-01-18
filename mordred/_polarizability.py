@@ -6,11 +6,10 @@ class APol(Descriptor):
     r'''
     atomic polarizability descriptor
 
-    Parameters:
-        use78(bool): use old atomic polarizability data
+    :type use78: bool
+    :param use78: use old atomic polarizability data
 
-    Returns:
-        float: sum of atomic polarizability
+    :rtype: float
     '''
 
     require_connected = False
@@ -32,11 +31,10 @@ class BPol(Descriptor):
     r'''
     bond polarizability descriptor
 
-    Parameters:
-        use78(bool): use old atomic polarizability data
+    :type use78: bool
+    :param use78: use old atomic polarizability data
 
-    Returns:
-        float: sum of bond polarizability
+    :rtype: float
     '''
 
     require_connected = False

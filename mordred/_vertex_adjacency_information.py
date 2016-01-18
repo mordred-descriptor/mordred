@@ -11,8 +11,7 @@ class VertexAdjacencyInformation(Descriptor):
 
     where :math:`m` is number of heavy-heavy bonds.
 
-    Returns:
-        float: VAdjMat value
+    :rtype: float
     '''
 
     explicit_hydrogens = False

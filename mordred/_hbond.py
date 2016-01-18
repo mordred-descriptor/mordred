@@ -11,8 +11,7 @@ class HBondAcceptor(HBondBase):
     r'''
     hydrogen bond acceptor descriptor
 
-    Returns:
-        int: hydrogen bond acceptor count
+    :rtype: int
     '''
 
     def __str__(self):
@@ -26,8 +25,7 @@ class HBondDonor(HBondBase):
     r'''
     hydrogen bond donor descriptor
 
-    Returns:
-        int: hydrogen bond donor count
+    :rtype: int
     '''
 
     def __str__(self):

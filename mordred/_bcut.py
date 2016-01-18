@@ -59,12 +59,13 @@ class BCUT(BurdenMatrixDescriptor):
     r'''
     BCUT descriptor
 
-    Parameters:
-        prop(str, function): atomic property
-        nth(int): n-th eigen value. 0 is highest, -1 is lowest.
+    :type prop: str or function
+    :param prop: atomic property
 
-    Returns:
-        float: result
+    :type nth: int
+    :param nth: n-th eigen value. 0 is highest, -1 is lowest.
+
+    :rtype: float
     '''
 
     @classmethod
@@ -77,6 +78,10 @@ class BCUT(BurdenMatrixDescriptor):
 
     @property
     def gasteiger_charges(self):
+        r'''
+        inherit atomic property
+        '''
+
         return getattr(self.prop, 'gasteiger_charges', False)
 
     def __str__(self):

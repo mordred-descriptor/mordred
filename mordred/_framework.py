@@ -52,8 +52,7 @@ class Framework(FrameworkBase):
     :math:`N_{\rm MF}` is number of atoms in molecular framework,
     :math:`N` is number of all atoms.
 
-    Returns:
-        float: fMF value
+    :rtype: float
     '''
 
     def __str__(self):

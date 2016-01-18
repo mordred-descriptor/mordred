@@ -6,11 +6,10 @@ class Weight(Descriptor):
     r'''
     molecular weight descriptor
 
-    Parameters:
-        averaged(bool): averaged by number of atom
+    :type averaged: bool
+    :param averaged: averaged by number of atom
 
-    Returns:
-        float: exact molecular weight
+    :rtype: float
     '''
 
     explicit_hydrogens = True

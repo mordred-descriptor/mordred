@@ -11,8 +11,7 @@ class Radius(TopologicalIndexBase):
     r'''
     radius descriptor
 
-    Returns:
-        int: graph radius
+    :rtype: int
     '''
 
     def __str__(self):
@@ -35,8 +34,7 @@ class Diameter(TopologicalIndexBase):
     r'''
     diameter descriptor
 
-    Returns:
-        int: graph diameter
+    :rtype: int
     '''
 
     def __str__(self):
@@ -66,8 +64,7 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     :math:`R` is graph radius,
     :math:`D` is graph diameter.
 
-    Returns:
-        float: topological shape index
+    :rtype: float
     '''
 
     def __str__(self):
@@ -98,8 +95,7 @@ class PetitjeanIndex(TopologicalIndexBase):
     :math:`R` is graph radius,
     :math:`D` is graph diameter.
 
-    Returns:
-        float: Petitjean index
+    :rtype: float
     '''
 
     def __str__(self):

@@ -151,12 +151,13 @@ class ATS(Autocorrelation):
     :math:`{\boldsymbol w}` is atomic property vector,
     :math:`d_{ij}` is graph distance(smallest number of bonds between atom i and j).
 
-    Parameters:
-        order(int): order(:math:`k`)
-        property(str, function): atomic property
+    :type order: int
+    :param order: order(:math:`k`)
 
-    Returns:
-        float: ATS value
+    :type property: str or function
+    :param property: atomic property
+
+    :type: float
     '''
 
     @classmethod
@@ -187,11 +188,9 @@ class AATS(ATS):
     where
     :math:`\Delta_k` is number of vertex pairs at order equal to :math:`k`.
 
-    Parameters:
-        parameters: see ATS
+    :Parameters: see ATS
 
-    Returns:
-        float: AATS value
+    :rtype: float
     '''
 
     @property
@@ -211,12 +210,9 @@ class ATSC(Autocorrelation):
     .. math::
         {\boldsymbol w}_{\rm c} = {\boldsymbol w} - \bar{\boldsymbol w}
 
-    Parameters:
-        parameters: see ATS
+    :Parameters: see ATS
 
-    Returns:
-        float: ATSC value
-
+    :rtype: float
     '''
 
     @classmethod
@@ -247,11 +243,9 @@ class AATSC(ATSC):
     where
     :math:`\Delta_k` is number of vertex pairs at order equal to :math:`k`.
 
-    Parameters:
-        parameters: see ATS
+    :Parameters: see ATS
 
-    Returns:
-        float: AATSC value
+    :rtype: float
     '''
 
     @property
@@ -274,11 +268,9 @@ class MATS(Autocorrelation):
             \frac{1}{A} \cdot \sum {\boldsymbol w}_{\rm c}^2
             }
 
-    Parameters:
-        parameters: see ATS
+    :Parameters: see ATS
 
-    Returns:
-        float: MATS value
+    :rtype: float
     '''
 
     @classmethod
@@ -299,11 +291,9 @@ class GATS(MATS):
     r'''
     Geary coefficient descriptor
 
-    Parameters:
-        parameters: see ATS
+    :Parameters: see ATS
 
-    Returns:
-        float: GATS value
+    :rtype: float
     '''
 
     @property

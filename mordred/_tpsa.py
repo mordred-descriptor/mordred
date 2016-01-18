@@ -7,14 +7,12 @@ class TPSA(Descriptor):
     r'''
     topological polar surface area descriptor
 
-    Parameters:
-        no_only(bool):
+    :type no_only: bool
+    :param no_only:
+        * True: N,O only TPSA
+        * False: all(N,O,S,P) TPSA
 
-            * True: N,O only TPSA
-            * False: all(N,O,S,P) TPSA
-
-    Returns:
-        float: TPSA value
+    :rtype: float
     '''
 
     require_connected = False

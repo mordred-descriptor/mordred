@@ -11,30 +11,8 @@ from inspect import getsourcelines
 from sys import maxsize
 
 
-class DescriptorException(Exception):
-    def __init__(self, desc, e, parent):
-        self.desc = desc
-        self.e = e
-        self.parent = parent
-
-    def __str__(self):
-        if self.parent is None:
-            return '{}.{}: {}'.format(
-                self.desc.__class__.__name__,
-                self.desc,
-                self.e
-            )
-
-        return '{}.{}({}): {}'.format(
-            self.desc.__class__.__name__,
-            self.desc,
-            self.parent,
-            self.e
-        )
-
-
 class Descriptor(with_metaclass(ABCMeta, object)):
-    '''
+    r'''
     abstruct base class of descriptors
     '''
 
@@ -67,24 +45,33 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
     @classmethod
     def preset(cls):
-        '''
+        r'''
         generate preset descriptor instances
 
-        Returns:
-            iterable: descriptors
+        :rtype: iterable
         '''
         yield cls()
 
-    @property
     def dependencies(self):
+        r'''
+        descriptor dependencies
+
+        :rtype: {str: (Descriptor or None)} or None
+        '''
+
         return None
 
     @abstractmethod
     def calculate(self, mol):
+        r'''
+        [abstruct method]
+
+        calculate descriptor value
+        '''
         pass
 
     def __call__(self, mol):
-        '''
+        r'''
         calculate single descriptor value
 
         Returns:
@@ -139,11 +126,10 @@ class Molecule(object):
 
 
 class Calculator(object):
-    '''
+    r'''
     descriptor calculator
 
-    Parameters:
-        descs: see `register`
+    :param descs: see `register` method
     '''
 
     def __init__(self, *descs):
@@ -173,11 +159,11 @@ class Calculator(object):
             self.kekulize = True
 
     def register(self, *descs):
-        '''
+        r'''
         register descriptors
 
-        Parameters:
-            descs (module, descriptor class/instance, iterable): descriptors to register
+        :param descs: descriptors to register
+        :type descs: module, descriptor class/instance, iterable
         '''
 
         for desc in descs:
@@ -198,6 +184,14 @@ class Calculator(object):
 
     @staticmethod
     def get_descriptors_from_module(mdl):
+        r'''
+        get descriptors from module
+
+        :type mdl: module
+
+        :rtype: [Descriptor]
+        '''
+
         descs = []
 
         for name in dir(mdl):
@@ -246,7 +240,7 @@ class Calculator(object):
         return r
 
     def __call__(self, mol):
-        '''
+        r'''
         calculate descriptors
 
         Parameters:
@@ -282,12 +276,14 @@ class Calculator(object):
             pool.terminate()
 
     def map(self, mols, processes=None):
-        u'''
+        r'''
         calculate descriptors over mols
 
-        Parameters:
-            mols(iterable<rdkit.Chem.Mol>): moleculars
-            processes(int or None): number of process. None is multiprocessing.cpu_count()
+        :param mols: moleculars
+        :type mols: iterable(rdkit.Chem.Mol)
+
+        :param processes: number of process. None is multiprocessing.cpu_count()
+        :type processes: int or None
 
         :rtype: iterator((rdkit.Chem.Mol, [(Descriptor, scalar)]]))
         '''
@@ -311,8 +307,8 @@ def all_descriptors():
     r'''
     yield all descriptors
 
-    Returns:
-        iterator<module>: all modules
+    :returns: all modules
+    :rtype: iterator(module)
     '''
 
     base_dir = os.path.dirname(__file__)

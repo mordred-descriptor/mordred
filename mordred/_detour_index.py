@@ -14,8 +14,7 @@ class DetourIndex(Descriptor):
     :math:`D` is detour matrix,
     :math:`A` is number of atoms.
 
-    Returns:
-        int: detour index
+    :rtype: int
     '''
 
     explicit_hydrogens = False

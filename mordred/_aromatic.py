@@ -9,8 +9,8 @@ class AromaticAtomsCount(AromaticBase):
     r'''
     aromatic atoms count descriptor
 
-    Returns:
-        int: count of aromatic atoms
+    :rtype: int
+    :returns: count of aromatic atoms
     '''
 
     def __str__(self):
@@ -24,8 +24,8 @@ class AromaticBondsCount(AromaticBase):
     r'''
     aromatic bonds count descriptor
 
-    Returns:
-        int: count of aromatic bonds
+    :rtype: int
+    :returns: count of aromatic bonds
     '''
 
     def __str__(self):

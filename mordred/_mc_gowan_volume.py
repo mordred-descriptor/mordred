@@ -6,8 +6,7 @@ class McGowanVolume(Descriptor):
     r'''
     McGowan volume descriptor
 
-    Returns:
-        float: McGowan volume
+    :rtype: float
     '''
 
     require_connected = False

@@ -50,12 +50,13 @@ class CarbonTypes(CarbonTypesBase):
     r'''
     carbon types descriptor
 
-    Parameters:
-        nCarbon(int): count `n`-carbon bonded carbon
-        SP(int): count :math:`{\rm SP}n` carbon
+    :type nCarbon: int
+    :param nCarbon: count `n`-carbon bonded carbon
 
-    Returns:
-        int: count
+    :type SP: int
+    :param SP: count :math:`{\rm SP}n` carbon
+
+    :rtype: int
     '''
 
     @classmethod
@@ -93,8 +94,7 @@ class HybridizationRatio(CarbonTypesBase):
 
         {\rm HybRatio} = \frac{N_{\rm SP3}}{N_{\rm SP2} + N_{\rm SP3}}
 
-    Returns:
-        float: hybridization ratio
+    :rtype: float
     '''
 
     def __str__(self):

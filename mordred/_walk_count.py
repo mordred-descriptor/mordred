@@ -7,13 +7,16 @@ class WalkCount(Descriptor):
     r'''
     walk count descriptor
 
-    Parameters:
-        order(int): walk length
-        total(bool): sum of walk count over 1 to order
-        self_returning(bool): use self returning walk only
+    :type order: int
+    :param order: walk length
 
-    Returns:
-        int: walk count
+    :type total: bool
+    :param total: sum of walk count over 1 to order
+
+    :type self_returning: bool
+    :param self_returning: use self returning walk only
+
+    :rtype: int
     '''
 
     explicit_hydrogens = False

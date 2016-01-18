@@ -52,12 +52,13 @@ class BaryszMatrix(BaryszMatrixBase):
     r'''
     barysz matrix descriptor
 
-    Parameters:
-        prop(str, function): atomic property
-        type(str): matrix aggregateing method
+    :type prop: str or function
+    :param prop: atomic property
 
-    Returns:
-        float: result
+    :type type: str
+    :param type: matrix aggregateing method
+
+    :rtype: float
     '''
 
     @classmethod

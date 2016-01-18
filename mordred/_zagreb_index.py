@@ -16,12 +16,13 @@ class ZagrebIndex(Descriptor):
     where
     :math:`d_i` is degree of i-th atom
 
-    Parameters:
-        version(int): Zagreb index version. 1 or 2.
-        variable(int): lambda value.
+    :type version: int
+    :param version: Zagreb index version. 1 or 2.
 
-    Returns:
-        int: Zagreb index
+    :type variable: int
+    :param variable: lambda value.
+
+    :rtype: int
     '''
 
     explicit_hydrogens = False

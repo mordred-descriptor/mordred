@@ -20,22 +20,22 @@ class BondCount(Descriptor):
     r'''
     bond count descriptor
 
-    Parameters:
-        type(str):
-            * 'any' - any
-            * 'heavy' - any, not include bond which connect to hydrogen
+    :type type: str
+    :param type:
+        * 'any' - any
+        * 'heavy' - any, not include bond which connect to hydrogen
 
-            * 'single' - single bonds
-            * 'double' - double bonds
-            * 'triple' - triple bonds
-            * 'aromatic' - aromatic bonds
+        * 'single' - single bonds
+        * 'double' - double bonds
+        * 'triple' - triple bonds
+        * 'aromatic' - aromatic bonds
 
-            * 'multiple' - multiple, include aromatic
+        * 'multiple' - multiple, include aromatic
 
-        kekulize(bool): use kekulized structure
+    :type kekulize: bool
+    :param kekulize: use kekulized structure
 
-    Returns:
-        int: bond count
+    :rtype: int
     '''
 
     require_connected = False

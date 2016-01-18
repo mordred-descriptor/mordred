@@ -39,21 +39,28 @@ class RingCount(RingCountBase):
     r'''
     ring count descriptor
 
-    Parameters:
-        order(int or None): number of bonds in ring
-        greater(bool): count length or greater rings
-        fused(bool): count fused rings
-        aromatic(bool, None):
-            * True: count aromatic rings
-            * False: count non-aromatic rings
-            * None: count any rings
-        hetero(boo, None):
-            * True: count hetero rings
-            * False: count carbon rings
-            * None: count any rings
+    :type order: int or None
+    :param order: number of bonds in ring
 
-    Returns:
-        int: ring count
+    :type greater: bool
+    :param greater: count length or greater rings
+
+    :type fused: bool
+    :param fused: count fused rings
+
+    :type aromatic: bool or None
+    :param aromatic:
+        * True: count aromatic rings
+        * False: count non-aromatic rings
+        * None: count any rings
+
+    :type hetero: bool or None
+    :param hetero:
+        * True: count hetero rings
+        * False: count carbon rings
+        * None: count any rings
+
+    :rtype: int
     '''
 
     @classmethod

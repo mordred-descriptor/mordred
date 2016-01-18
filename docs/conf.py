@@ -31,7 +31,6 @@ sys.path.insert(0, os.path.abspath('..'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
@@ -365,3 +364,17 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
+
+autodoc_member_order = 'bysource'
+
+def setup(app):
+    exclusions = set([
+        'dependencies', 'calculate', 'descriptor_keys',
+    ])
+
+    def autodoc_skip_member(app, what, name, obj, skip, options):
+        if what == 'class':
+            if getattr(obj, '__module__', None) != 'mordred._base':
+                return skip or name in exclusions
+
+    app.connect('autodoc-skip-member', autodoc_skip_member)

@@ -37,8 +37,7 @@ class VdwVolumeABC(Descriptor):
     r'''
     van der waals volume(ABC) descriptor
 
-    Returns:
-        float: VABC value
+    :rtype: float
     '''
 
     require_connected = False

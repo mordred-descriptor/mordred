@@ -12,14 +12,16 @@ class MolecularDistanceEdge(Descriptor):
     r'''
     molecular distance edge descriptor
 
-    Parameters:
-        valence1(int): valence of first atom
-        valence2(int): valence of second atom
+    :type valence1: int
+    :param valence1: valence of first atom
 
-        element(str, int): atomic symbol or atomic number
+    :type valence2: int
+    :param valence2: valence of second atom
 
-    Returns:
-        float: MDE value
+    :type element: str or int
+    :param element: atomic symbol or atomic number
+
+    :rtype: float
     '''
 
     explicit_hydrogens = False

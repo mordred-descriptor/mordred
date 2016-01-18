@@ -98,17 +98,20 @@ class InformationContent(InformationContentBase):
     r'''
     information content descriptor
 
-    Parameters:
-        type(str):
-            * '' - normal IC
-            * 'T'
-            * 'S'
-            * 'C'
-            * 'B'
-            * 'M'
-            * 'ZM'
+    :type type: str
+    :param type:
+        * '' - normal IC
+        * 'T'
+        * 'S'
+        * 'C'
+        * 'B'
+        * 'M'
+        * 'ZM'
 
-        order(int): order(number of edge) of subgraph
+    :type order: int
+    :param order: order(number of edge) of subgraph
+
+    :rtype: float
     '''
 
     @classmethod
