@@ -1,18 +1,24 @@
 import conf
 from mordred import all_descriptors, get_descriptors_from_module
 
+prelude = '''
+Descriptor List
+===============
+preset descriptors
+
+.. code:: python
+
+    calc = Calculator(all_descriptors())
+
+.. csv-table:: Descriptor list
+    :header: "#", "module", "name", "constructor"
+    :widths: 10, 25, 25, 40
+
+'''[1:]
+
 
 def main(out):
-    out.write('\n'.join([
-        'Descriptor list',
-        '===============',
-        '',
-        '.. csv-table:: Descriptor list',
-        '    :header: "#", "module", "name", "constructor"',
-        '    :widths: 10, 25, 25, 40',
-        '',
-        '',
-    ]))
+    out.write(prelude)
     
     i = 0
 

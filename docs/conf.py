@@ -369,7 +369,7 @@ autodoc_member_order = 'bysource'
 
 def setup(app):
     exclusions = set([
-        'dependencies', 'calculate', 'descriptor_keys',
+        'dependencies', 'calculate', 'descriptor_keys', 'preset',
     ])
 
     def autodoc_skip_member(app, what, name, obj, skip, options):
