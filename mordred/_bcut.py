@@ -58,8 +58,8 @@ class BurdenEigenValues(BurdenMatrixDescriptor):
 class BCUT(BurdenMatrixDescriptor):
     r"""BCUT descriptor.
 
-    :type prop: str or function
-    :param prop: atomic property
+    :type prop: str, function
+    :param prop: :ref:`atomic_properties`
 
     :type nth: int
     :param nth: n-th eigen value. 0 is highest, -1 is lowest.

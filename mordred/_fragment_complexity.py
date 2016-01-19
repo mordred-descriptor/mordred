@@ -13,6 +13,9 @@ class FragmentComplexity(Descriptor):
     :math:`H` is number of hetero atoms
 
     :rtype: float
+
+    References
+        * :cite:`10.1021/ci050521b`
     """
 
     explicit_hydrogens = False

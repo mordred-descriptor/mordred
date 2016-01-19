@@ -6,6 +6,9 @@ class McGowanVolume(Descriptor):
     r"""McGowan volume descriptor.
 
     :rtype: float
+
+    References
+        * :cite:`10.1007/BF02311772`
     """
 
     require_connected = False

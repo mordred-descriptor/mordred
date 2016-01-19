@@ -39,6 +39,9 @@ class VdwVolumeABC(Descriptor):
     r"""van der waals volume(ABC) descriptor.
 
     :rtype: float
+
+    References
+        * :cite:`10.1021/jo034808o`
     """
 
     require_connected = False

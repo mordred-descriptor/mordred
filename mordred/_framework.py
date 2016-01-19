@@ -52,6 +52,9 @@ class Framework(FrameworkBase):
     :math:`N` is number of all atoms.
 
     :rtype: float
+
+    References
+        * :cite:`10.1021/jm9602928`
     """
 
     def __str__(self):

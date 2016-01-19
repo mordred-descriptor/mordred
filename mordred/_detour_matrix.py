@@ -131,7 +131,7 @@ class DetourMatrix(DetourMatrixBase):
     r"""detour matrix descriptor.
 
     :type type: str
-    :param type: matrix aggregating method
+    :param type: :ref:`matrix_aggregating_methods`
 
     :rtype: float
     """

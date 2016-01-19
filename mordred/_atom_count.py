@@ -5,7 +5,12 @@ class AtomCount(Descriptor):
     r"""atom count descriptor.
 
     :type type: str
-    :param type: type to count. 'Atom', 'HeavyAtom', 'X'(all halogen), or element symbol.
+    :param type: type to count.
+
+        * 'Atom'
+        * 'HeavyAtom'
+        * 'X' - all halogen
+        * element symbol
 
     :rtype: int
     """

@@ -59,6 +59,9 @@ class AtomTypeEState(EStateBase):
     :param estate: e-state atom type
 
     :rtype: int('count') or float(other)
+
+    References
+        * :cite:`10.1021/ci00028a014`
     """
 
     @classmethod

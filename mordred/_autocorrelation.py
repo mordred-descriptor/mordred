@@ -151,8 +151,8 @@ class ATS(Autocorrelation):
     :type order: int
     :param order: order(:math:`k`)
 
-    :type property: str or function
-    :param property: atomic property
+    :type property: str, function
+    :param property: :ref:`atomic_properties`
 
     :type: float
     """
@@ -183,7 +183,7 @@ class AATS(ATS):
     where
     :math:`\Delta_k` is number of vertex pairs at order equal to :math:`k`.
 
-    :Parameters: see ATS
+    :Parameters: see :py:class:`ATS`
 
     :rtype: float
     """
@@ -234,7 +234,7 @@ class AATSC(ATSC):
     where
     :math:`\Delta_k` is number of vertex pairs at order equal to :math:`k`.
 
-    :Parameters: see ATS
+    :Parameters: see :py:class:`ATS`
 
     :rtype: float
     """
@@ -257,7 +257,7 @@ class MATS(Autocorrelation):
             \frac{1}{A} \cdot \sum {\boldsymbol w}_{\rm c}^2
             }
 
-    :Parameters: see ATS
+    :Parameters: see :py:class:`ATS`
 
     :rtype: float
     """
@@ -278,7 +278,7 @@ class MATS(Autocorrelation):
 class GATS(MATS):
     r"""Geary coefficient descriptor.
 
-    :Parameters: see ATS
+    :Parameters: see :py:class:`ATS`
 
     :rtype: float
     """

@@ -16,7 +16,7 @@ Contents:
    matrix.rst
    atomic_prop.rst
    descriptors.rst
-
+   bibliography.rst
 
 Indices and tables
 ==================

@@ -47,6 +47,9 @@ class TopologicalCharge(Descriptor):
     :param order: int
 
     :rtype: float
+
+    References
+        * :cite:`10.1021/ci00019a008`
     """
 
     explicit_hydrogens = False

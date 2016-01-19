@@ -1,3 +1,5 @@
+.. _atomic_properties:
+
 atomic properties
 =================
 

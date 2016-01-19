@@ -10,6 +10,9 @@ class WildmanCrippenLogP(Descriptor):
     :param type: 'LogP' or 'MR'
 
     :rtype: float
+
+    References
+        * :cite:`10.1021/ci990307l`
     """
 
     @classmethod

@@ -130,7 +130,7 @@ class Chi(ChiBase):
         * 'chain'
 
     :type prop: str or function
-    :param prop: atomic property
+    :param prop: :ref:`atomic_properties`
 
     :type averaged: bool
     :param averaged: averaged by number of subgraphs

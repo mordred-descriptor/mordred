@@ -15,7 +15,7 @@ class ConstitutionalSum(Descriptor):
     :math:`p_{\rm C}` is atomic property of carbon
 
     :type prop: str or function
-    :param prop: atomic property
+    :param prop: :ref:`atomic_properties`
 
     :rtype: float
     """
@@ -49,7 +49,7 @@ class ConstitutionalMean(ConstitutionalSum):
         M_p = \frac{S_p}{A}
 
     :type prop: str or function
-    :param prop: atomic property
+    :param prop: :ref:`atomic_properties`
 
     :rtype: float
     """

@@ -55,10 +55,10 @@ class BaryszMatrix(BaryszMatrixBase):
     r"""barysz matrix descriptor.
 
     :type prop: str or function
-    :param prop: atomic property
+    :param prop: :ref:`atomic_properties`
 
     :type type: str
-    :param type: matrix aggregateing method
+    :param type: :ref:`matrix_aggregating_methods`
 
     :rtype: float
     """

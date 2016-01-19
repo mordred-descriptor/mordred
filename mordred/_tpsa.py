@@ -14,6 +14,9 @@ class TPSA(Descriptor):
         * False: all(N,O,S,P) TPSA
 
     :rtype: float
+
+    References
+        * :cite:`10.1021/jm000942e`
     """
 
     require_connected = False

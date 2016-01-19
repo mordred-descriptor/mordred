@@ -1,3 +1,5 @@
+.. _matrix_aggregating_methods:
+
 Matrix aggregating methods
 ==========================
 
