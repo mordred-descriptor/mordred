@@ -44,15 +44,16 @@ Usage
 
 ```console
 $ python -m mordred --help
-usage: __main__.py [-h] [-i [PATH]] [-o [PATH]] [-p N]
+usage: mordred [-h] [-i [PATH]] [-f TYPE] [-o [PATH]] [-p N]
 
 optional arguments:
   -h, --help            show this help message and exit
   -i [PATH], --input [PATH]
-                        input smiles file(default: stdin)
+                        input file(default: stdin)
+  -f TYPE, --from TYPE  input filetype(one of auto, smi, sdf, default: auto)
   -o [PATH], --output [PATH]
                         output csv file(default: stdout)
-  -p N, --processes N   number of processes to use
+  -p N, --processes N   number of processes to use(default: number of threads)
 ```
 
 #### descriptors in submodule
