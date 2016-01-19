@@ -3,20 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to mordred's documentation!
-===================================
+.. include:: README/00-header.rst
 
 Contents:
 
 .. toctree::
-   :maxdepth: 3
+    :maxdepth: 3
 
-   api/mordred.rst
+    introduction.rst
 
-   matrix.rst
-   atomic_prop.rst
-   descriptors.rst
-   bibliography.rst
+    api/mordred.rst
+
+    matrix.rst
+    atomic_prop.rst
+    descriptors.rst
+    bibliography.rst
 
 Indices and tables
 ==================
