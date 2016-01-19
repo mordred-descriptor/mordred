@@ -49,9 +49,10 @@ script:
   - nosetests tests --with-coverage --cover-package=mordred
 
 after_success:
+  - set -e
   - coveralls
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
-      pip install sphinx;
+      pip install sphinx sphinxcontrib-bibtex;
 
       cd docs;
       make html;
