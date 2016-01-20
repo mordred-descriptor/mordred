@@ -99,14 +99,7 @@ class InformationContent(InformationContentBase):
     r"""information content descriptor.
 
     :type type: str
-    :param type:
-        * '' - normal IC
-        * 'T'
-        * 'S'
-        * 'C'
-        * 'B'
-        * 'M'
-        * 'ZM'
+    :param type: one of ic_types
 
     :type order: int
     :param order: order(number of edge) of subgraph
@@ -114,11 +107,13 @@ class InformationContent(InformationContentBase):
     :rtype: float
     """
 
+    ic_types = ('', 'T', 'S', 'C', 'B', 'M', 'ZM')
+
     @classmethod
     def preset(cls):
         return (
             cls(t, o)
-            for t in ['', 'T', 'S', 'C', 'B', 'M', 'ZM']
+            for t in cls.ic_types
             for o in range(6)
         )
 
@@ -128,7 +123,7 @@ class InformationContent(InformationContentBase):
     descriptor_keys = 'type', 'order'
 
     def __init__(self, type='', order=0):
-        assert type in ['', 'T', 'S', 'C', 'B', 'M', 'ZM']
+        assert type in self.ic_types
         self.type = type
         self.order = order
 

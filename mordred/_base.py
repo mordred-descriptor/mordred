@@ -331,7 +331,7 @@ def get_descriptors_from_module(mdl):
             continue
 
         desc = getattr(mdl, name)
-        if issubclass(desc, Descriptor):
+        if isinstance(desc, type) and issubclass(desc, Descriptor):
             descs.append(desc)
 
     def key_by_def(d):

@@ -55,6 +55,8 @@ class TopologicalCharge(Descriptor):
     explicit_hydrogens = False
     require_connected = False
 
+    tc_types = ('global', 'mean', 'raw')
+
     @classmethod
     def preset(cls):
         return chain(
@@ -73,7 +75,7 @@ class TopologicalCharge(Descriptor):
     descriptor_keys = 'type', 'order'
 
     def __init__(self, type='global', order=10):
-        assert type in ['global', 'mean', 'raw']
+        assert type in self.tc_types
         assert type == 'global' or isinstance(order, integer_types)
 
         self.type = type

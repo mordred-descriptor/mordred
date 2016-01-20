@@ -9,19 +9,18 @@ class LipinskiLike(Descriptor):
     LogP: WildmanCrippenLogP
 
     :type variant: str
-    :param variant:
-        * 'Lipinski'
-        * 'GhoseFilter'
+    :param variant: one of variants
 
     :rtype: bool
     """
+
+    variants = 'Lipinski', 'GhoseFilter'
 
     require_connected = False
 
     @classmethod
     def preset(cls):
-        yield cls('Lipinski')
-        yield cls('GhoseFilter')
+        return map(cls, cls.variants)
 
     def __str__(self):
         return self.variant
@@ -29,10 +28,7 @@ class LipinskiLike(Descriptor):
     descriptor_keys = 'variant',
 
     def __init__(self, variant='Lipinski'):
-        assert variant in set([
-            'Lipinski',
-            'GhoseFilter',
-        ])
+        assert variant in self.variants
 
         self.variant = variant
 

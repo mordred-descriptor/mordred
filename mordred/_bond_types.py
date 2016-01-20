@@ -4,33 +4,27 @@ from rdkit.Chem import BondType
 
 from ._base import Descriptor
 
-bond_type_dict = {
-    'heavy': ('O', lambda _: True),
-    'any': ('', lambda _: True),
 
-    'single': ('S', lambda b: b.GetBondType() == BondType.SINGLE),
-    'double': ('D', lambda b: b.GetBondType() == BondType.DOUBLE),
-    'triple': ('T', lambda b: b.GetBondType() == BondType.TRIPLE),
-    'aromatic': ('A', lambda b: b.GetIsAromatic() or b.GetBondType() == BondType.AROMATIC),
+bond_types = (
+    ('any', ('', lambda _: True)),
+    ('heavy', ('O', lambda _: True)),
 
-    'multiple': ('M', lambda b: b.GetIsAromatic() or b.GetBondType() != BondType.SINGLE),
-}
+    ('single', ('S', lambda b: b.GetBondType() == BondType.SINGLE)),
+    ('double', ('D', lambda b: b.GetBondType() == BondType.DOUBLE)),
+    ('triple', ('T', lambda b: b.GetBondType() == BondType.TRIPLE)),
+    ('aromatic', ('A', lambda b: b.GetIsAromatic() or b.GetBondType() == BondType.AROMATIC)),
+
+    ('multiple', ('M', lambda b: b.GetIsAromatic() or b.GetBondType() != BondType.SINGLE)),
+)
+
+bond_type_dict = dict(bond_types)
 
 
 class BondCount(Descriptor):
     r"""bond count descriptor.
 
     :type type: str
-    :param type:
-        * 'any' - any
-        * 'heavy' - any, not include bond which connect to hydrogen
-
-        * 'single' - single bonds
-        * 'double' - double bonds
-        * 'triple' - triple bonds
-        * 'aromatic' - aromatic bonds
-
-        * 'multiple' - multiple, include aromatic
+    :param type: one of bond_types
 
     :type kekulize: bool
     :param kekulize: use kekulized structure
@@ -38,16 +32,14 @@ class BondCount(Descriptor):
     :rtype: int
     """
 
+    bond_types = tuple(t for t, _ in bond_types)
+
     require_connected = False
 
     @classmethod
     def preset(cls):
         return chain(
-            map(lambda t: cls(t, False), [
-                'any', 'heavy',
-                'single', 'double', 'triple', 'aromatic',
-                'multiple',
-            ]),
+            map(lambda t: cls(t, False), cls.bond_types),
             map(lambda t: cls(t, True), [
                 'single', 'double',
             ])
@@ -64,6 +56,8 @@ class BondCount(Descriptor):
     descriptor_keys = 'type', 'kekulize'
 
     def __init__(self, type='any', kekulize=False):
+        assert type in self.bond_types
+
         self.type = type
         self.bond_name, self.check_bond = bond_type_dict[type.lower()]
         self.kekulize = kekulize

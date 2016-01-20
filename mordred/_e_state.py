@@ -12,7 +12,7 @@ except ImportError:
     import __builtin__ as builtins
 
 
-es_types = [
+es_types = (
     'sLi', 'ssBe', 'ssssBe', 'ssBH', 'sssB', 'ssssB', 'sCH3', 'dCH2', 'ssCH2',
     'tCH', 'dsCH', 'aaCH', 'sssCH', 'ddC', 'tsC', 'dssC', 'aasC', 'aaaC',
     'ssssC', 'sNH3', 'sNH2', 'ssNH2', 'dNH', 'ssNH', 'aaNH', 'tN', 'sssNH',
@@ -22,7 +22,7 @@ es_types = [
     'sGeH3', 'ssGeH2', 'sssGeH', 'ssssGe', 'sAsH2', 'ssAsH', 'sssAs', 'sssdAs',
     'sssssAs', 'sSeH', 'dSe', 'ssSe', 'aaSe', 'dssSe', 'ddssSe', 'sBr', 'sSnH3',
     'ssSnH2', 'sssSnH', 'ssssSn', 'sI', 'sPbH3', 'ssPbH2', 'sssPbH', 'ssssPb'
-]
+)
 
 es_type_set = set(es_types)
 
@@ -37,26 +37,25 @@ class EStateCache(EStateBase):
         return EState.TypeAtoms(mol), EState.EStateIndices(mol)
 
 
-aggr_name_dict = dict(
-    count='N',
-    sum='S',
-    max='MAX',
-    min='MIN',
+aggr_names = (
+    ('count', 'N'),
+    ('sum', 'S'),
+    ('max', 'MAX'),
+    ('min', 'MIN'),
 )
+
+
+aggr_name_dict = dict(aggr_names)
 
 
 class AtomTypeEState(EStateBase):
     r"""atom type e-state descriptor.
 
     :type type: str
-    :param type:
-        * 'count'
-        * 'sum'
-        * 'max'
-        * 'min'
+    :param type: one of aggr_types
 
     :type estate: str
-    :param estate: e-state atom type
+    :param estate: one of es_types
 
     :rtype: int('count') or float(other)
 
@@ -64,11 +63,14 @@ class AtomTypeEState(EStateBase):
         * :cite:`10.1021/ci00028a014`
     """
 
+    aggr_types = tuple(n for n, _ in aggr_names)
+    es_types = es_types
+
     @classmethod
     def preset(cls):
         return (
             cls(a, t)
-            for a in ['count', 'sum', 'max', 'min']
+            for a in cls.aggr_types
             for t in es_types
         )
 
@@ -80,7 +82,7 @@ class AtomTypeEState(EStateBase):
     descriptor_keys = 'type', 'estate'
 
     def __init__(self, type='count', estate='sLi'):
-        assert type in ['count', 'sum', 'max', 'min']
+        assert type in self.aggr_types
         assert estate in es_type_set
 
         self.type = type

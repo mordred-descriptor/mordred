@@ -24,12 +24,12 @@ class AcidicGroupCount(SmartsCount):
     def __str__(self):
         return 'nAcid'
 
-    SMARTS = [
+    SMARTS = (
         "[$([O;H1]-[C,S,P]=O)]",
         "[$([*;-;!$(*~[*;+])])]",
         "[$([NH](S(=O)=O)C(F)(F)F)]",
         "[$(n1nnnc1)]",
-    ]
+    )
 
 
 class BasicGroupCount(SmartsCount):
@@ -41,11 +41,11 @@ class BasicGroupCount(SmartsCount):
     def __str__(self):
         return 'nBase'
 
-    SMARTS = [
+    SMARTS = (
         "[$([NH2]-[CX4])]",
         "[$([NH](-[CX4])-[CX4])]",
         "[$(N(-[CX4])(-[CX4])-[CX4])]",
         "[$([*;+;!$(*~[*;-])])]",
         "[$(N=C-N)]",
         "[$(N-C=N)]",
-    ]
+    )

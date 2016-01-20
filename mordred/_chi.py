@@ -123,11 +123,7 @@ class Chi(ChiBase):
     r"""chi descriptor.
 
     :type type: str
-    :param type:
-        * 'path'
-        * 'path-cluster'
-        * 'cluster'
-        * 'chain'
+    :param type: one of chi_types
 
     :type prop: str or function
     :param prop: :ref:`atomic_properties`
@@ -137,6 +133,8 @@ class Chi(ChiBase):
 
     :rtype: float
     """
+
+    chi_types = tuple(t.name for t in ChiType)
 
     @classmethod
     def preset(cls):
