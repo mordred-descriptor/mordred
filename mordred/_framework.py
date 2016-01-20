@@ -57,6 +57,10 @@ class Framework(FrameworkBase):
         * :cite:`10.1021/jm9602928`
     """
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
     def __str__(self):
         return 'fMF'
 

@@ -54,7 +54,7 @@ class Barysz(BaryszMatrixBase):
 class BaryszMatrix(BaryszMatrixBase):
     r"""barysz matrix descriptor.
 
-    :type prop: str or function
+    :type prop: :py:class:`str` or :py:class:`function`
     :param prop: :ref:`atomic_properties`
 
     :type type: str

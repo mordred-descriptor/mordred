@@ -18,6 +18,10 @@ class FragmentComplexity(Descriptor):
         * :cite:`10.1021/ci050521b`
     """
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
     explicit_hydrogens = False
     require_connected = False
 

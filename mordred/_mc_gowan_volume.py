@@ -11,6 +11,10 @@ class McGowanVolume(Descriptor):
         * :cite:`10.1007/BF02311772`
     """
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
     require_connected = False
 
     def __str__(self):

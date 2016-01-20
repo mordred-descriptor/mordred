@@ -16,6 +16,10 @@ class DetourIndex(Descriptor):
     :rtype: int
     """
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
     explicit_hydrogens = False
 
     def __str__(self):

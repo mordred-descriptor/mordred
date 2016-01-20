@@ -1,7 +1,7 @@
 import os
 from abc import ABCMeta, abstractmethod
 from importlib import import_module
-from inspect import getsourcelines
+from inspect import getsourcelines, isabstract
 from sys import maxsize
 from types import ModuleType
 
@@ -109,6 +109,14 @@ class Descriptor(with_metaclass(ABCMeta, object)):
         """
         return next(Calculator(self)(mol))[1]
 
+    @classmethod
+    def is_descriptor(cls, desc):
+        return (
+            isinstance(desc, type) and
+            issubclass(desc, cls) and
+            not isabstract(desc)
+        )
+
 
 class Molecule(object):
     def __init__(self, orig):
@@ -195,7 +203,7 @@ class Calculator(object):
         """
         for desc in descs:
             if not hasattr(desc, '__iter__'):
-                if isinstance(desc, type) and issubclass(desc, Descriptor):
+                if Descriptor.is_descriptor(desc):
                     for d in desc.preset():
                         self._register_one(d)
 
@@ -331,7 +339,7 @@ def get_descriptors_from_module(mdl):
             continue
 
         desc = getattr(mdl, name)
-        if isinstance(desc, type) and issubclass(desc, Descriptor):
+        if Descriptor.is_descriptor(desc):
             descs.append(desc)
 
     def key_by_def(d):
@@ -342,3 +350,10 @@ def get_descriptors_from_module(mdl):
 
     descs.sort(key=key_by_def)
     return descs
+
+
+def parse_enum(enum, v):
+    if isinstance(v, enum):
+        return v
+    else:
+        return enum[v]

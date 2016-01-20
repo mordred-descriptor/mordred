@@ -7,6 +7,10 @@ class TopologicalIndexBase(Descriptor):
     explicit_hydrogens = False
     require_connected = False
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
 
 class Radius(TopologicalIndexBase):
     r"""radius descriptor.

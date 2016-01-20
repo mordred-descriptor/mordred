@@ -96,6 +96,10 @@ class HybridizationRatio(CarbonTypesBase):
     :rtype: float
     """
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
     def __str__(self):
         return 'HybRatio'
 

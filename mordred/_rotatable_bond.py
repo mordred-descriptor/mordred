@@ -8,6 +8,10 @@ class RotatableBondsBase(Descriptor):
     explicit_hydrogens = False
     require_connected = False
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
 
 class RotatableBondsCount(RotatableBondsBase):
     r"""ratatable bonds count descriptor.

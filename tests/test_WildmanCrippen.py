@@ -1,4 +1,4 @@
-from mordred.Property import WildmanCrippenLogP as LogP
+from mordred.WildmanCrippenLogP import WildmanCrippenLogP as LogP
 from rdkit import Chem
 from numpy.testing import assert_almost_equal
 

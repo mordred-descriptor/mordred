@@ -14,6 +14,10 @@ class VertexAdjacencyInformation(Descriptor):
     :rtype: float
     """
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
     explicit_hydrogens = False
     require_connected = False
 

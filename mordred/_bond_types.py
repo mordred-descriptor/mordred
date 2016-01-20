@@ -1,20 +1,35 @@
+from enum import IntEnum
 from itertools import chain
 
-from rdkit.Chem import BondType
+from rdkit import Chem
 
-from ._base import Descriptor
+from ._base import Descriptor, parse_enum
+
+
+class BondType(IntEnum):
+    any = 1
+    heavy = 2
+
+    single = 3
+    double = 4
+    triple = 5
+
+    aromatic = 6
+    multiple = 7
 
 
 bond_types = (
-    ('any', ('', lambda _: True)),
-    ('heavy', ('O', lambda _: True)),
+    (BondType.any, ('', lambda _: True)),
+    (BondType.heavy, ('O', lambda _: True)),
 
-    ('single', ('S', lambda b: b.GetBondType() == BondType.SINGLE)),
-    ('double', ('D', lambda b: b.GetBondType() == BondType.DOUBLE)),
-    ('triple', ('T', lambda b: b.GetBondType() == BondType.TRIPLE)),
-    ('aromatic', ('A', lambda b: b.GetIsAromatic() or b.GetBondType() == BondType.AROMATIC)),
+    (BondType.single, ('S', lambda b: b.GetBondType() == Chem.BondType.SINGLE)),
+    (BondType.double, ('D', lambda b: b.GetBondType() == Chem.BondType.DOUBLE)),
+    (BondType.triple, ('T', lambda b: b.GetBondType() == Chem.BondType.TRIPLE)),
 
-    ('multiple', ('M', lambda b: b.GetIsAromatic() or b.GetBondType() != BondType.SINGLE)),
+    (BondType.aromatic, ('A', lambda b: b.GetIsAromatic() or
+                         b.GetBondType() == Chem.BondType.AROMATIC)),
+    (BondType.multiple, ('M', lambda b: b.GetIsAromatic() or
+                         b.GetBondType() != Chem.BondType.SINGLE)),
 )
 
 bond_type_dict = dict(bond_types)
@@ -32,16 +47,16 @@ class BondCount(Descriptor):
     :rtype: int
     """
 
-    bond_types = tuple(t for t, _ in bond_types)
+    bond_types = tuple(b.name for b in BondType)
 
     require_connected = False
 
     @classmethod
     def preset(cls):
         return chain(
-            map(lambda t: cls(t, False), cls.bond_types),
+            map(lambda t: cls(t, False), BondType),
             map(lambda t: cls(t, True), [
-                'single', 'double',
+                BondType.single, BondType.double,
             ])
         )
 
@@ -51,15 +66,13 @@ class BondCount(Descriptor):
 
     @property
     def explicit_hydrogens(self):
-        return self.bond_name in ['', 'S']
+        return self.type in (BondType.any, BondType.single)
 
     descriptor_keys = 'type', 'kekulize'
 
     def __init__(self, type='any', kekulize=False):
-        assert type in self.bond_types
-
-        self.type = type
-        self.bond_name, self.check_bond = bond_type_dict[type.lower()]
+        self.type = parse_enum(BondType, type)
+        self.bond_name, self.check_bond = bond_type_dict[self.type]
         self.kekulize = kekulize
 
     def calculate(self, mol):

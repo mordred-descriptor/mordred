@@ -1,5 +1,7 @@
-from ._topological_index import (Diameter, PetitjeanIndex, Radius,
-                                 TopologicalShapeIndex)
+from ._topological_index import (
+    Radius, Diameter,
+    TopologicalShapeIndex, PetitjeanIndex,
+)
 
 __all__ = ('Diameter', 'Radius', 'TopologicalShapeIndex', 'PetitjeanIndex',)
 

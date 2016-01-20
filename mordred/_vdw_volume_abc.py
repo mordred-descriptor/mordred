@@ -4,7 +4,7 @@ import numpy as np
 
 from rdkit import Chem
 
-from .Bond import BondCount
+from .BondCount import BondCount
 from .RingCount import RingCount
 
 from ._base import Descriptor
@@ -43,6 +43,10 @@ class VdwVolumeABC(Descriptor):
     References
         * :cite:`10.1021/jo034808o`
     """
+
+    @classmethod
+    def preset(cls):
+        yield cls()
 
     require_connected = False
 

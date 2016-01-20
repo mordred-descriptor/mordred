@@ -7,6 +7,10 @@ class HBondBase(Descriptor):
     explicit_hydrogens = False
     require_connected = False
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
 
 class HBondAcceptor(HBondBase):
     r"""hydrogen bond acceptor descriptor.

@@ -18,6 +18,10 @@ class EccentricConnectivityIndex(Descriptor):
     explicit_hydrogens = False
     require_connected = False
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
     def __str__(self):
         return 'ECIndex'
 

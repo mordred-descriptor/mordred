@@ -4,11 +4,11 @@ from . import _atomic_property
 from ._base import Descriptor
 
 
-class BurdenMatrixDescriptor(Descriptor):
+class BCUTBase(Descriptor):
     explicit_hydrogens = False
 
 
-class Burden(BurdenMatrixDescriptor):
+class Burden(BCUTBase):
     def calculate(self, mol):
         N = mol.GetNumAtoms()
 
@@ -34,7 +34,7 @@ class Burden(BurdenMatrixDescriptor):
         return mat
 
 
-class BurdenEigenValues(BurdenMatrixDescriptor):
+class BurdenEigenValues(BCUTBase):
     descriptor_keys = 'prop', 'gasteiger_charges'
 
     def __init__(self, prop, gasteiger_charges):
@@ -55,10 +55,10 @@ class BurdenEigenValues(BurdenMatrixDescriptor):
         return np.sort(ev)[-1::-1]
 
 
-class BCUT(BurdenMatrixDescriptor):
+class BCUT(BCUTBase):
     r"""BCUT descriptor.
 
-    :type prop: str, function
+    :type prop: :py:class:`str` or :py:class:`function`
     :param prop: :ref:`atomic_properties`
 
     :type nth: int

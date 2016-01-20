@@ -1,21 +1,35 @@
+from abc import abstractproperty
+
 from rdkit import Chem
 
 from ._base import Descriptor
 
 
-class SmartsCount(Descriptor):
+class SmartsCountBase(Descriptor):
     require_connected = False
 
-    def get_smarts(self):
+    @classmethod
+    def preset(cls):
+        yield cls()
+
+    def _get_smarts(self):
         self.mols = [Chem.MolFromSmarts(s) for s in self.SMARTS]
         return self.mols
 
     def calculate(self, mol):
-        mols = getattr(self, 'mols', None) or self.get_smarts()
+        mols = getattr(self, 'mols', None) or self._get_smarts()
         return sum(len(mol.GetSubstructMatches(q)) for q in mols)
 
+    @abstractproperty
+    def SMARTS(self):
+        u"""target smarts.
 
-class AcidicGroupCount(SmartsCount):
+        (abstruct property)
+        """
+        pass
+
+
+class AcidicGroupCount(SmartsCountBase):
     r"""acidic group count descriptor.
 
     :rtype: int
@@ -32,7 +46,7 @@ class AcidicGroupCount(SmartsCount):
     )
 
 
-class BasicGroupCount(SmartsCount):
+class BasicGroupCount(SmartsCountBase):
     r"""basic group count descriptor.
 
     :rtype: int

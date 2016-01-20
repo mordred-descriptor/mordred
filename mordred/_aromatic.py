@@ -4,6 +4,10 @@ from ._base import Descriptor
 class AromaticBase(Descriptor):
     require_connected = False
 
+    @classmethod
+    def preset(cls):
+        yield cls()
+
 
 class AromaticAtomsCount(AromaticBase):
     r"""aromatic atoms count descriptor.

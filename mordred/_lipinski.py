@@ -1,5 +1,7 @@
-from .Bond import HBondAcceptor, HBondDonor
-from .Property import Weight, WildmanCrippenLogP
+from .HydrogenBond import HBondAcceptor, HBondDonor
+from .Weight import Weight
+from .WildmanCrippenLogP import WildmanCrippenLogP
+
 from ._base import Descriptor
 
 

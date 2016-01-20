@@ -1,10 +1,11 @@
+from enum import IntEnum
 from functools import reduce
 
 from numpy import nan
 
 from rdkit.Chem import EState
 
-from ._base import Descriptor
+from ._base import Descriptor, parse_enum
 
 try:
     import builtins
@@ -37,11 +38,17 @@ class EStateCache(EStateBase):
         return EState.TypeAtoms(mol), EState.EStateIndices(mol)
 
 
+class AggrType(IntEnum):
+    count = 1
+    sum = 2
+    max = 3
+    min = 4
+
 aggr_names = (
-    ('count', 'N'),
-    ('sum', 'S'),
-    ('max', 'MAX'),
-    ('min', 'MIN'),
+    (AggrType.count, 'N'),
+    (AggrType.sum, 'S'),
+    (AggrType.max, 'MAX'),
+    (AggrType.min, 'MIN'),
 )
 
 
@@ -63,14 +70,15 @@ class AtomTypeEState(EStateBase):
         * :cite:`10.1021/ci00028a014`
     """
 
-    aggr_types = tuple(n for n, _ in aggr_names)
+    aggr_types = tuple(a.name for a in AggrType)
+
     es_types = es_types
 
     @classmethod
     def preset(cls):
         return (
             cls(a, t)
-            for a in cls.aggr_types
+            for a in AggrType
             for t in es_types
         )
 
@@ -82,17 +90,16 @@ class AtomTypeEState(EStateBase):
     descriptor_keys = 'type', 'estate'
 
     def __init__(self, type='count', estate='sLi'):
-        assert type in self.aggr_types
         assert estate in es_type_set
 
-        self.type = type
+        self.type = parse_enum(AggrType, type)
         self.estate = estate
 
     def dependencies(self):
         return dict(E=EStateCache())
 
     def calculate(self, mol, E):
-        if self.type == 'count':
+        if self.type == AggrType.count:
             return reduce(lambda a, b: a + b, E[0]).count(self.estate)
 
         indices = map(
@@ -101,6 +108,6 @@ class AtomTypeEState(EStateBase):
         )
 
         try:
-            return float(getattr(builtins, self.type)(indices))
+            return float(getattr(builtins, self.type.name)(indices))
         except ValueError:  # min, max to empty list
             return nan

@@ -17,6 +17,47 @@ class AutocorrelationBase(Descriptor):
     def require_connected(self):
         return getattr(self.prop, 'require_connected', False)
 
+    def __str__(self):
+        return '{}{}{}'.format(
+            self.__class__.__name__,
+            self.order,
+            self.prop_name
+        )
+
+    descriptor_keys = 'order', 'prop'
+
+    def __init__(self, order=0, prop='m'):
+        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self.order = order
+
+    @property
+    def _avec(self):
+        return AVec(self.prop)
+
+    @property
+    def _cavec(self):
+        return CAVec(self.prop)
+
+    @property
+    def _gmat(self):
+        return GMat(self.order)
+
+    @property
+    def _gsum(self):
+        return GSum(self.order)
+
+    @property
+    def _ATS(self):
+        return ATS(self.order, self.prop)
+
+    @property
+    def _ATSC(self):
+        return ATSC(self.order, self.prop)
+
+    @property
+    def _AATSC(self):
+        return AATSC(self.order, self.prop)
+
 
 class AVec(AutocorrelationBase):
     descriptor_keys = 'prop',
@@ -78,52 +119,10 @@ class GSum(AutocorrelationBase):
             return s / 2
 
 
-class Autocorrelation(AutocorrelationBase):
-    def __str__(self):
-        return '{}{}{}'.format(
-            self.__class__.__name__,
-            self.order,
-            self.prop_name
-        )
-
-    descriptor_keys = 'order', 'prop'
-
-    def __init__(self, order=0, prop='m'):
-        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.order = order
-
-    @property
-    def _avec(self):
-        return AVec(self.prop)
-
-    @property
-    def _cavec(self):
-        return CAVec(self.prop)
-
-    @property
-    def _gmat(self):
-        return GMat(self.order)
-
-    @property
-    def _gsum(self):
-        return GSum(self.order)
-
-    @property
-    def _ATS(self):
-        return ATS(self.order, self.prop)
-
-    @property
-    def _ATSC(self):
-        return ATSC(self.order, self.prop)
-
-    @property
-    def _AATSC(self):
-        return AATSC(self.order, self.prop)
-
 MAX_DISTANCE = 8
 
 
-class ATS(Autocorrelation):
+class ATS(AutocorrelationBase):
     r"""Autocorrelation of Topological Structure descriptor.
 
     a.k.a. Moreau-Broto autocorrelation descriptor
@@ -195,7 +194,7 @@ class AATS(ATS):
         return ATS / (gsum or np.nan)
 
 
-class ATSC(Autocorrelation):
+class ATSC(AutocorrelationBase):
     r"""centered ATS descriptor.
 
     ATS with :math:`{\boldsymbol w}_{\rm c}` property
@@ -246,7 +245,7 @@ class AATSC(ATSC):
         return ATSC / (gsum or np.nan)
 
 
-class MATS(Autocorrelation):
+class MATS(AutocorrelationBase):
     r"""Moran coefficient descriptor.
 
     .. math::

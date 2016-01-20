@@ -9,7 +9,7 @@ import numpy as np
 from rdkit import Chem
 
 from . import _atomic_property
-from ._base import Descriptor
+from ._base import Descriptor, parse_enum
 
 
 class ChiType(IntEnum):
@@ -17,13 +17,6 @@ class ChiType(IntEnum):
     cluster = 2
     path_cluster = 3
     chain = 4
-
-
-def _parse_chi_type(a):
-    if isinstance(a, str):
-        return getattr(ChiType, a, None)
-    else:
-        return ChiType(a)
 
 
 class DFS(object):
@@ -161,7 +154,7 @@ class Chi(ChiBase):
     def __init__(self, type='path', order=0, prop='delta', averaged=False):
         self.order = order
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.type = _parse_chi_type(type)
+        self.type = parse_enum(ChiType, type)
         self.averaged = averaged
 
     def dependencies(self):
