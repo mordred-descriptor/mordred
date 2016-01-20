@@ -12,6 +12,8 @@ class CarbonTypesBase(Descriptor):
 
 
 class CarbonTypesCache(CarbonTypesBase):
+    __slots__ = ()
+
     def calculate(self, mol):
         r = defaultdict(lambda: defaultdict(int))
         for a in mol.GetAtoms():
@@ -71,7 +73,7 @@ class CarbonTypes(CarbonTypesBase):
     def __str__(self):
         return 'C{}SP{}'.format(self.nCarbon, self.SP)
 
-    descriptor_keys = 'nCarbon', 'SP'
+    __slots__ = ('nCarbon', 'SP',)
 
     def __init__(self, nCarbon=1, SP=3):
         assert SP in [1, 2, 3]
@@ -95,6 +97,8 @@ class HybridizationRatio(CarbonTypesBase):
 
     :rtype: float
     """
+
+    __slots__ = ()
 
     @classmethod
     def preset(cls):

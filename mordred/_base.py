@@ -48,10 +48,15 @@ class Descriptor(with_metaclass(ABCMeta, object)):
     kekulize = False
     require_connected = True
 
-    descriptor_keys = ()
+    def _get_descriptor_keys(self):
+        return (
+            getattr(self, 'descriptor_keys', None) or
+            getattr(self, '__slots__', None) or
+            ()
+        )
 
     def _get_keys(self):
-        return (getattr(self, k) for k in self.descriptor_keys)
+        return (getattr(self, k) for k in self._get_descriptor_keys())
 
     def __reduce_ex__(self, version):
         return self.__class__, tuple(self._get_keys())
@@ -68,7 +73,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
     def __eq__(self, other):
         return\
             self.__class__ is other.__class__ and\
-            all(getattr(self, k) == getattr(other, k) for k in self.descriptor_keys)
+            all(getattr(self, k) == getattr(other, k) for k in self._get_descriptor_keys())
 
     def __lt__(self, other):
         sk = self.__reduce_ex__(3)

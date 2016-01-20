@@ -23,7 +23,7 @@ class Weight(Descriptor):
     def __str__(self):
         return 'AMW' if self.averaged else 'MW'
 
-    descriptor_keys = 'averaged',
+    __slots__ = ('averaged',)
 
     def __init__(self, averaged=False):
         self.averaged = averaged

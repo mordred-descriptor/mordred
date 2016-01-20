@@ -32,7 +32,7 @@ class AtomCount(Descriptor):
     def __str__(self):
         return 'n' + self.type
 
-    descriptor_keys = 'type',
+    __slots__ = ('type',)
 
     def __init__(self, type='Atom'):
         self.type = type

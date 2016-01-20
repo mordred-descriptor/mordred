@@ -9,6 +9,8 @@ class FrameworkBase(Descriptor):
 
 
 class FrameworkCache(FrameworkBase):
+    __slots__ = ()
+
     def dependencies(self):
         return dict(
             Rs=Rings()
@@ -56,6 +58,8 @@ class Framework(FrameworkBase):
     References
         * :cite:`10.1021/jm9602928`
     """
+
+    __slots__ = ()
 
     @classmethod
     def preset(cls):

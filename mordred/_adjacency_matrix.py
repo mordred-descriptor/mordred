@@ -21,7 +21,7 @@ class AdjacencyMatrix(Descriptor):
     def __str__(self):
         return '{}_A'.format(self.type.__name__)
 
-    descriptor_keys = 'type',
+    __slots__ = ('type',)
 
     def __init__(self, type='SpMax'):
         self.type = get_method(type)

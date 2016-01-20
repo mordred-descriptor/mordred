@@ -28,7 +28,8 @@ class ConstitutionalSum(Descriptor):
 
     _carbon = Chem.Atom(6)
 
-    descriptor_keys = 'prop',
+    descriptor_keys = ('prop',)
+    __slots__ = ('prop_name', 'prop',)
 
     def __init__(self, prop='v'):
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
@@ -53,6 +54,8 @@ class ConstitutionalMean(ConstitutionalSum):
 
     :rtype: float
     """
+
+    __slots__ = ('prop_name', 'prop',)
 
     @classmethod
     def preset(cls):

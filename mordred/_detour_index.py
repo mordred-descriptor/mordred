@@ -16,6 +16,8 @@ class DetourIndex(Descriptor):
     :rtype: int
     """
 
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()

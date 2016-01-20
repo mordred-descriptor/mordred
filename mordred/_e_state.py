@@ -34,6 +34,8 @@ class EStateBase(Descriptor):
 
 
 class EStateCache(EStateBase):
+    __slots__ = ()
+
     def calculate(self, mol):
         return EState.TypeAtoms(mol), EState.EStateIndices(mol)
 
@@ -87,7 +89,7 @@ class AtomTypeEState(EStateBase):
 
         return aggr + self.estate
 
-    descriptor_keys = 'type', 'estate'
+    __slots__ = ('type', 'estate',)
 
     def __init__(self, type='count', estate='sLi'):
         assert estate in es_type_set

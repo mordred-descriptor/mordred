@@ -7,6 +7,11 @@ from ._base import Descriptor
 
 
 class LongestSimplePath(object):
+    __slots__ = (
+        'G', 'N', 'neighbors',
+        'start', 'result', 'visited', 'distance',
+    )
+
     def __init__(self, G, weight=None):
         self.G = G
         self.N = G.number_of_nodes()
@@ -48,6 +53,8 @@ class LongestSimplePath(object):
 
 
 class CalcDetour(object):
+    __slots__ = ('N', 'Q', 'nodes', 'C')
+
     def __init__(self, G, weight='weight'):
         self.N = G.number_of_nodes()
         self.Q = []
@@ -117,6 +124,8 @@ class DetourMatrixBase(Descriptor):
 
 
 class DetourMatrixCache(DetourMatrixBase):
+    __slots__ = ()
+
     def calculate(self, mol):
         G = networkx.Graph()
         G.add_edges_from(
@@ -143,7 +152,7 @@ class DetourMatrix(DetourMatrixBase):
     def __str__(self):
         return '{}_Dt'.format(self.type.__name__)
 
-    descriptor_keys = 'type',
+    __slots__ = ('type',)
 
     def __init__(self, type='SpMax'):
         self.type = ma.get_method(type)

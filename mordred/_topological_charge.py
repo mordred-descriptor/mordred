@@ -72,7 +72,7 @@ class TopologicalCharge(Descriptor):
         else:
             return 'GGI{}'.format(self.order)
 
-    descriptor_keys = 'type', 'order'
+    __slots__ = ('type', 'order',)
 
     def __init__(self, type='global', order=10):
         assert type in self.tc_types

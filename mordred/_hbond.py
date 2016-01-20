@@ -18,6 +18,8 @@ class HBondAcceptor(HBondBase):
     :rtype: int
     """
 
+    __slots__ = ()
+
     def __str__(self):
         return 'nHBAcc'
 
@@ -30,6 +32,8 @@ class HBondDonor(HBondBase):
 
     :rtype: int
     """
+
+    __slots__ = ()
 
     def __str__(self):
         return 'nHBDon'

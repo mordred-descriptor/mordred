@@ -26,7 +26,7 @@ class WildmanCrippenLogP(Descriptor):
     def __str__(self):
         return 'Crippen{}'.format(self.prop)
 
-    descriptor_keys = 'prop',
+    __slots__ = ('prop',)
 
     def __init__(self, prop='LogP'):
         assert prop in ['LogP', 'MR']

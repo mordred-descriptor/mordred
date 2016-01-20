@@ -23,7 +23,7 @@ class KappaShapeIndex(Descriptor):
     def __str__(self):
         return 'Kier{}'.format(self.order)
 
-    descriptor_keys = 'order',
+    __slots__ = 'order',
 
     def __init__(self, order=1):
         assert order in [1, 2, 3]

@@ -11,6 +11,8 @@ class McGowanVolume(Descriptor):
         * :cite:`10.1007/BF02311772`
     """
 
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()

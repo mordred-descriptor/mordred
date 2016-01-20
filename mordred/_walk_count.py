@@ -33,7 +33,7 @@ class WalkCount(Descriptor):
         T = '{}SRW{:02d}' if self.self_returning else '{}MWC{:02d}'
         return T.format('T' if self.total else '', self.order)
 
-    descriptor_keys = 'order', 'total', 'self_returning'
+    __slots__ = ('order', 'total', 'self_returning',)
 
     def __init__(self, order=1, total=False, self_returning=False):
         self.order = order

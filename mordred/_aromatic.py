@@ -15,6 +15,8 @@ class AromaticAtomsCount(AromaticBase):
     :rtype: int
     """
 
+    __slots__ = ()
+
     def __str__(self):
         return 'nAromAtom'
 
@@ -27,6 +29,8 @@ class AromaticBondsCount(AromaticBase):
 
     :rtype: int
     """
+
+    __slots__ = ()
 
     def __str__(self):
         return 'nAromBond'

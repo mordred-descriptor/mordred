@@ -29,7 +29,7 @@ class TPSA(Descriptor):
     def __str__(self):
         return 'TPSA(NO)' if self.no_only else 'TPSA'
 
-    descriptor_keys = 'no_only',
+    __slots__ = ('no_only',)
 
     def __init__(self, no_only=True):
         self.no_only = no_only

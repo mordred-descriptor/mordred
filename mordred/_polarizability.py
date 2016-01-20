@@ -16,7 +16,8 @@ class APol(Descriptor):
     def __str__(self):
         return 'apol78' if self.use78 else 'apol'
 
-    descriptor_keys = 'use78',
+    descriptor_keys = ('use78',)
+    __slots__ = ('use78', 'table',)
 
     def __init__(self, use78=False):
         self.use78 = use78
@@ -40,7 +41,8 @@ class BPol(Descriptor):
     def __str__(self):
         return 'bpol78' if self.use78 else 'bpol'
 
-    descriptor_keys = 'use78',
+    descriptor_keys = ('use78',)
+    __slots__ = ('use78', 'table',)
 
     def __init__(self, use78=False):
         self.use78 = use78

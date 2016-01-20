@@ -18,6 +18,8 @@ class FragmentComplexity(Descriptor):
         * :cite:`10.1021/ci050521b`
     """
 
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()

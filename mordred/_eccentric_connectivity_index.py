@@ -15,6 +15,8 @@ class EccentricConnectivityIndex(Descriptor):
     :rtype: int
     """
 
+    __slots__ = ()
+
     explicit_hydrogens = False
     require_connected = False
 

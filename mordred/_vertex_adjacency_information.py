@@ -14,6 +14,8 @@ class VertexAdjacencyInformation(Descriptor):
     :rtype: float
     """
 
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()

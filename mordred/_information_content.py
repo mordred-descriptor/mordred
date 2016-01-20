@@ -7,6 +7,8 @@ from ._common import DistanceMatrix
 
 
 class BFSTree(object):
+    __slots__ = ('mol', 'tree', 'order', 'visited',)
+
     def __init__(self, mol, i):
         self.mol = mol
         self.tree = {i: ()}
@@ -71,8 +73,7 @@ class InformationContentBase(Descriptor):
 
 
 class Ag(InformationContentBase):
-
-    descriptor_keys = 'order',
+    __slots__ = ('order',)
 
     def __init__(self, order):
         self.order = order
@@ -120,7 +121,7 @@ class InformationContent(InformationContentBase):
     def __str__(self):
         return '{}IC{}'.format(self.type, self.order)
 
-    descriptor_keys = 'type', 'order'
+    __slots__ = ('type', 'order',)
 
     def __init__(self, type='', order=0):
         assert type in self.ic_types

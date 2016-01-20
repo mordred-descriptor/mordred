@@ -11,11 +11,15 @@ class RingCountBase(Descriptor):
 
 
 class Rings(RingCountBase):
+    __slots__ = ()
+
     def calculate(self, mol):
         return [frozenset(s) for s in Chem.GetSymmSSSR(mol)]
 
 
 class FusedRings(RingCountBase):
+    __slots__ = ()
+
     def dependencies(self):
         return dict(Rings=Rings())
 
@@ -98,7 +102,7 @@ class RingCount(RingCountBase):
 
         return 'n{}Ring'.format(''.join(attrs))
 
-    descriptor_keys = 'order', 'greater', 'fused', 'aromatic', 'hetero'
+    __slots__ = ('order', 'greater', 'fused', 'aromatic', 'hetero',)
 
     def __init__(self, order=None, greater=False, fused=False, aromatic=None, hetero=None):
         self.order = order

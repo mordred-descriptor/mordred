@@ -22,7 +22,7 @@ class WienerIndex(Descriptor):
     def __str__(self):
         return 'WPol' if self.polarity else 'WPath'
 
-    descriptor_keys = 'polarity',
+    __slots__ = ('polarity',)
 
     def __init__(self, polarity=False):
         self.polarity = polarity

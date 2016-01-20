@@ -35,6 +35,8 @@ class AcidicGroupCount(SmartsCountBase):
     :rtype: int
     """
 
+    __slots__ = ()
+
     def __str__(self):
         return 'nAcid'
 
@@ -51,6 +53,8 @@ class BasicGroupCount(SmartsCountBase):
 
     :rtype: int
     """
+
+    __slots__ = ()
 
     def __str__(self):
         return 'nBase'

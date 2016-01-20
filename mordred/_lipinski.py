@@ -27,7 +27,7 @@ class LipinskiLike(Descriptor):
     def __str__(self):
         return self.variant
 
-    descriptor_keys = 'variant',
+    __slots__ = ('variant',)
 
     def __init__(self, variant='Lipinski'):
         assert variant in self.variants

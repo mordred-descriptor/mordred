@@ -44,6 +44,8 @@ class VdwVolumeABC(Descriptor):
         * :cite:`10.1021/jo034808o`
     """
 
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()

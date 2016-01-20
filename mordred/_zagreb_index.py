@@ -39,7 +39,7 @@ class ZagrebIndex(Descriptor):
 
         return 'Zagreb{}_{}'.format(self.version, self.variable)
 
-    descriptor_keys = 'version', 'variable'
+    __slots__ = ('version', 'variable',)
 
     def __init__(self, version=1, variable=1):
         assert version in [1, 2]

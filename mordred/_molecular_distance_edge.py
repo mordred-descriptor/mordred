@@ -44,7 +44,7 @@ class MolecularDistanceEdge(Descriptor):
             self.valence2,
         )
 
-    descriptor_keys = 'valence1', 'valence2', 'atomic_num'
+    __slots__ = ('valence1', 'valence2', 'atomic_num',)
 
     def __init__(self, valence1=1, valence2=1, element='C'):
         self.valence1 = min(valence1, valence2)

@@ -7,14 +7,19 @@ from ._common import DistanceMatrix
 
 class AutocorrelationBase(Descriptor):
     explicit_hydrogens = True
-    prop = None
 
     @property
     def gasteiger_charges(self):
+        if not hasattr(self, 'prop'):
+            return False
+
         return getattr(self.prop, 'gasteiger_charges', False)
 
     @property
     def require_connected(self):
+        if not hasattr(self, 'prop'):
+            return False
+
         return getattr(self.prop, 'require_connected', False)
 
     def __str__(self):
@@ -23,8 +28,6 @@ class AutocorrelationBase(Descriptor):
             self.order,
             self.prop_name
         )
-
-    descriptor_keys = 'order', 'prop'
 
     def __init__(self, order=0, prop='m'):
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
@@ -60,7 +63,7 @@ class AutocorrelationBase(Descriptor):
 
 
 class AVec(AutocorrelationBase):
-    descriptor_keys = 'prop',
+    __slots__ = ('prop',)
 
     def __init__(self, prop):
         self.prop = prop
@@ -70,7 +73,7 @@ class AVec(AutocorrelationBase):
 
 
 class CAVec(AutocorrelationBase):
-    descriptor_keys = 'prop',
+    __slots__ = ('prop',)
 
     def __init__(self, prop):
         self.prop = prop
@@ -83,7 +86,7 @@ class CAVec(AutocorrelationBase):
 
 
 class GMat(AutocorrelationBase):
-    descriptor_keys = 'order',
+    __slots__ = ('order',)
 
     def __init__(self, order):
         self.order = order
@@ -102,7 +105,7 @@ class GMat(AutocorrelationBase):
 
 
 class GSum(AutocorrelationBase):
-    descriptor_keys = 'order',
+    __slots__ = ('order',)
 
     def __init__(self, order):
         self.order = order
@@ -156,6 +159,8 @@ class ATS(AutocorrelationBase):
     :type: float
     """
 
+    __slots__ = ('order', 'prop',)
+
     @classmethod
     def preset(cls):
         return (cls(d, a)
@@ -187,6 +192,8 @@ class AATS(ATS):
     :rtype: float
     """
 
+    __slots__ = ('order', 'prop',)
+
     def dependencies(self):
         return dict(ATS=self._ATS, gsum=self._gsum)
 
@@ -206,6 +213,8 @@ class ATSC(AutocorrelationBase):
 
     :rtype: float
     """
+
+    __slots__ = ('order', 'prop',)
 
     @classmethod
     def preset(cls):
@@ -238,6 +247,8 @@ class AATSC(ATSC):
     :rtype: float
     """
 
+    __slots__ = ('order', 'prop',)
+
     def dependencies(self):
         return dict(ATSC=self._ATSC, gsum=self._gsum)
 
@@ -261,6 +272,8 @@ class MATS(AutocorrelationBase):
     :rtype: float
     """
 
+    __slots__ = ('order', 'prop',)
+
     @classmethod
     def preset(cls):
         return (cls(d, a)
@@ -281,6 +294,8 @@ class GATS(MATS):
 
     :rtype: float
     """
+
+    __slots__ = ('order', 'prop',)
 
     def dependencies(self):
         return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)

@@ -18,6 +18,8 @@ class Radius(TopologicalIndexBase):
     :rtype: int
     """
 
+    __slots__ = ()
+
     def __str__(self):
         return 'Radius'
 
@@ -38,6 +40,8 @@ class Diameter(TopologicalIndexBase):
 
     :rtype: int
     """
+
+    __slots__ = ()
 
     def __str__(self):
         return 'Diameter'
@@ -67,6 +71,8 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     :rtype: float
     """
 
+    __slots__ = ()
+
     def __str__(self):
         return 'TopoShapeIndex'
 
@@ -95,6 +101,8 @@ class PetitjeanIndex(TopologicalIndexBase):
 
     :rtype: float
     """
+
+    __slots__ = ()
 
     def __str__(self):
         return 'PetitjeanIndex'

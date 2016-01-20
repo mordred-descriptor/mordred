@@ -9,6 +9,8 @@ class BCUTBase(Descriptor):
 
 
 class Burden(BCUTBase):
+    __slots__ = ()
+
     def calculate(self, mol):
         N = mol.GetNumAtoms()
 
@@ -35,7 +37,7 @@ class Burden(BCUTBase):
 
 
 class BurdenEigenValues(BCUTBase):
-    descriptor_keys = 'prop', 'gasteiger_charges'
+    __slots__ = ('prop', 'gasteiger_charges',)
 
     def __init__(self, prop, gasteiger_charges):
         self.prop = prop
@@ -85,7 +87,8 @@ class BCUT(BCUTBase):
         else:
             return 'BCUT{}-{}h'.format(self.prop_name, self.nth + 1)
 
-    descriptor_keys = 'prop', 'nth'
+    descriptor_keys = ('prop', 'nth',)
+    __slots__ = ('prop', 'prop_name', 'nth',)
 
     def __init__(self, prop='m', nth=0):
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)

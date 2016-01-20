@@ -20,6 +20,8 @@ class ChiType(IntEnum):
 
 
 class DFS(object):
+    __slots__ = ('G', 'visited', 'vis_edges', 'is_chain', 'degrees')
+
     def __init__(self, G):
         self.G = G
         self.visited = set()
@@ -66,7 +68,7 @@ ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
 
 
 class ChiCache(ChiBase):
-    descriptor_keys = 'order',
+    __slots__ = ('order',)
 
     def __init__(self, order):
         self.order = order
@@ -149,12 +151,13 @@ class Chi(ChiBase):
     def gasteiger_charges(self):
         return getattr(self.prop, 'gasteiger_charges', False)
 
-    descriptor_keys = 'type', 'order', 'prop', 'averaged'
+    descriptor_keys = ('type', 'order', 'prop', 'averaged',)
+    __slots__ = ('type', 'order', 'prop_name', 'prop', 'averaged',)
 
     def __init__(self, type='path', order=0, prop='delta', averaged=False):
+        self.type = parse_enum(ChiType, type)
         self.order = order
         self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.type = parse_enum(ChiType, type)
         self.averaged = averaged
 
     def dependencies(self):

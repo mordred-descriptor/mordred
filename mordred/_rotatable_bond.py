@@ -19,6 +19,8 @@ class RotatableBondsCount(RotatableBondsBase):
     :rtype: int
     """
 
+    __slots__ = ()
+
     def __str__(self):
         return 'nRot'
 
@@ -34,6 +36,8 @@ class RotatableBondsRatio(RotatableBondsBase):
 
     :rtype: float
     """
+
+    __slots__ = ()
 
     def __str__(self):
         return 'RotRatio'
