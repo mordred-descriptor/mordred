@@ -84,7 +84,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
 
         :rtype: iterable
         """
-        yield cls()
+        return ()
 
     def dependencies(self):
         r"""descriptor dependencies.
