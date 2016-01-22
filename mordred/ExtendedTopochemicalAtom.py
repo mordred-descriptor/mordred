@@ -29,14 +29,4 @@ __all__ = (
 
 if __name__ == '__main__':
     from .__main__ import submodule
-
-    submodule([
-        EtaCoreCount, EtaShapeIndex,
-        EtaVEMCount,
-        EtaCompositeIndex, EtaFunctionalityIndex, EtaBranchingIndex,
-
-        EtaDeltaAlpha,
-        EtaEpsilon, EtaDeltaEpsilon,
-        EtaDeltaBeta,
-        EtaPsi, EtaDeltaPsi,
-    ])
+    submodule()

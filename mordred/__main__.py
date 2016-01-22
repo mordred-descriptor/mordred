@@ -5,7 +5,7 @@ import sys
 
 from rdkit import Chem
 
-from . import Calculator, all_descriptors
+from ._base import Calculator, all_descriptors, get_descriptors_from_module
 
 
 def smiles_parser(f):
@@ -96,8 +96,10 @@ def main(descs, prog=None):
     return 0
 
 
-def submodule(descs, *args, **kws):
-    sys.exit(main(descs, *args, **kws))
+def submodule(name='__main__'):
+    mdl = sys.modules[name]
+    descs = get_descriptors_from_module(mdl)
+    sys.exit(main(descs, prog=mdl.__spec__.name))
 
 
 if __name__ == '__main__':

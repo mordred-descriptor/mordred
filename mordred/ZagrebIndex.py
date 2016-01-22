@@ -4,6 +4,4 @@ __all__ = ('ZagrebIndex',)
 
 if __name__ == '__main__':
     from .__main__ import submodule
-    submodule([
-        ZagrebIndex,
-    ])
+    submodule()

@@ -5,6 +5,4 @@ __all__ = ('BondCount',)
 
 if __name__ == '__main__':
     from .__main__ import submodule
-    submodule([
-        BondCount,
-    ])
+    submodule()
