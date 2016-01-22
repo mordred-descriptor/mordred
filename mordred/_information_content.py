@@ -71,12 +71,25 @@ class InformationContentBase(Descriptor):
     kekulize = True
     require_connected = False
 
+    def __str__(self):
+        return self._name + str(self._order)
 
-class Ag(InformationContentBase):
+    @classmethod
+    def preset(cls):
+        return (cls(o) for o in range(6))
+
     __slots__ = ('_order',)
 
-    def __init__(self, order):
+    def __init__(self, order=0):
         self._order = order
+
+
+class Ag(InformationContentBase):
+    @classmethod
+    def preset(cls):
+        return ()
+
+    __slots__ = ('_order',)
 
     def dependencies(self):
         return dict(
@@ -87,16 +100,26 @@ class Ag(InformationContentBase):
         atoms = [neighborhood_code(mol, i, self._order) for i in range(mol.GetNumAtoms())]
         ad = {a: i for i, a in enumerate(atoms)}
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]
-        return\
-            np.array([ad[k] for k, _ in Ags]),\
-            np.array([ag for _, ag in Ags])
+        return (
+            np.array([ad[k] for k, _ in Ags]),
+            np.array([ag for _, ag in Ags], dtype='float'),
+        )
+
+
+def _shannon_entropy_term(a):
+    return a * np.log2(a)
+
+
+shannon_entropy_term = np.vectorize(_shannon_entropy_term)
+
+
+def shannon_entropy(a, w=1):
+    N = np.sum(a)
+    return -np.sum(w * shannon_entropy_term(a / N))
 
 
 class InformationContent(InformationContentBase):
-    r"""information content descriptor.
-
-    :type type: str
-    :param type: one of ic_types
+    r"""neighborhood information content descriptor.
 
     :type order: int
     :param order: order(number of edge) of subgraph
@@ -104,65 +127,145 @@ class InformationContent(InformationContentBase):
     :rtype: float
     """
 
-    ic_types = ('', 'T', 'S', 'C', 'B', 'M', 'ZM')
-
-    @classmethod
-    def preset(cls):
-        return (
-            cls(t, o)
-            for t in cls.ic_types
-            for o in range(6)
-        )
-
-    def __str__(self):
-        return '{}IC{}'.format(self._type, self._order)
-
-    __slots__ = ('_type', '_order',)
-
-    def __init__(self, type='', order=0):
-        assert type in self.ic_types
-        self._type = type
-        self._order = order
+    _name = 'IC'
 
     def dependencies(self):
-        if self._type in ['T', 'S', 'C', 'B']:
-            return dict(
-                ICm=self.__class__('', self._order)
-            )
-        else:
-            return dict(
-                iAgs=Ag(self._order)
-            )
+        return dict(iAgs=Ag(self._order))
 
-    def calculate(self, mol, iAgs=None, ICm=None):
-        N = mol.GetNumAtoms()
-        if self._type in ['', 'M', 'ZM']:
-            ids = iAgs[0]
-            Ags = iAgs[1]
-
-            if self._type == '':
-                w = 1
-            elif self._type == 'M':
-                w = np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetMass())(ids)
-            else:
-                w = Ags * np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
-
-            e = np.vectorize(lambda Ag: entropy_term(float(Ag) / N))(Ags)
-            return -np.sum(w * e)
-
-        if self._type == 'T':
-            return N * ICm
-        elif self._type == 'S':
-            return ICm / np.log2(N)
-        elif self._type == 'C':
-            return np.log2(N) - ICm
-        elif self._type == 'B':
-            bts = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
-            if bts <= 1:
-                return np.nan
-
-            return ICm / np.log2(bts)
+    def calculate(self, mol, iAgs):
+        _, Ags = iAgs
+        return shannon_entropy(Ags)
 
 
-def entropy_term(a):
-    return a * np.log2(a)
+class TotalIC(InformationContentBase):
+    r"""neighborhood total information content descriptor.
+
+    .. math::
+        {\rm TIC}_m = A \cdot {\rm IC}_m
+
+    :type order: int
+    :param order: order(number of edge) of subgraph
+
+    :rtype: float
+    """
+
+    _name = 'TIC'
+
+    def dependencies(self):
+        return dict(ICm=InformationContent(self._order))
+
+    def calculate(self, mol, ICm):
+        A = mol.GetNumAtoms()
+
+        return A * ICm
+
+
+class StructuralIC(InformationContentBase):
+    r"""structural information content descriptor.
+
+    .. math::
+        {\rm SIC}_m = \frac{{\rm IC}_m}{\log_2 A}
+
+    :type order: int
+    :param order: order(number of edge) of subgraph
+
+    :rtype: float
+    """
+
+    _name = 'SIC'
+
+    def dependencies(self):
+        return dict(ICm=InformationContent(self._order))
+
+    def calculate(self, mol, ICm):
+        A = mol.GetNumAtoms()
+
+        return ICm / np.log2(A)
+
+
+class BondingIC(InformationContentBase):
+    r"""bonding information content descriptor.
+
+    .. math::
+        {\rm BIC}_m = \frac{{\rm IC}_m}{\log_2 \sum^B_{b=1} \pi^{*}_b}
+
+    :type order: int
+    :param order: order(number of edge) of subgraph
+
+    :rtype: float
+    """
+
+    _name = 'BIC'
+
+    def dependencies(self):
+        return dict(ICm=InformationContent(self._order))
+
+    def calculate(self, mol, ICm):
+        B = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
+        if B <= 1:
+            return np.nan
+
+        return ICm / np.log2(B)
+
+
+class ComplementaryIC(InformationContentBase):
+    r"""complementary information content descriptor.
+
+    .. math::
+        {\rm CIC}_m = \log_2 A - {\rm IC}_m
+
+    :type order: int
+    :param order: order(number of edge) of subgraph
+
+    :rtype: float
+    """
+
+    _name = 'CIC'
+
+    def dependencies(self):
+        return dict(ICm=InformationContent(self._order))
+
+    def calculate(self, mol, ICm):
+        A = mol.GetNumAtoms()
+
+        return np.log2(A) - ICm
+
+
+class ModifiedIC(InformationContentBase):
+    r"""modified information content index descriptor.
+
+    :type order: int
+    :param order: order(number of edge) of subgraph
+
+    :rtype: float
+    """
+
+    _name = 'MIC'
+
+    def dependencies(self):
+        return dict(iAgs=Ag(self._order))
+
+    def calculate(self, mol, iAgs):
+        ids, Ags = iAgs
+        w = np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetMass())(ids)
+        return shannon_entropy(Ags, w)
+
+
+class ZModifiedIC(InformationContentBase):
+    r"""Z-modified information content index descriptor.
+
+    :type order: int
+    :param order: order(number of edge) of subgraph
+
+    :rtype: float
+    """
+
+    _name = 'ZMIC'
+
+    def dependencies(self):
+        return dict(iAgs=Ag(self._order))
+
+    def calculate(self, mol, iAgs):
+        ids, Ags = iAgs
+        w = Ags * np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
+        return shannon_entropy(Ags, w)

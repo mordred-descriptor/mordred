@@ -4,53 +4,78 @@ from ._base import Descriptor
 from ._chi import ChiCache
 
 
-class KappaShapeIndex(Descriptor):
-    r"""kappa shape index descriptor.
-
-    :type order: int
-    :param order: order of kier, [1,3]
-
-    :rtype: float
-    """
-
+class KappaShapeIndexBase(Descriptor):
     explicit_hydrogens = False
     require_connected = False
 
     @classmethod
     def preset(cls):
-        return map(cls, range(1, 4))
+        yield cls()
 
     def __str__(self):
         return 'Kier{}'.format(self._order)
 
-    __slots__ = ('_order',)
-
-    def __init__(self, order=1):
-        assert order in [1, 2, 3]
-
-        self._order = order
+    def __init__(self):
+        self._order = int(self.__class__.__name__[-1])
 
     def dependencies(self):
         return dict(
             Chi=ChiCache(self._order)
         )
 
-    def calculate(self, mol, Chi):
+    def _common(self, mol, Chi):
         P = len(Chi.path)
         if P == 0:
-            return nan
+            P = nan
 
         A = mol.GetNumAtoms()
         Pmin = A - self._order
-        if self._order == 1:
-            Pmax = float(A * (A - 1)) / 2.0
-            return 2 * Pmax * Pmin / (P * P)
 
-        elif self._order == 2:
-            Pmax = float((A - 1) * (A - 2)) / 2.0
-            return 2 * Pmax * Pmin / (P * P)
+        return P, A, Pmin
 
-        elif A % 2 == 0:
+
+class KappaShapeIndex1(KappaShapeIndexBase):
+    r"""Kappa shape index 1 descriptor.
+
+    :rtype: float
+    """
+
+    __slots__ = ()
+
+    def calculate(self, mol, Chi):
+        P, A, Pmin = self._common(mol, Chi)
+        Pmax = float(A * (A - 1)) / 2.0
+
+        return 2 * Pmax * Pmin / (P * P)
+
+
+class KappaShapeIndex2(KappaShapeIndexBase):
+    r"""Kappa shape index 2 descriptor.
+
+    :rtype: float
+    """
+
+    __slots__ = ()
+
+    def calculate(self, mol, Chi):
+        P, A, Pmin = self._common(mol, Chi)
+        Pmax = float((A - 1) * (A - 2)) / 2.0
+
+        return 2 * Pmax * Pmin / (P * P)
+
+
+class KappaShapeIndex3(KappaShapeIndexBase):
+    r"""Kappa shape index 3 descriptor.
+
+    :rtype: float
+    """
+
+    __slots__ = ()
+
+    def calculate(self, mol, Chi):
+        P, A, Pmin = self._common(mol, Chi)
+
+        if A % 2 == 0:
             Pmax = float((A - 2) ** 2) / 4.0
         else:
             Pmax = float((A - 1) * (A - 3)) / 4.0

@@ -3,37 +3,37 @@ from rdkit.Chem import Crippen as _Crippen
 from ._base import Descriptor
 
 
-class WildmanCrippenLogP(Descriptor):
-    r"""Wildman-Crippen LogP/MR descriptor.
-
-    :type prop: str
-    :param type: 'LogP' or 'MR'
-
-    :rtype: float
-
-    References
-        * :cite:`10.1021/ci990307l`
-    """
-
+class WildmanCrippenBase(Descriptor):
     @classmethod
     def preset(cls):
-        yield cls('LogP')
-        yield cls('MR')
+        yield cls()
+
+    def __str__(self):
+        return self.__class__.__name__[7:]
 
     explicit_hydrogens = False
     require_connected = False
 
-    def __str__(self):
-        return 'Crippen{}'.format(self._prop)
 
-    __slots__ = ('_prop',)
+class WildmanCrippenLogP(WildmanCrippenBase):
+    r"""Wildman-Crippen LogP descriptor.
 
-    def __init__(self, prop='LogP'):
-        assert prop in ['LogP', 'MR']
-        self._prop = prop
+    :rtype: float
+    """
+
+    __slots__ = ()
 
     def calculate(self, mol):
-        if self._prop == 'LogP':
-            return _Crippen.MolLogP(mol)
-        else:
-            return _Crippen.MolMR(mol)
+        return _Crippen.MolLogP(mol)
+
+
+class WildmanCrippenMR(WildmanCrippenBase):
+    r"""Wildman-Crippen MR descriptor.
+
+    :rtype: float
+    """
+
+    __slots__ = ()
+
+    def calculate(self, mol):
+        return _Crippen.MolMR(mol)
