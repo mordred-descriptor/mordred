@@ -85,31 +85,31 @@ class AtomTypeEState(EStateBase):
         )
 
     def __str__(self):
-        aggr = aggr_name_dict[self.type]
+        aggr = aggr_name_dict[self._type]
 
-        return aggr + self.estate
+        return aggr + self._estate
 
-    __slots__ = ('type', 'estate',)
+    __slots__ = ('_type', '_estate',)
 
     def __init__(self, type='count', estate='sLi'):
         assert estate in es_type_set
 
-        self.type = parse_enum(AggrType, type)
-        self.estate = estate
+        self._type = parse_enum(AggrType, type)
+        self._estate = estate
 
     def dependencies(self):
         return dict(E=EStateCache())
 
     def calculate(self, mol, E):
-        if self.type == AggrType.count:
-            return reduce(lambda a, b: a + b, E[0]).count(self.estate)
+        if self._type == AggrType.count:
+            return reduce(lambda a, b: a + b, E[0]).count(self._estate)
 
         indices = map(
             lambda e: e[1],
-            filter(lambda e: self.estate in e[0], zip(*E))
+            filter(lambda e: self._estate in e[0], zip(*E))
         )
 
         try:
-            return float(getattr(builtins, self.type.name)(indices))
+            return float(getattr(builtins, self._type.name)(indices))
         except ValueError:  # min, max to empty list
             return nan

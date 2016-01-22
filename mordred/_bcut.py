@@ -37,10 +37,10 @@ class Burden(BCUTBase):
 
 
 class BurdenEigenValues(BCUTBase):
-    __slots__ = ('prop', 'gasteiger_charges',)
+    __slots__ = ('_prop', 'gasteiger_charges',)
 
     def __init__(self, prop, gasteiger_charges):
-        self.prop = prop
+        self._prop = prop
         self.gasteiger_charges = gasteiger_charges
 
     def dependencies(self):
@@ -48,7 +48,7 @@ class BurdenEigenValues(BCUTBase):
 
     def calculate(self, mol, burden):
         bmat = burden.copy()
-        ps = np.array([self.prop(a) for a in mol.GetAtoms()])
+        ps = np.array([self._prop(a) for a in mol.GetAtoms()])
         if np.any(np.isnan(ps)):
             return np.array([np.nan])
 
@@ -79,26 +79,26 @@ class BCUT(BCUTBase):
 
     @property
     def gasteiger_charges(self):
-        return getattr(self.prop, 'gasteiger_charges', False)
+        return getattr(self._prop, 'gasteiger_charges', False)
 
     def __str__(self):
-        if self.nth < 0:
-            return 'BCUT{}-{}l'.format(self.prop_name, np.abs(self.nth))
+        if self._nth < 0:
+            return 'BCUT{}-{}l'.format(self._prop_name, np.abs(self._nth))
         else:
-            return 'BCUT{}-{}h'.format(self.prop_name, self.nth + 1)
+            return 'BCUT{}-{}h'.format(self._prop_name, self._nth + 1)
 
-    descriptor_keys = ('prop', 'nth',)
-    __slots__ = ('prop', 'prop_name', 'nth',)
+    descriptor_keys = ('_prop', '_nth',)
+    __slots__ = ('_prop', '_prop_name', '_nth',)
 
     def __init__(self, prop='m', nth=0):
-        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.nth = nth
+        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._nth = nth
 
     def dependencies(self):
-        return dict(bev=BurdenEigenValues(self.prop, self.gasteiger_charges))
+        return dict(bev=BurdenEigenValues(self._prop, self.gasteiger_charges))
 
     def calculate(self, mol, bev):
         try:
-            return bev[self.nth]
+            return bev[self._nth]
         except IndexError:
             return np.nan

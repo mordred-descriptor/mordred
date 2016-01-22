@@ -27,30 +27,30 @@ class AtomCount(Descriptor):
     @property
     def explicit_hydrogens(self):
         u"""require explicit_hydrogens when type is 'H' or 'Atom'."""
-        return self.type in set(['H', 'Atom'])
+        return self._type in set(['H', 'Atom'])
 
     def __str__(self):
-        return 'n' + self.type
+        return 'n' + self._type
 
-    __slots__ = ('type',)
+    __slots__ = ('_type',)
 
     def __init__(self, type='Atom'):
-        self.type = type
+        self._type = type
 
     def _calc_X(self, mol):
         X = set([9, 17, 35, 53, 85, 117])
         return sum(a.GetAtomicNum() in X for a in mol.GetAtoms())
 
     def _calc(self, mol):
-        return sum(a.GetSymbol() == self.type for a in mol.GetAtoms())
+        return sum(a.GetSymbol() == self._type for a in mol.GetAtoms())
 
     def _calc_all(self, mol):
         return mol.GetNumAtoms()
 
     def calculate(self, mol):
-        if self.type == 'X':
+        if self._type == 'X':
             return self._calc_X(mol)
-        elif self.type in ['Atom', 'HeavyAtom']:
+        elif self._type in ['Atom', 'HeavyAtom']:
             return self._calc_all(mol)
         else:
             return self._calc(mol)

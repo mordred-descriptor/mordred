@@ -10,113 +10,109 @@ class AutocorrelationBase(Descriptor):
 
     @property
     def gasteiger_charges(self):
-        if not hasattr(self, 'prop'):
+        if not hasattr(self, '_prop'):
             return False
 
-        return getattr(self.prop, 'gasteiger_charges', False)
+        return getattr(self._prop, 'gasteiger_charges', False)
 
     @property
     def require_connected(self):
-        if not hasattr(self, 'prop'):
+        if not hasattr(self, '_prop'):
             return False
 
-        return getattr(self.prop, 'require_connected', False)
+        return getattr(self._prop, 'require_connected', False)
 
     def __str__(self):
         return '{}{}{}'.format(
             self.__class__.__name__,
-            self.order,
-            self.prop_name
+            self._order,
+            self._prop_name
         )
 
     def __init__(self, order=0, prop='m'):
-        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.order = order
+        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._order = order
 
     @property
     def _avec(self):
-        return AVec(self.prop)
+        return AVec(self._prop)
 
     @property
     def _cavec(self):
-        return CAVec(self.prop)
+        return CAVec(self._prop)
 
     @property
     def _gmat(self):
-        return GMat(self.order)
+        return GMat(self._order)
 
     @property
     def _gsum(self):
-        return GSum(self.order)
+        return GSum(self._order)
 
     @property
     def _ATS(self):
-        return ATS(self.order, self.prop)
+        return ATS(self._order, self._prop)
 
     @property
     def _ATSC(self):
-        return ATSC(self.order, self.prop)
+        return ATSC(self._order, self._prop)
 
     @property
     def _AATSC(self):
-        return AATSC(self.order, self.prop)
+        return AATSC(self._order, self._prop)
 
 
 class AVec(AutocorrelationBase):
-    __slots__ = ('prop',)
+    __slots__ = ('_prop',)
 
     def __init__(self, prop):
-        self.prop = prop
+        self._prop = prop
 
     def calculate(self, mol):
-        return np.array([self.prop(a) for a in mol.GetAtoms()])
+        return np.array([self._prop(a) for a in mol.GetAtoms()])
 
 
 class CAVec(AutocorrelationBase):
-    __slots__ = ('prop',)
+    __slots__ = ('_prop',)
 
     def __init__(self, prop):
-        self.prop = prop
+        self._prop = prop
 
     def dependencies(self):
-        return dict(avec=AVec(self.prop))
+        return dict(avec=AVec(self._prop))
 
     def calculate(self, mol, avec):
         return avec - avec.mean()
 
 
 class GMat(AutocorrelationBase):
-    __slots__ = ('order',)
+    __slots__ = ('_order',)
 
     def __init__(self, order):
-        self.order = order
+        self._order = order
 
     def dependencies(self):
         return dict(
-            dmat=DistanceMatrix(
-                self.explicit_hydrogens,
-                False,
-                False,
-            )
+            dmat=DistanceMatrix(self.explicit_hydrogens)
         )
 
     def calculate(self, mol, dmat):
-        return dmat == self.order
+        return dmat == self._order
 
 
 class GSum(AutocorrelationBase):
-    __slots__ = ('order',)
+    __slots__ = ('_order',)
 
     def __init__(self, order):
-        self.order = order
+        self._order = order
 
     def dependencies(self):
-        return dict(gmat=GMat(self.order))
+        return dict(gmat=GMat(self._order))
 
     def calculate(self, mol, gmat):
         s = gmat.sum()
 
-        if self.order == 0:
+        if self._order == 0:
             return s
         else:
             return s / 2
@@ -159,19 +155,21 @@ class ATS(AutocorrelationBase):
     :type: float
     """
 
-    __slots__ = ('order', 'prop',)
+    __slots__ = ('_order', '_prop',)
 
     @classmethod
     def preset(cls):
-        return (cls(d, a)
-                for a in _atomic_property.get_properties(istate=True)
-                for d in range(MAX_DISTANCE + 1))
+        return (
+            cls(d, a)
+            for a in _atomic_property.get_properties(istate=True)
+            for d in range(MAX_DISTANCE + 1)
+        )
 
     def dependencies(self):
         return dict(avec=self._avec, gmat=self._gmat)
 
     def calculate(self, mol, avec, gmat):
-        if self.order == 0:
+        if self._order == 0:
             return float((avec ** 2).sum())
 
         return 0.5 * avec.dot(gmat).dot(avec)
@@ -192,7 +190,7 @@ class AATS(ATS):
     :rtype: float
     """
 
-    __slots__ = ('order', 'prop',)
+    __slots__ = ('_order', '_prop',)
 
     def dependencies(self):
         return dict(ATS=self._ATS, gsum=self._gsum)
@@ -209,24 +207,26 @@ class ATSC(AutocorrelationBase):
     .. math::
         {\boldsymbol w}_{\rm c} = {\boldsymbol w} - \bar{\boldsymbol w}
 
-    :Parameters: see ATS
+    :Parameters: see :py:class:`ATS`
 
     :rtype: float
     """
 
-    __slots__ = ('order', 'prop',)
+    __slots__ = ('_order', '_prop',)
 
     @classmethod
     def preset(cls):
-        return (cls(d, a)
-                for a in _atomic_property.get_properties(charge=True, istate=True)
-                for d in range(MAX_DISTANCE + 1))
+        return (
+            cls(d, a)
+            for a in _atomic_property.get_properties(charge=True, istate=True)
+            for d in range(MAX_DISTANCE + 1)
+        )
 
     def dependencies(self):
         return dict(cavec=self._cavec, gmat=self._gmat)
 
     def calculate(self, mol, cavec, gmat):
-        if self.order == 0:
+        if self._order == 0:
             return float((cavec ** 2).sum())
 
         return 0.5 * cavec.dot(gmat).dot(cavec)
@@ -247,7 +247,7 @@ class AATSC(ATSC):
     :rtype: float
     """
 
-    __slots__ = ('order', 'prop',)
+    __slots__ = ('_order', '_prop',)
 
     def dependencies(self):
         return dict(ATSC=self._ATSC, gsum=self._gsum)
@@ -272,13 +272,15 @@ class MATS(AutocorrelationBase):
     :rtype: float
     """
 
-    __slots__ = ('order', 'prop',)
+    __slots__ = ('_order', '_prop',)
 
     @classmethod
     def preset(cls):
-        return (cls(d, a)
-                for a in _atomic_property.get_properties(charge=True, istate=True)
-                for d in range(1, MAX_DISTANCE + 1))
+        return (
+            cls(d, a)
+            for a in _atomic_property.get_properties(charge=True, istate=True)
+            for d in range(1, MAX_DISTANCE + 1)
+        )
 
     def dependencies(self):
         return dict(avec=self._avec, AATSC=self._AATSC, cavec=self._cavec)
@@ -295,7 +297,7 @@ class GATS(MATS):
     :rtype: float
     """
 
-    __slots__ = ('order', 'prop',)
+    __slots__ = ('_order', '_prop',)
 
     def dependencies(self):
         return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)

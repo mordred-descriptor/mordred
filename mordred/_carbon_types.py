@@ -71,21 +71,21 @@ class CarbonTypes(CarbonTypesBase):
         ])
 
     def __str__(self):
-        return 'C{}SP{}'.format(self.nCarbon, self.SP)
+        return 'C{}SP{}'.format(self._nCarbon, self._SP)
 
-    __slots__ = ('nCarbon', 'SP',)
+    __slots__ = ('_nCarbon', '_SP',)
 
     def __init__(self, nCarbon=1, SP=3):
         assert SP in [1, 2, 3]
 
-        self.nCarbon = nCarbon
-        self.SP = SP
+        self._nCarbon = nCarbon
+        self._SP = SP
 
     def dependencies(self):
         return dict(CT=CarbonTypesCache())
 
     def calculate(self, mol, CT):
-        return CT[self.SP][self.nCarbon]
+        return CT[self._SP][self._nCarbon]
 
 
 class HybridizationRatio(CarbonTypesBase):

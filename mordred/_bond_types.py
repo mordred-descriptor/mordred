@@ -62,19 +62,19 @@ class BondCount(Descriptor):
 
     def __str__(self):
         K = 'K' if self.kekulize else ''
-        return 'nBonds{}{}'.format(K, self.bond_name)
+        return 'nBonds{}{}'.format(K, self._bond_name)
 
     @property
     def explicit_hydrogens(self):
-        return self.type in (BondType.any, BondType.single)
+        return self._type in (BondType.any, BondType.single)
 
-    descriptor_keys = ('type', 'kekulize',)
-    __slots__ = ('type', 'bond_name', 'check_bond', 'kekulize',)
+    descriptor_keys = ('_type', 'kekulize',)
+    __slots__ = ('_type', '_bond_name', '_check_bond', 'kekulize',)
 
     def __init__(self, type='any', kekulize=False):
-        self.type = parse_enum(BondType, type)
-        self.bond_name, self.check_bond = bond_type_dict[self.type]
+        self._type = parse_enum(BondType, type)
+        self._bond_name, self._check_bond = bond_type_dict[self._type]
         self.kekulize = kekulize
 
     def calculate(self, mol):
-        return sum(1 for b in mol.GetBonds() if self.check_bond(b))
+        return sum(1 for b in mol.GetBonds() if self._check_bond(b))

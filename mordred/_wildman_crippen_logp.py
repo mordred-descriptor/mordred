@@ -24,16 +24,16 @@ class WildmanCrippenLogP(Descriptor):
     require_connected = False
 
     def __str__(self):
-        return 'Crippen{}'.format(self.prop)
+        return 'Crippen{}'.format(self._prop)
 
-    __slots__ = ('prop',)
+    __slots__ = ('_prop',)
 
     def __init__(self, prop='LogP'):
         assert prop in ['LogP', 'MR']
-        self.prop = prop
+        self._prop = prop
 
     def calculate(self, mol):
-        if self.prop == 'LogP':
+        if self._prop == 'LogP':
             return _Crippen.MolLogP(mol)
         else:
             return _Crippen.MolMR(mol)

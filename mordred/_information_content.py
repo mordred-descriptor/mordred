@@ -73,22 +73,18 @@ class InformationContentBase(Descriptor):
 
 
 class Ag(InformationContentBase):
-    __slots__ = ('order',)
+    __slots__ = ('_order',)
 
     def __init__(self, order):
-        self.order = order
+        self._order = order
 
     def dependencies(self):
         return dict(
-            D=DistanceMatrix(
-                self.explicit_hydrogens,
-                False,
-                False,
-            )
+            D=DistanceMatrix(self.explicit_hydrogens)
         )
 
     def calculate(self, mol, D):
-        atoms = [neighborhood_code(mol, i, self.order) for i in range(mol.GetNumAtoms())]
+        atoms = [neighborhood_code(mol, i, self._order) for i in range(mol.GetNumAtoms())]
         ad = {a: i for i, a in enumerate(atoms)}
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]
         return\
@@ -119,34 +115,34 @@ class InformationContent(InformationContentBase):
         )
 
     def __str__(self):
-        return '{}IC{}'.format(self.type, self.order)
+        return '{}IC{}'.format(self._type, self._order)
 
-    __slots__ = ('type', 'order',)
+    __slots__ = ('_type', '_order',)
 
     def __init__(self, type='', order=0):
         assert type in self.ic_types
-        self.type = type
-        self.order = order
+        self._type = type
+        self._order = order
 
     def dependencies(self):
-        if self.type in ['T', 'S', 'C', 'B']:
+        if self._type in ['T', 'S', 'C', 'B']:
             return dict(
-                ICm=self.__class__('', self.order)
+                ICm=self.__class__('', self._order)
             )
         else:
             return dict(
-                iAgs=Ag(self.order)
+                iAgs=Ag(self._order)
             )
 
     def calculate(self, mol, iAgs=None, ICm=None):
         N = mol.GetNumAtoms()
-        if self.type in ['', 'M', 'ZM']:
+        if self._type in ['', 'M', 'ZM']:
             ids = iAgs[0]
             Ags = iAgs[1]
 
-            if self.type == '':
+            if self._type == '':
                 w = 1
-            elif self.type == 'M':
+            elif self._type == 'M':
                 w = np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetMass())(ids)
             else:
                 w = Ags * np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
@@ -154,13 +150,13 @@ class InformationContent(InformationContentBase):
             e = np.vectorize(lambda Ag: entropy_term(float(Ag) / N))(Ags)
             return -np.sum(w * e)
 
-        if self.type == 'T':
+        if self._type == 'T':
             return N * ICm
-        elif self.type == 'S':
+        elif self._type == 'S':
             return ICm / np.log2(N)
-        elif self.type == 'C':
+        elif self._type == 'C':
             return np.log2(N) - ICm
-        elif self.type == 'B':
+        elif self._type == 'B':
             bts = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
             if bts <= 1:
                 return np.nan

@@ -21,18 +21,18 @@ class KappaShapeIndex(Descriptor):
         return map(cls, range(1, 4))
 
     def __str__(self):
-        return 'Kier{}'.format(self.order)
+        return 'Kier{}'.format(self._order)
 
-    __slots__ = 'order',
+    __slots__ = ('_order',)
 
     def __init__(self, order=1):
         assert order in [1, 2, 3]
 
-        self.order = order
+        self._order = order
 
     def dependencies(self):
         return dict(
-            Chi=ChiCache(self.order)
+            Chi=ChiCache(self._order)
         )
 
     def calculate(self, mol, Chi):
@@ -41,12 +41,12 @@ class KappaShapeIndex(Descriptor):
             return nan
 
         A = mol.GetNumAtoms()
-        Pmin = A - self.order
-        if self.order == 1:
+        Pmin = A - self._order
+        if self._order == 1:
             Pmax = float(A * (A - 1)) / 2.0
             return 2 * Pmax * Pmin / (P * P)
 
-        elif self.order == 2:
+        elif self._order == 2:
             Pmax = float((A - 1) * (A - 2)) / 2.0
             return 2 * Pmax * Pmin / (P * P)
 

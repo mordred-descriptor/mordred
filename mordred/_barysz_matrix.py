@@ -11,25 +11,26 @@ from ._matrix_attributes import get_method, methods
 
 class BaryszMatrixBase(Descriptor):
     explicit_hydrogens = False
+    __slots__ = ()
 
     @property
     def gasteiger_charges(self):
-        return getattr(self.prop, 'gasteiger_charges', False)
+        return getattr(self._prop, 'gasteiger_charges', False)
 
 
 _carbon = Chem.Atom(6)
 
 
 class Barysz(BaryszMatrixBase):
-    __slots__ = ('prop',)
+    __slots__ = ('_prop',)
 
     def __init__(self, prop):
-        self.prop = prop
+        self._prop = prop
 
     def calculate(self, mol):
         N = mol.GetNumAtoms()
 
-        C = self.prop(_carbon)
+        C = self._prop(_carbon)
 
         dmat = np.zeros((N, N))
 
@@ -42,12 +43,12 @@ class Barysz(BaryszMatrixBase):
 
             pi = bond.GetBondTypeAsDouble()
 
-            w = float(C * C) / float(self.prop(ai) * self.prop(aj) * pi)
+            w = float(C * C) / float(self._prop(ai) * self._prop(aj) * pi)
             dmat[i, j] = w
             dmat[j, i] = w
 
         sp = shortest_path(dmat)
-        np.fill_diagonal(sp, [1. - float(C) / self.prop(a) for a in mol.GetAtoms()])
+        np.fill_diagonal(sp, [1. - float(C) / self._prop(a) for a in mol.GetAtoms()])
         return sp
 
 
@@ -68,19 +69,19 @@ class BaryszMatrix(BaryszMatrixBase):
         return (cls(p, m) for p in _atomic_property.get_properties() for m in methods)
 
     def __str__(self):
-        return '{}_Dz{}'.format(self.type.__name__, self.prop_name)
+        return '{}_Dz{}'.format(self._type.__name__, self._prop_name)
 
-    descriptor_keys = ('prop', 'type',)
-    __slots__ = ('prop_name', 'prop', 'type',)
+    descriptor_keys = ('_prop', '_type',)
+    __slots__ = ('_prop_name', '_prop', '_type',)
 
     def __init__(self, prop='Z', type='SpMax'):
-        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.type = get_method(type)
+        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._type = get_method(type)
 
     def dependencies(self):
         return dict(
-            result=self.type(
-                Barysz(self.prop),
+            result=self._type(
+                Barysz(self._prop),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,
                 self.kekulize,

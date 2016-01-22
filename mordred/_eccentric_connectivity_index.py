@@ -29,15 +29,8 @@ class EccentricConnectivityIndex(Descriptor):
 
     def dependencies(self):
         return dict(
-            E=Eccentricity(
-                self.explicit_hydrogens,
-                False,
-                False,
-            ),
-            V=Valence(
-                self.explicit_hydrogens,
-                False,
-            ),
+            E=Eccentricity(self.explicit_hydrogens),
+            V=Valence(self.explicit_hydrogens),
         )
 
     def calculate(self, mol, E, V):

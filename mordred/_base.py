@@ -56,7 +56,13 @@ class Descriptor(with_metaclass(ABCMeta, object)):
         )
 
     def _get_keys(self):
-        return (getattr(self, k) for k in self._get_descriptor_keys())
+        def getter(k):
+            try:
+                return getattr(self, k)
+            except AttributeError as e:
+                raise DescriptorException(self, e, None)
+
+        return (getter(k) for k in self._get_descriptor_keys())
 
     def __reduce_ex__(self, version):
         return self.__class__, tuple(self._get_keys())

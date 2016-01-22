@@ -27,16 +27,16 @@ class TPSA(Descriptor):
         yield cls(False)
 
     def __str__(self):
-        return 'TPSA(NO)' if self.no_only else 'TPSA'
+        return 'TPSA(NO)' if self._no_only else 'TPSA'
 
-    __slots__ = ('no_only',)
+    __slots__ = ('_no_only',)
 
     def __init__(self, no_only=True):
-        self.no_only = no_only
+        self._no_only = no_only
 
     def calculate(self, mol):
         tpsa = rdMolDescriptors.CalcTPSA(mol)
-        if self.no_only:
+        if self._no_only:
             return tpsa
 
         for atom in mol.GetAtoms():

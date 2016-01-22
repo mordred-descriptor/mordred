@@ -39,34 +39,27 @@ class MolecularDistanceEdge(Descriptor):
 
     def __str__(self):
         return 'MDE{}-{}{}'.format(
-            table.GetElementSymbol(self.atomic_num),
-            self.valence1,
-            self.valence2,
+            table.GetElementSymbol(self._atomic_num),
+            self._valence1,
+            self._valence2,
         )
 
-    __slots__ = ('valence1', 'valence2', 'atomic_num',)
+    __slots__ = ('_valence1', '_valence2', '_atomic_num',)
 
     def __init__(self, valence1=1, valence2=1, element='C'):
-        self.valence1 = min(valence1, valence2)
-        self.valence2 = max(valence1, valence2)
+        self._valence1 = min(valence1, valence2)
+        self._valence2 = max(valence1, valence2)
         if isinstance(element, integer_types):
-            self.atomic_num = element
+            self._atomic_num = element
         elif isinstance(element, string_types):
-            self.atomic_num = table.GetAtomicNumber(element)
+            self._atomic_num = table.GetAtomicNumber(element)
         else:
             raise ValueError('element must be atomic number or atomic symbol')
 
     def dependencies(self):
         return dict(
-            D=DistanceMatrix(
-                self.explicit_hydrogens,
-                False,
-                False,
-            ),
-            V=Valence(
-                False,
-                False,
-            )
+            D=DistanceMatrix(self.explicit_hydrogens),
+            V=Valence(self.explicit_hydrogens),
         )
 
     def calculate(self, mol, D, V):
@@ -75,11 +68,11 @@ class MolecularDistanceEdge(Descriptor):
             D[i, j]
             for i in range(N)
             for j in range(i + 1, N)
-            if (V[i] == self.valence1 and V[j] == self.valence2) or
-            (V[j] == self.valence1 and V[i] == self.valence2)
+            if (V[i] == self._valence1 and V[j] == self._valence2) or
+            (V[j] == self._valence1 and V[i] == self._valence2)
             if mol.GetAtomWithIdx(i).GetAtomicNum() ==
             mol.GetAtomWithIdx(j).GetAtomicNum() ==
-            self.atomic_num
+            self._atomic_num
         ]
         n = len(Dv)
         if n == 0:

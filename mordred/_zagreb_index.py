@@ -33,38 +33,35 @@ class ZagrebIndex(Descriptor):
         return (cls(v, x) for x in [1, -1] for v in [1, 2])
 
     def __str__(self):
-        if self.variable in [1, -1]:
-            m = '' if self.variable == 1 else 'm'
-            return '{}Zagreb{}'.format(m, self.version)
+        if self._variable in [1, -1]:
+            m = '' if self._variable == 1 else 'm'
+            return '{}Zagreb{}'.format(m, self._version)
 
-        return 'Zagreb{}_{}'.format(self.version, self.variable)
+        return 'Zagreb{}_{}'.format(self._version, self._variable)
 
-    __slots__ = ('version', 'variable',)
+    __slots__ = ('_version', '_variable',)
 
     def __init__(self, version=1, variable=1):
         assert version in [1, 2]
-        self.version = version
-        self.variable = variable
+        self._version = version
+        self._variable = variable
 
     def dependencies(self):
         return dict(
-            V=Valence(
-                self.explicit_hydrogens,
-                False,
-            ),
+            V=Valence(self.explicit_hydrogens),
         )
 
     def calculate(self, mol, V):
-        if not isinstance(self.variable, int) or self.variable < 0:
+        if not isinstance(self._variable, int) or self._variable < 0:
             V = V.astype('float')
 
-        if self.version == 1:
+        if self._version == 1:
             if np.any(V == 0):
                 return np.nan
 
-            return (V ** (self.variable * 2)).sum()
+            return (V ** (self._variable * 2)).sum()
         else:
             return sum(
-                (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self.variable
+                (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
                 for b in mol.GetBonds()
             )

@@ -28,19 +28,19 @@ class ConstitutionalSum(Descriptor):
 
     _carbon = Chem.Atom(6)
 
-    descriptor_keys = ('prop',)
-    __slots__ = ('prop_name', 'prop',)
+    descriptor_keys = ('_prop',)
+    __slots__ = ('_prop_name', '_prop',)
 
     def __init__(self, prop='v'):
-        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        if self.prop == _atomic_property.get_sanderson_en:
-            self.prop_name = 'se'
+        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        if self._prop == _atomic_property.get_sanderson_en:
+            self._prop_name = 'se'
 
     def __str__(self):
-        return 'S{}'.format(self.prop_name)
+        return 'S{}'.format(self._prop_name)
 
     def calculate(self, mol):
-        return sum(self.prop(a) / self.prop(self._carbon) for a in mol.GetAtoms())
+        return sum(self._prop(a) / self._prop(self._carbon) for a in mol.GetAtoms())
 
 
 class ConstitutionalMean(ConstitutionalSum):
@@ -55,17 +55,17 @@ class ConstitutionalMean(ConstitutionalSum):
     :rtype: float
     """
 
-    __slots__ = ('prop_name', 'prop',)
+    __slots__ = ('_prop_name', '_prop',)
 
     @classmethod
     def preset(cls):
         return map(cls, _atomic_property.get_properties())
 
     def __str__(self):
-        return 'M{}'.format(self.prop_name)
+        return 'M{}'.format(self._prop_name)
 
     def dependencies(self):
-        return dict(S=ConstitutionalSum(self.prop))
+        return dict(S=ConstitutionalSum(self._prop))
 
     def calculate(self, mol, S):
         return S / mol.GetNumAtoms()

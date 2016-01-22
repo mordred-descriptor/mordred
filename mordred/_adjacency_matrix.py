@@ -19,20 +19,17 @@ class AdjacencyMatrix(Descriptor):
         return map(cls, methods)
 
     def __str__(self):
-        return '{}_A'.format(self.type.__name__)
+        return '{}_A'.format(self._type.__name__)
 
-    __slots__ = ('type',)
+    __slots__ = ('_type',)
 
     def __init__(self, type='SpMax'):
-        self.type = get_method(type)
+        self._type = get_method(type)
 
     def dependencies(self):
         return dict(
-            result=self.type(
-                A(
-                    self.explicit_hydrogens,
-                    False,
-                ),
+            result=self._type(
+                A(self.explicit_hydrogens),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,
                 self.kekulize,

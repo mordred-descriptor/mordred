@@ -150,16 +150,16 @@ class DetourMatrix(DetourMatrixBase):
         return map(cls, ma.methods)
 
     def __str__(self):
-        return '{}_Dt'.format(self.type.__name__)
+        return '{}_Dt'.format(self._type.__name__)
 
-    __slots__ = ('type',)
+    __slots__ = ('_type',)
 
     def __init__(self, type='SpMax'):
-        self.type = ma.get_method(type)
+        self._type = ma.get_method(type)
 
     def dependencies(self):
         return dict(
-            result=self.type(
+            result=self._type(
                 DetourMatrixCache(),
                 self.explicit_hydrogens,
                 self.gasteiger_charges,

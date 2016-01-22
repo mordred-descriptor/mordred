@@ -25,10 +25,7 @@ class Radius(TopologicalIndexBase):
 
     def dependencies(self):
         return dict(
-            R=CRadius(
-                self.explicit_hydrogens,
-                False, False,
-            )
+            R=CRadius(self.explicit_hydrogens)
         )
 
     def calculate(self, mol, R):
@@ -48,9 +45,7 @@ class Diameter(TopologicalIndexBase):
 
     def dependencies(self):
         return dict(
-            D=CDiameter(
-                self.explicit_hydrogens,
-                False, False)
+            D=CDiameter(self.explicit_hydrogens)
         )
 
     def calculate(self, mol, D):
@@ -77,11 +72,9 @@ class TopologicalShapeIndex(TopologicalIndexBase):
         return 'TopoShapeIndex'
 
     def dependencies(self):
-        args = [self.explicit_hydrogens, False, False]
-
         return dict(
-            R=CRadius(*args),
-            D=CDiameter(*args)
+            R=CRadius(self.explicit_hydrogens),
+            D=CDiameter(self.explicit_hydrogens),
         )
 
     def calculate(self, mol, R, D):
@@ -108,11 +101,9 @@ class PetitjeanIndex(TopologicalIndexBase):
         return 'PetitjeanIndex'
 
     def dependencies(self):
-        args = [self.explicit_hydrogens, False, False]
-
         return dict(
-            R=CRadius(*args),
-            D=CDiameter(*args)
+            R=CRadius(self.explicit_hydrogens),
+            D=CDiameter(self.explicit_hydrogens),
         )
 
     def calculate(self, mol, R, D):

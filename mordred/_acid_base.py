@@ -13,8 +13,8 @@ class SmartsCountBase(Descriptor):
         yield cls()
 
     def _get_smarts(self):
-        self.mols = [Chem.MolFromSmarts(s) for s in self.SMARTS]
-        return self.mols
+        self._mols = [Chem.MolFromSmarts(s) for s in self.SMARTS]
+        return self._mols
 
     def calculate(self, mol):
         mols = getattr(self, 'mols', None) or self._get_smarts()

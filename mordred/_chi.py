@@ -68,17 +68,17 @@ ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
 
 
 class ChiCache(ChiBase):
-    __slots__ = ('order',)
+    __slots__ = ('_order',)
 
     def __init__(self, order):
-        self.order = order
+        self._order = order
 
     def calculate(self, mol):
         chain = list()
         path = list()
         path_cluster = list()
         cluster = list()
-        for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self.order):
+        for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self._order):
 
             G = Graph()
             nodes = set()
@@ -141,36 +141,36 @@ class Chi(ChiBase):
         )
 
     def __str__(self):
-        prop = _prop_dict.get(self.prop_name, self.prop_name)
-        ct = _chi_type_dict[self.type]
-        p = 'A' if self.averaged else ''
+        prop = _prop_dict.get(self._prop_name, self._prop_name)
+        ct = _chi_type_dict[self._type]
+        p = 'A' if self._averaged else ''
 
-        return '{}{}{}-{}'.format(p, prop, ct, self.order)
+        return '{}{}{}-{}'.format(p, prop, ct, self._order)
 
     @property
     def gasteiger_charges(self):
-        return getattr(self.prop, 'gasteiger_charges', False)
+        return getattr(self._prop, 'gasteiger_charges', False)
 
-    descriptor_keys = ('type', 'order', 'prop', 'averaged',)
-    __slots__ = ('type', 'order', 'prop_name', 'prop', 'averaged',)
+    descriptor_keys = ('_type', '_order', '_prop', '_averaged',)
+    __slots__ = ('_type', '_order', '_prop_name', '_prop', '_averaged',)
 
     def __init__(self, type='path', order=0, prop='delta', averaged=False):
-        self.type = parse_enum(ChiType, type)
-        self.order = order
-        self.prop_name, self.prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        self.averaged = averaged
+        self._type = parse_enum(ChiType, type)
+        self._order = order
+        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._averaged = averaged
 
     def dependencies(self):
-        if self.order > 0:
-            return dict(chi=ChiCache(self.order))
+        if self._order > 0:
+            return dict(chi=ChiCache(self._order))
 
     def calculate(self, mol, chi=None):
-        if self.order <= 0:
+        if self._order <= 0:
             chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
 
         x = 0.0
-        node_sets = getattr(chi, self.type.name)
-        props = [self.prop(a) for a in mol.GetAtoms()]
+        node_sets = getattr(chi, self._type.name)
+        props = [self._prop(a) for a in mol.GetAtoms()]
         for nodes in node_sets:
             c = 1
             for node in nodes:
@@ -181,7 +181,7 @@ class Chi(ChiBase):
 
             x += c ** -0.5
 
-        if self.averaged:
+        if self._averaged:
             x /= len(node_sets) or np.nan
 
         return x

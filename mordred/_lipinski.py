@@ -6,69 +6,62 @@ from ._base import Descriptor
 
 
 class LipinskiLike(Descriptor):
-    r"""Lipinski like descriptor.
-
-    LogP: WildmanCrippenLogP
-
-    :type variant: str
-    :param variant: one of variants
-
-    :rtype: bool
-    """
-
-    variants = 'Lipinski', 'GhoseFilter'
-
     require_connected = False
 
     @classmethod
     def preset(cls):
-        return map(cls, cls.variants)
+        yield cls()
 
     def __str__(self):
-        return self.variant
+        return self.__class__.__name__
 
-    __slots__ = ('variant',)
 
-    def __init__(self, variant='Lipinski'):
-        assert variant in self.variants
+class Lipinski(LipinskiLike):
+    r"""Lipinski rule of 5 descriptor.
 
-        self.variant = variant
+    LogP: WildmanCrippenLogP
+
+    :rtype: bool
+    """
+
+    __slots__ = ()
 
     def dependencies(self):
-        return {
-            prop: key
-            for prop, key in deps_keys.items()
-            if prop in deps_dict[self.variant]
-        }
+        return dict(
+            LogP=WildmanCrippenLogP('LogP'),
+            MW=Weight(),
+            HBDon=HBondDonor(),
+            HBAcc=HBondAcceptor(),
+        )
 
-    def _Lipinski(self, mol, LogP, MW, HBDon, HBAcc):
+    def calculate(self, mol, LogP, MW, HBDon, HBAcc):
         return\
             HBDon <= 5 and\
             HBAcc <= 10 and\
             MW <= 500 and\
             LogP <= 5
 
-    def _GhoseFilter(self, mol, MW, LogP, MR):
+
+class GhoseFilter(LipinskiLike):
+    r"""Ghose filter descriptor.
+
+    LogP, MR: WildmanCrippenLogP
+
+    :rtype: bool
+    """
+
+    __slots__ = ()
+
+    def dependencies(self):
+        return dict(
+            LogP=WildmanCrippenLogP('LogP'),
+            MR=WildmanCrippenLogP('MR'),
+            MW=Weight(),
+        )
+
+    def calculate(self, mol, MW, LogP, MR):
         return\
             (160 <= MW <= 480) and\
             (20 <= mol.GetNumAtoms() <= 70) and\
             (-0.4 <= LogP <= 5.6) and\
             (40 <= MR <= 130)
-
-    def calculate(self, mol, **deps):
-        return getattr(self, '_' + self.variant)(mol, **deps)
-
-deps_dict = dict(
-    Lipinski=set(['LogP', 'MW', 'HBDon', 'HBAcc']),
-    GhoseFilter=set(['MW', 'LogP', 'MR']),
-)
-
-deps_keys = dict(
-    LogP=WildmanCrippenLogP('LogP'),
-    MR=WildmanCrippenLogP('MR'),
-
-    MW=Weight(),
-
-    HBDon=HBondDonor(),
-    HBAcc=HBondAcceptor(),
-)

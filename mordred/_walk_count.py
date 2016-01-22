@@ -30,29 +30,29 @@ class WalkCount(Descriptor):
             yield cls(10, True, sr)
 
     def __str__(self):
-        T = '{}SRW{:02d}' if self.self_returning else '{}MWC{:02d}'
-        return T.format('T' if self.total else '', self.order)
+        T = '{}SRW{:02d}' if self._self_returning else '{}MWC{:02d}'
+        return T.format('T' if self._total else '', self._order)
 
-    __slots__ = ('order', 'total', 'self_returning',)
+    __slots__ = ('_order', '_total', '_self_returning',)
 
     def __init__(self, order=1, total=False, self_returning=False):
-        self.order = order
-        self.total = total
-        self.self_returning = self_returning
+        self._order = order
+        self._total = total
+        self._self_returning = self_returning
 
     def dependencies(self):
-        if self.total:
+        if self._total:
             W = ('W', self.__class__(
-                self.order,
+                self._order,
                 False,
-                self.self_returning,
+                self._self_returning,
             ))
 
-            if self.order > 1:
+            if self._order > 1:
                 T = ('T', self.__class__(
-                    self.order - 1,
+                    self._order - 1,
                     True,
-                    self.self_returning,
+                    self._self_returning,
                 ))
 
                 return dict([W, T])
@@ -62,23 +62,22 @@ class WalkCount(Descriptor):
         return dict(
             An=AdjacencyMatrix(
                 self.explicit_hydrogens,
-                False,
-                self.order,
+                order=self._order,
             )
         )
 
     def calculate(self, mol, An=None, T=None, W=None):
-        if self.total:
-            if self.order == 1:
+        if self._total:
+            if self._order == 1:
                 return mol.GetNumAtoms() + W
 
             return T + W
 
-        if self.self_returning:
+        if self._self_returning:
             return np.log(An.trace() + 1)
 
         else:
-            if self.order == 1:
+            if self._order == 1:
                 return An.sum() / 2
 
             return np.log(An.sum() + 1)

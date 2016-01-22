@@ -81,68 +81,68 @@ class RingCount(RingCountBase):
     def __str__(self):
         attrs = []
 
-        if self.greater:
+        if self._greater:
             attrs.append('G')
 
-        if self.order is not None:
-            attrs.append(str(self.order))
+        if self._order is not None:
+            attrs.append(str(self._order))
 
-        if self.fused:
+        if self._fused:
             attrs.append('F')
 
-        if self.aromatic is True:
+        if self._aromatic is True:
             attrs.append('a')
-        elif self.aromatic is False:
+        elif self._aromatic is False:
             attrs.append('A')
 
-        if self.hetero is True:
+        if self._hetero is True:
             attrs.append('H')
-        elif self.hetero is False:
+        elif self._hetero is False:
             attrs.append('C')
 
         return 'n{}Ring'.format(''.join(attrs))
 
-    __slots__ = ('order', 'greater', 'fused', 'aromatic', 'hetero',)
+    __slots__ = ('_order', '_greater', '_fused', '_aromatic', '_hetero',)
 
     def __init__(self, order=None, greater=False, fused=False, aromatic=None, hetero=None):
-        self.order = order
-        self.greater = greater
-        self.fused = fused
-        self.aromatic = aromatic
-        self.hetero = hetero
+        self._order = order
+        self._greater = greater
+        self._fused = fused
+        self._aromatic = aromatic
+        self._hetero = hetero
 
     def dependencies(self):
         return dict(
-            Rs=(FusedRings if self.fused else Rings)()
+            Rs=(FusedRings if self._fused else Rings)()
         )
 
     def _check_order(self, R):
-        if self.order is None:
+        if self._order is None:
             return True
 
-        if self.greater:
-            return len(R) >= self.order
+        if self._greater:
+            return len(R) >= self._order
         else:
-            return len(R) == self.order
+            return len(R) == self._order
 
     def _check_arom(self, mol, R):
-        if self.aromatic is None:
+        if self._aromatic is None:
             return True
 
         is_arom = all(mol.GetAtomWithIdx(i).GetIsAromatic() for i in R)
 
-        if self.aromatic:
+        if self._aromatic:
             return is_arom
 
         return not is_arom
 
     def _check_hetero(self, mol, R):
-        if self.hetero is None:
+        if self._hetero is None:
             return True
 
         has_hetero = any(mol.GetAtomWithIdx(i).GetAtomicNum() != 6 for i in R)
 
-        if self.hetero:
+        if self._hetero:
             return has_hetero
 
         return not has_hetero

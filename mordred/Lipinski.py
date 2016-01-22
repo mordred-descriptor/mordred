@@ -1,9 +1,9 @@
-from ._lipinski import LipinskiLike
+from ._lipinski import Lipinski, GhoseFilter
 
-__all__ = ('LipinskiLike',)
+__all__ = ('Lipinski', 'GhoseFilter')
 
 if __name__ == '__main__':
     from .__main__ import submodule
     submodule([
-        LipinskiLike,
+        Lipinski, GhoseFilter,
     ])

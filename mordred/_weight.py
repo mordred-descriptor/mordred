@@ -21,16 +21,16 @@ class Weight(Descriptor):
         yield cls(True)
 
     def __str__(self):
-        return 'AMW' if self.averaged else 'MW'
+        return 'AMW' if self._averaged else 'MW'
 
-    __slots__ = ('averaged',)
+    __slots__ = ('_averaged',)
 
     def __init__(self, averaged=False):
-        self.averaged = averaged
+        self._averaged = averaged
 
     def calculate(self, mol):
         w = ExactMolWt(mol)
-        if self.averaged:
+        if self._averaged:
             w /= mol.GetNumAtoms()
 
         return w

@@ -14,15 +14,8 @@ class ChargeTermMatrix(Descriptor):
 
     def dependencies(self):
         return dict(
-            A=AdjacencyMatrix(
-                self.explicit_hydrogens,
-                False,
-            ),
-            D=DistanceMatrix(
-                self.explicit_hydrogens,
-                False,
-                False,
-            ),
+            A=AdjacencyMatrix(self.explicit_hydrogens),
+            D=DistanceMatrix(self.explicit_hydrogens),
         )
 
     def calculate(self, mol, A, D):
@@ -65,41 +58,37 @@ class TopologicalCharge(Descriptor):
         )
 
     def __str__(self):
-        if self.type == 'global':
-            return 'JGT{}'.format(self.order)
-        elif self.type == 'mean':
-            return 'JGI{}'.format(self.order)
+        if self._type == 'global':
+            return 'JGT{}'.format(self._order)
+        elif self._type == 'mean':
+            return 'JGI{}'.format(self._order)
         else:
-            return 'GGI{}'.format(self.order)
+            return 'GGI{}'.format(self._order)
 
-    __slots__ = ('type', 'order',)
+    __slots__ = ('_type', '_order',)
 
     def __init__(self, type='global', order=10):
         assert type in self.tc_types
         assert type == 'global' or isinstance(order, integer_types)
 
-        self.type = type
-        self.order = order
+        self._type = type
+        self._order = order
 
     def dependencies(self):
         return dict(
             CT=ChargeTermMatrix(),
-            D=DistanceMatrix(
-                self.explicit_hydrogens,
-                False,
-                False,
-            )
+            D=DistanceMatrix(self.explicit_hydrogens)
         )
 
     def calculate(self, mol, CT, D):
         D = D * np.tri(*D.shape)
         D[D == 0] = np.inf
 
-        f = D <= self.order if self.type == 'global' else D == self.order
+        f = D <= self._order if self._type == 'global' else D == self._order
 
         CT = CT[f]
 
-        if self.type == 'raw':
+        if self._type == 'raw':
             return np.abs(CT).sum()
 
         # create frequency vector
