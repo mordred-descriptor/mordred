@@ -24,8 +24,12 @@ class AlterMolecule(Descriptor):
             if a.GetAtomicNum() == 1:
                 continue
 
-            new_a = Chem.Atom(a.GetAtomicNum() if self._saturated else 6)
-            new_a.SetFormalCharge(a.GetFormalCharge())
+            if self._saturated:
+                new_a = Chem.Atom(a.GetAtomicNum())
+                new_a.SetFormalCharge(a.GetFormalCharge())
+
+            else:
+                new_a = Chem.Atom(6)
 
             ids.add(new.AddAtom(new_a))
 
@@ -101,7 +105,10 @@ class EtaCoreCount(EtaBase):
             return dict(rmol=AlterMolecule(self.explicit_hydrogens))
 
     def calculate(self, mol, rmol=None):
-        if rmol is not None:
+        if self._reference:
+            if rmol is None:
+                return np.nan
+
             mol = rmol
 
         v = sum(ap.get_core_count(a) for a in mol.GetAtoms())
@@ -328,7 +335,10 @@ class EtaCompositeIndex(EtaBase):
         return D
 
     def calculate(self, mol, D, rmol=None):
-        if rmol is not None:
+        if self._reference:
+            if rmol is None:
+                return np.nan
+
             mol = rmol
 
         if self._local:
@@ -570,7 +580,10 @@ class EtaEpsilon(EtaBase):
             return dict(rmol=AlterMolecule(self.explicit_hydrogens, True))
 
     def calculate(self, mol, rmol=None):
-        if rmol is not None:
+        if self._type in [3, 4]:
+            if rmol is None:
+                return np.nan
+
             mol = rmol
 
         if self._type == 5:
