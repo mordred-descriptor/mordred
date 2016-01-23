@@ -39,8 +39,11 @@ def file_parser(ifile, fmt):
         ifile.close()
         it = sdf_parser(ifile.name)
     elif fmt == 'auto':
-        ext = os.path.splitext(ifile.name)[1][1:]
-        it = file_parser(ifile, ext)
+        if ifile == sys.stdin:
+            it = file_parser(ifile, 'smi')
+        else:
+            ext = os.path.splitext(ifile.name)[1][1:]
+            it = file_parser(ifile, ext)
     else:
         raise ValueError('unknown format: {!r}'.format(fmt))
 
