@@ -1,3 +1,5 @@
+from rdkit.Chem import rdMolDescriptors
+
 from ._base import Descriptor
 
 
@@ -9,6 +11,8 @@ class AtomCount(Descriptor):
 
         * 'Atom'
         * 'HeavyAtom'
+        * 'Spiro'
+        * 'Bridgehead'
         * 'X' - all halogen
         * element symbol
 
@@ -20,7 +24,7 @@ class AtomCount(Descriptor):
     @classmethod
     def preset(cls):
         return map(cls, [
-            'Atom', 'HeavyAtom',
+            'Atom', 'HeavyAtom', 'Spiro', 'Bridgehead',
             'H', 'B', 'C', 'N', 'O', 'S', 'P', 'F', 'Cl', 'Br', 'I', 'X',
         ])
 
@@ -52,5 +56,9 @@ class AtomCount(Descriptor):
             return self._calc_X(mol)
         elif self._type in ['Atom', 'HeavyAtom']:
             return self._calc_all(mol)
+        elif self._type == 'Spiro':
+            return rdMolDescriptors.CalcNumSpiroAtoms(mol)
+        elif self._type == 'Bridgehead':
+            return rdMolDescriptors.CalcNumBridgeheadAtoms(mol)
         else:
             return self._calc(mol)
