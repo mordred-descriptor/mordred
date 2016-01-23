@@ -13,25 +13,40 @@ from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 from six import with_metaclass
 
 
-class DescriptorException(Exception):
-    def __init__(self, desc, e, parent):
+class MordredException(Exception):
+    pass
+
+
+class MordredAttributeError(AttributeError, MordredException):
+    def __init__(self, desc, args):
+        super(AttributeError, self).__init__()
+        self.desc = desc
+        self.args = args
+
+    def __str__(self):
+        return '{}({})'.format(self.args, self.desc)
+
+
+class DescriptorException(MordredException):
+    def __init__(self, desc, e, mol, parent):
         self.desc = desc
         self.e = e
+        self.mol = mol
         self.parent = parent
 
     def __str__(self):
         if self.parent is None:
-            return '{}.{}: {}'.format(
-                self.desc.__class__.__name__,
+            return '{}({!r}): {}'.format(
                 self.desc,
-                self.e
+                Chem.MolToSmiles(self.mol),
+                self.e,
             )
 
-        return '{}.{}({}): {}'.format(
-            self.desc.__class__.__name__,
-            self.desc,
+        return '{}/{}({!r}): {}'.format(
             self.parent,
-            self.e
+            self.desc,
+            Chem.MolToSmiles(self.mol),
+            self.e,
         )
 
 
@@ -60,7 +75,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
             try:
                 return getattr(self, k)
             except AttributeError as e:
-                raise DescriptorException(self, e, None)
+                raise MordredAttributeError(self, e)
 
         return (getter(k) for k in self._get_descriptor_keys())
 
@@ -118,7 +133,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
         :returns: descriptor result
         :rtype: scalar
         """
-        return next(Calculator(self)(mol))[1]
+        return Calculator(self)(mol)[0][1]
 
     @classmethod
     def is_descriptor(cls, desc):
@@ -251,7 +266,7 @@ class Calculator(object):
         try:
             r = desc.calculate(mol, **args)
         except Exception as e:
-            raise DescriptorException(desc, e, parent)
+            raise DescriptorException(desc, e, mol, parent)
 
         cache[desc] = r
         return r
@@ -265,15 +280,15 @@ class Calculator(object):
         Returns:
             iterator of descriptor and value
 
-        :rtype: iterator of (Descriptor, scalar)
+        :rtype: [(Descriptor, scalar)]
         """
         cache = {}
         self.molecule = Molecule(mol)
 
-        return (
+        return [
             (desc, self._calculate(desc, cache))
             for desc in self.descriptors
-        )
+        ]
 
     def _parallel(self, mols, processes=None):
         from multiprocessing import Pool
@@ -317,7 +332,7 @@ def initializer(calc):
 
 
 def worker(binary):
-    return list(calculate(Chem.Mol(binary)))
+    return calculate(Chem.Mol(binary))
 
 
 def all_descriptors():
