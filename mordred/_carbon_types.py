@@ -96,6 +96,7 @@ class HybridizationRatio(CarbonTypesBase):
         {\rm HybRatio} = \frac{N_{\rm SP3}}{N_{\rm SP2} + N_{\rm SP3}}
 
     :rtype: float
+    :returns: NaN when :math:`N_{\rm SP2} + N_{\rm SP3} = 0`.
     """
 
     __slots__ = ()

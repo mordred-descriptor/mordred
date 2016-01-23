@@ -127,6 +127,10 @@ class Chi(ChiBase):
     :param averaged: averaged by number of subgraphs
 
     :rtype: float
+    :returns: NaN when
+
+        * any atomic properties are 0
+        * averaged and :math:`N_{\chi} = 0`
     """
 
     chi_types = tuple(t.name for t in ChiType)

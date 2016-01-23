@@ -14,7 +14,7 @@ class RotatableBondsBase(Descriptor):
 
 
 class RotatableBondsCount(RotatableBondsBase):
-    r"""ratatable bonds count descriptor.
+    r"""ratatable bonds count descriptor(rdkit wrapper).
 
     :rtype: int
     """

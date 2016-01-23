@@ -13,7 +13,7 @@ class HBondBase(Descriptor):
 
 
 class HBondAcceptor(HBondBase):
-    r"""hydrogen bond acceptor descriptor.
+    r"""hydrogen bond acceptor descriptor(rdkit wrapper).
 
     :rtype: int
     """
@@ -28,7 +28,7 @@ class HBondAcceptor(HBondBase):
 
 
 class HBondDonor(HBondBase):
-    r"""hydrogen bond donor descriptor.
+    r"""hydrogen bond donor descriptor(rdkit wrapper).
 
     :rtype: int
     """

@@ -23,6 +23,7 @@ class MolecularDistanceEdge(Descriptor):
     :param element: atomic symbol or atomic number
 
     :rtype: float
+    :returns: NaN when :math:`N_{\rm MDE} = 0`
     """
 
     explicit_hydrogens = False

@@ -67,6 +67,7 @@ class AtomTypeEState(EStateBase):
     :param estate: one of es_types
 
     :rtype: int('count') or float(other)
+    :returns: NaN when type in ['min', 'max'] and :math:`N_{\rm X} = 0`
 
     References
         * :cite:`10.1021/ci00028a014`

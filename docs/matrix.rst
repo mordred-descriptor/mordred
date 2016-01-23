@@ -59,6 +59,8 @@ VE3
 .. math::
     {\rm VE3} = \log(\frac{A}{10} \cdot {\rm VE1})
 
+NaN when :math:`{\rm VE1} = 0`.
+
 VR1
 ---
 .. math::
@@ -73,3 +75,5 @@ VR3
 ---
 .. math::
     {\rm VR3} = \log(\frac{A}{10} \cdot {\rm VR1})
+
+NaN when :math:`{\rm VR1} = 0`.

@@ -80,6 +80,7 @@ class EtaCoreCount(EtaBase):
         (same graph structure, but all atoms are carbon and all bonds are single bond)
 
     :rtype: float
+    :returns: reference and valence of any atoms > 4
     """
 
     @classmethod
@@ -290,6 +291,7 @@ class EtaCompositeIndex(EtaBase):
     :param averaged: averaged
 
     :rtype: float
+    :returns: reference and valence of any atoms > 4
     """
 
     __slots__ = ('_reference', '_local', '_averaged',)
@@ -434,6 +436,7 @@ class EtaBranchingIndex(EtaBase):
     :param averaged: averaged
 
     :rtype: float
+    :returns: NaN when A < 2
     """
 
     @classmethod
@@ -553,6 +556,7 @@ class EtaEpsilon(EtaBase):
     :param type: one of epsilon_types
 
     :rtype: float
+    :returns: type = 3 and valence of any atoms > 4
     """
 
     @classmethod

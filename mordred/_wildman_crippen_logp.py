@@ -16,7 +16,7 @@ class WildmanCrippenBase(Descriptor):
 
 
 class WildmanCrippenLogP(WildmanCrippenBase):
-    r"""Wildman-Crippen LogP descriptor.
+    r"""Wildman-Crippen LogP descriptor(rdkit wrapper).
 
     :rtype: float
     """
@@ -28,7 +28,7 @@ class WildmanCrippenLogP(WildmanCrippenBase):
 
 
 class WildmanCrippenMR(WildmanCrippenBase):
-    r"""Wildman-Crippen MR descriptor.
+    r"""Wildman-Crippen MR descriptor(rdkit wrapper).
 
     :rtype: float
     """

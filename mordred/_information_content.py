@@ -193,6 +193,7 @@ class BondingIC(InformationContentBase):
     :param order: order(number of edge) of subgraph
 
     :rtype: float
+    :returns: NaN when :math:`\sum^B_{b=1} \pi^{*}_b <= 0`
     """
 
     _name = 'BIC'
@@ -202,7 +203,7 @@ class BondingIC(InformationContentBase):
 
     def calculate(self, mol, ICm):
         B = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
-        if B <= 1:
+        if B <= 0:
             return np.nan
 
         return ICm / np.log2(B)

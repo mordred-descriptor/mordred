@@ -23,6 +23,7 @@ class ZagrebIndex(Descriptor):
     :param variable: lambda value.
 
     :rtype: int
+    :returns: NaN when valence of any atoms are 0
     """
 
     explicit_hydrogens = False

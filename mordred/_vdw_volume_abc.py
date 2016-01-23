@@ -39,10 +39,13 @@ class VdwVolumeABC(Descriptor):
     r"""van der waals volume(ABC) descriptor.
 
     :rtype: float
+    :returns: NaN when any atoms are non-compat_atoms
 
     References
         * :cite:`10.1021/jo034808o`
     """
+
+    compat_atoms = tuple(bondi_radii)
 
     __slots__ = ()
 

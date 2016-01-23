@@ -188,6 +188,7 @@ class AATS(ATS):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
+    :returns: NaN when :math:`\Delta_k = 0`
     """
 
     __slots__ = ('_order', '_prop',)
@@ -245,6 +246,7 @@ class AATSC(ATSC):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
+    :returns: NaN when :math:`\Delta_k = 0`
     """
 
     __slots__ = ('_order', '_prop',)
@@ -295,6 +297,7 @@ class GATS(MATS):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
+    :returns: NaN when :math:`\Delta_k = 0`
     """
 
     __slots__ = ('_order', '_prop',)

@@ -6,7 +6,7 @@ from ._base import Descriptor
 
 
 class TPSA(Descriptor):
-    r"""topological polar surface area descriptor.
+    r"""topological polar surface area descriptor(NO only: rdkit wrapper).
 
     :type no_only: bool
     :param no_only:

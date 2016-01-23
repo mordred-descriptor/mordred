@@ -12,6 +12,7 @@ class VertexAdjacencyInformation(Descriptor):
     where :math:`m` is number of heavy-heavy bonds.
 
     :rtype: float
+    :returns: :math:`m = 0`
     """
 
     __slots__ = ()

@@ -67,6 +67,10 @@ class BCUT(BCUTBase):
     :param nth: n-th eigen value. 0 is highest, -1 is lowest.
 
     :rtype: float
+    :returns: NaN when
+
+        * any atomic properties are NaN
+        * :math:`\left| nth \right| > A`
     """
 
     @classmethod
