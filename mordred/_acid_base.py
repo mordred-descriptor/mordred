@@ -13,19 +13,16 @@ class SmartsCountBase(Descriptor):
         yield cls()
 
     def _get_smarts(self):
-        self._mols = [Chem.MolFromSmarts(s) for s in self.SMARTS]
-        return self._mols
+        s = ','.join('$(' + s + ')' for s in self.SMARTS)
+        self._mol = Chem.MolFromSmarts('[' + s + ']')
+        return self._mol
 
     def calculate(self, mol):
-        mols = getattr(self, 'mols', None) or self._get_smarts()
-        return sum(len(mol.GetSubstructMatches(q)) for q in mols)
+        pat = getattr(self, '_mol', None) or self._get_smarts()
+        return len(mol.GetSubstructMatches(pat))
 
     @abstractproperty
     def SMARTS(self):
-        u"""target smarts.
-
-        (abstruct property)
-        """
         pass
 
 
@@ -41,10 +38,10 @@ class AcidicGroupCount(SmartsCountBase):
         return 'nAcid'
 
     SMARTS = (
-        "[$([O;H1]-[C,S,P]=O)]",
-        "[$([*;-;!$(*~[*;+])])]",
-        "[$([NH](S(=O)=O)C(F)(F)F)]",
-        "[$(n1nnnc1)]",
+        '[O;H1]-[C,S,P]=O',
+        '[*;-;!$(*~[*;+])]',
+        '[NH](S(=O)=O)C(F)(F)F',
+        'n1nnnc1',
     )
 
 
@@ -60,10 +57,10 @@ class BasicGroupCount(SmartsCountBase):
         return 'nBase'
 
     SMARTS = (
-        "[$([NH2]-[CX4])]",
-        "[$([NH](-[CX4])-[CX4])]",
-        "[$(N(-[CX4])(-[CX4])-[CX4])]",
-        "[$([*;+;!$(*~[*;-])])]",
-        "[$(N=C-N)]",
-        "[$(N-C=N)]",
+        '[NH2]-[CX4]',
+        '[NH](-[CX4])-[CX4]',
+        'N(-[CX4])(-[CX4])-[CX4]',
+        '[*;+;!$(*~[*;-])]',
+        'N=C-N',
+        'N-C=N',
     )
