@@ -1,8 +1,8 @@
 import argparse
 import csv
+import math
 import os
 import sys
-import math
 
 from rdkit import Chem
 
@@ -55,7 +55,7 @@ def file_parser(ifile, fmt):
 def main(descs, prog=None):
     parser_options = dict()
     if prog is not None:
-        parser_options['prog'] = prog
+        parser_options['prog'] = '{} -m {}'.format(os.path.basename(sys.executable), prog)
 
     parser = argparse.ArgumentParser(**parser_options)
 
@@ -101,7 +101,7 @@ def main(descs, prog=None):
 
         for mol, val in calc.map(mols, args.processes):
             def ppr(a):
-                if math.isnan(a):
+                if isinstance(a, float) and math.isnan(a):
                     return ''
                 else:
                     return str(a)
@@ -114,7 +114,16 @@ def main(descs, prog=None):
 def submodule(name='__main__'):
     mdl = sys.modules[name]
     descs = get_descriptors_from_module(mdl)
-    sys.exit(main(descs, prog=mdl.__spec__.name))
+
+    prog = getattr(mdl, '__spac__', None)
+    if prog is None:
+        path, submdl = os.path.split(os.path.splitext(mdl.__file__)[0])
+        pkg = os.path.basename(path)
+        name = '{}.{}'.format(pkg, submdl)
+    else:
+        name = prog.name
+
+    sys.exit(main(descs, prog=name))
 
 
 if __name__ == '__main__':
