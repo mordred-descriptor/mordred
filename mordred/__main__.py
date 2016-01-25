@@ -86,7 +86,7 @@ def main(descs, prog=None):
 
     parser.add_argument(
         '-o', '--output', metavar='PATH',
-        nargs='?', type=default_ofile, default=sys.stdout,
+        type=default_ofile, default=sys.stdout,
         help='output csv file(default: stdout)'
     )
 
