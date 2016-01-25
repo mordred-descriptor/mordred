@@ -20,8 +20,6 @@ class ConstitutionalSum(Descriptor):
     :rtype: float
     """
 
-    require_connected = False
-
     @classmethod
     def preset(cls):
         return map(cls, _atomic_property.get_properties())

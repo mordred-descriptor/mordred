@@ -3,8 +3,6 @@ from ._base import Descriptor
 
 
 class PolarizabilityBase(Descriptor):
-    require_connected = False
-
     def __str__(self):
         return self.__class__.__name__.lower() + ('78' if self._use78 else '')
 

@@ -60,7 +60,6 @@ class DFS(object):
 
 
 class ChiBase(Descriptor):
-    require_connected = False
     explicit_hydrogens = False
 
 

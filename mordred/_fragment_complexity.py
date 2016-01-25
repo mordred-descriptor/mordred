@@ -25,7 +25,6 @@ class FragmentComplexity(Descriptor):
         yield cls()
 
     explicit_hydrogens = False
-    require_connected = False
 
     def __str__(self):
         return 'fragCpx'

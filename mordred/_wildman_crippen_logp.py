@@ -12,7 +12,6 @@ class WildmanCrippenBase(Descriptor):
         return self.__class__.__name__[7:]
 
     explicit_hydrogens = False
-    require_connected = False
 
 
 class WildmanCrippenLogP(WildmanCrippenBase):

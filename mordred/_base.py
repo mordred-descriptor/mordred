@@ -61,7 +61,7 @@ class Descriptor(with_metaclass(ABCMeta, object)):
     explicit_hydrogens = True
     gasteiger_charges = False
     kekulize = False
-    require_connected = True
+    require_connected = False
 
     def _get_descriptor_keys(self):
         return (

@@ -1,5 +1,4 @@
-from ._detour_index import DetourIndex
-from ._detour_matrix import DetourMatrix
+from ._detour_matrix import DetourMatrix, DetourIndex
 
 __all__ = ('DetourMatrix', 'DetourIndex',)
 

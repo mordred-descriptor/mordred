@@ -18,6 +18,8 @@ def method(cls):
 
 
 class Common(Descriptor):
+    require_connected = True
+
     descriptor_keys = 'matrix', 'explicit_hydrogens', 'gasteiger_charges', 'kekulize'
 
     def __init__(self, matrix, explicit_hydrogens=True, gasteiger_charges=False, kekulize=False):
@@ -34,6 +36,9 @@ class Common(Descriptor):
             self.gasteiger_charges,
             self.kekulize
         ]
+
+    def dependencies(self):
+        return dict(eig=Eigen(*self._key_args))
 
     @property
     def _eig(self):
@@ -81,18 +86,12 @@ class Eigen(Common):
 
 @method
 class SpAbs(Common):
-    def dependencies(self):
-        return dict(eig=self._eig)
-
     def calculate(self, mol, eig):
         return np.abs(eig.val).sum()
 
 
 @method
 class SpMax(Common):
-    def dependencies(self):
-        return dict(eig=self._eig)
-
     def calculate(self, mol, eig):
         return eig.val[eig.max]
 
@@ -107,9 +106,6 @@ class SpDiam(Common):
 
 
 class SpMean(Common):
-    def dependencies(self):
-        return dict(eig=self._eig)
-
     def calculate(self, mol, eig):
         return np.mean(eig.val)
 
@@ -134,9 +130,6 @@ class SpMAD(Common):
 
 @method
 class LogEE(Common):
-    def dependencies(self):
-        return dict(eig=self._eig)
-
     def calculate(self, mol, eig):
         # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
         a = np.maximum(eig.val[eig.max], 0)
@@ -146,18 +139,12 @@ class LogEE(Common):
 
 @method
 class SM1(Common):
-    def dependencies(self):
-        return dict(eig=self._eig)
-
     def calculate(self, mol, eig):
         return eig.val.sum()
 
 
 @method
 class VE1(Common):
-    def dependencies(self):
-        return dict(eig=self._eig)
-
     def calculate(self, mol, eig):
         return np.abs(eig.vec[:, eig.max]).sum()
 
@@ -185,9 +172,6 @@ class VE3(Common):
 
 @method
 class VR1(Common):
-    def dependencies(self):
-        return dict(eig=self._eig)
-
     def calculate(self, mol, eig):
         s = 0
 

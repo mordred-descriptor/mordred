@@ -60,6 +60,7 @@ class AlterMolecule(Descriptor):
 class EtaBase(Descriptor):
     explicit_hydrogens = False
     kekulize = True
+    require_connected = True
 
 
 class EtaCoreCount(EtaBase):

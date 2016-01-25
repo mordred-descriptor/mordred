@@ -6,7 +6,6 @@ from ._bond_types import BondCount
 
 class RotatableBondsBase(Descriptor):
     explicit_hydrogens = False
-    require_connected = False
 
     @classmethod
     def preset(cls):

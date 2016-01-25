@@ -19,8 +19,6 @@ class AtomCount(Descriptor):
     :rtype: int
     """
 
-    require_connected = False
-
     @classmethod
     def preset(cls):
         return map(cls, [

@@ -6,6 +6,7 @@ from ._base import Descriptor
 
 class BCUTBase(Descriptor):
     explicit_hydrogens = False
+    require_connected = True
 
 
 class Burden(BCUTBase):

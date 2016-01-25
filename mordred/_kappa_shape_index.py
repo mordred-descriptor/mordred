@@ -6,7 +6,6 @@ from ._chi import ChiCache
 
 class KappaShapeIndexBase(Descriptor):
     explicit_hydrogens = False
-    require_connected = False
 
     @classmethod
     def preset(cls):

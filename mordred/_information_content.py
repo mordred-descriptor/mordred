@@ -69,7 +69,6 @@ def neighborhood_code(mol, i, order):
 
 class InformationContentBase(Descriptor):
     kekulize = True
-    require_connected = False
 
     def __str__(self):
         return self._name + str(self._order)

@@ -5,7 +5,6 @@ from ._base import Descriptor
 
 class HBondBase(Descriptor):
     explicit_hydrogens = False
-    require_connected = False
 
     @classmethod
     def preset(cls):

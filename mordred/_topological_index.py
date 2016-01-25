@@ -5,7 +5,6 @@ from ._common import Radius as CRadius
 
 class TopologicalIndexBase(Descriptor):
     explicit_hydrogens = False
-    require_connected = False
 
     @classmethod
     def preset(cls):

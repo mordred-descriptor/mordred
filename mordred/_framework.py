@@ -5,7 +5,7 @@ from ._ring_count import Rings
 
 
 class FrameworkBase(Descriptor):
-    require_connected = False
+    pass
 
 
 class FrameworkCache(FrameworkBase):

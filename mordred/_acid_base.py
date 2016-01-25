@@ -6,8 +6,6 @@ from ._base import Descriptor
 
 
 class SmartsCountBase(Descriptor):
-    require_connected = False
-
     @classmethod
     def preset(cls):
         yield cls()

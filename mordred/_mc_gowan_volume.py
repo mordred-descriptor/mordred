@@ -17,8 +17,6 @@ class McGowanVolume(Descriptor):
     def preset(cls):
         yield cls()
 
-    require_connected = False
-
     def __str__(self):
         return 'VMcGowan'
 

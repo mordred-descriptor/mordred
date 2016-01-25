@@ -19,8 +19,6 @@ class TPSA(Descriptor):
         * :cite:`10.1021/jm000942e`
     """
 
-    require_connected = False
-
     @classmethod
     def preset(cls):
         yield cls(True)

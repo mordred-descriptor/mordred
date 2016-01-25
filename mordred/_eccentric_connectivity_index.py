@@ -18,7 +18,6 @@ class EccentricConnectivityIndex(Descriptor):
     __slots__ = ()
 
     explicit_hydrogens = False
-    require_connected = False
 
     @classmethod
     def preset(cls):

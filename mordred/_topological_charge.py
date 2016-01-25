@@ -10,7 +10,6 @@ from ._common import AdjacencyMatrix, DistanceMatrix
 
 class ChargeTermMatrix(Descriptor):
     explicit_hydrogens = False
-    require_connected = False
 
     def dependencies(self):
         return dict(
@@ -46,7 +45,6 @@ class TopologicalCharge(Descriptor):
     """
 
     explicit_hydrogens = False
-    require_connected = False
 
     tc_types = ('global', 'mean', 'raw')
 

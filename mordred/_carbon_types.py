@@ -8,7 +8,6 @@ from ._base import Descriptor
 class CarbonTypesBase(Descriptor):
     explicit_hydrogens = False
     kekulize = True
-    require_connected = False
 
 
 class CarbonTypesCache(CarbonTypesBase):

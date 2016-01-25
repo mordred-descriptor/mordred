@@ -6,7 +6,6 @@ from ._base import Descriptor
 
 
 class LipinskiLike(Descriptor):
-    require_connected = False
 
     @classmethod
     def preset(cls):

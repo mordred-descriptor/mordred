@@ -49,8 +49,6 @@ class BondCount(Descriptor):
 
     bond_types = tuple(b.name for b in BondType)
 
-    require_connected = False
-
     @classmethod
     def preset(cls):
         return chain(
