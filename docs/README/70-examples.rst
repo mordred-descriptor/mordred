@@ -10,13 +10,14 @@ all descriptors
 .. code:: console
 
     $ python -m mordred --help
-    usage: python -m mordred [-h] [-i [PATH]] [-f TYPE] [-o [PATH]] [-p N]
+    usage: python -m mordred [-h] [-i PATH] [-f TYPE] [-o [PATH]] [-p N]
 
     optional arguments:
       -h, --help            show this help message and exit
-      -i [PATH], --input [PATH]
-                            input file(default: stdin)
-      -f TYPE, --from TYPE  input filetype(one of auto, smi, sdf, default: auto)
+      -i PATH, --input PATH
+                            input file or directory(default: stdin)
+      -f TYPE, --from TYPE  input filetype(one of auto, smi, sdf, mol, default:
+                            auto)
       -o [PATH], --output [PATH]
                             output csv file(default: stdout)
       -p N, --processes N   number of processes to use(default: number of threads)

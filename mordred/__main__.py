@@ -9,23 +9,24 @@ from rdkit import Chem
 from ._base import Calculator, all_descriptors, get_descriptors_from_module
 
 
-def smiles_parser(f):
-    for line in f:
-        line = line.strip().split()
-        if len(line) == 1:
-            smi = line[0]
-            name = smi
-        else:
-            smi = line[0]
-            name = ' '.join(line[1:])
+def smiles_parser(path):
+    with open(path) as f:
+        for line in f:
+            line = line.strip().split()
+            if len(line) == 1:
+                smi = line[0]
+                name = smi
+            else:
+                smi = line[0]
+                name = ' '.join(line[1:])
 
-        mol = Chem.MolFromSmiles(smi)
-        if mol is None:
-            sys.stderr.write('read failure: {}\n'.format(name))
-            continue
+            mol = Chem.MolFromSmiles(smi)
+            if mol is None:
+                sys.stderr.write('read failure: {}\n'.format(name))
+                continue
 
-        mol.SetProp('_Name', name)
-        yield mol
+            mol.SetProp('_Name', name)
+            yield mol
 
 
 def sdf_parser(p):
@@ -33,23 +34,30 @@ def sdf_parser(p):
         yield mol
 
 
+def dir_parser(d, fmt):
+    for root, dirs, files in os.walk(d):
+        for f in files:
+            for m in file_parser(os.path.join(root, f), fmt):
+                yield m
+
+
 def file_parser(ifile, fmt):
     if fmt == 'smi':
         it = smiles_parser(ifile)
-    elif fmt == 'sdf':
-        ifile.close()
-        it = sdf_parser(ifile.name)
+    elif fmt in ('sdf', 'mol'):
+        it = sdf_parser(ifile)
     elif fmt == 'auto':
         if ifile == sys.stdin:
             it = file_parser(ifile, 'smi')
+        elif os.path.isdir(ifile):
+            it = dir_parser(ifile, fmt)
         else:
-            ext = os.path.splitext(ifile.name)[1][1:]
+            ext = os.path.splitext(ifile)[1][1:]
             it = file_parser(ifile, ext)
     else:
         raise ValueError('unknown format: {!r}'.format(fmt))
 
-    for mol in it:
-        yield mol
+    return it
 
 
 def main(descs, prog=None):
@@ -61,13 +69,13 @@ def main(descs, prog=None):
 
     parser.add_argument(
         '-i', '--input', metavar='PATH',
-        nargs='?', type=argparse.FileType('r'), default=sys.stdin,
-        help='input file(default: stdin)',
+        type=str, default=sys.stdin,
+        help='input file or directory(default: stdin)',
     )
 
     parser.add_argument(
         '-f', '--from', metavar='TYPE',
-        default='auto', choices=['auto', 'smi', 'sdf'],
+        default='auto', choices=['auto', 'smi', 'sdf', 'mol'],
         help='input filetype(one of %(choices)s, default: %(default)s)',
     )
 
