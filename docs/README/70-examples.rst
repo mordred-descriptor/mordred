@@ -10,7 +10,7 @@ all descriptors
 .. code:: console
 
     $ python -m mordred --help
-    usage: mordred [-h] [-i [PATH]] [-f TYPE] [-o [PATH]] [-p N]
+    usage: python -m mordred [-h] [-i [PATH]] [-f TYPE] [-o [PATH]] [-p N]
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -26,7 +26,7 @@ descriptors in submodule
 
 .. code:: console
 
-    $ python -m mordred.TPSA -i tests/data/structures.smi
+    $ python -m mordred.TPSA -i tests/references/structures.smi
     name,TPSA(NO),TPSA
     Hexane,0.0,0.0
     Benzene,0.0,0.0
