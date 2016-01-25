@@ -10,7 +10,7 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 
-from six import with_metaclass
+from six import with_metaclass, integer_types
 
 
 class MordredException(Exception):
@@ -28,7 +28,7 @@ class MordredAttributeError(AttributeError, MordredException):
 
 
 class DescriptorException(MordredException):
-    def __init__(self, desc, e, mol, parent):
+    def __init__(self, desc, e, mol, parent=None):
         self.desc = desc
         self.e = e
         self.mol = mol
@@ -285,10 +285,20 @@ class Calculator(object):
         cache = {}
         self.molecule = Molecule(mol)
 
-        return [
-            (desc, self._calculate(desc, cache))
-            for desc in self.descriptors
-        ]
+        rs = []
+        for desc in self.descriptors:
+            r = self._calculate(desc, cache)
+
+            if not isinstance(r, (integer_types, float, np.int64, np.float64)):
+                raise DescriptorException(
+                    desc,
+                    ValueError('not int or float: {!r}({})'.format(r, type(r))),
+                    mol
+                )
+
+            rs.append((desc, r))
+
+        return rs
 
     def _parallel(self, mols, processes=None):
         from multiprocessing import Pool
