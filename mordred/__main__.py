@@ -2,6 +2,7 @@ import argparse
 import csv
 import os
 import sys
+import math
 
 from rdkit import Chem
 
@@ -70,9 +71,14 @@ def main(descs, prog=None):
         help='input filetype(one of %(choices)s, default: %(default)s)',
     )
 
+    if sys.version_info >= (3, 0, 0):
+        default_ofile = argparse.FileType('w')
+    else:
+        default_ofile = argparse.FileType('wb')
+
     parser.add_argument(
         '-o', '--output', metavar='PATH',
-        nargs='?', type=argparse.FileType('w'), default=sys.stdout,
+        nargs='?', type=default_ofile, default=sys.stdout,
         help='output csv file(default: stdout)'
     )
 
@@ -91,10 +97,16 @@ def main(descs, prog=None):
     with args.output as output:
         writer = csv.writer(output)
 
-        writer.writerow(['name'] + list(map(str, calc.descriptors)))
+        writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
         for mol, val in calc.map(mols, args.processes):
-            writer.writerow([mol.GetProp('_Name')] + list(map(lambda r: str(r[1]), val)))
+            def ppr(a):
+                if math.isnan(a):
+                    return ''
+                else:
+                    return str(a)
+
+            writer.writerow([mol.GetProp('_Name')] + [ppr(v[1]) for v in val])
 
     return 0
 
