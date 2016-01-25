@@ -367,15 +367,26 @@ epub_exclude_files = ['search.html']
 intersphinx_mapping = {'https://docs.python.org/': None}
 
 autodoc_member_order = 'bysource'
+autodoc_default_flags = ['inherited-members']
 
 def setup(app):
     exclusions = set([
-        'dependencies', 'calculate', 'descriptor_keys', 'preset',
+        'dependencies',
+        'is_descriptor',
+        'calculate',
+        'descriptor_keys',
+        'preset',
     ])
 
+    current_module = [None]
+    def autodoc_process_docstring(app, what, name, obj, options, lines):
+        if what == 'module':
+            current_module[0] = name
+
+    app.connect('autodoc-process-docstring', autodoc_process_docstring)
+
     def autodoc_skip_member(app, what, name, obj, skip, options):
-        if what == 'class':
-            if getattr(obj, '__module__', None) != 'mordred._base':
-                return skip or name in exclusions
+        if what == 'class' and current_module[0] != 'mordred':
+            return skip or name in exclusions
 
     app.connect('autodoc-skip-member', autodoc_skip_member)
