@@ -55,6 +55,10 @@ class BurdenEigenValues(BCUTBase):
 
         np.fill_diagonal(bmat, ps)
         ev = np.linalg.eig(bmat)[0]
+
+        if np.iscomplexobj(ev):
+            ev = ev.real
+
         return np.sort(ev)[-1::-1]
 
 
