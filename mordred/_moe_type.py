@@ -1,8 +1,8 @@
-from ._base import Descriptor
-from ._common import DistanceMatrix
-
 from rdkit.Chem import MolSurf
+
 from rdkit.Chem.EState import EState_VSA as RDKit_EState_VSA
+
+from ._base import Descriptor
 
 
 class LabuteASA(Descriptor):
@@ -95,6 +95,7 @@ class EState_VSA(MoeTypeBase):
     __slots__ = ('_k',)
     _module = RDKit_EState_VSA
     k_max = 11
+
 
 class VSA_EState(MoeTypeBase):
     r"""MOE type descriptors using EState indices and surface area contribution(rdkit wrapper).

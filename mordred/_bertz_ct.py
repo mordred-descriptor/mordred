@@ -1,7 +1,7 @@
+import rdkit.Chem.GraphDescriptors as RDKit
+
 from ._base import Descriptor
 from ._common import DistanceMatrix
-
-import rdkit.Chem.GraphDescriptors as RDKit
 
 
 class BertzCT(Descriptor):
