@@ -12,6 +12,7 @@ class AlterMolecule(Descriptor):
     __slots__ = ('explicit_hydrogens', '_saturated',)
 
     kekulize = True
+    require_connected = True
 
     def __init__(self, explicit_hydrogens, saturated=False):
         self._saturated = saturated
@@ -19,7 +20,7 @@ class AlterMolecule(Descriptor):
 
     def calculate(self, mol):
         new = Chem.RWMol(Chem.Mol())
-        ids = set()
+        ids = dict()
         for a in mol.GetAtoms():
             if a.GetAtomicNum() == 1:
                 continue
@@ -31,20 +32,22 @@ class AlterMolecule(Descriptor):
             else:
                 new_a = Chem.Atom(6)
 
-            ids.add(new.AddAtom(new_a))
+            ids[a.GetIdx()] = new.AddAtom(new_a)
 
         for bond in mol.GetBonds():
             ai = bond.GetBeginAtom()
             aj = bond.GetEndAtom()
 
-            i = ai.GetIdx()
-            j = aj.GetIdx()
+            i = ids.get(ai.GetIdx())
+            j = ids.get(aj.GetIdx())
 
-            if i in ids and j in ids:
+            if i is not None and j is not None:
                 if self._saturated and (ai.GetAtomicNum() != 6 or aj.GetAtomicNum() != 6):
-                    new.AddBond(i, j, bond.GetBondType())
+                    order = bond.GetBondType()
                 else:
-                    new.AddBond(i, j, Chem.BondType.SINGLE)
+                    order = Chem.BondType.SINGLE
+
+                new.AddBond(i, j, order)
 
         new = Chem.Mol(new)
         Chem.SanitizeMol(new)
