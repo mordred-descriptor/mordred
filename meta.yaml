@@ -12,6 +12,7 @@ requirements:
     - python
     - setuptools
 
+    - progressbar2
     - networkx
     - numpy
     - scipy
@@ -29,6 +30,7 @@ requirements:
     - pyyaml
     - rdkit
     - enum34 [py27]
+    - progressbar2
 
 test:
   requires:

@@ -13,7 +13,8 @@ script:
     fi
   - cp mordred/version.txt __conda_version__.txt
   - conda update --all -y
-  - conda config --add channels https://conda.anaconda.org/rdkit
+  - conda config --add channels rdkit
+  - conda config --add channels mordred-descriptor
   - conda build .
 
 after_success:
