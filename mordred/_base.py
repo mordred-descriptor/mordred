@@ -1,4 +1,6 @@
 import os
+import threading
+
 from abc import ABCMeta, abstractmethod
 from importlib import import_module
 from inspect import getsourcelines, isabstract
@@ -11,6 +13,8 @@ from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 
 from six import with_metaclass, integer_types
+
+TIMEOUT_MAX = getattr(threading, 'TIMEOUT_MAX', 1e9)
 
 
 class MordredException(Exception):
@@ -311,10 +315,14 @@ class Calculator(object):
             )
 
             for m, result in [(m, pool.apply_async(worker, (m.ToBinary(),))) for m in mols]:
-                yield m, result.get()
+                # timeout: avoid python2 KeyboardInterrupt bug.
+                # http://stackoverflow.com/a/1408476
+
+                yield m, result.get(TIMEOUT_MAX)
 
         finally:
             pool.terminate()
+            pool.join()
 
     def map(self, mols, processes=None):
         r"""calculate descriptors over mols.
