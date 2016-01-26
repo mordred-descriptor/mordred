@@ -127,6 +127,12 @@ def main(descs, prog=None):
         help="hide progress bar",
     )
 
+    parser.add_argument(
+        '-s', '--stream',
+        default=False, action='store_true',
+        help='stream read',
+    )
+
     args = parser.parse_args()
 
     if args.input == sys.stdin and args.input.isatty():
@@ -137,13 +143,21 @@ def main(descs, prog=None):
 
     mols = file_parser(args.input, getattr(args, 'from'))
 
+    if not args.stream:
+        mols = list(mols)
+        N = len(mols)
+    else:
+        N = None
+
     calc = Calculator(descs)
 
     with args.output as output:
         if args.quiet:
             bar = lambda x: x
-        else:
+        elif N is None:
             bar = progressbar.ProgressBar()
+        else:
+            bar = progressbar.ProgressBar(max_value=N)
 
         writer = csv.writer(output)
 
