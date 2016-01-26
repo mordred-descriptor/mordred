@@ -9,8 +9,8 @@ from rdkit import Chem
 from ._base import Calculator, all_descriptors, get_descriptors_from_module
 
 
-def smiles_parser(path):
-    with open(path) as f:
+def smiles_parser(ifile):
+    with ifile as f:
         for line in f:
             line = line.strip().split()
             if len(line) == 1:
@@ -43,6 +43,9 @@ def dir_parser(d, fmt):
 
 def file_parser(ifile, fmt):
     if fmt == 'smi':
+        if isinstance(ifile, six.string_types):
+            ifile = open(ifile)
+
         it = smiles_parser(ifile)
     elif fmt in ('sdf', 'mol'):
         it = sdf_parser(ifile)
