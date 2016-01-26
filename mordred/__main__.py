@@ -4,6 +4,8 @@ import math
 import os
 import sys
 
+import progressbar
+
 from rdkit import Chem
 
 import six
@@ -101,18 +103,35 @@ def main(descs, prog=None):
         help='number of processes to use(default: number of threads)',
     )
 
+    parser.add_argument(
+        '-q', '--quiet',
+        default=False, action='store_true',
+        help="hide progress bar",
+    )
+
     args = parser.parse_args()
+
+    if args.input == sys.stdin and args.input.isatty():
+        sys.exit(parser.print_help())
+
+    if args.output.isatty():
+        args.quiet = True
 
     mols = file_parser(args.input, getattr(args, 'from'))
 
     calc = Calculator(descs)
 
     with args.output as output:
+        if args.quiet:
+            bar = lambda x: x
+        else:
+            bar = progressbar.ProgressBar()
+
         writer = csv.writer(output)
 
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
-        for mol, val in calc.map(mols, args.processes):
+        for mol, val in bar(calc.map(mols, args.processes)):
             def ppr(a):
                 if isinstance(a, float) and math.isnan(a):
                     return ''
