@@ -70,6 +70,9 @@ class Eigen(Common):
         return dict(matrix=self.matrix)
 
     def calculate(self, mol, matrix):
+        if matrix is None:
+            return None
+
         w, v = np.linalg.eig(matrix)
 
         if np.iscomplexobj(w):
@@ -87,12 +90,18 @@ class Eigen(Common):
 @method
 class SpAbs(Common):
     def calculate(self, mol, eig):
+        if eig is None:
+            return np.nan
+
         return np.abs(eig.val).sum()
 
 
 @method
 class SpMax(Common):
     def calculate(self, mol, eig):
+        if eig is None:
+            return np.nan
+
         return eig.val[eig.max]
 
 
@@ -102,11 +111,17 @@ class SpDiam(Common):
         return dict(eig=self._eig, SpMax=self._SpMax)
 
     def calculate(self, mol, SpMax, eig):
+        if eig is None:
+            return np.nan
+
         return SpMax - eig.val[eig.min]
 
 
 class SpMean(Common):
     def calculate(self, mol, eig):
+        if eig is None:
+            return np.nan
+
         return np.mean(eig.val)
 
 
@@ -116,6 +131,9 @@ class SpAD(Common):
         return dict(eig=self._eig, SpMean=self._SpMean)
 
     def calculate(self, mol, eig, SpMean):
+        if eig is None:
+            return np.nan
+
         return np.abs(eig.val - SpMean).sum()
 
 
@@ -131,6 +149,9 @@ class SpMAD(Common):
 @method
 class LogEE(Common):
     def calculate(self, mol, eig):
+        if eig is None:
+            return np.nan
+
         # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
         a = np.maximum(eig.val[eig.max], 0)
         sx = np.exp(eig.val - a).sum() + np.exp(-a)
@@ -140,12 +161,18 @@ class LogEE(Common):
 @method
 class SM1(Common):
     def calculate(self, mol, eig):
+        if eig is None:
+            return np.nan
+
         return eig.val.sum()
 
 
 @method
 class VE1(Common):
     def calculate(self, mol, eig):
+        if eig is None:
+            return np.nan
+
         return np.abs(eig.vec[:, eig.max]).sum()
 
 
@@ -173,6 +200,9 @@ class VE3(Common):
 @method
 class VR1(Common):
     def calculate(self, mol, eig):
+        if eig is None:
+            return np.nan
+
         s = 0
 
         for bond in mol.GetBonds():

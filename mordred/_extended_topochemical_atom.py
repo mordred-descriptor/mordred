@@ -50,7 +50,8 @@ class AlterMolecule(Descriptor):
                 new.AddBond(i, j, order)
 
         new = Chem.Mol(new)
-        Chem.SanitizeMol(new)
+        if Chem.SanitizeMol(new, catchErrors=True) != 0:
+            return None
 
         if self.explicit_hydrogens:
             new = Chem.AddHs(new)

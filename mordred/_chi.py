@@ -128,7 +128,7 @@ class Chi(ChiBase):
     :rtype: float
     :returns: NaN when
 
-        * any atomic properties are 0
+        * any atomic properties <= 0
         * averaged and :math:`N_{\chi} = 0`
     """
 
@@ -179,7 +179,7 @@ class Chi(ChiBase):
             for node in nodes:
                 c *= props[node]
 
-            if c == 0:
+            if c <= 0:
                 return np.nan
 
             x += c ** -0.5

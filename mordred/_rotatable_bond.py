@@ -1,3 +1,5 @@
+import numpy as np
+
 from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
 from ._base import Descriptor
@@ -34,6 +36,7 @@ class RotatableBondsRatio(RotatableBondsBase):
         {\rm RotRatio} = \frac{N_{\rm rotatable bonds}}{N_{\rm bonds}}
 
     :rtype: float
+    :returns: NaN when :math:`N_{\rm bonds} = 0`
     """
 
     __slots__ = ()
@@ -48,4 +51,7 @@ class RotatableBondsRatio(RotatableBondsBase):
         )
 
     def calculate(self, mol, nRot, nB):
+        if nB == 0:
+            return np.nan
+
         return float(nRot) / float(nB)

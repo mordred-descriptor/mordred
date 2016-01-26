@@ -47,6 +47,9 @@ class Barysz(BaryszMatrixBase):
             dmat[i, j] = w
             dmat[j, i] = w
 
+        if np.any(~np.isfinite(dmat)):
+            return None
+
         sp = shortest_path(dmat)
         np.fill_diagonal(sp, [1. - float(C) / self._prop(a) for a in mol.GetAtoms()])
         return sp
@@ -62,6 +65,7 @@ class BaryszMatrix(BaryszMatrixBase):
     :param type: :ref:`matrix_aggregating_methods`
 
     :rtype: float
+    :returns: NaN when any properties are NaN
     """
 
     @classmethod

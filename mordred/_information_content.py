@@ -202,6 +202,10 @@ class BondingIC(InformationContentBase):
 
     def calculate(self, mol, ICm):
         B = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
+
+        if B == 0:
+            return np.nan
+
         log2B = np.log2(B)
         if log2B == 0:
             return np.nan

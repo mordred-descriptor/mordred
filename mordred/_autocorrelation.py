@@ -153,6 +153,7 @@ class ATS(AutocorrelationBase):
     :param property: :ref:`atomic_properties`
 
     :type: float
+    :returns: NaN when any properties are NaN
     """
 
     __slots__ = ('_order', '_prop',)
@@ -188,7 +189,10 @@ class AATS(ATS):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
-    :returns: NaN when :math:`\Delta_k = 0`
+    :returns: NaN when
+    
+        * :math:`\Delta_k = 0`
+        * any properties are NaN
     """
 
     __slots__ = ('_order', '_prop',)
@@ -211,6 +215,7 @@ class ATSC(AutocorrelationBase):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
+    :returns: NaN when any properties are NaN
     """
 
     __slots__ = ('_order', '_prop',)
@@ -246,7 +251,10 @@ class AATSC(ATSC):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
-    :returns: NaN when :math:`\Delta_k = 0`
+    :returns: NaN when
+    
+        * :math:`\Delta_k = 0`
+        * any properties are NaN
     """
 
     __slots__ = ('_order', '_prop',)
@@ -272,6 +280,10 @@ class MATS(AutocorrelationBase):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
+    :returns: NaN when
+    
+        * any properties are NaN
+        * denominator = 0
     """
 
     __slots__ = ('_order', '_prop',)
@@ -288,7 +300,7 @@ class MATS(AutocorrelationBase):
         return dict(avec=self._avec, AATSC=self._AATSC, cavec=self._cavec)
 
     def calculate(self, mol, avec, AATSC, cavec):
-        return len(avec) * AATSC / (cavec ** 2).sum()
+        return len(avec) * AATSC / ((cavec ** 2).sum() or np.nan)
 
 
 class GATS(MATS):
@@ -297,7 +309,11 @@ class GATS(MATS):
     :Parameters: see :py:class:`ATS`
 
     :rtype: float
-    :returns: NaN when :math:`\Delta_k = 0`
+    :returns: NaN when
+    
+        * :math:`\Delta_k = 0`
+        * any properties are NaN
+        * denominator = 0
     """
 
     __slots__ = ('_order', '_prop',)
@@ -307,6 +323,9 @@ class GATS(MATS):
 
     def calculate(self, mol, avec, gmat, gsum, cavec):
         W = np.tile(avec, (len(avec), 1))
+        if np.any(~np.isfinite(W)):
+            return np.nan
+
         n = (gmat * (W - W.T) ** 2).sum() / (4 * (gsum or np.nan))
         d = (cavec ** 2).sum() / (len(avec) - 1)
-        return n / d
+        return n / (d or np.nan)
