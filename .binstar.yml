@@ -4,8 +4,9 @@ platform:
  - linux-64
 
 engine:
- - python=2
- - python=3
+ - python=2.7
+ - python=3.4
+ - python=3.5
 
 script:
   - if [[ `git rev-parse --abbrev-ref HEAD` != release ]]; then
