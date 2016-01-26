@@ -1,6 +1,6 @@
 from .HydrogenBond import HBondAcceptor, HBondDonor
 from .Weight import Weight
-from .WildmanCrippenLogP import WildmanCrippenLogP, WildmanCrippenMR
+from .SLogP import SLogP,SMR 
 
 from ._base import Descriptor
 
@@ -18,7 +18,7 @@ class LipinskiLike(Descriptor):
 class Lipinski(LipinskiLike):
     r"""Lipinski rule of 5 descriptor.
 
-    LogP: WildmanCrippenLogP
+    LogP: SLogP
 
     :rtype: bool
     """
@@ -27,7 +27,7 @@ class Lipinski(LipinskiLike):
 
     def dependencies(self):
         return dict(
-            LogP=WildmanCrippenLogP(),
+            LogP=SLogP(),
             MW=Weight(),
             HBDon=HBondDonor(),
             HBAcc=HBondAcceptor(),
@@ -44,7 +44,7 @@ class Lipinski(LipinskiLike):
 class GhoseFilter(LipinskiLike):
     r"""Ghose filter descriptor.
 
-    LogP, MR: WildmanCrippenLogP
+    LogP, MR: SLogP, SMR
 
     :rtype: bool
     """
@@ -53,8 +53,8 @@ class GhoseFilter(LipinskiLike):
 
     def dependencies(self):
         return dict(
-            LogP=WildmanCrippenLogP(),
-            MR=WildmanCrippenMR(),
+            LogP=SLogP(),
+            MR=SMR(),
             MW=Weight(),
         )
 
