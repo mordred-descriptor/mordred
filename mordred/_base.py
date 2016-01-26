@@ -296,7 +296,12 @@ class Calculator(object):
         for desc in self.descriptors:
             r = self._calculate(desc, cache)
 
-            if not isinstance(r, (six.integer_types, float, np.int64, np.float64)):
+            if not isinstance(
+                    r,
+                    (six.integer_types, np.integer,
+                     float, np.floating,
+                     bool, np.bool_)):
+
                 raise DescriptorException(
                     desc,
                     ValueError('not int or float: {!r}({})'.format(r, type(r))),
