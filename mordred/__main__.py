@@ -6,6 +6,8 @@ import sys
 
 from rdkit import Chem
 
+import six
+
 from ._base import Calculator, all_descriptors, get_descriptors_from_module
 
 
@@ -29,8 +31,8 @@ def smiles_parser(ifile):
             yield mol
 
 
-def sdf_parser(p):
-    for mol in Chem.SDMolSupplier(p, removeHs=False):
+def sdf_parser(path):
+    for mol in Chem.SDMolSupplier(path, removeHs=False):
         yield mol
 
 
@@ -82,7 +84,7 @@ def main(descs, prog=None):
         help='input filetype(one of %(choices)s, default: %(default)s)',
     )
 
-    if sys.version_info >= (3, 0, 0):
+    if six.PY3:
         default_ofile = argparse.FileType('w')
     else:
         default_ofile = argparse.FileType('wb')
