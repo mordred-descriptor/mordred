@@ -1,5 +1,4 @@
 import os
-import threading
 
 from abc import ABCMeta, abstractmethod
 from importlib import import_module
@@ -12,9 +11,7 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 
-from six import with_metaclass, integer_types
-
-TIMEOUT_MAX = getattr(threading, 'TIMEOUT_MAX', 1e9)
+import six
 
 
 class MordredException(Exception):
@@ -27,6 +24,9 @@ class MordredAttributeError(AttributeError, MordredException):
         self.desc = desc
         self.args = args
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self.desc, self.args)
+
     def __str__(self):
         return '{}({})'.format(self.args, self.desc)
 
@@ -37,6 +37,9 @@ class DescriptorException(MordredException):
         self.e = e
         self.mol = mol
         self.parent = parent
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self.desc, self.e, self.mol, self.parent)
 
     def __str__(self):
         if self.parent is None:
@@ -59,7 +62,7 @@ def pretty(a):
     return repr(a if p is None else p)
 
 
-class Descriptor(with_metaclass(ABCMeta, object)):
+class Descriptor(six.with_metaclass(ABCMeta, object)):
     r"""abstruct base class of descriptors."""
 
     explicit_hydrogens = True
@@ -293,7 +296,7 @@ class Calculator(object):
         for desc in self.descriptors:
             r = self._calculate(desc, cache)
 
-            if not isinstance(r, (integer_types, float, np.int64, np.float64)):
+            if not isinstance(r, (six.integer_types, float, np.int64, np.float64)):
                 raise DescriptorException(
                     desc,
                     ValueError('not int or float: {!r}({})'.format(r, type(r))),
@@ -315,10 +318,13 @@ class Calculator(object):
             )
 
             for m, result in [(m, pool.apply_async(worker, (m.ToBinary(),))) for m in mols]:
-                # timeout: avoid python2 KeyboardInterrupt bug.
-                # http://stackoverflow.com/a/1408476
 
-                yield m, result.get(TIMEOUT_MAX)
+                if six.PY3:
+                    yield m, result.get()
+                else:
+                    # timeout: avoid python2 KeyboardInterrupt bug.
+                    # http://stackoverflow.com/a/1408476
+                    yield m, result.get(1e9)
 
         finally:
             pool.terminate()
