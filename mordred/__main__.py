@@ -25,8 +25,10 @@ def smiles_parser(ifile):
                 name = ' '.join(line[1:])
 
             mol = Chem.MolFromSmiles(smi)
+
             if mol is None:
                 sys.stderr.write('read failure: {}\n'.format(name))
+                sys.stderr.flush()
                 continue
 
             mol.SetProp('_Name', name)
@@ -36,6 +38,20 @@ def smiles_parser(ifile):
 def sdf_parser(path):
     for mol in Chem.SDMolSupplier(path, removeHs=False):
         yield mol
+
+
+def mol_parser(path):
+    mol = Chem.MolFromMolFile(path)
+    if mol is None:
+        return ()
+
+    if mol.GetProp('_Name') == '':
+        mol.SetProp(
+            '_Name',
+            os.path.splitext(os.path.basename(path))[0],
+        )
+
+    return [mol]
 
 
 def dir_parser(d, fmt):
@@ -51,8 +67,10 @@ def file_parser(ifile, fmt):
             ifile = open(ifile)
 
         it = smiles_parser(ifile)
-    elif fmt in ('sdf', 'mol'):
+    elif fmt in 'sdf':
         it = sdf_parser(ifile)
+    elif fmt == 'mol':
+        it = mol_parser(ifile)
     elif fmt == 'auto':
         if ifile == sys.stdin:
             it = file_parser(ifile, 'smi')
@@ -64,7 +82,7 @@ def file_parser(ifile, fmt):
     else:
         raise ValueError('unknown format: {!r}'.format(fmt))
 
-    return it
+    return (mol for mol in it if mol is not None)
 
 
 def main(descs, prog=None):
