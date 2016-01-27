@@ -7,71 +7,15 @@ from rdkit import Chem
 from ._base import Descriptor
 
 
-class PathCount(Descriptor):
-    r"""path count descriptor.
-
-    :type order: int
-    :param order: path order(number of bonds in path)
-
-    :type pi: bool
-    :param pi: calculate pi-path count
-
-    :type total: bool
-    :param total: total path count(1 to order)
-
-    :type log: bool
-    :param log: use log scale
-
-    :rtype: int(path-count) or float(pi-path-count)
-    """
-
+class PathCountBase(Descriptor):
     explicit_hydrogens = False
 
-    @classmethod
-    def preset(cls):
-        return chain(
-            (cls(o, False, False, False) for o in range(2, 11)),
-            [cls(10, False, True, False)],
-            (cls(o, True, False, True) for o in range(1, 11)),
-            [cls(10, True, True, True)],
-        )
 
-    def __str__(self):
-        if self._total:
-            base = 'T'
-        else:
-            base = ''
+class PathCountCache(PathCountBase):
+    __slots__ = ('_order',)
 
-        if self._pi:
-            base += 'piPC'
-        else:
-            base += 'MPC'
-
-        return base + str(self._order)
-
-    __slots__ = ('_order', '_pi', '_total', '_log',)
-
-    def __init__(self, order=1, pi=False, total=False, log=False):
-        assert order >= 0
-
+    def __init__(self, order):
         self._order = order
-        self._pi = pi
-        self._total = total
-        self._log = log
-
-    def dependencies(self):
-        if self._total:
-            if self._order == 1:
-                return dict(acc=self.__class__(
-                    0, pi=self._pi, total=False
-                ))
-
-            else:
-                return dict(acc=self.__class__(
-                    self._order - 1,
-                    self._pi,
-                    self._total,
-                ))
 
     @staticmethod
     def _bond_ids_to_atom_ids(mol, p):
@@ -112,7 +56,10 @@ class PathCount(Descriptor):
         path.append(current)
         return path
 
-    def _find_paths(self, mol):
+    def calculate(self, mol):
+        l = 0
+        pi = 0
+
         for path in Chem.FindAllPathsOfLengthN(mol, self._order):
             aids = set()
             before = None
@@ -124,20 +71,85 @@ class PathCount(Descriptor):
 
                 aids.add(i)
 
-                if self._pi and before is not None:
+                if before is not None:
                     bond = mol.GetBondBetweenAtoms(before, i)
                     w *= bond.GetBondTypeAsDouble()
 
                 before = i
 
             else:
-                yield w
+                l += 1
+                pi += w
 
-    def calculate(self, mol, acc=None):
+        return l, pi
+
+
+class PathCount(PathCountBase):
+    r"""path count descriptor.
+
+    :type order: int
+    :param order: path order(number of bonds in path)
+
+    :type pi: bool
+    :param pi: calculate pi-path count
+
+    :type total: bool
+    :param total: total path count(1 to order)
+
+    :type log: bool
+    :param log: use log scale
+
+    :rtype: int(path-count) or float(pi-path-count)
+    """
+
+    @classmethod
+    def preset(cls):
+        return chain(
+            (cls(o, False, False, False) for o in range(2, 11)),
+            [cls(10, False, True, False)],
+            (cls(o, True, False, True) for o in range(1, 11)),
+            [cls(10, True, True, True)],
+        )
+
+    def __str__(self):
+        if self._total:
+            base = 'T'
+        else:
+            base = ''
+
+        if self._pi:
+            base += 'piPC'
+        else:
+            base += 'MPC'
+
+        return base + str(self._order)
+
+    __slots__ = ('_order', '_pi', '_total', '_log',)
+
+    def __init__(self, order=1, pi=False, total=False, log=False):
+        assert order >= 0
+
+        self._order = order
+        self._pi = pi
+        self._total = total
+        self._log = log
+
+    def dependencies(self):
+        deps = {'PC': PathCountCache(self._order)}
+        if self._total and self._order > 0:
+            deps['acc'] = self.__class__(
+                self._order - 1,
+                self._pi,
+                self._total,
+            )
+
+        return deps
+
+    def calculate(self, mol, PC, acc=None):
         if self._order == 0:
             return mol.GetNumAtoms()
 
-        v = sum(self._find_paths(mol))
+        v = PC[1] if self._pi else PC[0]
 
         if acc is not None:
             v = acc + v
