@@ -104,14 +104,9 @@ def main(descs, prog=None):
         help='input filetype(one of %(choices)s, default: %(default)s)',
     )
 
-    if six.PY3:
-        default_ofile = argparse.FileType('w')
-    else:
-        default_ofile = argparse.FileType('wb')
-
     parser.add_argument(
         '-o', '--output', metavar='PATH',
-        type=default_ofile, default=sys.stdout,
+        type=str, default=None,
         help='output csv file(default: stdout)'
     )
 
@@ -137,6 +132,13 @@ def main(descs, prog=None):
 
     if args.input == sys.stdin and args.input.isatty():
         sys.exit(parser.print_help())
+
+    if args.output is None:
+        args.output = sys.stdout
+    elif six.PY3:
+        args.output = open(args.output, 'w', newline='')
+    else:
+        args.output = open(args.output, 'wb')
 
     if args.output.isatty():
         args.quiet = True
