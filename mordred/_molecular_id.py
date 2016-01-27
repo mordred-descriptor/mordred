@@ -2,6 +2,8 @@ import math
 
 from networkx import Graph
 
+from rdkit import Chem
+
 from ._base import Descriptor
 
 
@@ -53,10 +55,16 @@ class AtomicId(object):
         ]
 
 
-class AtomicIds(Descriptor):
-    __slots__ = ()
+table = Chem.GetPeriodicTable()
 
+
+class MolecularIdBase(Descriptor):
     explicit_hydrogens = False
+    require_connected = True
+
+
+class AtomicIds(MolecularIdBase):
+    __slots__ = ()
 
     def calculate(self, mol):
         aid = AtomicId(mol)
@@ -66,8 +74,16 @@ class AtomicIds(Descriptor):
         ]
 
 
-class MolecularId(Descriptor):
+class MolecularId(MolecularIdBase):
     r"""molecular id descriptor.
+
+    :type type: :py:class:`str` or :py:class`int`
+    :param type: target of atomic id source
+
+        * 'any': normal molecular id(sum of all atomic id)
+        * 'X': sum of halogen atomic id
+        * str: atomic symbol
+        * int: atomic number
 
     :type averaged: bool
     :param averaged: averaged by number of atoms
@@ -77,23 +93,47 @@ class MolecularId(Descriptor):
 
     @classmethod
     def preset(cls):
-        return (cls(b) for b in [False, True])
-
-    explicit_hydrogens = False
+        return (
+            cls(s, a)
+            for s in ['any', 'hetero', 'C', 'N', 'O', 'X']
+            for a in [False, True]
+        )
 
     def __str__(self):
-        return 'AMID' if self._averaged else 'MID'
+        n = 'AMID' if self._averaged else 'MID'
+        if self._type != 'any':
+            n = '{}_{}'.format(n, self._type)
 
-    __slots__ = ('_averaged',)
+        return n
 
-    def __init__(self, averaged=False):
+    __slots__ = ('_orig_type', '_averaged',)
+
+    def __init__(self, type='any', averaged=False):
+        self._orig_type = self._type = type
         self._averaged = averaged
 
-    def dependencies(self):
-        return dict(aid=AtomicIds())
+        if isinstance(type, str) and type not in ['any', 'hetero', 'X']:
+            type = table.GetAtomicNumber(type)
 
-    def calculate(self, mol, aid):
-        v = sum(aid)
+        if type == 'any':
+            self._check = lambda _: True
+        elif type == 'hetero':
+            self._type = 'h'
+            self._check = lambda a: a not in set([1, 6])
+        elif self._type == 'X':
+            self._check = lambda a: a in set([9, 17, 35, 53, 85, 117])
+        else:
+            self._check = lambda a: a == type
+
+    def dependencies(self):
+        return dict(aids=AtomicIds())
+
+    def calculate(self, mol, aids):
+        v = sum(
+            aid
+            for aid, atom in zip(aids, mol.GetAtoms())
+            if self._check(atom.GetAtomicNum())
+        )
 
         if self._averaged:
             v /= mol.GetNumAtoms()
