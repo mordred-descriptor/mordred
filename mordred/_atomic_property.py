@@ -314,6 +314,10 @@ def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)
     dv = get_valence_electrons(atom)
+
+    if d == 0:
+        return nan
+
     return ((2. / period[i]) ** 2 * dv + 1) / d
 
 
