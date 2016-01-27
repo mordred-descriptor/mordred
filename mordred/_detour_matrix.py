@@ -15,9 +15,10 @@ class LongestSimplePath(object):
     def __init__(self, G, weight=None):
         self.G = G
         self.N = G.number_of_nodes()
-        self.neighbors = {n: [(v, d.get(weight, 1.0))
-                              for (v, d) in G[n].items()]
-                          for n in G.nodes()}
+        self.neighbors = {
+            n: [(v, d.get(weight, 1.0)) for v, d in G[n].items()]
+            for n in G.nodes_iter()
+        }
 
     def _start(self, s):
         self.start = s
