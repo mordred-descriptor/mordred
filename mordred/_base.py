@@ -1,3 +1,4 @@
+import io
 import os
 
 from abc import ABCMeta, abstractmethod
@@ -278,23 +279,46 @@ class Calculator(object):
         cache[desc] = r
         return r
 
-    def __call__(self, mol):
+    def __call__(self, mol, on_exception='raise'):
         r"""calculate descriptors.
 
-        Parameters:
-            mol(rdkit.Chem.Mol): molecular
+        :type mol: rdkit.Chem.Mol
+        :param mol: molecular
 
-        Returns:
-            iterator of descriptor and value
+        :type on_exception: :py:class:`str`, :py:class:`io.TextIOWrapper` or callable
+        :param on_exception:
 
-        :rtype: [(Descriptor, scalar)]
+            * 'raise': raise Exception
+            * 'ignore': ignore error
+            * io.TextIOWrapper: log exception to file and ignore error
+            * callable: call with exception
+
+        :rtype: [(Descriptor, scalar or nan)]
+        :returns: iterator of descriptor and value
         """
         cache = {}
         self.molecule = Molecule(mol)
 
+        if on_exception == 'raise':
+            def handler(e):
+                raise e
+        elif on_exception == 'ignore':
+            def handler(e):
+                pass
+        elif isinstance(on_exception, io.TextIOWrapper) and on_exception.writable():
+            def handler(e):
+                on_exception.write('{}\n'.format(e))
+        else:
+            def handler(e):
+                on_exception(e)
+
         rs = []
         for desc in self.descriptors:
-            r = self._calculate(desc, cache)
+            try:
+                r = self._calculate(desc, cache)
+            except Exception as e:
+                handler(e)
+                r = np.nan
 
             if not isinstance(
                     r,
@@ -302,27 +326,31 @@ class Calculator(object):
                      float, np.floating,
                      bool, np.bool_)):
 
-                raise DescriptorException(
+                handler(DescriptorException(
                     desc,
                     ValueError('not int or float: {!r}({})'.format(r, type(r))),
                     mol
-                )
+                ))
+
+                r = np.nan
 
             rs.append((desc, r))
 
         return rs
 
-    def _parallel(self, mols, processes=None):
+    def _parallel(self, mols, processes=None, on_exception='raise'):
         from multiprocessing import Pool
 
         try:
             pool = Pool(
                 processes,
                 initializer=initializer,
-                initargs=(self,),
+                initargs=(self, on_exception),
             )
 
-            for m, result in [(m, pool.apply_async(worker, (m.ToBinary(),))) for m in mols]:
+            for m, result in [
+                    (m, pool.apply_async(worker, (m.ToBinary(),)))
+                    for m in mols]:
 
                 if six.PY3:
                     yield m, result.get()
@@ -335,7 +363,7 @@ class Calculator(object):
             pool.terminate()
             pool.join()
 
-    def map(self, mols, processes=None):
+    def map(self, mols, processes=None, on_exception='raise'):
         r"""calculate descriptors over mols.
 
         :param mols: moleculars
@@ -347,17 +375,17 @@ class Calculator(object):
         :rtype: iterator((rdkit.Chem.Mol, [(Descriptor, scalar)]]))
         """
         if processes == 1:
-            return ((m, list(self(m))) for m in mols)
+            return ((m, list(self(m, on_exception=on_exception))) for m in mols)
         else:
-            return self._parallel(mols, processes)
+            return self._parallel(mols, processes, on_exception)
 
 
 calculate = None
 
 
-def initializer(calc):
+def initializer(calc, on_exception):
     global calculate
-    calculate = calc
+    calculate = lambda m: calc(m, on_exception=on_exception)
 
 
 def worker(binary):
