@@ -8,7 +8,7 @@ from ._base import Descriptor
 
 
 class AtomicId(object):
-    def __init__(self, mol, eps=1e-10):
+    def __init__(self, mol, eps):
         G = Graph()
 
         G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
@@ -66,10 +66,13 @@ class MolecularIdBase(Descriptor):
 
 
 class AtomicIds(MolecularIdBase):
-    __slots__ = ()
+    __slots__ = ('eps',)
+
+    def __init__(self, eps=1e-10):
+        self.eps = eps
 
     def calculate(self, mol):
-        aid = AtomicId(mol)
+        aid = AtomicId(mol, self.eps)
         return [
             1 + aid.get_atomic_id(i) / 2.0
             for i in range(mol.GetNumAtoms())
@@ -79,7 +82,7 @@ class AtomicIds(MolecularIdBase):
 class MolecularId(MolecularIdBase):
     r"""molecular id descriptor.
 
-    :type type: :py:class:`str` or :py:class`int`
+    :type type: :py:class:`str` or :py:class:`int`
     :param type: target of atomic id source
 
         * 'any': normal molecular id(sum of all atomic id)
@@ -89,6 +92,9 @@ class MolecularId(MolecularIdBase):
 
     :type averaged: bool
     :param averaged: averaged by number of atoms
+
+    :type _eps: float
+    :param _eps: internally used
 
     :rtype: float
     """
@@ -108,11 +114,12 @@ class MolecularId(MolecularIdBase):
 
         return n
 
-    __slots__ = ('_orig_type', '_averaged',)
+    __slots__ = ('_orig_type', '_averaged', '_eps',)
 
-    def __init__(self, type='any', averaged=False):
+    def __init__(self, type='any', averaged=False, _eps=1e-10):
         self._orig_type = self._type = type
         self._averaged = averaged
+        self._eps = _eps
 
         if isinstance(type, str) and type not in ['any', 'hetero', 'X']:
             type = table.GetAtomicNumber(type)
@@ -128,7 +135,7 @@ class MolecularId(MolecularIdBase):
             self._check = lambda a: a == type
 
     def dependencies(self):
-        return dict(aids=AtomicIds())
+        return dict(aids=AtomicIds(self._eps))
 
     def calculate(self, mol, aids):
         v = sum(
