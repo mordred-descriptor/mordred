@@ -290,6 +290,7 @@ class Calculator(object):
 
             * 'raise': raise Exception
             * 'ignore': ignore error
+            * 'log_and_ignore': log exception to stderr and ignore error
             * io.TextIOWrapper: log exception to file and ignore error
             * callable: call with exception
 
@@ -305,6 +306,9 @@ class Calculator(object):
         elif on_exception == 'ignore':
             def handler(e):
                 pass
+        elif on_exception == 'log_and_ignore':
+            def handler(e):
+                sys.stderr.write('{}\n'.format(e))
         elif isinstance(on_exception, io.TextIOWrapper) and on_exception.writable():
             def handler(e):
                 on_exception.write('{}\n'.format(e))

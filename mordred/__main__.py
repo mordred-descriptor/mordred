@@ -163,7 +163,7 @@ def main(descs, prog=None):
 
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
-        for mol, val in bar(calc.map(mols, args.processes, on_exception=sys.stderr)):
+        for mol, val in bar(calc.map(mols, args.processes, on_exception='log_and_ignore')):
             def ppr(a):
                 if isinstance(a, float) and math.isnan(a):
                     return ''
