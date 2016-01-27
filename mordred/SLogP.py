@@ -4,7 +4,7 @@ References
     * :cite:`10.1021/ci990307l`
 """
 
-from ._slogp import SLogP, SMR 
+from ._slogp import SLogP, SMR
 
 __all__ = ('SLogP', 'SMR',)
 

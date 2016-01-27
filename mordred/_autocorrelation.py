@@ -190,7 +190,7 @@ class AATS(ATS):
 
     :rtype: float
     :returns: NaN when
-    
+
         * :math:`\Delta_k = 0`
         * any properties are NaN
     """
@@ -252,7 +252,7 @@ class AATSC(ATSC):
 
     :rtype: float
     :returns: NaN when
-    
+
         * :math:`\Delta_k = 0`
         * any properties are NaN
     """
@@ -281,7 +281,7 @@ class MATS(AutocorrelationBase):
 
     :rtype: float
     :returns: NaN when
-    
+
         * any properties are NaN
         * denominator = 0
     """
@@ -310,7 +310,7 @@ class GATS(MATS):
 
     :rtype: float
     :returns: NaN when
-    
+
         * :math:`\Delta_k = 0`
         * any properties are NaN
         * denominator = 0

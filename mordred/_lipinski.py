@@ -1,6 +1,6 @@
 from .HydrogenBond import HBondAcceptor, HBondDonor
+from .SLogP import SLogP, SMR
 from .Weight import Weight
-from .SLogP import SLogP,SMR 
 
 from ._base import Descriptor
 
