@@ -66,8 +66,6 @@ class CalcDetour(object):
                 nodes.add(b)
             self.Q.append((nodes, lsp))
 
-        self.nodes, self.C = self.Q.pop()
-
     def merge(self):
         for i in range(1, len(self.Q) + 1):
             ns, lsp = self.Q[-i]
@@ -108,6 +106,11 @@ class CalcDetour(object):
                   if i <= j}
 
     def __call__(self):
+        if self.N == 1:
+            return np.array([[0]])
+
+        self.nodes, self.C = self.Q.pop()
+
         while self.Q:
             self.merge()
 
@@ -129,6 +132,7 @@ class DetourMatrixCache(DetourMatrixBase):
 
     def calculate(self, mol):
         G = networkx.Graph()
+        G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
         G.add_edges_from(
             (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
             for b in mol.GetBonds()

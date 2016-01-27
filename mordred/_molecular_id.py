@@ -11,6 +11,8 @@ class AtomicId(object):
     def __init__(self, mol, eps=1e-10):
         G = Graph()
 
+        G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
+
         for bond in mol.GetBonds():
             a = bond.GetBeginAtom()
             b = bond.GetEndAtom()

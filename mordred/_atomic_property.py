@@ -400,6 +400,9 @@ def get_eta_beta_non_sigma(atom):
 
 def get_eta_gamma(atom):
     beta = get_eta_beta_sigma(atom) + get_eta_beta_non_sigma(atom) + get_eta_beta_delta(atom)
+    if beta == 0:
+        return nan
+
     return get_core_count(atom) / beta
 
 

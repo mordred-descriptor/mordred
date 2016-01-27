@@ -63,6 +63,7 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     :math:`D` is graph diameter.
 
     :rtype: float
+    :returns: NaN when :math:`R = 0`
     """
 
     __slots__ = ()
@@ -77,6 +78,9 @@ class TopologicalShapeIndex(TopologicalIndexBase):
         )
 
     def calculate(self, mol, R, D):
+        if R == 0:
+            return float('nan')
+
         return float(D - R) / float(R)
 
 
@@ -92,6 +96,7 @@ class PetitjeanIndex(TopologicalIndexBase):
     :math:`D` is graph diameter.
 
     :rtype: float
+    :returns: NaN when :math:`D = 0`
     """
 
     __slots__ = ()
@@ -106,4 +111,7 @@ class PetitjeanIndex(TopologicalIndexBase):
         )
 
     def calculate(self, mol, R, D):
+        if D == 0:
+            return float('nan')
+
         return float(D - R) / float(D)
