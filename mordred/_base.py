@@ -1,4 +1,3 @@
-import io
 import os
 import sys
 
@@ -267,20 +266,14 @@ class Calculator(object):
         cache[desc] = r
         return r
 
-    def __call__(self, mol, on_exception='raise'):
+    def __call__(self, mol, error_callback=None):
         r"""calculate descriptors.
 
         :type mol: rdkit.Chem.Mol
         :param mol: molecular
 
-        :type on_exception: :py:class:`str`, :py:class:`io.TextIOWrapper` or callable
-        :param on_exception:
-
-            * 'raise': raise Exception
-            * 'ignore': ignore error
-            * 'log_and_ignore': log exception to stderr and ignore error
-            * io.TextIOWrapper: log exception to file and ignore error
-            * callable: call with exception
+        :type error_callback: callable
+        :param error_callback: call when ransed Exception
 
         :rtype: [(Descriptor, scalar or nan)]
         :returns: iterator of descriptor and value
@@ -288,29 +281,12 @@ class Calculator(object):
         cache = {}
         self.molecule = Molecule(mol)
 
-        if on_exception == 'raise':
-            def handler(e):
-                raise e
-        elif on_exception == 'ignore':
-            def handler(e):
-                pass
-        elif on_exception == 'log_and_ignore':
-            def handler(e):
-                sys.stderr.write('{}\n'.format(e))
-        elif isinstance(on_exception, io.TextIOWrapper) and on_exception.writable():
-            def handler(e):
-                on_exception.write('{}\n'.format(e))
-        else:
-            def handler(e):
-                on_exception(e)
-
         rs = []
         for desc in self.descriptors:
             try:
                 r = self._calculate(desc, cache)
             except Exception as e:
-                handler(e)
-                r = np.nan
+                r = error_callback(e)
 
             if not isinstance(
                     r,
@@ -318,31 +294,42 @@ class Calculator(object):
                      float, np.floating,
                      bool, np.bool_)):
 
-                handler(DescriptorException(
+                r = error_callback(DescriptorException(
                     desc,
                     ValueError('not int or float: {!r}({})'.format(r, type(r))),
                     mol
                 ))
 
-                r = np.nan
-
             rs.append((desc, r))
 
         return rs
 
-    def _parallel(self, mols, processes=None, on_exception='raise'):
+    def _parallel(self, mols, processes, error_mode, callback, error_callback):
         from multiprocessing import Pool
 
         try:
             pool = Pool(
                 processes,
                 initializer=initializer,
-                initargs=(self, on_exception),
+                initargs=(self, error_mode),
             )
 
-            for m, result in [
-                    (m, pool.apply_async(worker, (m.ToBinary(),)))
-                    for m in mols]:
+            kws = dict()
+
+            if callback is not None:
+                kws['callback'] = callback
+
+            if error_callback is not None:
+                kws['error_callback'] = error_callback
+
+            def do_task(m):
+                return pool.apply_async(
+                    worker,
+                    (m.ToBinary(),),
+                    **kws
+                )
+
+            for m, result in [(m, do_task(m)) for m in mols]:
 
                 if six.PY3:
                     yield m, result.get()
@@ -355,7 +342,23 @@ class Calculator(object):
             pool.terminate()
             pool.join()
 
-    def map(self, mols, processes=None, on_exception='raise'):
+    def _serial(self, mols, error_mode, callback, error_callback):
+        calculate = make_calculator(self, error_mode)
+
+        for m in mols:
+            if error_callback:
+                try:
+                    r = calculate(m)
+                except Exception as e:
+                    r = error_callback(e)
+            else:
+                r = calculate(m)
+
+            if callback:
+                callback(r)
+            yield m, r
+
+    def map(self, mols, processes=None, error_mode='raise', callback=None, error_callback=None):
         r"""calculate descriptors over mols.
 
         :param mols: moleculars
@@ -364,20 +367,54 @@ class Calculator(object):
         :param processes: number of process. None is multiprocessing.cpu_count()
         :type processes: int or None
 
+        :type error_mode: str
+        :param error_mode:
+
+            * 'raise': raise Exception
+            * 'ignore': ignore Exception
+            * 'log': print Exception to stderr and ingore Exception
+
+        :type callback: callable([(Descriptor, scalar)]) -> None
+        :param callback: call when calculate finished par molecule
+
+        :type error_callback: callable(Exception) -> scalar
+        :param error_callback: call when Exception raised
+
         :rtype: iterator((rdkit.Chem.Mol, [(Descriptor, scalar)]]))
         """
+        assert error_mode in set(['raise', 'ignore', 'log'])
+
         if processes == 1:
-            return ((m, list(self(m, on_exception=on_exception))) for m in mols)
+            return self._serial(mols, error_mode, callback, error_callback)
         else:
-            return self._parallel(mols, processes, on_exception)
+            return self._parallel(mols, processes, error_mode, callback, error_callback)
 
 
 calculate = None
 
 
-def initializer(calc, on_exception):
+def initializer(calc, e_mode):
     global calculate
-    calculate = lambda m: calc(m, on_exception=on_exception)
+
+    calculate = make_calculator(calc, e_mode)
+
+
+def make_calculator(calc, e_mode):
+    if e_mode == 'raise':
+        return calc
+
+    elif e_mode == 'ignore':
+        def ignore(e):
+            return np.nan
+
+        return lambda m: calc(m, error_callback=ignore)
+
+    else:
+        def ignore_and_log(e):
+            sys.stderr.write('{}\n'.format(e))
+            return np.nan
+
+        return lambda m: calc(m, error_callback=ignore_and_log)
 
 
 def worker(binary):
