@@ -12,7 +12,6 @@ requirements:
     - python
     - setuptools
 
-    - progressbar2
     - networkx
     - numpy
     - scipy
@@ -20,6 +19,7 @@ requirements:
     - pyyaml
     - rdkit
     - enum34 [py27]
+    - tqdm
 
   run:
     - python
@@ -30,7 +30,7 @@ requirements:
     - pyyaml
     - rdkit
     - enum34 [py27]
-    - progressbar2
+    - tqdm
 
 test:
   requires:

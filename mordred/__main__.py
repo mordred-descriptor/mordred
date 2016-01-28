@@ -4,11 +4,11 @@ import math
 import os
 import sys
 
-import progressbar
-
 from rdkit import Chem
 
 import six
+
+import tqdm
 
 from ._base import Calculator, all_descriptors, get_descriptors_from_module
 
@@ -85,6 +85,20 @@ def file_parser(ifile, fmt):
     return (mol for mol in it if mol is not None)
 
 
+class DummyBar(object):
+    def __init__(self, *args, **kws):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kws):
+        pass
+
+    def update(self, *args, **kws):
+        pass
+
+
 def main(descs, prog=None):
     parser_options = dict()
     if prog is not None:
@@ -154,25 +168,33 @@ def main(descs, prog=None):
     calc = Calculator(descs)
 
     with args.output as output:
+        progress_args = {'dynamic_ncols': True, 'leave': True}
         if args.quiet:
-            bar = lambda x: x
+            Progress = DummyBar
         elif N is None:
-            bar = progressbar.ProgressBar()
+            Progress = tqdm.tqdm
         else:
-            bar = progressbar.ProgressBar(max_value=N)
+            Progress = tqdm.tqdm
+            progress_args.update({'total': N})
 
         writer = csv.writer(output)
 
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
-        for mol, val in bar(calc.map(mols, args.processes, on_exception='log_and_ignore')):
-            def ppr(a):
-                if isinstance(a, float) and math.isnan(a):
-                    return ''
-                else:
-                    return str(a)
+        with Progress(**progress_args) as bar:
+            def callback(r):
+                bar.update()
 
-            writer.writerow([mol.GetProp('_Name')] + [ppr(v[1]) for v in val])
+            for mol, val in calc.map(
+                    mols, args.processes, error_mode='log', callback=callback):
+
+                def ppr(a):
+                    if isinstance(a, float) and math.isnan(a):
+                        return ''
+                    else:
+                        return str(a)
+
+                writer.writerow([mol.GetProp('_Name')] + [ppr(v[1]) for v in val])
 
     return 0
 

@@ -7,6 +7,7 @@ install_requires = [
     'numpy>=1.10',
     'scipy>=0.16',
     'networkx>=1.10',
+    'tqdm>=3.7.1',
 ]
 
 if sys.version_info < (3, 4, 0):
