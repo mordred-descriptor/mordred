@@ -1,3 +1,5 @@
+import numpy as np
+
 from ._base import Descriptor
 from ._common import AdjacencyMatrix as A
 from ._matrix_attributes import get_method, methods
@@ -6,10 +8,8 @@ from ._matrix_attributes import get_method, methods
 class AdjacencyMatrix(Descriptor):
     r"""adjacency matrix descriptor.
 
-    :type type: str
+    :type type: :py:class:`str`
     :param type: :ref:`matrix_aggregating_methods`
-
-    :rtype: float
     """
 
     explicit_hydrogens = False
@@ -41,3 +41,5 @@ class AdjacencyMatrix(Descriptor):
 
     def calculate(self, mol, result):
         return result
+
+    rtype = float

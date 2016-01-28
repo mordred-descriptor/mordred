@@ -7,8 +7,6 @@ class WienerIndex(Descriptor):
 
     :type polarity: bool
     :param polarity: use polarity Wiener index
-
-    :rtype: int
     """
 
     explicit_hydrogens = False
@@ -39,3 +37,5 @@ class WienerIndex(Descriptor):
             return int(0.5 * (D == 3).sum())
         else:
             return int(0.5 * D.sum())
+
+    rtype = int

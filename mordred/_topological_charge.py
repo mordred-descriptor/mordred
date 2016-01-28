@@ -41,8 +41,6 @@ class TopologicalCharge(Descriptor):
     :type order: int
     :param order: int
 
-    :rtype: float
-
     References
         * :cite:`10.1021/ci00019a008`
     """
@@ -102,3 +100,5 @@ class TopologicalCharge(Descriptor):
             C[Df == i] = len(Df[Df == i])
 
         return np.abs(CT / C).sum()
+
+    rtype = float

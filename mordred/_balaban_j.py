@@ -5,10 +5,7 @@ from ._common import DistanceMatrix
 
 
 class BalabanJ(Descriptor):
-    r"""Balaban's J index descriptor(rdkit wrapper).
-
-    :rtype: float
-    """
+    r"""Balaban's J index descriptor(rdkit wrapper)."""
 
     explicit_hydrogens = False
 
@@ -26,4 +23,6 @@ class BalabanJ(Descriptor):
         return dict(D=DistanceMatrix(self.explicit_hydrogens))
 
     def calculate(self, mol, D):
-        return RDKit.BalabanJ(mol, dMat=D)
+        return float(RDKit.BalabanJ(mol, dMat=D))
+
+    rtype = float

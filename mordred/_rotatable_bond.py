@@ -19,10 +19,7 @@ class RotatableBondsBase(Descriptor):
 
 
 class RotatableBondsCount(RotatableBondsBase):
-    r"""ratatable bonds count descriptor(rdkit wrapper).
-
-    :rtype: int
-    """
+    r"""ratatable bonds count descriptor(rdkit wrapper)."""
 
     __slots__ = ()
 
@@ -32,6 +29,8 @@ class RotatableBondsCount(RotatableBondsBase):
     def calculate(self, mol):
         return CalcNumRotatableBonds(mol)
 
+    rtype = int
+
 
 class RotatableBondsRatio(RotatableBondsBase):
     r"""rotatable bonds ratio descriptor.
@@ -39,7 +38,6 @@ class RotatableBondsRatio(RotatableBondsBase):
     .. math::
         {\rm RotRatio} = \frac{N_{\rm rotatable bonds}}{N_{\rm bonds}}
 
-    :rtype: float
     :returns: NaN when :math:`N_{\rm bonds} = 0`
     """
 
@@ -59,3 +57,5 @@ class RotatableBondsRatio(RotatableBondsBase):
             return np.nan
 
         return float(nRot) / float(nB)
+
+    rtype = float

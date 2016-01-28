@@ -56,8 +56,6 @@ class Framework(FrameworkBase):
     :math:`N_{\rm MF}` is number of atoms in molecular framework,
     :math:`N` is number of all atoms.
 
-    :rtype: float
-
     References
         * :cite:`10.1021/jm9602928`
     """
@@ -85,3 +83,5 @@ class Framework(FrameworkBase):
         N = mol.GetNumAtoms()
 
         return float(Nmf) / float(N)
+
+    rtype = float

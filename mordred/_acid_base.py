@@ -29,12 +29,11 @@ class SmartsCountBase(Descriptor):
         pat = getattr(self, '_mol', None) or self._get_smarts()
         return len(mol.GetSubstructMatches(pat))
 
+    rtype = int
+
 
 class AcidicGroupCount(SmartsCountBase):
-    r"""acidic group count descriptor.
-
-    :rtype: int
-    """
+    r"""acidic group count descriptor."""
 
     __slots__ = ()
 
@@ -49,10 +48,7 @@ class AcidicGroupCount(SmartsCountBase):
 
 
 class BasicGroupCount(SmartsCountBase):
-    r"""basic group count descriptor.
-
-    :rtype: int
-    """
+    r"""basic group count descriptor."""
 
     __slots__ = ()
 

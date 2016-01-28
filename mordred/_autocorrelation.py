@@ -58,6 +58,8 @@ class AutocorrelationBase(Descriptor):
     def _AATSC(self):
         return AATSC(self._order, self._prop)
 
+    rtype = float
+
 
 class AutocorrelationProp(AutocorrelationBase):
     def __reduce_ex__(self, version):
@@ -68,7 +70,7 @@ class AutocorrelationProp(AutocorrelationBase):
 
 
 class AutocorrelationOrder(AutocorrelationBase):
-    _prop = lambda _: np.nan
+    _prop = lambda _: float('nan')
 
     def __reduce_ex__(self, version):
         return self.__class__, (self._order,)
@@ -115,7 +117,7 @@ class GSum(AutocorrelationOrder):
     def calculate(self, mol, gmat):
         s = gmat.sum()
 
-        return s if self._order == 0 else s / 2
+        return s if self._order == 0 else 0.5 * s
 
 
 MAX_DISTANCE = 8
@@ -152,7 +154,6 @@ class ATS(AutocorrelationBase):
     :type property: str, function
     :param property: :ref:`atomic_properties`
 
-    :type: float
     :returns: NaN when any properties are NaN
     """
 
@@ -171,7 +172,7 @@ class ATS(AutocorrelationBase):
 
     def calculate(self, mol, avec, gmat):
         if self._order == 0:
-            return float((avec ** 2).sum())
+            return (avec ** 2).sum().astype('float')
 
         return 0.5 * avec.dot(gmat).dot(avec)
 
@@ -188,7 +189,6 @@ class AATS(ATS):
 
     :Parameters: see :py:class:`ATS`
 
-    :rtype: float
     :returns: NaN when
 
         * :math:`\Delta_k = 0`
@@ -214,7 +214,6 @@ class ATSC(AutocorrelationBase):
 
     :Parameters: see :py:class:`ATS`
 
-    :rtype: float
     :returns: NaN when any properties are NaN
     """
 
@@ -233,7 +232,7 @@ class ATSC(AutocorrelationBase):
 
     def calculate(self, mol, cavec, gmat):
         if self._order == 0:
-            return float((cavec ** 2).sum())
+            return (cavec ** 2).sum().astype('float')
 
         return 0.5 * cavec.dot(gmat).dot(cavec)
 
@@ -250,7 +249,6 @@ class AATSC(ATSC):
 
     :Parameters: see :py:class:`ATS`
 
-    :rtype: float
     :returns: NaN when
 
         * :math:`\Delta_k = 0`
@@ -279,7 +277,6 @@ class MATS(AutocorrelationBase):
 
     :Parameters: see :py:class:`ATS`
 
-    :rtype: float
     :returns: NaN when
 
         * any properties are NaN
@@ -308,7 +305,6 @@ class GATS(MATS):
 
     :Parameters: see :py:class:`ATS`
 
-    :rtype: float
     :returns: NaN when
 
         * :math:`\Delta_k = 0`

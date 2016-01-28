@@ -17,13 +17,13 @@ class LipinskiLike(Descriptor):
     def __str__(self):
         return self.__class__.__name__
 
+    rtype = bool
+
 
 class Lipinski(LipinskiLike):
     r"""Lipinski rule of 5 descriptor.
 
     LogP: SLogP
-
-    :rtype: bool
     """
 
     __slots__ = ()
@@ -48,8 +48,6 @@ class GhoseFilter(LipinskiLike):
     r"""Ghose filter descriptor.
 
     LogP, MR: SLogP, SMR
-
-    :rtype: bool
     """
 
     __slots__ = ()

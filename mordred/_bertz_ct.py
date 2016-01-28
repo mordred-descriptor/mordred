@@ -5,10 +5,7 @@ from ._common import DistanceMatrix
 
 
 class BertzCT(Descriptor):
-    r"""Bertz CT descriptor(rdkit wrapper).
-
-    :rtype: float
-    """
+    r"""Bertz CT descriptor(rdkit wrapper)."""
 
     explicit_hydrogens = False
 
@@ -26,4 +23,6 @@ class BertzCT(Descriptor):
         return dict(D=DistanceMatrix(self.explicit_hydrogens))
 
     def calculate(self, mol, D):
-        return RDKit.BertzCT(mol, dMat=D)
+        return float(RDKit.BertzCT(mol, dMat=D))
+
+    rtype = float

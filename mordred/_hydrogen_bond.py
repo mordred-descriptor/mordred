@@ -10,12 +10,11 @@ class HBondBase(Descriptor):
     def preset(cls):
         yield cls()
 
+    rtype = int
+
 
 class HBondAcceptor(HBondBase):
-    r"""hydrogen bond acceptor descriptor(rdkit wrapper).
-
-    :rtype: int
-    """
+    r"""hydrogen bond acceptor descriptor(rdkit wrapper)."""
 
     __slots__ = ()
 
@@ -30,10 +29,7 @@ class HBondAcceptor(HBondBase):
 
 
 class HBondDonor(HBondBase):
-    r"""hydrogen bond donor descriptor(rdkit wrapper).
-
-    :rtype: int
-    """
+    r"""hydrogen bond donor descriptor(rdkit wrapper)."""
 
     __slots__ = ()
 

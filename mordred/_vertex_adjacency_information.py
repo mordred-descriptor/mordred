@@ -11,7 +11,6 @@ class VertexAdjacencyInformation(Descriptor):
 
     where :math:`m` is number of heavy-heavy bonds.
 
-    :rtype: float
     :returns: :math:`m = 0`
     """
 
@@ -41,3 +40,5 @@ class VertexAdjacencyInformation(Descriptor):
             return np.nan
 
         return 1 + np.log2(m)
+
+    rtype = float

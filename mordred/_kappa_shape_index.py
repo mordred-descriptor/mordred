@@ -35,12 +35,12 @@ class KappaShapeIndexBase(Descriptor):
 
         return P, A, Pmin
 
+    rtype = float
 
 class KappaShapeIndex1(KappaShapeIndexBase):
     r"""Kappa shape index 1 descriptor.
 
-    :rtype: float
-    :returns: NaN when :math:`N_{\rm \Chi-path} = 0`
+    :returns: NaN when :math:`N_{\rm Chi-path} = 0`
     """
 
     __slots__ = ()
@@ -55,8 +55,7 @@ class KappaShapeIndex1(KappaShapeIndexBase):
 class KappaShapeIndex2(KappaShapeIndexBase):
     r"""Kappa shape index 2 descriptor.
 
-    :rtype: float
-    :returns: NaN when :math:`N_{\rm \Chi-path} = 0`
+    :returns: NaN when :math:`N_{\rm Chi-path} = 0`
     """
 
     __slots__ = ()
@@ -71,8 +70,7 @@ class KappaShapeIndex2(KappaShapeIndexBase):
 class KappaShapeIndex3(KappaShapeIndexBase):
     r"""Kappa shape index 3 descriptor.
 
-    :rtype: float
-    :returns: NaN when :math:`N_{\rm \Chi-path} = 0`
+    :returns: NaN when :math:`N_{\rm Chi-path} = 0`
     """
 
     __slots__ = ()

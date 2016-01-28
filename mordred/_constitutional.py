@@ -16,8 +16,6 @@ class ConstitutionalSum(Descriptor):
 
     :type prop: :py:class:`str` or :py:class:`function`
     :param prop: :ref:`atomic_properties`
-
-    :rtype: float
     """
 
     @classmethod
@@ -41,6 +39,8 @@ class ConstitutionalSum(Descriptor):
 
     def calculate(self, mol):
         return sum(self._prop(a) / self._prop(self._carbon) for a in mol.GetAtoms())
+
+    rtype = float
 
 
 class ConstitutionalMean(ConstitutionalSum):

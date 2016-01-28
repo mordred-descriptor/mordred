@@ -38,7 +38,6 @@ atom_contrib = {
 class VdwVolumeABC(Descriptor):
     r"""van der waals volume(ABC) descriptor.
 
-    :rtype: float
     :returns: NaN when any atoms are non-compat_atoms
 
     References
@@ -73,3 +72,5 @@ class VdwVolumeABC(Descriptor):
         )
 
         return ac - 5.92 * Nb - 14.7 * NRa - 3.8 * NRA
+
+    rtype = float

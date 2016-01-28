@@ -150,8 +150,6 @@ class DetourMatrix(DetourMatrixBase):
 
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
-
-    :rtype: float
     """
 
     @classmethod
@@ -182,6 +180,8 @@ class DetourMatrix(DetourMatrixBase):
     def calculate(self, mol, result):
         return result
 
+    rtype = float
+
 
 class DetourIndex(DetourMatrixBase):
     r"""detour index descriptor.
@@ -193,8 +193,6 @@ class DetourIndex(DetourMatrixBase):
     where
     :math:`D` is detour matrix,
     :math:`A` is number of atoms.
-
-    :rtype: int
     """
 
     __slots__ = ()
@@ -218,3 +216,5 @@ class DetourIndex(DetourMatrixBase):
 
     def calculate(self, mol, D):
         return int(0.5 * D.sum())
+
+    rtype = int

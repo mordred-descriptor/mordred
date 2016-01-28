@@ -15,8 +15,6 @@ class AtomCount(Descriptor):
         * 'Bridgehead'
         * 'X' - all halogen
         * element symbol
-
-    :rtype: int
     """
 
     @classmethod
@@ -63,3 +61,5 @@ class AtomCount(Descriptor):
             return rdMolDescriptors.CalcNumBridgeheadAtoms(mol)
         else:
             return self._calc(mol)
+
+    rtype = int

@@ -15,10 +15,7 @@ class TopologicalIndexBase(Descriptor):
 
 
 class Radius(TopologicalIndexBase):
-    r"""radius descriptor.
-
-    :rtype: int
-    """
+    r"""radius descriptor."""
 
     __slots__ = ()
 
@@ -33,12 +30,11 @@ class Radius(TopologicalIndexBase):
     def calculate(self, mol, R):
         return int(R)
 
+    rtype = int
+
 
 class Diameter(TopologicalIndexBase):
-    r"""diameter descriptor.
-
-    :rtype: int
-    """
+    r"""diameter descriptor."""
 
     __slots__ = ()
 
@@ -53,6 +49,8 @@ class Diameter(TopologicalIndexBase):
     def calculate(self, mol, D):
         return int(D)
 
+    rtype = int
+
 
 class TopologicalShapeIndex(TopologicalIndexBase):
     r"""topological shape index descriptor.
@@ -65,7 +63,6 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     :math:`R` is graph radius,
     :math:`D` is graph diameter.
 
-    :rtype: float
     :returns: NaN when :math:`R = 0`
     """
 
@@ -86,6 +83,8 @@ class TopologicalShapeIndex(TopologicalIndexBase):
 
         return float(D - R) / float(R)
 
+    rtype = float
+
 
 class PetitjeanIndex(TopologicalIndexBase):
     r"""Petitjean index descriptor.
@@ -98,7 +97,6 @@ class PetitjeanIndex(TopologicalIndexBase):
     :math:`R` is graph radius,
     :math:`D` is graph diameter.
 
-    :rtype: float
     :returns: NaN when :math:`D = 0`
     """
 
@@ -118,3 +116,5 @@ class PetitjeanIndex(TopologicalIndexBase):
             return float('nan')
 
         return float(D - R) / float(D)
+
+    rtype = float

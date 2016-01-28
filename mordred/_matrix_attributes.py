@@ -209,7 +209,7 @@ class VR1(Common):
         if eig is None:
             return np.nan
 
-        s = 0
+        s = 0.0
 
         for bond in mol.GetBonds():
             i = bond.GetBeginAtomIdx()

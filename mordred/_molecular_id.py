@@ -98,8 +98,6 @@ class MolecularId(MolecularIdBase):
 
     :type _eps: float
     :param _eps: internally used
-
-    :rtype: float
     """
 
     @classmethod
@@ -144,13 +142,15 @@ class MolecularId(MolecularIdBase):
         return dict(aids=AtomicIds(self._eps))
 
     def calculate(self, mol, aids):
-        v = sum(
+        v = float(sum(
             aid
             for aid, atom in zip(aids, mol.GetAtoms())
             if self._check(atom.GetAtomicNum())
-        )
+        ))
 
         if self._averaged:
             v /= mol.GetNumAtoms()
 
         return v
+
+    rtype = float

@@ -22,7 +22,6 @@ class ZagrebIndex(Descriptor):
     :type variable: int
     :param variable: lambda value.
 
-    :rtype: int
     :returns: NaN when valence of any atoms are 0
     """
 
@@ -55,16 +54,17 @@ class ZagrebIndex(Descriptor):
         )
 
     def calculate(self, mol, V):
-        if not isinstance(self._variable, int) or self._variable < 0:
-            V = V.astype('float')
+        V = V.astype('float')
 
         if self._version == 1:
             if np.any(V == 0):
-                return np.nan
+                return float('nan')
 
             return (V ** (self._variable * 2)).sum()
         else:
-            return sum(
+            return float(sum(
                 (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
                 for b in mol.GetBonds()
-            )
+            ))
+
+    rtype = float

@@ -68,7 +68,6 @@ class AtomTypeEState(EStateBase):
     :type estate: str
     :param estate: one of es_types
 
-    :rtype: int('count') or float(other)
     :returns: NaN when type in ['min', 'max'] and :math:`N_{\rm X} = 0`
 
     References
@@ -119,3 +118,12 @@ class AtomTypeEState(EStateBase):
             return float(getattr(builtins, self._type.name)(indices))
         except ValueError:  # min, max to empty list
             return nan
+
+    @property
+    def rtype(self):
+        r"""
+        * 'count': :py:class:`int`
+        * 'other': :py:class:`float`
+        """
+
+        return int if self._type == AggrType.count else float

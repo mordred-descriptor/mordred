@@ -22,7 +22,6 @@ class MolecularDistanceEdge(Descriptor):
     :type element: str or int
     :param element: atomic symbol or atomic number
 
-    :rtype: float
     :returns: NaN when :math:`N_{\rm MDE} = 0`
     """
 
@@ -84,3 +83,5 @@ class MolecularDistanceEdge(Descriptor):
         dx = product(Dv) ** (1. / (2. * n))
 
         return n / (dx ** 2)
+
+    rtype = float

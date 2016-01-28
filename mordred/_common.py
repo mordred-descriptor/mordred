@@ -1,3 +1,5 @@
+import numpy as np
+
 from rdkit import Chem
 
 from ._base import Descriptor

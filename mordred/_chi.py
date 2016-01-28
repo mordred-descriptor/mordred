@@ -136,7 +136,6 @@ class Chi(ChiBase):
     :type averaged: bool
     :param averaged: averaged by number of subgraphs
 
-    :rtype: float
     :returns: NaN when
 
         * any atomic properties <= 0
@@ -201,3 +200,5 @@ class Chi(ChiBase):
             x /= len(node_sets) or np.nan
 
         return x
+
+    rtype = float

@@ -8,8 +8,6 @@ class DistanceMatrix(Descriptor):
 
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
-
-    :rtype: float
     """
 
     explicit_hydrogens = False
@@ -41,3 +39,5 @@ class DistanceMatrix(Descriptor):
 
     def calculate(self, mol, result):
         return result
+
+    rtype = float

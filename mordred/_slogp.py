@@ -16,12 +16,11 @@ class WildmanCrippenBase(Descriptor):
 
     explicit_hydrogens = False
 
+    rtype = float
+
 
 class SLogP(WildmanCrippenBase):
-    r"""Wildman-Crippen LogP descriptor(rdkit wrapper).
-
-    :rtype: float
-    """
+    r"""Wildman-Crippen LogP descriptor(rdkit wrapper)."""
 
     __slots__ = ()
 
@@ -30,10 +29,7 @@ class SLogP(WildmanCrippenBase):
 
 
 class SMR(WildmanCrippenBase):
-    r"""Wildman-Crippen MR descriptor(rdkit wrapper).
-
-    :rtype: float
-    """
+    r"""Wildman-Crippen MR descriptor(rdkit wrapper)."""
 
     __slots__ = ()
 

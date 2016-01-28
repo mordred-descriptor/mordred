@@ -11,8 +11,6 @@ class EccentricConnectivityIndex(Descriptor):
     where
     :math:`E` is eccentricity of atoms,
     :math:`V` is valences of atoms.
-
-    :rtype: int
     """
 
     __slots__ = ()
@@ -36,4 +34,6 @@ class EccentricConnectivityIndex(Descriptor):
         )
 
     def calculate(self, mol, E, V):
-        return (E.astype('int') * V).sum()
+        return int((E.astype('int') * V).sum())
+
+    rtype = int

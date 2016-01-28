@@ -15,8 +15,6 @@ class WalkCount(Descriptor):
 
     :type self_returning: bool
     :param self_returning: use self returning walk only
-
-    :rtype: int
     """
 
     explicit_hydrogens = False
@@ -81,6 +79,8 @@ class WalkCount(Descriptor):
 
         else:
             if self._order == 1:
-                return An.sum() / 2
+                return 0.5 * An.sum()
 
             return np.log(An.sum() + 1)
+
+    rtype = float

@@ -77,7 +77,6 @@ class BCUT(BCUTBase):
     :type nth: int
     :param nth: n-th eigen value. 0 is highest, -1 is lowest.
 
-    :rtype: float
     :returns: NaN when
 
         * any atomic properties are NaN
@@ -119,3 +118,5 @@ class BCUT(BCUTBase):
             return bev[self._nth]
         except IndexError:
             return np.nan
+
+    rtype = float

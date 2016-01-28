@@ -6,10 +6,7 @@ from ._base import Descriptor
 
 
 class LabuteASA(Descriptor):
-    r"""Labute's Approximate Surface Area descriptor(rdkit wrapper).
-
-    :rtype: float
-    """
+    r"""Labute's Approximate Surface Area descriptor(rdkit wrapper)."""
 
     explicit_hydrogens = False
 
@@ -25,6 +22,8 @@ class LabuteASA(Descriptor):
 
     def calculate(self, mol):
         return MolSurf.LabuteASA(mol)
+
+    rtype = float
 
 
 class MoeTypeBase(Descriptor):
@@ -49,14 +48,14 @@ class MoeTypeBase(Descriptor):
         f = getattr(self._module, str(self))
         return f(mol)
 
+    rtype = float
+
 
 class PEOE_VSA(MoeTypeBase):
     r"""MOE type descriptors using gasteiger charge and surface area contribution(rdkit wrapper).
 
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
-
-    :rtype: float
     """
 
     __slots__ = ('_k',)
@@ -68,8 +67,6 @@ class SMR_VSA(MoeTypeBase):
 
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
-
-    :rtype: float
     """
 
     __slots__ = ('_k',)
@@ -81,8 +78,6 @@ class SlogP_VSA(MoeTypeBase):
 
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
-
-    :rtype: float
     """
 
     __slots__ = ('_k',)
@@ -94,8 +89,6 @@ class EState_VSA(MoeTypeBase):
 
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
-
-    :rtype: float
     """
 
     __slots__ = ('_k',)
@@ -108,8 +101,6 @@ class VSA_EState(MoeTypeBase):
 
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
-
-    :rtype: float
     """
 
     __slots__ = ('_k',)

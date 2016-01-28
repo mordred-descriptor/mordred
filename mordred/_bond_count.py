@@ -43,8 +43,6 @@ class BondCount(Descriptor):
 
     :type kekulize: bool
     :param kekulize: use kekulized structure
-
-    :rtype: int
     """
 
     bond_types = tuple(b.name for b in BondType)
@@ -78,3 +76,5 @@ class BondCount(Descriptor):
 
     def calculate(self, mol):
         return sum(1 for b in mol.GetBonds() if self._check_bond(b))
+
+    rtype = int

@@ -85,6 +85,8 @@ class InformationContentBase(Descriptor):
     def __init__(self, order=0):
         self._order = order
 
+    rtype = float
+
 
 class Ag(InformationContentBase):
     @classmethod
@@ -125,8 +127,6 @@ class InformationContent(InformationContentBase):
 
     :type order: int
     :param order: order(number of edge) of subgraph
-
-    :rtype: float
     """
 
     _name = 'IC'
@@ -147,8 +147,6 @@ class TotalIC(InformationContentBase):
 
     :type order: int
     :param order: order(number of edge) of subgraph
-
-    :rtype: float
     """
 
     _name = 'TIC'
@@ -170,8 +168,6 @@ class StructuralIC(InformationContentBase):
 
     :type order: int
     :param order: order(number of edge) of subgraph
-
-    :rtype: float
     """
 
     _name = 'SIC'
@@ -194,7 +190,6 @@ class BondingIC(InformationContentBase):
     :type order: int
     :param order: order(number of edge) of subgraph
 
-    :rtype: float
     :returns: NaN when :math:`\sum^B_{b=1} \pi^{*}_b <= 0`
     """
 
@@ -224,8 +219,6 @@ class ComplementaryIC(InformationContentBase):
 
     :type order: int
     :param order: order(number of edge) of subgraph
-
-    :rtype: float
     """
 
     _name = 'CIC'
@@ -244,8 +237,6 @@ class ModifiedIC(InformationContentBase):
 
     :type order: int
     :param order: order(number of edge) of subgraph
-
-    :rtype: float
     """
 
     _name = 'MIC'
@@ -264,8 +255,6 @@ class ZModifiedIC(InformationContentBase):
 
     :type order: int
     :param order: order(number of edge) of subgraph
-
-    :rtype: float
     """
 
     _name = 'ZMIC'

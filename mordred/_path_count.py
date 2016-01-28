@@ -101,8 +101,6 @@ class PathCount(PathCountBase):
 
     :type log: bool
     :param log: use log scale
-
-    :rtype: int(path-count) or float(pi-path-count)
     """
 
     @classmethod
@@ -164,3 +162,11 @@ class PathCount(PathCountBase):
             v = math.log(v + 1)
 
         return v
+
+    @property
+    def rtype(self):
+        r"""
+        * pi = True: :py:class:`float`
+        * pi = False: :py:class:`int`
+        """
+        return float if self._pi else int

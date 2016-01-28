@@ -1,4 +1,4 @@
-from numpy import nan, pi
+from math import pi
 
 from rdkit import Chem
 
@@ -24,6 +24,7 @@ def get_charge_implicitHs(atom):
         atom.GetDoubleProp('_GasteigerHCharge')
 
 
+nan = float('nan')
 na = nan
 
 # Handbook of Chemistry and Physics, 94th Edition, 2013-2014, pg1-11

@@ -1,7 +1,5 @@
 from collections import defaultdict
 
-import numpy as np
-
 from ._base import Descriptor
 
 
@@ -60,8 +58,6 @@ class CarbonTypes(CarbonTypesBase):
 
     :type SP: int
     :param SP: count :math:`{\rm SP}n` carbon
-
-    :rtype: int
     """
 
     @classmethod
@@ -92,6 +88,7 @@ class CarbonTypes(CarbonTypesBase):
     def calculate(self, mol, CT):
         return CT[self._SP][self._nCarbon]
 
+    rtype = int
 
 class HybridizationRatio(CarbonTypesBase):
     r"""hybridization ratio descriptor.
@@ -100,7 +97,6 @@ class HybridizationRatio(CarbonTypesBase):
 
         {\rm HybRatio} = \frac{N_{\rm SP3}}{N_{\rm SP2} + N_{\rm SP3}}
 
-    :rtype: float
     :returns: NaN when :math:`N_{\rm SP2} + N_{\rm SP3} = 0`.
     """
 
@@ -124,6 +120,8 @@ class HybridizationRatio(CarbonTypesBase):
         Nsp2 = float(sum(CT[2].values()))
 
         if Nsp3 == Nsp2 == 0:
-            return np.nan
+            return float('nan')
 
         return Nsp3 / (Nsp2 + Nsp3)
+
+    rtype = float

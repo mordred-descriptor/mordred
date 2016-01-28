@@ -12,12 +12,11 @@ class AromaticBase(Descriptor):
     def __reduce_ex__(self, version):
         return self.__class__, ()
 
+    rtype = int
+
 
 class AromaticAtomsCount(AromaticBase):
-    r"""aromatic atoms count descriptor.
-
-    :rtype: int
-    """
+    r"""aromatic atoms count descriptor."""
 
     __slots__ = ()
 
@@ -28,10 +27,7 @@ class AromaticAtomsCount(AromaticBase):
 
 
 class AromaticBondsCount(AromaticBase):
-    r"""aromatic bonds count descriptor.
-
-    :rtype: int
-    """
+    r"""aromatic bonds count descriptor."""
 
     __slots__ = ()
 

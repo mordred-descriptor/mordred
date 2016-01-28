@@ -19,14 +19,14 @@ class PolarizabilityBase(Descriptor):
     def _get_table(self):
         return Polarizabilities78 if self._use78 else Polarizabilities94
 
+    rtype = float
+
 
 class APol(PolarizabilityBase):
     r"""atomic polarizability descriptor.
 
     :type use78: bool
     :param use78: use old atomic polarizability data
-
-    :rtype: float
     """
 
     __slots__ = ('_use78',)
@@ -41,8 +41,6 @@ class BPol(PolarizabilityBase):
 
     :type use78: bool
     :param use78: use old atomic polarizability data
-
-    :rtype: float
     """
 
     __slots__ = ('_use78',)
@@ -55,4 +53,4 @@ class BPol(PolarizabilityBase):
             b = bond.GetEndAtom().GetAtomicNum()
             return abs(table[a] - table[b])
 
-        return sum(bond_pol(b) for b in mol.GetBonds())
+        return float(sum(bond_pol(b) for b in mol.GetBonds()))

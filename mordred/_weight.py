@@ -8,8 +8,6 @@ class Weight(Descriptor):
 
     :type averaged: bool
     :param averaged: averaged by number of atom
-
-    :rtype: float
     """
 
     explicit_hydrogens = True
@@ -36,3 +34,5 @@ class Weight(Descriptor):
             w /= mol.GetNumAtoms()
 
         return w
+
+    rtype = float

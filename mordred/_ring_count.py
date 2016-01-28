@@ -65,8 +65,6 @@ class RingCount(RingCountBase):
         * True: count hetero rings
         * False: count carbon rings
         * None: count any rings
-
-    :rtype: int
     """
 
     @classmethod
@@ -160,3 +158,5 @@ class RingCount(RingCountBase):
             1 for R in Rs
             if self._check_order(R) and self._check_arom(mol, R) and self._check_hetero(mol, R)
         )
+
+    rtype = int

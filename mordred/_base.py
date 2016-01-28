@@ -1,3 +1,4 @@
+import math
 import os
 import sys
 
@@ -6,8 +7,6 @@ from importlib import import_module
 from inspect import getsourcelines, isabstract
 from sys import maxsize
 from types import ModuleType
-
-import numpy as np
 
 from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
@@ -64,7 +63,7 @@ def pretty(a):
 
 
 class Descriptor(six.with_metaclass(ABCMeta, object)):
-    r"""abstruct base class of descriptors."""
+    r"""abstract base class of descriptors."""
 
     explicit_hydrogens = True
     gasteiger_charges = False
@@ -97,11 +96,13 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         r = other.__reduce_ex__(self._reduce_ex_version)
         return l.__lt__(r)
 
+    rtype = type(None)
+
     @classmethod
     def preset(cls):
         r"""generate preset descriptor instances.
 
-        (abstruct classmethod)
+        (abstract classmethod)
 
         :rtype: iterable
         """
@@ -110,7 +111,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def dependencies(self):
         r"""descriptor dependencies.
 
-        :rtype: {str: (Descriptor or None)} or None
+        :rtype: {:py:class:`str`: (:py:class:`Descriptor` or :py:class:`None`)} or :py:class:`None`
         """
         pass
 
@@ -118,7 +119,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def calculate(self, mol):
         r"""calculate descriptor value.
 
-        (abstruct method)
+        (abstract method)
         """
         pass
 
@@ -191,7 +192,7 @@ class Molecule(object):
 class Calculator(object):
     r"""descriptor calculator.
 
-    :param descs: see `register` method
+    :param descs: see :py:meth:`register` method
     """
 
     def __init__(self, *descs):
@@ -223,8 +224,15 @@ class Calculator(object):
     def register(self, *descs):
         r"""register descriptors.
 
+        :type descs: :py:class:`module`,
+            :py:class:`Descriptor` class/instance or
+            :py:class:`Iterable`
+
         :param descs: descriptors to register
-        :type descs: module, descriptor class/instance, iterable
+
+            * :py:class:`module`: Descriptors in module
+            * :py:class:`Descriptor` class: use :py:meth:`Descriptor.preset`
+
         """
         for desc in descs:
             if not hasattr(desc, '__iter__'):
@@ -247,8 +255,8 @@ class Calculator(object):
             return cache[desc]
 
         if desc.require_connected and not self.molecule.is_connected:
-            cache[desc] = np.nan
-            return np.nan
+            cache[desc] = float('nan')
+            return float('nan')
 
         args = {
             name: self._calculate(dep, cache, parent or desc)
@@ -298,19 +306,18 @@ class Calculator(object):
             except Exception as e:
                 r = error_callback(e)
 
-            if not isinstance(
-                    r,
-                    (six.integer_types, np.integer,
-                     float, np.floating,
-                     bool, np.bool_)):
-
+            if not math.isnan(r) and not isinstance(r, desc.rtype):
                 r = error_callback(DescriptorException(
                     desc,
-                    ValueError('not int or float: {!r}({})'.format(r, type(r))),
+                    TypeError('{!r}({}) is not {!r}'.format(r, type(r), desc.rtype)),
                     mol
                 ))
 
-            rs.append((desc, r))
+            if math.isnan(r):
+                rs.append((desc, float('nan')))
+                continue
+
+            rs.append((desc, desc.rtype(r)))
 
         return rs
 
@@ -364,33 +371,36 @@ class Calculator(object):
             else:
                 r = calculate(m)
 
-            if callback:
+            if callback is not None:
                 callback(r)
+
             yield m, r
 
     def map(self, mols, processes=None, error_mode='raise', callback=None, error_callback=None):
         r"""calculate descriptors over mols.
 
+        :type mols: :py:class:`Iterable` (:py:class:`Mol`)
         :param mols: moleculars
-        :type mols: iterable(rdkit.Chem.Mol)
 
-        :param processes: number of process. None is multiprocessing.cpu_count()
-        :type processes: int or None
+        :type processes: :py:class:`int` or :py:class:`None`
+        :param processes: number of process. None is :py:func:`multiprocessing.cpu_count`
 
-        :type error_mode: str
+        :type error_mode: :py:class:`str`
         :param error_mode:
 
             * 'raise': raise Exception
             * 'ignore': ignore Exception
             * 'log': print Exception to stderr and ingore Exception
 
-        :type callback: callable([(Descriptor, scalar)]) -> None
+        :type callback: :py:class:`Callable` ([(:py:class:`Descriptor`, scalar)])
+            -> :py:class:`None`
+
         :param callback: call when calculate finished par molecule
 
-        :type error_callback: callable(Exception) -> scalar
+        :type error_callback: :py:class:`Callable` (:py:class:`Exception`) -> scalar
         :param error_callback: call when Exception raised
 
-        :rtype: iterator((rdkit.Chem.Mol, [(Descriptor, scalar)]]))
+        :rtype: :py:class:`Iterator` ((:py:class:`Mol`, [(:py:class:`Descriptor`, scalar)]]))
         """
         assert error_mode in set(['raise', 'ignore', 'log'])
 
@@ -415,14 +425,14 @@ def make_calculator(calc, e_mode):
 
     elif e_mode == 'ignore':
         def ignore(e):
-            return np.nan
+            return float('nan')
 
         return lambda m: calc(m, error_callback=ignore)
 
     else:
         def ignore_and_log(e):
             sys.stderr.write('{}\n'.format(e))
-            return np.nan
+            return float('nan')
 
         return lambda m: calc(m, error_callback=ignore_and_log)
 
@@ -435,7 +445,7 @@ def all_descriptors():
     r"""yield all descriptors.
 
     :returns: all modules
-    :rtype: iterator(module)
+    :rtype: :py:class:`Iterator` (:py:class:`module`)
     """
     base_dir = os.path.dirname(__file__)
 
@@ -451,8 +461,9 @@ def get_descriptors_from_module(mdl):
     r"""get descriptors from module.
 
     :type mdl: module
+    :param mdl: module to search
 
-    :rtype: [Descriptor]
+    :rtype: [:py:class:`Descriptor`]
     """
     descs = []
 

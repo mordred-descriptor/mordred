@@ -12,8 +12,6 @@ class FragmentComplexity(Descriptor):
     :math:`B` is number of bonds,
     :math:`H` is number of hetero atoms
 
-    :rtype: float
-
     References
         * :cite:`10.1021/ci050521b`
     """
@@ -37,3 +35,5 @@ class FragmentComplexity(Descriptor):
         B = mol.GetNumBonds()
         H = sum(1 for a in mol.GetAtoms() if a.GetAtomicNum() != 6)
         return abs(B ** 2 - A ** 2 + A) + float(H) / 100
+
+    rtype = float

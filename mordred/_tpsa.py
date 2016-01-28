@@ -13,8 +13,6 @@ class TPSA(Descriptor):
         * True: N,O only TPSA
         * False: all(N,O,S,P) TPSA
 
-    :rtype: float
-
     References
         * :cite:`10.1021/jm000942e`
     """
@@ -115,3 +113,5 @@ class TPSA(Descriptor):
                     return 8.38
 
         return 0.0
+
+    rtype = float

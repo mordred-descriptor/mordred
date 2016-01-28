@@ -67,7 +67,6 @@ class BaryszMatrix(BaryszMatrixBase):
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
 
-    :rtype: float
     :returns: NaN when any properties are NaN
     """
 
@@ -99,3 +98,5 @@ class BaryszMatrix(BaryszMatrixBase):
 
     def calculate(self, mol, result):
         return result
+
+    rtype = float

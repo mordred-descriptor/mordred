@@ -69,6 +69,8 @@ class EtaBase(Descriptor):
     kekulize = True
     require_connected = True
 
+    rtype = float
+
 
 class EtaCoreCount(EtaBase):
     r"""ETA core count descriptor.
@@ -87,7 +89,6 @@ class EtaCoreCount(EtaBase):
     :param reference: use reference alkane
         (same graph structure, but all atoms are carbon and all bonds are single bond)
 
-    :rtype: float
     :returns: reference and valence of any atoms > 4
     """
 
@@ -141,8 +142,6 @@ class EtaShapeIndex(EtaBase):
 
     :type type: str
     :param type: one of shape_types
-
-    :rtype: float
     """
 
     shape_types = ('p', 'y', 'x',)
@@ -222,8 +221,6 @@ class EtaVEMCount(EtaBase):
 
     :type averaged: bool
     :param averaged: averaged by heavy atom count
-
-    :rtype: float
     """
 
     @classmethod
@@ -307,7 +304,6 @@ class EtaCompositeIndex(EtaBase):
     :type averaged: bool
     :param averaged: averaged
 
-    :rtype: float
     :returns: reference and valence of any atoms > 4
     """
 
@@ -372,13 +368,13 @@ class EtaCompositeIndex(EtaBase):
 
         gamma = np.array([ap.get_eta_gamma(a) for a in mol.GetAtoms()])
 
-        v = sum(
+        v = float(sum(
             sum(
                 np.sqrt(gamma[i] * gamma[j] / r ** 2)
                 for j, r in enumerate(row)
                 if i < j and checker(r)
             ) for i, row in enumerate(D)
-        )
+        ))
 
         if self._averaged:
             v /= mol.GetNumAtoms()
@@ -399,8 +395,6 @@ class EtaFunctionalityIndex(EtaBase):
 
     :type averaged: bool
     :param averaged: averaged
-
-    :rtype: float
     """
 
     @classmethod
@@ -460,7 +454,6 @@ class EtaBranchingIndex(EtaBase):
     :type averaged: bool
     :param averaged: averaged
 
-    :rtype: float
     :returns: NaN when A < 2
     """
 
@@ -526,8 +519,6 @@ class EtaDeltaAlpha(EtaBase):
 
     :type type: str
     :param type: one of delta_types
-
-    :rtype: float
     """
 
     delta_types = ('A', 'B',)
@@ -586,7 +577,6 @@ class EtaEpsilon(EtaBase):
     :type type: str
     :param type: one of epsilon_types
 
-    :rtype: float
     :returns: type = 3 and valence of any atoms > 4
     """
 
@@ -649,8 +639,6 @@ class EtaDeltaEpsilon(EtaBase):
 
     :type type: str
     :param type: one of delta_epsilon_types
-
-    :rtype: float
     """
 
     @classmethod
@@ -696,8 +684,6 @@ class EtaDeltaBeta(EtaBase):
 
     :type averaged: bool
     :param averaged: averaged
-
-    :rtype: float
     """
 
     @classmethod
@@ -740,8 +726,6 @@ class EtaPsi(EtaBase):
 
     .. math::
         \psi_1 = \frac{\alpha}{A \cdot \epsilon^2}
-
-    :rtype: float
     """
 
     @classmethod
@@ -774,8 +758,6 @@ class EtaDeltaPsi(EtaBase):
 
     :type type: str
     :param type: one of delta_psi_types
-
-    :rtype: float
     """
 
     @classmethod
