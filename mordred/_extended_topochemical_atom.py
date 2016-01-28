@@ -41,6 +41,9 @@ class AlterMolecule(Descriptor):
             ai = bond.GetBeginAtom()
             aj = bond.GetEndAtom()
 
+            if not self._saturated and (ai.GetDegree() > 4 or aj.GetDegree() > 4):
+                return None
+
             i = ids.get(ai.GetIdx())
             j = ids.get(aj.GetIdx())
 
