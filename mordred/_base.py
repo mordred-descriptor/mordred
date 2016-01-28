@@ -285,6 +285,12 @@ class Calculator(object):
         cache = {}
         self.molecule = Molecule(mol)
 
+        if error_callback is None:
+            def raise_error(e):
+                raise e
+
+            error_callback = raise_error
+
         rs = []
         for desc in self.descriptors:
             try:
@@ -350,7 +356,7 @@ class Calculator(object):
         calculate = make_calculator(self, error_mode)
 
         for m in mols:
-            if error_callback:
+            if error_callback is not None:
                 try:
                     r = calculate(m)
                 except Exception as e:
