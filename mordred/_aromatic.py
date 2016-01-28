@@ -6,6 +6,12 @@ class AromaticBase(Descriptor):
     def preset(cls):
         yield cls()
 
+    def __str__(self):
+        return self._name
+
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
 
 class AromaticAtomsCount(AromaticBase):
     r"""aromatic atoms count descriptor.
@@ -15,8 +21,7 @@ class AromaticAtomsCount(AromaticBase):
 
     __slots__ = ()
 
-    def __str__(self):
-        return 'nAromAtom'
+    _name = 'nAromAtom'
 
     def calculate(self, mol):
         return sum(1 for a in mol.GetAtoms() if a.GetIsAromatic())
@@ -30,8 +35,7 @@ class AromaticBondsCount(AromaticBase):
 
     __slots__ = ()
 
-    def __str__(self):
-        return 'nAromBond'
+    _name = 'nAromBond'
 
     def calculate(self, mol):
         return sum(1 for b in mol.GetBonds() if b.GetIsAromatic())

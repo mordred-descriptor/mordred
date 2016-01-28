@@ -11,6 +11,9 @@ from ._common import AdjacencyMatrix, DistanceMatrix
 class ChargeTermMatrix(Descriptor):
     explicit_hydrogens = False
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def dependencies(self):
         return dict(
             A=AdjacencyMatrix(self.explicit_hydrogens),
@@ -64,6 +67,9 @@ class TopologicalCharge(Descriptor):
             return 'GGI{}'.format(self._order)
 
     __slots__ = ('_type', '_order',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type, self._order)
 
     def __init__(self, type='global', order=10):
         assert type in self.tc_types

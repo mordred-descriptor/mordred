@@ -66,8 +66,10 @@ class BondCount(Descriptor):
     def explicit_hydrogens(self):
         return self._type in (BondType.any, BondType.single)
 
-    descriptor_keys = ('_type', 'kekulize',)
     __slots__ = ('_type', '_bond_name', '_check_bond', 'kekulize',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type, self.kekulize)
 
     def __init__(self, type='any', kekulize=False):
         self._type = parse_enum(BondType, type)

@@ -11,6 +11,9 @@ class LipinskiLike(Descriptor):
     def preset(cls):
         yield cls()
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def __str__(self):
         return self.__class__.__name__
 

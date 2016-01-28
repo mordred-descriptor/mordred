@@ -1,4 +1,4 @@
-from ._hbond import HBondAcceptor, HBondDonor
+from ._hydrogen_bond import HBondAcceptor, HBondDonor
 
 __all__ = (
     'HBondAcceptor', 'HBondDonor',

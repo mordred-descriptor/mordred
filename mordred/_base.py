@@ -72,61 +72,48 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     kekulize = False
     require_connected = False
 
-    def _get_descriptor_keys(self):
-        return (
-            getattr(self, 'descriptor_keys', None) or
-            getattr(self, '__slots__', None) or
-            ()
-        )
+    _reduce_ex_version = 3
 
-    def _get_keys(self):
-        def getter(k):
-            try:
-                return getattr(self, k)
-            except AttributeError as e:
-                raise MordredAttributeError(self, e)
-
-        return (getter(k) for k in self._get_descriptor_keys())
-
+    @abstractmethod
     def __reduce_ex__(self, version):
-        return self.__class__, tuple(self._get_keys())
+        pass
 
     def __repr__(self):
-        return '{}({})'.format(
-            self.__class__.__name__,
-            ', '.join(map(pretty, self._get_keys()))
-        )
+        cls, args = self.__reduce_ex__(self._reduce_ex_version)
+        return '{}({})'.format(cls, ', '.join(map(pretty, args)))
 
     def __hash__(self):
-        return hash(tuple(self._get_keys()))
+        return hash(self.__reduce_ex__(self._reduce_ex_version))
 
     def __eq__(self, other):
-        return\
-            self.__class__ is other.__class__ and\
-            all(getattr(self, k) == getattr(other, k) for k in self._get_descriptor_keys())
-
-    def __lt__(self, other):
-        sk = self.__reduce_ex__(3)
-        ok = other.__reduce_ex__(3)
-        return sk.__lt__(ok)
+        l = self.__reduce_ex__(self._reduce_ex_version)
+        r = other.__reduce_ex__(self._reduce_ex_version)
+        return l.__eq__(r)
 
     def __ne__(self, other):
         return not self == other
+
+    def __lt__(self, other):
+        l = self.__reduce_ex__(self._reduce_ex_version)
+        r = other.__reduce_ex__(self._reduce_ex_version)
+        return l.__lt__(r)
 
     @classmethod
     def preset(cls):
         r"""generate preset descriptor instances.
 
+        (abstruct classmethod)
+
         :rtype: iterable
         """
-        return ()
+        pass
 
     def dependencies(self):
         r"""descriptor dependencies.
 
         :rtype: {str: (Descriptor or None)} or None
         """
-        return None
+        pass
 
     @abstractmethod
     def calculate(self, mol):

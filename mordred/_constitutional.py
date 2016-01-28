@@ -26,8 +26,10 @@ class ConstitutionalSum(Descriptor):
 
     _carbon = Chem.Atom(6)
 
-    descriptor_keys = ('_prop',)
     __slots__ = ('_prop_name', '_prop',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._prop,)
 
     def __init__(self, prop='v'):
         self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)

@@ -16,6 +16,9 @@ class BalabanJ(Descriptor):
     def preset(cls):
         yield cls()
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def __str__(self):
         return 'BalabanJ'
 

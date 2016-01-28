@@ -26,6 +26,9 @@ class EccentricConnectivityIndex(Descriptor):
     def __str__(self):
         return 'ECIndex'
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def dependencies(self):
         return dict(
             E=Eccentricity(self.explicit_hydrogens),

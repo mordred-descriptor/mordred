@@ -11,6 +11,9 @@ class FrameworkBase(Descriptor):
 class FrameworkCache(FrameworkBase):
     __slots__ = ()
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def dependencies(self):
         return dict(
             Rs=Rings()
@@ -67,6 +70,9 @@ class Framework(FrameworkBase):
 
     def __str__(self):
         return 'fMF'
+
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
 
     def dependencies(self):
         return dict(

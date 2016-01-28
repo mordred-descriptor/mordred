@@ -26,6 +26,9 @@ class VertexAdjacencyInformation(Descriptor):
     def __str__(self):
         return 'VAdjMat'
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def calculate(self, mol):
         m = sum(
             1

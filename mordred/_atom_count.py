@@ -36,6 +36,9 @@ class AtomCount(Descriptor):
 
     __slots__ = ('_type',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type,)
+
     def __init__(self, type='Atom'):
         self._type = type
 

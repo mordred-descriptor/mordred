@@ -83,6 +83,9 @@ ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
 class ChiCache(ChiBase):
     __slots__ = ('_order',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, self._order
+
     def __init__(self, order):
         self._order = order
 
@@ -162,8 +165,10 @@ class Chi(ChiBase):
     def gasteiger_charges(self):
         return getattr(self._prop, 'gasteiger_charges', False)
 
-    descriptor_keys = ('_type', '_order', '_prop', '_averaged',)
     __slots__ = ('_type', '_order', '_prop_name', '_prop', '_averaged',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type, self._order, self._prop, self._averaged)
 
     def __init__(self, type='path', order=0, prop='delta', averaged=False):
         self._type = parse_enum(ChiType, type)

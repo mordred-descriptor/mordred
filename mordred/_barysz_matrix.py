@@ -24,6 +24,9 @@ _carbon = Chem.Atom(6)
 class Barysz(BaryszMatrixBase):
     __slots__ = ('_prop',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._prop,)
+
     def __init__(self, prop):
         self._prop = prop
 
@@ -75,8 +78,10 @@ class BaryszMatrix(BaryszMatrixBase):
     def __str__(self):
         return '{}_Dz{}'.format(self._type.__name__, self._prop_name)
 
-    descriptor_keys = ('_prop', '_type',)
     __slots__ = ('_prop_name', '_prop', '_type',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._prop, self._type)
 
     def __init__(self, prop='Z', type='SpMax'):
         self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)

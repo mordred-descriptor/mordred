@@ -19,6 +19,9 @@ class BertzCT(Descriptor):
     def __str__(self):
         return 'BertzCT'
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def dependencies(self):
         return dict(D=DistanceMatrix(self.explicit_hydrogens))
 

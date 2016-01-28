@@ -41,6 +41,9 @@ class ZagrebIndex(Descriptor):
 
     __slots__ = ('_version', '_variable',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._version, self._variable)
+
     def __init__(self, version=1, variable=1):
         assert version in [1, 2]
         self._version = version

@@ -10,16 +10,10 @@ class AutocorrelationBase(Descriptor):
 
     @property
     def gasteiger_charges(self):
-        if not hasattr(self, '_prop'):
-            return False
-
         return getattr(self._prop, 'gasteiger_charges', False)
 
     @property
     def require_connected(self):
-        if not hasattr(self, '_prop'):
-            return False
-
         return getattr(self._prop, 'require_connected', False)
 
     def __str__(self):
@@ -28,6 +22,9 @@ class AutocorrelationBase(Descriptor):
             self._order,
             self._prop_name
         )
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._order, self._prop_name)
 
     def __init__(self, order=0, prop='m'):
         self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
@@ -62,21 +59,33 @@ class AutocorrelationBase(Descriptor):
         return AATSC(self._order, self._prop)
 
 
-class AVec(AutocorrelationBase):
-    __slots__ = ('_prop',)
+class AutocorrelationProp(AutocorrelationBase):
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._prop,)
 
     def __init__(self, prop):
         self._prop = prop
+
+
+class AutocorrelationOrder(AutocorrelationBase):
+    _prop = lambda _: np.nan
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._order,)
+
+    def __init__(self, order):
+        self._order = order
+
+
+class AVec(AutocorrelationProp):
+    __slots__ = ('_prop',)
 
     def calculate(self, mol):
         return np.array([self._prop(a) for a in mol.GetAtoms()])
 
 
-class CAVec(AutocorrelationBase):
+class CAVec(AutocorrelationProp):
     __slots__ = ('_prop',)
-
-    def __init__(self, prop):
-        self._prop = prop
 
     def dependencies(self):
         return dict(avec=AVec(self._prop))
@@ -85,11 +94,8 @@ class CAVec(AutocorrelationBase):
         return avec - avec.mean()
 
 
-class GMat(AutocorrelationBase):
+class GMat(AutocorrelationOrder):
     __slots__ = ('_order',)
-
-    def __init__(self, order):
-        self._order = order
 
     def dependencies(self):
         return dict(
@@ -100,11 +106,8 @@ class GMat(AutocorrelationBase):
         return dmat == self._order
 
 
-class GSum(AutocorrelationBase):
+class GSum(AutocorrelationOrder):
     __slots__ = ('_order',)
-
-    def __init__(self, order):
-        self._order = order
 
     def dependencies(self):
         return dict(gmat=GMat(self._order))
@@ -112,10 +115,7 @@ class GSum(AutocorrelationBase):
     def calculate(self, mol, gmat):
         s = gmat.sum()
 
-        if self._order == 0:
-            return s
-        else:
-            return s / 2
+        return s if self._order == 0 else s / 2
 
 
 MAX_DISTANCE = 8

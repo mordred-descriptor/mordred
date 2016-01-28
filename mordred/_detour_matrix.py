@@ -131,6 +131,9 @@ class DetourMatrixBase(Descriptor):
 class DetourMatrixCache(DetourMatrixBase):
     __slots__ = ()
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def calculate(self, mol):
         G = networkx.Graph()
         G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
@@ -159,6 +162,9 @@ class DetourMatrix(DetourMatrixBase):
         return '{}_Dt'.format(self._type.__name__)
 
     __slots__ = ('_type',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type,)
 
     def __init__(self, type='SpMax'):
         self._type = ma.get_method(type)
@@ -192,6 +198,9 @@ class DetourIndex(DetourMatrixBase):
     """
 
     __slots__ = ()
+
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
 
     @classmethod
     def preset(cls):

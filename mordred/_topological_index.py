@@ -10,6 +10,9 @@ class TopologicalIndexBase(Descriptor):
     def preset(cls):
         yield cls()
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
 
 class Radius(TopologicalIndexBase):
     r"""radius descriptor.

@@ -2,8 +2,9 @@ import numpy as np
 
 from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
+from .BondCount import BondCount
+
 from ._base import Descriptor
-from ._bond_types import BondCount
 
 
 class RotatableBondsBase(Descriptor):
@@ -12,6 +13,9 @@ class RotatableBondsBase(Descriptor):
     @classmethod
     def preset(cls):
         yield cls()
+
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
 
 
 class RotatableBondsCount(RotatableBondsBase):

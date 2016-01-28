@@ -14,6 +14,9 @@ class AlterMolecule(Descriptor):
     kekulize = True
     require_connected = True
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self.explicit_hydrogens, self._saturated)
+
     def __init__(self, explicit_hydrogens, saturated=False):
         self._saturated = saturated
         self.explicit_hydrogens = explicit_hydrogens
@@ -102,6 +105,9 @@ class EtaCoreCount(EtaBase):
 
     __slots__ = ('_averaged', '_reference',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._averaged, self._reference)
+
     def __init__(self, averaged=False, reference=False):
         self._averaged = averaged
         self._reference = reference
@@ -150,6 +156,9 @@ class EtaShapeIndex(EtaBase):
         return 'ETA_shape_{}'.format(self._type)
 
     __slots__ = ('_type',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type,)
 
     def __init__(self, type='p'):
         assert type in self.shape_types
@@ -240,6 +249,9 @@ class EtaVEMCount(EtaBase):
 
     __slots__ = ('_type', '_averaged',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type, self._averaged)
+
     def __init__(self, type='', averaged=False):
         assert type in self.beta_types
         self._type = type
@@ -328,6 +340,11 @@ class EtaCompositeIndex(EtaBase):
 
         return name
 
+    __slots__ = ('_reference', '_local', '_averaged')
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._reference, self._local, self._averaged)
+
     def __init__(self, reference=False, local=False, averaged=False):
         self._reference = reference
         self._local = local
@@ -407,6 +424,9 @@ class EtaFunctionalityIndex(EtaBase):
 
     __slots__ = ('_local', '_averaged',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._local, self._averaged)
+
     def __init__(self, local=False, averaged=False):
         self._local = local
         self._averaged = averaged
@@ -465,6 +485,9 @@ class EtaBranchingIndex(EtaBase):
 
     __slots__ = ('_ring', '_averaged',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._ring, self._averaged)
+
     def __init__(self, ring=True, averaged=False):
         self._ring = ring
         self._averaged = averaged
@@ -517,6 +540,9 @@ class EtaDeltaAlpha(EtaBase):
         return 'ETA_dAlpha_{}'.format(self._type)
 
     __slots__ = ('_type',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type,)
 
     def __init__(self, type='A'):
         assert type in self.delta_types
@@ -579,6 +605,9 @@ class EtaEpsilon(EtaBase):
 
     __slots__ = ('_type',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type,)
+
     def __init__(self, type=1):
         self._type = type
 
@@ -635,6 +664,9 @@ class EtaDeltaEpsilon(EtaBase):
 
     __slots__ = ('_type',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type,)
+
     def __init__(self, type='A'):
         self._type = type
 
@@ -682,6 +714,9 @@ class EtaDeltaBeta(EtaBase):
 
     __slots__ = ('_averaged',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._averaged,)
+
     def __init__(self, averaged=False):
         self._averaged = averaged
 
@@ -715,6 +750,9 @@ class EtaPsi(EtaBase):
 
     def __str__(self):
         return 'ETA_psi_1'
+
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
 
     def dependencies(self):
         return dict(
@@ -750,6 +788,9 @@ class EtaDeltaPsi(EtaBase):
     delta_psi_types = ('A', 'B',)
 
     __slots__ = ('_type',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._type,)
 
     def __init__(self, type='A'):
         assert type in self.delta_psi_types

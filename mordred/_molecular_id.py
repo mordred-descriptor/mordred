@@ -64,15 +64,18 @@ class MolecularIdBase(Descriptor):
     explicit_hydrogens = False
     require_connected = True
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._eps,)
+
 
 class AtomicIds(MolecularIdBase):
-    __slots__ = ('eps',)
+    __slots__ = ('_eps',)
 
     def __init__(self, eps=1e-10):
-        self.eps = eps
+        self._eps = eps
 
     def calculate(self, mol):
-        aid = AtomicId(mol, self.eps)
+        aid = AtomicId(mol, self._eps)
         return [
             1 + aid.get_atomic_id(i) / 2.0
             for i in range(mol.GetNumAtoms())
@@ -115,6 +118,9 @@ class MolecularId(MolecularIdBase):
         return n
 
     __slots__ = ('_orig_type', '_averaged', '_eps',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._orig_type, self._averaged, self._eps)
 
     def __init__(self, type='any', averaged=False, _eps=1e-10):
         self._orig_type = self._type = type

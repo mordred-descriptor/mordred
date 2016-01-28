@@ -14,6 +14,9 @@ class PathCountBase(Descriptor):
 class PathCountCache(PathCountBase):
     __slots__ = ('_order',)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._order,)
+
     def __init__(self, order):
         self._order = order
 
@@ -125,6 +128,9 @@ class PathCount(PathCountBase):
         return base + str(self._order)
 
     __slots__ = ('_order', '_pi', '_total', '_log',)
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self._order, self._pi, self._total, self._log)
 
     def __init__(self, order=1, pi=False, total=False, log=False):
         assert order >= 0

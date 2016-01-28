@@ -20,7 +20,13 @@ def method(cls):
 class Common(Descriptor):
     require_connected = True
 
-    descriptor_keys = 'matrix', 'explicit_hydrogens', 'gasteiger_charges', 'kekulize'
+    def __reduce_ex__(self, version):
+        return self.__class__, (
+            self.matrix,
+            self.explicit_hydrogens,
+            self.gasteiger_charges,
+            self.kekulize,
+        )
 
     def __init__(self, matrix, explicit_hydrogens=True, gasteiger_charges=False, kekulize=False):
         self.matrix = matrix

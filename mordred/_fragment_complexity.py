@@ -26,6 +26,9 @@ class FragmentComplexity(Descriptor):
 
     explicit_hydrogens = False
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def __str__(self):
         return 'fragCpx'
 

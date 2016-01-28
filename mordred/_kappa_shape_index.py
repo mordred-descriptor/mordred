@@ -14,6 +14,9 @@ class KappaShapeIndexBase(Descriptor):
     def __str__(self):
         return 'Kier{}'.format(self._order)
 
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
     def __init__(self):
         self._order = int(self.__class__.__name__[-1])
 

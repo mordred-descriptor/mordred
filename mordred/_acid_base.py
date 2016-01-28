@@ -15,13 +15,19 @@ class SmartsCountBase(Descriptor):
         self._mol = Chem.MolFromSmarts('[' + s + ']')
         return self._mol
 
-    def calculate(self, mol):
-        pat = getattr(self, '_mol', None) or self._get_smarts()
-        return len(mol.GetSubstructMatches(pat))
-
     @abstractproperty
     def SMARTS(self):
         pass
+
+    def __str__(self):
+        return self._name
+
+    def __reduce_ex__(self, version):
+        return self.__class__, ()
+
+    def calculate(self, mol):
+        pat = getattr(self, '_mol', None) or self._get_smarts()
+        return len(mol.GetSubstructMatches(pat))
 
 
 class AcidicGroupCount(SmartsCountBase):
@@ -32,8 +38,7 @@ class AcidicGroupCount(SmartsCountBase):
 
     __slots__ = ()
 
-    def __str__(self):
-        return 'nAcid'
+    _name = 'nAcid'
 
     SMARTS = (
         '[O;H1]-[C,S,P]=O',
@@ -51,8 +56,7 @@ class BasicGroupCount(SmartsCountBase):
 
     __slots__ = ()
 
-    def __str__(self):
-        return 'nBase'
+    _name = 'nBase'
 
     SMARTS = (
         '[NH2]-[CX4]',

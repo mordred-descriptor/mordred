@@ -1,4 +1,4 @@
-from ._bond_types import BondCount
+from ._bond_count import BondCount
 
 __all__ = ('BondCount',)
 
