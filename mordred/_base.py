@@ -131,7 +131,11 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         return Calculator(self)(mol)[0][1]
 
     @classmethod
-    def is_descriptor(cls, desc):
+    def is_descriptor_class(cls, desc):
+        r"""check calculatable descriptor class or not.
+
+        :rtype: :py:class:`bool`
+        """
         return (
             isinstance(desc, type) and
             issubclass(desc, cls) and
@@ -224,7 +228,7 @@ class Calculator(object):
         """
         for desc in descs:
             if not hasattr(desc, '__iter__'):
-                if Descriptor.is_descriptor(desc):
+                if Descriptor.is_descriptor_class(desc):
                     for d in desc.preset():
                         self._register_one(d)
 
@@ -451,7 +455,7 @@ def get_descriptors_from_module(mdl):
             continue
 
         desc = getattr(mdl, name)
-        if Descriptor.is_descriptor(desc):
+        if Descriptor.is_descriptor_class(desc):
             descs.append(desc)
 
     def key_by_def(d):

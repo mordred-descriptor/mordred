@@ -372,7 +372,7 @@ autodoc_default_flags = ['inherited-members']
 def setup(app):
     exclusions = set([
         'dependencies',
-        'is_descriptor',
+        'is_descriptor_class',
         'calculate',
         'descriptor_keys',
         'preset',
