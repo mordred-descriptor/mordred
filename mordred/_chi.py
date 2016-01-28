@@ -1,8 +1,7 @@
+from collections import defaultdict
 from collections import namedtuple
 from enum import IntEnum
 from itertools import chain
-
-from networkx import Graph
 
 import numpy as np
 
@@ -20,24 +19,37 @@ class ChiType(IntEnum):
 
 
 class DFS(object):
-    __slots__ = ('G', 'visited', 'vis_edges', 'is_chain', 'degrees')
+    __slots__ = ('mol', 'visited', 'vis_edges', 'is_chain', 'degrees', 'neighbors',)
 
-    def __init__(self, G):
-        self.G = G
+    def __init__(self, mol, use_bonds):
+        self.mol = mol
         self.visited = set()
         self.vis_edges = set()
         self.is_chain = False
         self.degrees = set()
+
+        self.neighbors = defaultdict(set)
+        for i in use_bonds:
+            bond = mol.GetBondWithIdx(i)
+            a = bond.GetBeginAtomIdx()
+            b = bond.GetEndAtomIdx()
+            self.neighbors[a].add(b)
+            self.neighbors[b].add(a)
+
+    @property
+    def nodes(self):
+        return list(self.neighbors.keys())
 
     @classmethod
     def _edge_key(cls, u, v):
         return min(u, v), max(u, v)
 
     def _dfs(self, u):
+        neighbors = self.neighbors[u]
         self.visited.add(u)
-        self.degrees.add(self.G.degree(u))
+        self.degrees.add(len(neighbors))
 
-        for v in self.G.neighbors_iter(u):
+        for v in neighbors:
             ek = self._edge_key(u, v)
             if v not in self.visited:
                 self.vis_edges.add(ek)
@@ -47,16 +59,18 @@ class DFS(object):
                 self.is_chain = True
 
     def __call__(self):
-        self._dfs(next(self.G.nodes_iter()))
+        self._dfs(next(iter(self.neighbors.keys())))
 
         if self.is_chain:
-            return ChiType.chain
+            t = ChiType.chain
         elif not self.degrees - set([1, 2]):
-            return ChiType.path
+            t = ChiType.path
         elif 2 in self.degrees:
-            return ChiType.path_cluster
+            t = ChiType.path_cluster
         else:
-            return ChiType.cluster
+            t = ChiType.cluster
+
+        return t
 
 
 class ChiBase(Descriptor):
@@ -79,16 +93,10 @@ class ChiCache(ChiBase):
         cluster = list()
         for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self._order):
 
-            G = Graph()
-            nodes = set()
-            for bond in (mol.GetBondWithIdx(i) for i in bonds):
-                a = bond.GetBeginAtomIdx()
-                b = bond.GetEndAtomIdx()
-                G.add_edge(a, b)
-                nodes.add(a)
-                nodes.add(b)
+            dfs = DFS(mol, bonds)
+            typ = dfs()
+            nodes = dfs.nodes
 
-            typ = DFS(G)()
             if typ == ChiType.chain:
                 chain.append(nodes)
             elif typ == ChiType.path:
