@@ -79,7 +79,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     def __repr__(self):
         cls, args = self.__reduce_ex__(self._reduce_ex_version)
-        return '{}({})'.format(cls, ', '.join(map(pretty, args)))
+        return '{}({})'.format(cls.__name__, ', '.join(map(pretty, args)))
 
     def __hash__(self):
         return hash(self.__reduce_ex__(self._reduce_ex_version))
