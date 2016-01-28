@@ -38,7 +38,7 @@ class ConstitutionalSum(Descriptor):
         return 'S{}'.format(self._prop_name)
 
     def calculate(self, mol):
-        return sum(self._prop(a) / self._prop(self._carbon) for a in mol.GetAtoms())
+        return sum(float(self._prop(a)) / self._prop(self._carbon) for a in mol.GetAtoms())
 
     rtype = float
 
