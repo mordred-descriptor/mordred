@@ -2,7 +2,7 @@ import numpy as np
 
 from rdkit import Chem
 
-from scipy.sparse.csgraph import shortest_path
+from networkx import Graph, floyd_warshall_numpy
 
 from . import _atomic_property
 from ._base import Descriptor
@@ -31,11 +31,11 @@ class Barysz(BaryszMatrixBase):
         self._prop = prop
 
     def calculate(self, mol):
-        N = mol.GetNumAtoms()
-
         C = self._prop(_carbon)
 
-        dmat = np.zeros((N, N))
+        G = Graph()
+
+        G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
 
         for bond in mol.GetBonds():
             ai = bond.GetBeginAtom()
@@ -47,13 +47,12 @@ class Barysz(BaryszMatrixBase):
             pi = bond.GetBondTypeAsDouble()
 
             w = float(C * C) / float(self._prop(ai) * self._prop(aj) * pi)
-            dmat[i, j] = w
-            dmat[j, i] = w
+            if not np.isfinite(w):
+                return None
 
-        if np.any(~np.isfinite(dmat)):
-            return None
+            G.add_edge(i, j, weight=w)
 
-        sp = shortest_path(dmat)
+        sp = floyd_warshall_numpy(G)
         np.fill_diagonal(sp, [1. - float(C) / self._prop(a) for a in mol.GetAtoms()])
         return sp
 

@@ -5,7 +5,6 @@ import os
 install_requires = [
     'six>=1.10',
     'numpy>=1.10',
-    'scipy>=0.16',
     'networkx>=1.10',
     'tqdm>=3.7.1',
 ]

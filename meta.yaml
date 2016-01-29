@@ -14,7 +14,6 @@ requirements:
 
     - networkx
     - numpy
-    - scipy
     - six
     - pyyaml
     - rdkit
@@ -25,7 +24,6 @@ requirements:
     - python
     - networkx
     - numpy
-    - scipy
     - six
     - pyyaml
     - rdkit
