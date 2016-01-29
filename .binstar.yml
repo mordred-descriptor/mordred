@@ -10,7 +10,8 @@ engine:
  - python=3.5
 
 script:
-  - if [[ `git rev-parse --abbrev-ref HEAD` != release ]]; then
+  - if [[ "$GIT_BRANCH" != release ]]; then
+      echo "beta version";
       sed -i -e 's/$/b0/' mordred/version.txt;
       echo $BINSTAR_BUILD_MAJOR > __conda_buildnum__.txt;
     fi

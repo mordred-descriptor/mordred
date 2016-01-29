@@ -21,7 +21,7 @@ before_install:
   - git config --global user.email "philopon.dependence@gmail.com"
   - git config --global user.name "philopon"
 
-  - if [[ `git rev-parse --abbrev-ref HEAD` != release ]]; then
+  - if [[ "$TRAVIS_BRANCH" != release ]]; then
       sed -i -e 's/$/b0/' mordred/version.txt;
     fi
 
@@ -58,7 +58,7 @@ after_success:
       make html;
 
       git clone -b gh-pages $DOC_REMOTE gh-pages;
-      rm -r gh-pages/$TRAVIS_BRANCH;
+      rm -r gh-pages/$TRAVIS_BRANCH || true;
       cp -r _build/html gh-pages/$TRAVIS_BRANCH;
 
       cd gh-pages;
