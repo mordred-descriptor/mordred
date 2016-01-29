@@ -90,6 +90,7 @@ class CarbonTypes(CarbonTypesBase):
 
     rtype = int
 
+
 class HybridizationRatio(CarbonTypesBase):
     r"""hybridization ratio descriptor.
 

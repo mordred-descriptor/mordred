@@ -37,6 +37,7 @@ class KappaShapeIndexBase(Descriptor):
 
     rtype = float
 
+
 class KappaShapeIndex1(KappaShapeIndexBase):
     r"""Kappa shape index 1 descriptor.
 

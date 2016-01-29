@@ -1,5 +1,3 @@
-import numpy as np
-
 from ._base import Descriptor
 from ._common import AdjacencyMatrix as A
 from ._matrix_attributes import get_method, methods
