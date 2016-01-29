@@ -1,4 +1,5 @@
 package: mordred
+user: mordred-descriptor
 
 platform: 
  - linux-64
@@ -21,6 +22,7 @@ script:
 
 after_success:
   - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p osx-64 -p win-32 -p win-64
+  - anaconda remove -f mordred-descriptor/mordred/$(cat __conda_version__.txt)
 
 build_targets:
   - conda
