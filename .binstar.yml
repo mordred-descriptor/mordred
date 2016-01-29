@@ -1,0 +1,30 @@
+package: mordred
+user: mordred-descriptor
+
+platform: 
+ - linux-64
+
+engine:
+ - python=2.7
+ - python=3.4
+ - python=3.5
+
+script:
+  - if [[ `git rev-parse --abbrev-ref HEAD` != release ]]; then
+      sed -i -e 's/$/b0/' mordred/version.txt;
+      echo $BINSTAR_BUILD_MAJOR > __conda_buildnum__.txt;
+    fi
+  - cp mordred/version.txt __conda_version__.txt
+  - conda update --all -y
+  - conda config --add channels rdkit
+  - conda config --add channels mordred-descriptor
+  - conda build .
+
+after_success:
+  - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p osx-64 -p win-32 -p win-64
+
+build_targets:
+  - conda
+  - ./osx-64/*.tar.bz2
+  - ./win-64/*.tar.bz2
+  - ./win-32/*.tar.bz2

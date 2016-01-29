@@ -1,0 +1,14 @@
+__pycache__
+*.pyc
+*.egg-info/
+.DS_Store
+.ipynb_checkpoints
+/dist
+.eggs/
+/.coverage
+/htmlcov
+/.id_rsa
+/.id_rsa.pub
+/docs/_build
+/docs/api
+/docs/descriptors.rst
