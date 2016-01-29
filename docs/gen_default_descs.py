@@ -29,11 +29,15 @@ def main(out):
 
                 if mdl:
                     mdl_name = '.'.join(mdl.__name__.split('.')[1:])
+                    mdl_ppr = ':py:mod:`~mordred.{}`'.format(mdl_name)
                     mdl = None
                 else:
-                    mdl_name = ''
+                    mdl_ppr = ''
 
-                out.write('    {}, {}, {}, "{!r}"\n'.format(i, mdl_name, desc, desc))
+                cnst, args = repr(desc).split('(')
+                cnst = ':py:class:`~mordred.{}.{}` ({}'.format(mdl_name, cnst, args)
+
+                out.write('    {}, {}, {}, "{}"\n'.format(i, mdl_ppr, desc, cnst))
 
 
 if __name__ == '__main__':
