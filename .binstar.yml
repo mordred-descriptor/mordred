@@ -13,7 +13,7 @@ script:
       sed -i -e 's/$/b0/' mordred/version.txt;
     fi
   - cp mordred/version.txt __conda_version__.txt
-  - git describe --tags | cut -d - -f 2 > __conda_buildnum__.txt
+  - echo $BINSTAR_BUILD_MAJOR > __conda_buildnum__.txt
   - conda update --all -y
   - conda config --add channels rdkit
   - conda config --add channels mordred-descriptor
