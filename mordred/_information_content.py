@@ -104,9 +104,10 @@ class Ag(InformationContentBase):
         atoms = [neighborhood_code(mol, i, self._order) for i in range(mol.GetNumAtoms())]
         ad = {a: i for i, a in enumerate(atoms)}
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]
+        Nags = len(Ags)
         return (
-            np.array([ad[k] for k, _ in Ags]),
-            np.array([ag for _, ag in Ags], dtype='float'),
+            np.fromiter((ad[k] for k, _ in Ags), 'int', Nags),
+            np.fromiter((ag for _, ag in Ags), 'float', Nags),
         )
 
 

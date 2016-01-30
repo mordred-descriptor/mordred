@@ -369,7 +369,11 @@ class EtaCompositeIndex(EtaBase):
         else:
             checker = lambda r: r != 0
 
-        gamma = np.array([ap.get_eta_gamma(a) for a in mol.GetAtoms()])
+        gamma = np.fromiter(
+            (ap.get_eta_gamma(a) for a in mol.GetAtoms()),
+            'float',
+            mol.GetNumAtoms(),
+        )
 
         v = float(sum(
             sum(

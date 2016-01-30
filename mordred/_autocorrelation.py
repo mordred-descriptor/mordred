@@ -83,7 +83,10 @@ class AVec(AutocorrelationProp):
     __slots__ = ('_prop',)
 
     def calculate(self, mol):
-        return np.array([self._prop(a) for a in mol.GetAtoms()])
+        return np.fromiter(
+            (self._prop(a) for a in mol.GetAtoms()),
+            'float', mol.GetNumAtoms(),
+        )
 
 
 class CAVec(AutocorrelationProp):

@@ -55,7 +55,11 @@ class BurdenEigenValues(BCUTBase):
 
     def calculate(self, mol, burden):
         bmat = burden.copy()
-        ps = np.array([self._prop(a) for a in mol.GetAtoms()])
+        ps = np.fromiter(
+            (self._prop(a) for a in mol.GetAtoms()),
+            'float',
+            mol.GetNumAtoms(),
+        )
         if np.any(np.isnan(ps)):
             return np.array([np.nan])
 
