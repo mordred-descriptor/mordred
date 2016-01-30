@@ -431,7 +431,7 @@ def make_calculator(calc, e_mode):
 
     else:
         def ignore_and_log(e):
-            sys.stderr.write('{}\n'.format(e))
+            sys.stderr.write('ERROR: {}\n'.format(e))
             return float('nan')
 
         return lambda m: calc(m, error_callback=ignore_and_log)
