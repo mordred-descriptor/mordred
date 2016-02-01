@@ -1,5 +1,5 @@
 import conf
-from mordred import all_descriptors, get_descriptors_from_module
+from mordred import all_modules, get_descriptors_from_module
 
 prelude = '''
 Descriptor List
@@ -11,8 +11,8 @@ preset descriptors
     calc = Calculator(all_descriptors())
 
 .. csv-table:: Descriptor list
-    :header: "#", "module", "name", "constructor"
-    :widths: 10, 25, 25, 40
+    :header: "#", "module", "name", "constructor", "dim"
+    :widths: 10, 20, 20, 40, 10
 
 '''[1:]
 
@@ -22,7 +22,7 @@ def main(out):
     
     i = 0
 
-    for mdl in all_descriptors():
+    for mdl in all_modules():
         for Desc in get_descriptors_from_module(mdl):
             for desc in Desc.preset():
                 i += 1
@@ -37,7 +37,9 @@ def main(out):
                 cnst, args = repr(desc).split('(')
                 cnst = ':py:class:`~mordred.{}.{}` ({}'.format(mdl_name, cnst, args)
 
-                out.write('    {}, {}, {}, "{}"\n'.format(i, mdl_ppr, desc, cnst))
+                dim = '3D' if desc.require_3D else '2D'
+
+                out.write('    {}, {}, {}, "{}", {}\n'.format(i, mdl_ppr, desc, cnst, dim))
 
 
 if __name__ == '__main__':
