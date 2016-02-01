@@ -1,5 +1,5 @@
 # e-dragon: TPSA(NO)
-- names: TPSA(NO)
+- names: TopoPSA(NO)
   digit: 7
   results:
     Hexane: 0
@@ -22,7 +22,7 @@
     Triethoxyphosphine: 27.69
     MethylphosphonicAcid: 57.53
 
-- names: TPSA
+- names: TopoPSA
   digit: 7
   results:
     Hexane: 0

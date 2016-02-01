@@ -5,7 +5,7 @@ from rdkit.Chem import BondType, rdMolDescriptors
 from ._base import Descriptor
 
 
-class TPSA(Descriptor):
+class TopoPSA(Descriptor):
     r"""topological polar surface area descriptor(NO only: rdkit wrapper).
 
     :type no_only: bool
@@ -23,7 +23,7 @@ class TPSA(Descriptor):
         yield cls(False)
 
     def __str__(self):
-        return 'TPSA(NO)' if self._no_only else 'TPSA'
+        return 'TopoPSA(NO)' if self._no_only else 'TopoPSA'
 
     __slots__ = ('_no_only',)
 
