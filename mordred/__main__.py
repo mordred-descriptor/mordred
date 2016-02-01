@@ -41,7 +41,7 @@ def sdf_parser(path):
 
 
 def mol_parser(path):
-    mol = Chem.MolFromMolFile(path)
+    mol = Chem.MolFromMolFile(path, removeHs=False)
     if mol is None:
         return ()
 
@@ -142,6 +142,12 @@ def main(descs, prog=None):
         help='stream read',
     )
 
+    parser.add_argument(
+        '-3', '--with-3D',
+        default=False, action='store_true',
+        help='calculate 3D descriptor(require sdf or mol file)'
+    )
+
     args = parser.parse_args()
 
     if args.input == sys.stdin and args.input.isatty():
@@ -164,6 +170,9 @@ def main(descs, prog=None):
         N = len(mols)
     else:
         N = None
+
+    if not args.with_3D:
+        descs = [desc for desc in descs if not desc.require_3D]
 
     calc = Calculator(descs)
 

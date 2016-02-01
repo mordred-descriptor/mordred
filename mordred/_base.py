@@ -43,13 +43,13 @@ class DescriptorException(MordredException):
 
     def __str__(self):
         if self.parent is None:
-            return '{}({!r}): {}'.format(
+            return '{}({!r}): {!r}'.format(
                 self.desc,
                 Chem.MolToSmiles(self.mol),
                 self.e,
             )
 
-        return '{}/{}({!r}): {}'.format(
+        return '{}/{}({!r}): {!r}'.format(
             self.parent,
             self.desc,
             Chem.MolToSmiles(self.mol),
@@ -69,6 +69,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     gasteiger_charges = False
     kekulize = False
     require_connected = False
+    require_3D = False
 
     _reduce_ex_version = 3
 
@@ -123,13 +124,13 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         """
         pass
 
-    def __call__(self, mol):
+    def __call__(self, mol, coord_id=-1):
         r"""calculate single descriptor value.
 
         :returns: descriptor result
         :rtype: scalar
         """
-        return Calculator(self)(mol)[0][1]
+        return Calculator(self)(mol, coord_id)[0][1]
 
     @classmethod
     def is_descriptor_class(cls, desc):
@@ -250,7 +251,7 @@ class Calculator(object):
                 for d in desc:
                     self.register(d)
 
-    def _calculate(self, desc, cache, parent=None):
+    def _calculate(self, desc, cache, coord_id, parent=None):
         if desc in cache:
             return cache[desc]
 
@@ -259,7 +260,7 @@ class Calculator(object):
             return float('nan')
 
         args = {
-            name: self._calculate(dep, cache, parent or desc)
+            name: self._calculate(dep, cache, coord_id, parent or desc)
             if dep is not None else None
             for name, dep in (desc.dependencies() or {}).items()
         }
@@ -271,14 +272,21 @@ class Calculator(object):
         )
 
         try:
-            r = desc.calculate(mol, **args)
+            if desc.require_3D:
+                conf = mol.GetConformer(coord_id)
+                if not conf.Is3D():
+                    raise ValueError('conformer id {} is not 3D coordinate'.format(coord_id))
+
+                r = desc.calculate(mol, conf, **args)
+            else:
+                r = desc.calculate(mol, **args)
         except Exception as e:
             raise DescriptorException(desc, e, mol, parent)
 
         cache[desc] = r
         return r
 
-    def __call__(self, mol, error_callback=None):
+    def __call__(self, mol, coord_id=-1, error_callback=None):
         r"""calculate descriptors.
 
         :type mol: rdkit.Chem.Mol
@@ -302,7 +310,7 @@ class Calculator(object):
         rs = []
         for desc in self.descriptors:
             try:
-                r = self._calculate(desc, cache)
+                r = self._calculate(desc, cache, coord_id)
             except Exception as e:
                 r = error_callback(e)
 
@@ -441,11 +449,11 @@ def worker(binary):
     return calculate(Chem.Mol(binary))
 
 
-def all_descriptors():
+def all_descriptors(with_3D=True):
     r"""yield all descriptors.
 
     :returns: all modules
-    :rtype: :py:class:`Iterator` (:py:class:`module`)
+    :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
     """
     base_dir = os.path.dirname(__file__)
 
@@ -454,7 +462,12 @@ def all_descriptors():
         if name[:1] == '_' or ext != '.py':
             continue
 
-        yield import_module('..' + name, __name__)
+        mdl = import_module('..' + name, __name__)
+        for desc in get_descriptors_from_module(mdl):
+            if not with_3D and desc.require_3D:
+                continue
+
+            yield desc
 
 
 def get_descriptors_from_module(mdl):
