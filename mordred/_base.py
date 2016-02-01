@@ -449,12 +449,7 @@ def worker(binary):
     return calculate(Chem.Mol(binary))
 
 
-def all_descriptors(with_3D=True):
-    r"""yield all descriptors.
-
-    :returns: all modules
-    :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
-    """
+def all_modules():
     base_dir = os.path.dirname(__file__)
 
     for name in os.listdir(base_dir):
@@ -462,7 +457,17 @@ def all_descriptors(with_3D=True):
         if name[:1] == '_' or ext != '.py':
             continue
 
-        mdl = import_module('..' + name, __name__)
+        yield import_module('.' + name, __package__)
+
+
+def all_descriptors(with_3D=True):
+    r"""yield all descriptors.
+
+    :returns: all modules
+    :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
+    """
+
+    for mdl in all_modules():
         for desc in get_descriptors_from_module(mdl):
             if not with_3D and desc.require_3D:
                 continue
