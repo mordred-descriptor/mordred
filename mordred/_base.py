@@ -501,10 +501,3 @@ def get_descriptors_from_module(mdl):
 
     descs.sort(key=key_by_def)
     return descs
-
-
-def parse_enum(enum, v):
-    if isinstance(v, enum):
-        return v
-    else:
-        return enum[v]

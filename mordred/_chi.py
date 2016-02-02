@@ -8,7 +8,8 @@ import numpy as np
 from rdkit import Chem
 
 from . import _atomic_property
-from ._base import Descriptor, parse_enum
+from ._base import Descriptor
+from ._util import parse_enum
 
 
 class ChiType(IntEnum):

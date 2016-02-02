@@ -5,7 +5,8 @@ from numpy import nan
 
 from rdkit.Chem import EState
 
-from ._base import Descriptor, parse_enum
+from ._base import Descriptor
+from ._util import parse_enum
 
 try:
     import builtins

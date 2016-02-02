@@ -3,7 +3,8 @@ from itertools import chain
 
 from rdkit import Chem
 
-from ._base import Descriptor, parse_enum
+from ._base import Descriptor
+from ._util import parse_enum
 
 
 class BondType(IntEnum):
