@@ -212,16 +212,9 @@ def submodule(name='__main__'):
     mdl = sys.modules[name]
     descs = get_descriptors_from_module(mdl)
 
-    prog = getattr(mdl, '__spac__', None)
-    if prog is None:
-        path, submdl = os.path.split(os.path.splitext(mdl.__file__)[0])
-        pkg = os.path.basename(path)
-        name = '{}.{}'.format(pkg, submdl)
-    else:
-        name = prog.name
-
-    sys.exit(main(descs, prog=name))
+    prog = __package__ + '.' + os.path.split(os.path.splitext(mdl.__file__)[0])[1]
+    sys.exit(main(descs, prog=prog))
 
 
 if __name__ == '__main__':
-    sys.exit(main(all_descriptors(), prog='mordred'))
+    sys.exit(main(all_descriptors(), prog=__package__))
