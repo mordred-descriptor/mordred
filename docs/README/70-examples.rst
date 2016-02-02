@@ -9,13 +9,13 @@ all descriptors
 
 .. code:: console
 
-    usage: python -m mordred [-h] [-i PATH] [-f TYPE] [-o PATH] [-p N] [-q] [-s]
-                             [-3]
+    usage: python -m mordred [-h] [-f TYPE] [-o PATH] [-p N] [-q] [-s] [-3] INPUT
+
+    positional arguments:
+      INPUT                 input file or directory(default: stdin)
 
     optional arguments:
       -h, --help            show this help message and exit
-      -i PATH, --input PATH
-                            input file or directory(default: stdin)
       -f TYPE, --from TYPE  input filetype(one of auto, smi, sdf, mol, default:
                             auto)
       -o PATH, --output PATH
