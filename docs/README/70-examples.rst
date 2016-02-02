@@ -9,8 +9,8 @@ all descriptors
 
 .. code:: console
 
-    $ python -m mordred --help
-    usage: python -m mordred [-h] [-i PATH] [-f TYPE] [-o [PATH]] [-p N]
+    usage: python -m mordred [-h] [-i PATH] [-f TYPE] [-o PATH] [-p N] [-q] [-s]
+                             [-3]
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -18,9 +18,12 @@ all descriptors
                             input file or directory(default: stdin)
       -f TYPE, --from TYPE  input filetype(one of auto, smi, sdf, mol, default:
                             auto)
-      -o [PATH], --output [PATH]
+      -o PATH, --output PATH
                             output csv file(default: stdout)
       -p N, --processes N   number of processes to use(default: number of threads)
+      -q, --quiet           hide progress bar
+      -s, --stream          stream read
+      -3, --with-3D         calculate 3D descriptor(require sdf or mol file)
 
 descriptors in submodule
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -49,7 +52,7 @@ as library
     from mordred import Calculator, all_descriptors
 
     # create descriptor calculator with all descriptors
-    calc = Calculator(all_descriptors())
+    calc = Calculator(all_descriptors(with_3D=False))
 
     # calculate and print descriptors
     for desc, value in calc(Chem.MolFromSmiles('c1ccccc1O')):
