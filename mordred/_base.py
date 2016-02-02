@@ -398,7 +398,7 @@ class Calculator(object):
 
             * 'raise': raise Exception
             * 'ignore': ignore Exception
-            * 'log': print Exception to stderr and ingore Exception
+            * 'log': print Exception to stderr and ignore Exception
 
         :type callback: :py:class:`Callable` ([(:py:class:`Descriptor`, scalar)])
             -> :py:class:`None`
