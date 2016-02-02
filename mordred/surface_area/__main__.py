@@ -1,3 +1,5 @@
+import os
+import sys
 import argparse
 
 from rdkit import Chem
@@ -6,7 +8,9 @@ from . import SurfaceArea
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog='{} -m {}'.format(os.path.basename(sys.executable), __package__)
+    )
 
     parser.add_argument(
         'FILE', type=str,
@@ -15,13 +19,13 @@ def main():
 
     parser.add_argument(
         '-s', '--solvent-radius',
-        type=float, default=1.4,
+        type=float, default=1.4, metavar='R',
         help='solvent radius (default: %(default)s)',
     )
 
     parser.add_argument(
         '-l', '--mesh-level',
-        type=int, default=5,
+        type=int, default=5, metavar='L',
         help='mesh level (default: %(default)s)',
     )
 
