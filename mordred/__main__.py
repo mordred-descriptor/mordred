@@ -107,8 +107,7 @@ def main(descs, prog=None):
     parser = argparse.ArgumentParser(**parser_options)
 
     parser.add_argument(
-        '-i', '--input', metavar='PATH',
-        type=str, default=sys.stdin,
+        'INPUT', type=str, default=sys.stdin,
         help='input file or directory(default: stdin)',
     )
 
@@ -150,7 +149,7 @@ def main(descs, prog=None):
 
     args = parser.parse_args()
 
-    if args.input == sys.stdin and args.input.isatty():
+    if args.INPUT == sys.stdin and args.INPUT.isatty():
         sys.exit(parser.print_help())
 
     if args.output is None:
@@ -163,7 +162,7 @@ def main(descs, prog=None):
     if args.output.isatty():
         args.quiet = True
 
-    mols = file_parser(args.input, getattr(args, 'from'))
+    mols = file_parser(args.INPUT, getattr(args, 'from'))
 
     if not args.stream:
         mols = list(mols)
