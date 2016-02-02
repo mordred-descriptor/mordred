@@ -1,8 +1,8 @@
 import numpy as np
 
 from ._base import Descriptor
-from ._surface_area.sasa import SurfaceArea
 from ._atomic_property import Rvdw
+from .surface_area import SurfaceArea
 
 
 class CPSABase(Descriptor):

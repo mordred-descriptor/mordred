@@ -1,6 +1,6 @@
 import os
 from rdkit import Chem
-from mordred._surface_area.sasa import SurfaceArea
+from mordred.surface_area import SurfaceArea
 from nose.tools import ok_
 
 
@@ -53,16 +53,3 @@ def test_SASA():
         p = 0.05
 
         yield ok_, 1 - p < e < 1 + p, 'large SASA error in {}: {}'.format(name, e)
-
-'''
-if __name__ == '__main__':
-    from rdkit import Chem
-
-    import sys
-
-    f = sys.argv[1]
-
-    for mol in Chem.SDMolSupplier(f, removeHs=False):
-        sasa = SurfaceArea.from_mol(mol, level=5).surface_area()
-        print(mol.GetProp('_Name'), np.sum(sasa))
-        '''
