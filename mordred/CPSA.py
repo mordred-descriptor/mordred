@@ -1,3 +1,9 @@
+r"""charged partial surface area descriptor.
+
+References
+    * :cite:`10.1021/ac00220a013`
+"""
+
 from ._cpsa import (
     PNSA, PPSA,
     DPSA,
