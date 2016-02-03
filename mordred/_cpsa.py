@@ -3,6 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._atomic_property import Rvdw
 from .surface_area import SurfaceArea
+from ._util import conformer_to_numpy
 
 
 class CPSABase(Descriptor):
@@ -56,9 +57,7 @@ class AtomicSurfaceArea(CPSABase):
             'float', N
         )
 
-        ps = np.array(
-            [list(conf.GetAtomPosition(i)) for i in range(N)]
-        )
+        ps = conformer_to_numpy(conf)
 
         sa = SurfaceArea(rs, ps, self._level)
         return np.array(sa.surface_area())
