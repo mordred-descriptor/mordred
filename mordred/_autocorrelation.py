@@ -321,10 +321,9 @@ class GATS(MATS):
         return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)
 
     def calculate(self, mol, avec, gmat, gsum, cavec):
-        W = np.tile(avec, (len(avec), 1))
-        if np.any(~np.isfinite(W)):
+        if np.any(~np.isfinite(avec)):
             return np.nan
 
-        n = (gmat * (W - W.T) ** 2).sum() / (4 * (gsum or np.nan))
+        n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * (gsum or np.nan))
         d = (cavec ** 2).sum() / (len(avec) - 1)
         return n / (d or np.nan)
