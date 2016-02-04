@@ -116,3 +116,25 @@ class Valence(AdjacencyMatrix):
 
     def calculate(self, mol, D):
         return D.sum(axis=0)
+
+
+class DistanceMatrix3D(Descriptor):
+    __slots__ = ('explicit_hydrogens', 'useAtomWts',)
+
+    require_3D = True
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (
+            self.explicit_hydrogens,
+            self.useAtomWts,
+        )
+
+    def __init__(self, explicit_hydrogens, useAtomWts=False):
+        self.explicit_hydrogens = explicit_hydrogens
+        self.useAtomWts = useAtomWts
+
+    def calculate(self, mol, conf):
+        return Chem.Get3DDistanceMatrix(
+            mol, confId=conf.GetId(),
+            useAtomWts=self.useAtomWts, force=True,
+        )
