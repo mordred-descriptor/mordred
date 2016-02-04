@@ -20,7 +20,7 @@ class DistanceMatrix(Descriptor):
 
     def calculate(self, mol):
         return Chem.GetDistanceMatrix(
-            mol, useBO=self.useBO, useAtomWts=self.useAtomWts
+            mol, useBO=self.useBO, useAtomWts=self.useAtomWts, force=True,
         )
 
 
@@ -100,7 +100,7 @@ class AdjacencyMatrix(Descriptor):
 
     def calculate(self, mol, An=None, A1=None):
         if self.order == 1:
-            return Chem.GetAdjacencyMatrix(mol, useBO=self.useBO)
+            return Chem.GetAdjacencyMatrix(mol, useBO=self.useBO, force=True)
 
         return An.dot(A1)
 
