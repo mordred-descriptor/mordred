@@ -20,3 +20,7 @@ CP(=O)(O)O MethylphosphonicAcid
 CC1CC1 MethylCyclopropane
 CC#N Acetonitrile
 C1=C(NC=N1)CC(C(=O)O)N Histidine
+N Ammonia
+P(Cl)(Cl)(Cl)(Cl)Cl PentachloroLambda5Phosphane
+[Na+].[Cl-] SodiumChloride
+Cl[Yb](Cl)Cl TrichloroYtterbium
