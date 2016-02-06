@@ -71,7 +71,12 @@ class AtomicCharge(CPSABase):
     require_3D = False
 
     def calculate(self, mol):
-        return atoms_to_numpy(lambda a: a.GetDoubleProp('_GasteigerCharge'), mol)
+        charges = atoms_to_numpy(lambda a: a.GetDoubleProp('_GasteigerCharge'), mol)
+        if not np.all(np.isfinite(charges)):
+            return None
+
+        else:
+            return charges
 
 
 class PNSA(VersionCPSABase):
@@ -99,6 +104,9 @@ class PNSA(VersionCPSABase):
         return charges < 0.0
 
     def calculate(self, mol, conf, SA, charges):
+        if charges is None:
+            return np.nan
+
         mask = self._mask(charges)
 
         if self._version == 1:
@@ -210,6 +218,9 @@ class RNCG(CPSABase):
         return {'charges': AtomicCharge()}
 
     def calculate(self, mol, charges):
+        if charges is None:
+            return np.nan
+
         charges = charges[self._mask(charges)]
         Qmax = charges[np.argmax(np.abs(charges))]
 
@@ -239,6 +250,9 @@ class RNCS(CPSABase):
         return charges < 0
 
     def calculate(self, mol, conf, RCG, SA, charges):
+        if charges is None:
+            return np.nan
+
         mask = self._mask(charges)
         charges = charges[mask]
 
@@ -278,6 +292,9 @@ class TASA(CPSABase):
         )
 
     def calculate(self, mol, conf, SA, charges):
+        if charges is None:
+            return np.nan
+
         return np.sum(SA[self._mask(charges)])
 
 
