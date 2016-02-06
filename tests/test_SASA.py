@@ -50,6 +50,10 @@ def test_SASA():
     for mol in Chem.SDMolSupplier(sdf_file, removeHs=False):
         name = mol.GetProp('_Name')
         actual = sum(SurfaceArea.from_mol(mol).surface_area())
+
+        if name not in data:
+            continue
+
         desired = data[name]
 
         e = actual / desired

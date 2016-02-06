@@ -10,11 +10,12 @@ base = os.path.join(
 writer = Chem.SDWriter(base + '.sdf')
 for line in open(base + '.smi'):
     smi, name = line.strip().split()
+    print(name)
     mol = Chem.AddHs(Chem.MolFromSmiles(smi))
     mol.SetProp('_Name', name)
     
     Chem.EmbedMolecule(mol, randomSeed=23216)
-    while Chem.MMFFOptimizeMolecule(mol) != 0:
+    while Chem.MMFFOptimizeMolecule(mol) == 1:
         pass
 
     writer.write(mol)
