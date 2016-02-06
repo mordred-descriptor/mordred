@@ -49,12 +49,22 @@ class AtomicSurfaceArea(CPSABase):
         self._level = level
 
     def calculate(self, mol, conf):
-        rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] * self._solvent_radius, mol)
+        rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] + self._solvent_radius, mol)
 
         ps = conformer_to_numpy(conf)
 
         sa = SurfaceArea(rs, ps, self._level)
         return np.array(sa.surface_area())
+
+
+class TotalSurfaceArea(CPSABase):
+    def dependencies(self):
+        return {'ASA': AtomicSurfaceArea()}
+
+    def calculate(self, mol, conf, ASA):
+        return np.sum(ASA)
+
+    rtype = float
 
 
 class AtomicCharge(CPSABase):

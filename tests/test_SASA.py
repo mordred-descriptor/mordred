@@ -1,6 +1,7 @@
 import os
 from rdkit import Chem
 from mordred.surface_area import SurfaceArea
+from mordred._cpsa import TotalSurfaceArea
 from nose.tools import ok_
 
 
@@ -44,6 +45,8 @@ def test_SASA():
         n, v = line.strip().split()
         data[n] = float(v)
 
+    tsa = TotalSurfaceArea()
+
     for mol in Chem.SDMolSupplier(sdf_file, removeHs=False):
         name = mol.GetProp('_Name')
         actual = sum(SurfaceArea.from_mol(mol).surface_area())
@@ -51,5 +54,9 @@ def test_SASA():
 
         e = actual / desired
         p = 0.05
+
+        yield ok_, 1 - p < e < 1 + p, 'large SASA error in {}: {}'.format(name, e)
+
+        e = tsa(mol) / desired
 
         yield ok_, 1 - p < e < 1 + p, 'large SASA error in {}: {}'.format(name, e)
