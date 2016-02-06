@@ -3,7 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._atomic_property import Rvdw
 from .surface_area import SurfaceArea
-from ._util import conformer_to_numpy
+from ._util import conformer_to_numpy, atoms_to_numpy
 
 
 class CPSABase(Descriptor):
@@ -49,13 +49,7 @@ class AtomicSurfaceArea(CPSABase):
         self._level = level
 
     def calculate(self, mol, conf):
-        N = conf.GetNumAtoms()
-
-        rs = np.fromiter(
-            (Rvdw[a.GetAtomicNum()] * self._solvent_radius
-             for a in mol.GetAtoms()),
-            'float', N
-        )
+        rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] * self._solvent_radius, mol)
 
         ps = conformer_to_numpy(conf)
 
@@ -67,11 +61,7 @@ class AtomicCharge(CPSABase):
     require_3D = False
 
     def calculate(self, mol):
-        return np.fromiter(
-            (a.GetDoubleProp('_GasteigerCharge')
-             for a in mol.GetAtoms()),
-            'float', mol.GetNumAtoms()
-        )
+        return atoms_to_numpy(lambda a: a.GetDoubleProp('_GasteigerCharge'), mol)
 
 
 class PNSA(VersionCPSABase):

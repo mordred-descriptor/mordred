@@ -6,6 +6,7 @@ from . import _atomic_property as ap
 from ._base import Descriptor
 from ._common import DistanceMatrix
 from ._ring_count import RingCount
+from ._util import atoms_to_numpy
 
 
 class AlterMolecule(Descriptor):
@@ -369,11 +370,7 @@ class EtaCompositeIndex(EtaBase):
         else:
             checker = lambda r: r != 0
 
-        gamma = np.fromiter(
-            (ap.get_eta_gamma(a) for a in mol.GetAtoms()),
-            'float',
-            mol.GetNumAtoms(),
-        )
+        gamma = atoms_to_numpy(ap.get_eta_gamma, mol)
 
         v = float(sum(
             sum(

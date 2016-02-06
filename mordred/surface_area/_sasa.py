@@ -3,6 +3,7 @@ from collections import defaultdict
 import numpy as np
 
 from ._mesh import SphereMesh
+from .._util import atoms_to_numpy
 
 
 class SurfaceArea(object):
@@ -104,12 +105,10 @@ class SurfaceArea(object):
         """
 
         from .._atomic_property import Rvdw
-        N = mol.GetNumAtoms()
-        rs = np.fromiter(
-            (Rvdw[a.GetAtomicNum()] + solvent_radius for a in mol.GetAtoms()),
-            'float', N)
+        rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] + solvent_radius, mol)
 
         conf = mol.GetConformer(conformer)
-        ps = np.array([list(conf.GetAtomPosition(i)) for i in range(N)])
+
+        ps = np.array([list(conf.GetAtomPosition(i)) for i in range(mol.GetNumAtoms())])
 
         return cls(rs, ps, level)

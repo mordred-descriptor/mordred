@@ -2,6 +2,7 @@ import numpy as np
 
 from . import _atomic_property
 from ._base import Descriptor
+from ._util import atoms_to_numpy
 
 
 class BCUTBase(Descriptor):
@@ -55,11 +56,8 @@ class BurdenEigenValues(BCUTBase):
 
     def calculate(self, mol, burden):
         bmat = burden.copy()
-        ps = np.fromiter(
-            (self._prop(a) for a in mol.GetAtoms()),
-            'float',
-            mol.GetNumAtoms(),
-        )
+        ps = atoms_to_numpy(self._prop, mol)
+
         if np.any(np.isnan(ps)):
             return np.array([np.nan])
 

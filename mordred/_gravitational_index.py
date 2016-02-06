@@ -2,6 +2,7 @@ import numpy as np
 
 from ._base import Descriptor
 from ._common import DistanceMatrix3D, AdjacencyMatrix
+from ._util import atoms_to_numpy
 
 
 class GravitationalIndex(Descriptor):
@@ -41,10 +42,7 @@ class GravitationalIndex(Descriptor):
         return d
 
     def calculate(self, mol, conf, D, A=1.0):
-        w = np.fromiter(
-            (a.GetMass() for a in mol.GetAtoms()),
-            'float', mol.GetNumAtoms()
-        )
+        w = atoms_to_numpy(lambda a: a.GetMass(), mol)
 
         w = w[:, np.newaxis] * w
         np.fill_diagonal(w, 0)

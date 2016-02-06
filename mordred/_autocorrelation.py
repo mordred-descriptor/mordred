@@ -3,6 +3,7 @@ import numpy as np
 from . import _atomic_property
 from ._base import Descriptor
 from ._common import DistanceMatrix
+from ._util import atoms_to_numpy
 
 
 class AutocorrelationBase(Descriptor):
@@ -83,10 +84,7 @@ class AVec(AutocorrelationProp):
     __slots__ = ('_prop',)
 
     def calculate(self, mol):
-        return np.fromiter(
-            (self._prop(a) for a in mol.GetAtoms()),
-            'float', mol.GetNumAtoms(),
-        )
+        return atoms_to_numpy(self._prop, mol)
 
 
 class CAVec(AutocorrelationProp):
