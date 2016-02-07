@@ -13,6 +13,8 @@ class TopologicalIndexBase(Descriptor):
     def __reduce_ex__(self, version):
         return self.__class__, ()
 
+    rtype = int
+
 
 class Radius(TopologicalIndexBase):
     r"""radius descriptor."""
@@ -30,8 +32,6 @@ class Radius(TopologicalIndexBase):
     def calculate(self, mol, R):
         return int(R)
 
-    rtype = int
-
 
 class Diameter(TopologicalIndexBase):
     r"""diameter descriptor."""
@@ -48,8 +48,6 @@ class Diameter(TopologicalIndexBase):
 
     def calculate(self, mol, D):
         return int(D)
-
-    rtype = int
 
 
 class TopologicalShapeIndex(TopologicalIndexBase):
@@ -86,7 +84,7 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     rtype = float
 
 
-class PetitjeanIndex(TopologicalIndexBase):
+class PetitjeanIndex(TopologicalShapeIndex):
     r"""Petitjean index descriptor.
 
     .. math::
@@ -105,16 +103,8 @@ class PetitjeanIndex(TopologicalIndexBase):
     def __str__(self):
         return 'PetitjeanIndex'
 
-    def dependencies(self):
-        return dict(
-            R=CRadius(self.explicit_hydrogens),
-            D=CDiameter(self.explicit_hydrogens),
-        )
-
     def calculate(self, mol, R, D):
         if D == 0:
             return float('nan')
 
         return float(D - R) / float(D)
-
-    rtype = float

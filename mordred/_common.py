@@ -52,16 +52,7 @@ class Radius(Eccentricity):
         return E.min()
 
 
-class Diameter(DistanceMatrix):
-    def dependencies(self):
-        return dict(
-            D=DistanceMatrix(
-                self.explicit_hydrogens,
-                self.useBO,
-                self.useAtomWts,
-            )
-        )
-
+class Diameter(Eccentricity):
     def calculate(self, mol, D):
         return D.max()
 
@@ -138,3 +129,34 @@ class DistanceMatrix3D(Descriptor):
             mol, confId=conf.GetId(),
             useAtomWts=self.useAtomWts, force=True,
         )
+
+
+class Eccentricity3D(DistanceMatrix3D):
+    def dependencies(self):
+        return dict(
+            D=DistanceMatrix3D(
+                self.explicit_hydrogens,
+                self.useAtomWts,
+            )
+        )
+
+    def calculate(self, mol, conf, D):
+        return D.max(axis=0)
+
+
+class Radius3D(Eccentricity3D):
+    def dependencies(self):
+        return dict(
+            E=Eccentricity3D(
+                self.explicit_hydrogens,
+                self.useAtomWts,
+            )
+        )
+
+    def calculate(self, mol, conf, E):
+        return E.min()
+
+
+class Diameter3D(Eccentricity3D):
+    def calculate(self, mol, conf, D):
+        return D.max()
