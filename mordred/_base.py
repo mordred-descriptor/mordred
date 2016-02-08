@@ -13,48 +13,7 @@ from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 
 import six
 
-
-class MordredException(Exception):
-    pass
-
-
-class MordredAttributeError(AttributeError, MordredException):
-    def __init__(self, desc, args):
-        super(AttributeError, self).__init__()
-        self.desc = desc
-        self.args = args
-
-    def __reduce_ex__(self, version):
-        return self.__class__, (self.desc, self.args)
-
-    def __str__(self):
-        return '{}({})'.format(self.args, self.desc)
-
-
-class DescriptorException(MordredException):
-    def __init__(self, desc, e, mol, parent=None):
-        self.desc = desc
-        self.e = e
-        self.mol = mol
-        self.parent = parent
-
-    def __reduce_ex__(self, version):
-        return self.__class__, (self.desc, self.e, self.mol, self.parent)
-
-    def __str__(self):
-        if self.parent is None:
-            return '{}({!r}): {!r}'.format(
-                self.desc,
-                Chem.MolToSmiles(self.mol),
-                self.e,
-            )
-
-        return '{}/{}({!r}): {!r}'.format(
-            self.parent,
-            self.desc,
-            Chem.MolToSmiles(self.mol),
-            self.e,
-        )
+from ._exception import DescriptorException
 
 
 def pretty(a):
