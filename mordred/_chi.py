@@ -7,7 +7,7 @@ import numpy as np
 
 from rdkit import Chem
 
-from . import _atomic_property
+from ._atomic_property import AtomicProperty
 from ._base import Descriptor
 from ._util import parse_enum
 
@@ -155,17 +155,13 @@ class Chi(ChiBase):
         )
 
     def __str__(self):
-        prop = _prop_dict.get(self._prop_name, self._prop_name)
+        prop = _prop_dict.get(str(self._prop), self._prop)
         ct = _chi_type_dict[self._type]
         p = 'A' if self._averaged else ''
 
         return '{}{}{}-{}'.format(p, prop, ct, self._order)
 
-    @property
-    def gasteiger_charges(self):
-        return getattr(self._prop, 'gasteiger_charges', False)
-
-    __slots__ = ('_type', '_order', '_prop_name', '_prop', '_averaged',)
+    __slots__ = ('_type', '_order', '_prop', '_averaged',)
 
     def __reduce_ex__(self, version):
         return self.__class__, (self._type, self._order, self._prop, self._averaged)
@@ -173,24 +169,26 @@ class Chi(ChiBase):
     def __init__(self, type='path', order=0, prop='delta', averaged=False):
         self._type = parse_enum(ChiType, type)
         self._order = order
-        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
         self._averaged = averaged
 
     def dependencies(self):
+        d = {'P': self._prop}
         if self._order > 0:
-            return dict(chi=ChiCache(self._order))
+            d['chi'] = ChiCache(self._order)
 
-    def calculate(self, mol, chi=None):
+        return d
+
+    def calculate(self, mol, P, chi=None):
         if self._order <= 0:
             chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
 
         x = 0.0
         node_sets = getattr(chi, self._type.name)
-        props = [self._prop(a) for a in mol.GetAtoms()]
         for nodes in node_sets:
             c = 1
             for node in nodes:
-                c *= props[node]
+                c *= P[node]
 
             if c <= 0:
                 return np.nan

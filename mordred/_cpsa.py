@@ -1,14 +1,13 @@
 import numpy as np
 
 from ._base import Descriptor
-from ._atomic_property import Rvdw
+from ._atomic_property import Rvdw, AtomicProperty
 from .surface_area import SurfaceArea
 from ._util import conformer_to_numpy, atoms_to_numpy
 
 
 class CPSABase(Descriptor):
     require_3D = True
-    gasteiger_charges = True
 
     @classmethod
     def preset(cls):
@@ -70,8 +69,10 @@ class TotalSurfaceArea(CPSABase):
 class AtomicCharge(CPSABase):
     require_3D = False
 
-    def calculate(self, mol):
-        charges = atoms_to_numpy(lambda a: a.GetDoubleProp('_GasteigerCharge'), mol)
+    def dependencies(self):
+        return {'charges': AtomicProperty(self.explicit_hydrogens, 'c')}
+
+    def calculate(self, mol, charges):
         if not np.all(np.isfinite(charges)):
             return None
 

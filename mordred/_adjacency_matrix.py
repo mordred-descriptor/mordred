@@ -32,7 +32,6 @@ class AdjacencyMatrix(Descriptor):
             result=self._type(
                 A(self.explicit_hydrogens),
                 self.explicit_hydrogens,
-                self.gasteiger_charges,
                 self.kekulize,
             )
         )

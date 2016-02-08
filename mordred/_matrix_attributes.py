@@ -24,24 +24,21 @@ class Common(Descriptor):
         return self.__class__, (
             self.matrix,
             self.explicit_hydrogens,
-            self.gasteiger_charges,
             self.kekulize,
         )
 
-    def __init__(self, matrix, explicit_hydrogens=True, gasteiger_charges=False, kekulize=False):
+    def __init__(self, matrix, explicit_hydrogens=True, kekulize=False):
         self.matrix = matrix
         self.explicit_hydrogens = explicit_hydrogens
-        self.gasteiger_charges = gasteiger_charges
         self.kelulize = kekulize
 
     @property
     def _key_args(self):
-        return [
+        return (
             self.matrix,
             self.explicit_hydrogens,
-            self.gasteiger_charges,
             self.kekulize
-        ]
+        )
 
     def dependencies(self):
         return dict(eig=Eigen(*self._key_args))

@@ -1,8 +1,7 @@
 import numpy as np
 
-from . import _atomic_property
+from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
-from ._util import atoms_to_numpy
 
 
 class BCUTBase(Descriptor):
@@ -42,21 +41,22 @@ class Burden(BCUTBase):
 
 
 class BurdenEigenValues(BCUTBase):
-    __slots__ = ('_prop', 'gasteiger_charges',)
+    __slots__ = ('_prop',)
 
     def __reduce_ex__(self, version):
-        return self.__class__, (self._prop, self.gasteiger_charges)
+        return self.__class__, (self._prop,)
 
-    def __init__(self, prop, gasteiger_charges):
+    def __init__(self, prop):
         self._prop = prop
-        self.gasteiger_charges = gasteiger_charges
 
     def dependencies(self):
-        return dict(burden=Burden())
+        return dict(
+            ps=self._prop,
+            burden=Burden(),
+        )
 
-    def calculate(self, mol, burden):
+    def calculate(self, mol, burden, ps):
         bmat = burden.copy()
-        ps = atoms_to_numpy(self._prop, mol)
 
         if np.any(np.isnan(ps)):
             return np.array([np.nan])
@@ -89,31 +89,27 @@ class BCUT(BCUTBase):
     def preset(cls):
         return (
             cls(a, n)
-            for a in _atomic_property.get_properties(istate=True, charge=True)
+            for a in get_properties(istate=True, charge=True)
             for n in [0, -1]
         )
 
-    @property
-    def gasteiger_charges(self):
-        return getattr(self._prop, 'gasteiger_charges', False)
-
     def __str__(self):
         if self._nth < 0:
-            return 'BCUT{}-{}l'.format(self._prop_name, np.abs(self._nth))
+            return 'BCUT{}-{}l'.format(self._prop, np.abs(self._nth))
         else:
-            return 'BCUT{}-{}h'.format(self._prop_name, self._nth + 1)
+            return 'BCUT{}-{}h'.format(self._prop, self._nth + 1)
 
-    __slots__ = ('_prop', '_prop_name', '_nth',)
+    __slots__ = ('_prop', '_nth',)
 
     def __reduce_ex__(self, version):
         return self.__class__, (self._prop, self._nth)
 
     def __init__(self, prop='m', nth=0):
-        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
         self._nth = nth
 
     def dependencies(self):
-        return dict(bev=BurdenEigenValues(self._prop, self.gasteiger_charges))
+        return dict(bev=BurdenEigenValues(self._prop))
 
     def calculate(self, mol, bev):
         try:

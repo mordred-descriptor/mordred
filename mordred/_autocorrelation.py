@@ -1,39 +1,30 @@
 import numpy as np
 
-from . import _atomic_property
+from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
 from ._common import DistanceMatrix
-from ._util import atoms_to_numpy
 
 
 class AutocorrelationBase(Descriptor):
     explicit_hydrogens = True
 
-    @property
-    def gasteiger_charges(self):
-        return getattr(self._prop, 'gasteiger_charges', False)
-
-    @property
-    def require_connected(self):
-        return getattr(self._prop, 'require_connected', False)
-
     def __str__(self):
         return '{}{}{}'.format(
             self.__class__.__name__,
             self._order,
-            self._prop_name
+            self._avec
         )
 
     def __reduce_ex__(self, version):
-        return self.__class__, (self._order, self._prop_name)
+        return self.__class__, (self._order, self._prop)
 
     def __init__(self, order=0, prop='m'):
-        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._prop = prop
         self._order = order
 
     @property
     def _avec(self):
-        return AVec(self._prop)
+        return AtomicProperty(self.explicit_hydrogens, self._prop)
 
     @property
     def _cavec(self):
@@ -80,18 +71,11 @@ class AutocorrelationOrder(AutocorrelationBase):
         self._order = order
 
 
-class AVec(AutocorrelationProp):
-    __slots__ = ('_prop',)
-
-    def calculate(self, mol):
-        return atoms_to_numpy(self._prop, mol)
-
-
 class CAVec(AutocorrelationProp):
     __slots__ = ('_prop',)
 
     def dependencies(self):
-        return dict(avec=AVec(self._prop))
+        return dict(avec=self._avec)
 
     def calculate(self, mol, avec):
         return avec - avec.mean()
@@ -164,7 +148,7 @@ class ATS(AutocorrelationBase):
     def preset(cls):
         return (
             cls(d, a)
-            for a in _atomic_property.get_properties(istate=True)
+            for a in get_properties(istate=True)
             for d in range(MAX_DISTANCE + 1)
         )
 
@@ -224,7 +208,7 @@ class ATSC(AutocorrelationBase):
     def preset(cls):
         return (
             cls(d, a)
-            for a in _atomic_property.get_properties(charge=True, istate=True)
+            for a in get_properties(charge=True, istate=True)
             for d in range(MAX_DISTANCE + 1)
         )
 
@@ -290,7 +274,7 @@ class MATS(AutocorrelationBase):
     def preset(cls):
         return (
             cls(d, a)
-            for a in _atomic_property.get_properties(charge=True, istate=True)
+            for a in get_properties(charge=True, istate=True)
             for d in range(1, MAX_DISTANCE + 1)
         )
 

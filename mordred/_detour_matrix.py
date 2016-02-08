@@ -172,7 +172,6 @@ class DetourMatrix(DetourMatrixBase):
             result=self._type(
                 DetourMatrixCache(),
                 self.explicit_hydrogens,
-                self.gasteiger_charges,
                 self.kekulize,
             )
         )

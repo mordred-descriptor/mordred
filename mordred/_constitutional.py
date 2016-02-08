@@ -1,6 +1,8 @@
+import numpy as np
+
 from rdkit import Chem
 
-from . import _atomic_property
+from ._atomic_property import AtomicProperty, get_properties, get_sanderson_en
 from ._base import Descriptor
 
 
@@ -20,25 +22,32 @@ class ConstitutionalSum(Descriptor):
 
     @classmethod
     def preset(cls):
-        return map(cls, _atomic_property.get_properties())
+        return map(cls, get_properties())
 
     _carbon = Chem.Atom(6)
 
-    __slots__ = ('_prop_name', '_prop',)
+    __slots__ = ('_prop', '_prop_name',)
 
     def __reduce_ex__(self, version):
         return self.__class__, (self._prop,)
 
     def __init__(self, prop='v'):
-        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
-        if self._prop == _atomic_property.get_sanderson_en:
+        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
+
+        if self._prop.prop == get_sanderson_en:
             self._prop_name = 'se'
+        else:
+            self._prop_name = str(self._prop)
 
     def __str__(self):
         return 'S{}'.format(self._prop_name)
 
-    def calculate(self, mol):
-        return sum(float(self._prop(a)) / self._prop(self._carbon) for a in mol.GetAtoms())
+    def dependencies(self):
+        return {'P': self._prop}
+
+    def calculate(self, mol, P):
+        C = self._prop.prop(self._carbon)
+        return np.sum(P / C)
 
     rtype = float
 
@@ -59,7 +68,7 @@ class ConstitutionalMean(ConstitutionalSum):
 
     @classmethod
     def preset(cls):
-        return map(cls, _atomic_property.get_properties())
+        return map(cls, get_properties())
 
     def __str__(self):
         return 'M{}'.format(self._prop_name)

@@ -9,7 +9,6 @@ from sys import maxsize
 from types import ModuleType
 
 from rdkit import Chem
-from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 
 import six
 
@@ -25,7 +24,6 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     r"""abstract base class of descriptors."""
 
     explicit_hydrogens = True
-    gasteiger_charges = False
     kekulize = False
     require_connected = False
     require_3D = False
@@ -110,7 +108,6 @@ class Molecule(object):
         self.orig = orig
         self.hydration_cache = dict()
         self.kekulize_cache = dict()
-        self.gasteiger_cache = dict()
         self.is_connected = len(Chem.GetMolFrags(orig)) == 1
 
     def hydration(self, explicitH):
@@ -130,21 +127,10 @@ class Molecule(object):
         self.kekulize_cache[explicitH] = mol
         return mol
 
-    def gasteiger(self, mol, explicitH, kekulize):
-        key = explicitH, kekulize
-        if key in self.gasteiger_cache:
-            return self.gasteiger_cache[key]
-
-        ComputeGasteigerCharges(mol)
-        self.gasteiger_cache[key] = mol
-        return mol
-
-    def get(self, explicitH, kekulize, gasteiger):
+    def get(self, explicitH, kekulize):
         mol = self.hydration(explicitH)
         if kekulize:
             mol = self.kekulize(mol, explicitH)
-        if gasteiger:
-            mol = self.gasteiger(mol, explicitH, kekulize)
 
         return mol
 
@@ -158,7 +144,6 @@ class Calculator(object):
     def __init__(self, *descs):
         self.descriptors = []
         self.explicitH = False
-        self.gasteiger = False
         self.kekulize = False
 
         self.register(*descs)
@@ -174,9 +159,6 @@ class Calculator(object):
 
         if desc.explicit_hydrogens:
             self.explicitH = True
-
-        if desc.gasteiger_charges:
-            self.gasteiger = True
 
         if desc.kekulize:
             self.kekulize = True
@@ -226,7 +208,6 @@ class Calculator(object):
 
         mol = self.molecule.get(
             explicitH=desc.explicit_hydrogens,
-            gasteiger=desc.gasteiger_charges,
             kekulize=desc.kekulize,
         )
 

@@ -1,6 +1,10 @@
 from math import pi
 
 from rdkit import Chem
+from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+
+from ._base import Descriptor
+from ._util import atoms_to_numpy
 
 
 def attr(**attrs):
@@ -478,17 +482,38 @@ def get_properties(charge=False, istate=False):
         yield 's'
 
 
-def getter(p, explicit_hydrogens):
-    if p in getters:
-        p = getters[p]
+class AtomicProperty(Descriptor):
+    def __str__(self):
+        return getattr(self.prop, 'name', self.prop.__name__)
 
-    if p == 'c':
-        if explicit_hydrogens:
-            p = get_charge_explicitHs
+    def __reduce_ex__(self, version):
+        return self.__class__, (self.explicit_hydrogens, self.prop,)
+
+    def __init__(self, explicit_hydrogens, prop):
+        if isinstance(prop, self.__class__):
+            return self.__init__(prop.explicit_hydrogens, prop.prop)
+
+        self.explicit_hydrogens = explicit_hydrogens
+        self.gasteiger_charges = False
+
+        if hasattr(prop, 'require_connected'):
+            self.require_connected = prop.require_connected
+
+        if prop in getters:
+            self.prop = getters[prop]
+
+        elif prop == 'c':
+            self.gasteiger_charges = True
+            self.prop = get_charge_explicitHs if explicit_hydrogens else get_charge_implicitHs
+
+        elif hasattr(prop, '__call__'):
+            self.prop = prop
+
         else:
-            p = get_charge_implicitHs
+            raise ValueError('atomic property is not callable: {!r}'.format(prop))
 
-    if hasattr(p, '__call__'):
-        return getattr(p, 'name', p.__name__), p
+    def calculate(self, mol):
+        if self.gasteiger_charges:
+            ComputeGasteigerCharges(mol)
 
-    raise ValueError('atomic property is not callable: {!r}'.format(p))
+        return atoms_to_numpy(self.prop, mol)

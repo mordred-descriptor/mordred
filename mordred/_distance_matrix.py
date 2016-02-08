@@ -32,7 +32,6 @@ class DistanceMatrix(Descriptor):
             result=self._type(
                 D(self.explicit_hydrogens),
                 self.explicit_hydrogens,
-                self.gasteiger_charges,
                 self.kekulize,
             )
         )

@@ -4,7 +4,7 @@ from rdkit import Chem
 
 from networkx import Graph, floyd_warshall_numpy
 
-from . import _atomic_property
+from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
 from ._matrix_attributes import get_method, methods
 
@@ -12,10 +12,6 @@ from ._matrix_attributes import get_method, methods
 class BaryszMatrixBase(Descriptor):
     explicit_hydrogens = False
     __slots__ = ()
-
-    @property
-    def gasteiger_charges(self):
-        return getattr(self._prop, 'gasteiger_charges', False)
 
 
 _carbon = Chem.Atom(6)
@@ -30,30 +26,30 @@ class Barysz(BaryszMatrixBase):
     def __init__(self, prop):
         self._prop = prop
 
-    def calculate(self, mol):
-        C = self._prop(_carbon)
+    def dependencies(self):
+        return {'P': self._prop}
+
+    def calculate(self, mol, P):
+        C = self._prop.prop(_carbon)
 
         G = Graph()
 
         G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
 
         for bond in mol.GetBonds():
-            ai = bond.GetBeginAtom()
-            aj = bond.GetEndAtom()
-
-            i = ai.GetIdx()
-            j = aj.GetIdx()
+            i = bond.GetBeginAtomIdx()
+            j = bond.GetEndAtomIdx()
 
             pi = bond.GetBondTypeAsDouble()
 
-            w = float(C * C) / float(self._prop(ai) * self._prop(aj) * pi)
+            w = float(C * C) / float(P[i] * P[j] * pi)
             if not np.isfinite(w):
                 return None
 
             G.add_edge(i, j, weight=w)
 
         sp = floyd_warshall_numpy(G)
-        np.fill_diagonal(sp, [1. - float(C) / self._prop(a) for a in mol.GetAtoms()])
+        np.fill_diagonal(sp, [1. - float(C) / P[a.GetIdx()] for a in mol.GetAtoms()])
         return sp
 
 
@@ -71,18 +67,18 @@ class BaryszMatrix(BaryszMatrixBase):
 
     @classmethod
     def preset(cls):
-        return (cls(p, m) for p in _atomic_property.get_properties() for m in methods)
+        return (cls(p, m) for p in get_properties() for m in methods)
 
     def __str__(self):
-        return '{}_Dz{}'.format(self._type.__name__, self._prop_name)
+        return '{}_Dz{}'.format(self._type.__name__, self._prop)
 
-    __slots__ = ('_prop_name', '_prop', '_type',)
+    __slots__ = ('_prop', '_type',)
 
     def __reduce_ex__(self, version):
         return self.__class__, (self._prop, self._type)
 
     def __init__(self, prop='Z', type='SpMax'):
-        self._prop_name, self._prop = _atomic_property.getter(prop, self.explicit_hydrogens)
+        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
         self._type = get_method(type)
 
     def dependencies(self):
@@ -90,7 +86,6 @@ class BaryszMatrix(BaryszMatrixBase):
             result=self._type(
                 Barysz(self._prop),
                 self.explicit_hydrogens,
-                self.gasteiger_charges,
                 self.kekulize,
             )
         )
