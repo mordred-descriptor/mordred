@@ -26,16 +26,18 @@ class ABCIndex(ABCIndexBase):
     r"""atom-bond connectivity indez descriptor.
     """
 
+    @staticmethod
+    def _each_bond(bond):
+        du = bond.GetBeginAtom().GetDegree()
+        dv = bond.GetEndAtom().GetDegree()
+
+        return math.sqrt(float(du + dv - 2) / (du * dv))
+
     def calculate(self, mol):
-        s = 0.0
-
-        for bond in mol.GetBonds():
-            du = bond.GetBeginAtom().GetDegree()
-            dv = bond.GetEndAtom().GetDegree()
-
-            s += math.sqrt(float(du + dv - 2) / (du * dv))
-
-        return s
+        return float(sum(
+            self._each_bond(bond)
+            for bond in mol.GetBonds()
+        ))
 
 
 class ABCGGIndex(ABCIndexBase):
@@ -45,16 +47,18 @@ class ABCGGIndex(ABCIndexBase):
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
+    @staticmethod
+    def _each_bond(bond, D):
+        u = bond.GetBeginAtomIdx()
+        v = bond.GetEndAtomIdx()
+
+        nu = np.sum(D[u, :] < D[v, :])
+        nv = np.sum(D[v, :] < D[u, :])
+
+        return np.sqrt(float(nu + nv - 2) / (nu * nv))
+
     def calculate(self, mol, D):
-        s = 0.0
-
-        for bond in mol.GetBonds():
-            u = bond.GetBeginAtomIdx()
-            v = bond.GetEndAtomIdx()
-
-            nu = np.sum(D[u, :] < D[v, :])
-            nv = np.sum(D[v, :] < D[u, :])
-
-            s += np.sqrt(float(nu + nv - 2) / (nu * nv))
-
-        return s
+        return float(sum(
+            self._each_bond(bond, D)
+            for bond in mol.GetBonds()
+        ))
