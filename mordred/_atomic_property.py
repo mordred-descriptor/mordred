@@ -489,6 +489,10 @@ class AtomicProperty(Descriptor):
     def __str__(self):
         return getattr(self.prop, 'name', self.prop.__name__)
 
+    @property
+    def name(self):
+        return str(self)
+
     def __reduce_ex__(self, version):
         return self.__class__, (self.explicit_hydrogens, self.prop,)
 
