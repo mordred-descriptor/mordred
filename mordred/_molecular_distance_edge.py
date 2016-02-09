@@ -5,7 +5,7 @@ from rdkit import Chem
 from six import integer_types, string_types
 
 from ._base import Descriptor
-from ._common import DistanceMatrix, Valence
+from ._graph_matrix import DistanceMatrix, Valence
 
 table = Chem.GetPeriodicTable()
 
@@ -59,10 +59,10 @@ class MolecularDistanceEdge(Descriptor):
             raise ValueError('element must be atomic number or atomic symbol')
 
     def dependencies(self):
-        return dict(
-            D=DistanceMatrix(self.explicit_hydrogens),
-            V=Valence(self.explicit_hydrogens),
-        )
+        return {
+            'D': DistanceMatrix(self.explicit_hydrogens),
+            'V': Valence(self.explicit_hydrogens),
+        }
 
     def calculate(self, mol, D, V):
         N = mol.GetNumAtoms()

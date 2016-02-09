@@ -74,7 +74,7 @@ class ConstitutionalMean(ConstitutionalSum):
         return 'M{}'.format(self._prop_name)
 
     def dependencies(self):
-        return dict(S=ConstitutionalSum(self._prop))
+        return {'S': ConstitutionalSum(self._prop)}
 
     def calculate(self, mol, S):
         return S / mol.GetNumAtoms()

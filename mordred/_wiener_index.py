@@ -1,5 +1,5 @@
 from ._base import Descriptor
-from ._common import DistanceMatrix
+from ._graph_matrix import DistanceMatrix
 
 
 class WienerIndex(Descriptor):
@@ -28,9 +28,7 @@ class WienerIndex(Descriptor):
         self._polarity = polarity
 
     def dependencies(self):
-        return dict(
-            D=DistanceMatrix(self.explicit_hydrogens)
-        )
+        return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, mol, D):
         if self._polarity:

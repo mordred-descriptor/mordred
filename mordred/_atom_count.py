@@ -1,6 +1,7 @@
 from rdkit.Chem import rdMolDescriptors
 
 from ._base import Descriptor
+from ._atomic_property import halogen
 
 
 class AtomCount(Descriptor):
@@ -41,7 +42,7 @@ class AtomCount(Descriptor):
         self._type = type
 
     def _calc_X(self, mol):
-        X = set([9, 17, 35, 53, 85, 117])
+        X = halogen
         return sum(a.GetAtomicNum() in X for a in mol.GetAtoms())
 
     def _calc(self, mol):

@@ -100,7 +100,7 @@ class DummyBar(object):
 
 
 def main(descs, prog=None):
-    parser_options = dict()
+    parser_options = {}
     if prog is not None:
         parser_options['prog'] = '{} -m {}'.format(os.path.basename(sys.executable), prog)
 
@@ -194,7 +194,7 @@ def main(descs, prog=None):
                 bar.update()
 
             for mol, val in calc.map(
-                    mols, args.processes, error_mode='log', callback=callback):
+                    mols, args.processes, error_mode='raise', callback=callback):
 
                 def ppr(a):
                     if isinstance(a, float) and math.isnan(a):

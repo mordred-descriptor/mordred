@@ -5,7 +5,7 @@ import numpy as np
 from six import integer_types
 
 from ._base import Descriptor
-from ._common import AdjacencyMatrix, DistanceMatrix
+from ._graph_matrix import AdjacencyMatrix, DistanceMatrix
 
 
 class ChargeTermMatrix(Descriptor):
@@ -15,10 +15,10 @@ class ChargeTermMatrix(Descriptor):
         return self.__class__, ()
 
     def dependencies(self):
-        return dict(
-            A=AdjacencyMatrix(self.explicit_hydrogens),
-            D=DistanceMatrix(self.explicit_hydrogens),
-        )
+        return {
+            'A': AdjacencyMatrix(self.explicit_hydrogens),
+            'D': DistanceMatrix(self.explicit_hydrogens),
+        }
 
     def calculate(self, mol, A, D):
         D2 = D.copy()
@@ -77,10 +77,10 @@ class TopologicalCharge(Descriptor):
         self._order = order
 
     def dependencies(self):
-        return dict(
-            CT=ChargeTermMatrix(),
-            D=DistanceMatrix(self.explicit_hydrogens)
-        )
+        return {
+            'CT': ChargeTermMatrix(),
+            'D': DistanceMatrix(self.explicit_hydrogens)
+        }
 
     def calculate(self, mol, CT, D):
         D = D * np.tri(*D.shape)

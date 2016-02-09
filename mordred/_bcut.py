@@ -50,10 +50,10 @@ class BurdenEigenValues(BCUTBase):
         self._prop = prop
 
     def dependencies(self):
-        return dict(
-            ps=self._prop,
-            burden=Burden(),
-        )
+        return {
+            'ps': self._prop,
+            'burden': Burden(),
+        }
 
     def calculate(self, mol, burden, ps):
         bmat = burden.copy()
@@ -109,7 +109,7 @@ class BCUT(BCUTBase):
         self._nth = nth
 
     def dependencies(self):
-        return dict(bev=BurdenEigenValues(self._prop))
+        return {'bev': BurdenEigenValues(self._prop)}
 
     def calculate(self, mol, bev):
         try:

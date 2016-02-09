@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from rdkit.Chem import HybridizationType
+
 from ._base import Descriptor
 
 
@@ -14,36 +16,26 @@ class CarbonTypesCache(CarbonTypesBase):
     def __reduce_ex__(self, version):
         return self.__class__, ()
 
+    _hybridization = {
+        HybridizationType.SP: 1,
+        HybridizationType.SP2: 2,
+        HybridizationType.SP3: 3,
+        HybridizationType.SP3D: 3,
+        HybridizationType.SP3D2: 3,
+    }
+
     def calculate(self, mol):
         r = defaultdict(lambda: defaultdict(int))
         for a in mol.GetAtoms():
             if a.GetAtomicNum() != 6:
                 continue
 
-            double = 0
-            triple = 0
-            carbon = 0
+            carbon = sum(
+                other.GetAtomicNum() == 6
+                for other in a.GetNeighbors()
+            )
 
-            for b in a.GetBonds():
-                other = b.GetBeginAtom()
-                if a.GetIdx() == other.GetIdx():
-                    other = b.GetEndAtom()
-
-                if other.GetAtomicNum() == 6:
-                    carbon += 1
-
-                bt = b.GetBondTypeAsDouble()
-                if bt == 2.0:
-                    double += 1
-                elif bt == 3.0:
-                    triple += 1
-
-            if (double == 2 and triple == 0) or (triple == 1 and double == 0):
-                SP = 1
-            elif double == 1 and triple == 0:
-                SP = 2
-            else:
-                SP = 3
+            SP = self._hybridization.get(a.GetHybridization())
 
             r[SP][carbon] += 1
 
@@ -83,7 +75,7 @@ class CarbonTypes(CarbonTypesBase):
         self._SP = SP
 
     def dependencies(self):
-        return dict(CT=CarbonTypesCache())
+        return {'CT': CarbonTypesCache()}
 
     def calculate(self, mol, CT):
         return CT[self._SP][self._nCarbon]
@@ -114,7 +106,7 @@ class HybridizationRatio(CarbonTypesBase):
         return self.__class__, ()
 
     def dependencies(self):
-        return dict(CT=CarbonTypesCache())
+        return {'CT': CarbonTypesCache()}
 
     def calculate(self, mol, CT):
         Nsp3 = float(sum(CT[3].values()))

@@ -47,10 +47,10 @@ class RotatableBondsRatio(RotatableBondsBase):
         return 'RotRatio'
 
     def dependencies(self):
-        return dict(
-            nRot=RotatableBondsCount(),
-            nB=BondCount('heavy'),
-        )
+        return {
+            'nRot': RotatableBondsCount(),
+            'nB': BondCount('heavy'),
+        }
 
     def calculate(self, mol, nRot, nB):
         if nB == 0:

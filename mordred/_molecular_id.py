@@ -5,6 +5,7 @@ from networkx import Graph
 from rdkit import Chem
 
 from ._base import Descriptor
+from ._atomic_property import halogen
 
 
 class AtomicId(object):
@@ -134,12 +135,12 @@ class MolecularId(MolecularIdBase):
             self._type = 'h'
             self._check = lambda a: a not in set([1, 6])
         elif self._type == 'X':
-            self._check = lambda a: a in set([9, 17, 35, 53, 85, 117])
+            self._check = lambda a: a in halogen
         else:
             self._check = lambda a: a == type
 
     def dependencies(self):
-        return dict(aids=AtomicIds(self._eps))
+        return {'aids': AtomicIds(self._eps)}
 
     def calculate(self, mol, aids):
         v = float(sum(

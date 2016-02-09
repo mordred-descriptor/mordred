@@ -7,6 +7,9 @@ from ._base import Descriptor
 from ._util import atoms_to_numpy
 
 
+halogen = set([9, 17, 35, 53, 85, 117])
+
+
 def attr(**attrs):
     def proc(f):
         for a, v in attrs.items():
@@ -17,12 +20,12 @@ def attr(**attrs):
     return proc
 
 
-@attr(gasteiger_charges=True, name='c')
+@attr(name='c')
 def get_charge_explicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge')
 
 
-@attr(gasteiger_charges=True, name='c')
+@attr(name='c')
 def get_charge_implicitHs(atom):
     return atom.GetDoubleProp('_GasteigerCharge') +\
         atom.GetDoubleProp('_GasteigerHCharge')
@@ -455,20 +458,20 @@ def get_mc_gowan_volume(a):
     return McGowanVolume[a.GetAtomicNum()]
 
 
-getters = dict(
-    Z=get_atomic_number,
-    m=get_mass,
-    v=get_vdw_volume,
-    e=get_sanderson_en,
-    se=get_sanderson_en,
-    pe=get_pauling_en,
-    are=get_allred_rocow_en,
-    p=get_polarizability,
-    i=get_ionpotential,
-    s=get_intrinsic_state,
-    delta=get_sigma_electrons,
-    delta_v=get_valence_electrons,
-)
+getters = {
+    'Z': get_atomic_number,
+    'm': get_mass,
+    'v': get_vdw_volume,
+    'e': get_sanderson_en,
+    'se': get_sanderson_en,
+    'pe': get_pauling_en,
+    'are': get_allred_rocow_en,
+    'p': get_polarizability,
+    'i': get_ionpotential,
+    's': get_intrinsic_state,
+    'delta': get_sigma_electrons,
+    'delta_v': get_valence_electrons,
+}
 
 
 def get_properties(charge=False, istate=False):

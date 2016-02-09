@@ -1,6 +1,6 @@
 from ._base import Descriptor
-from ._common import Diameter as CDiameter
-from ._common import Radius as CRadius
+from ._graph_matrix import Diameter as CDiameter
+from ._graph_matrix import Radius as CRadius
 
 
 class TopologicalIndexBase(Descriptor):
@@ -25,9 +25,7 @@ class Radius(TopologicalIndexBase):
         return 'Radius'
 
     def dependencies(self):
-        return dict(
-            R=CRadius(self.explicit_hydrogens)
-        )
+        return {'R': CRadius(self.explicit_hydrogens)}
 
     def calculate(self, mol, R):
         return int(R)
@@ -42,9 +40,7 @@ class Diameter(TopologicalIndexBase):
         return 'Diameter'
 
     def dependencies(self):
-        return dict(
-            D=CDiameter(self.explicit_hydrogens)
-        )
+        return {'D': CDiameter(self.explicit_hydrogens)}
 
     def calculate(self, mol, D):
         return int(D)
@@ -70,10 +66,10 @@ class TopologicalShapeIndex(TopologicalIndexBase):
         return 'TopoShapeIndex'
 
     def dependencies(self):
-        return dict(
-            R=CRadius(self.explicit_hydrogens),
-            D=CDiameter(self.explicit_hydrogens),
-        )
+        return {
+            'R': CRadius(self.explicit_hydrogens),
+            'D': CDiameter(self.explicit_hydrogens),
+        }
 
     def calculate(self, mol, R, D):
         if R == 0:

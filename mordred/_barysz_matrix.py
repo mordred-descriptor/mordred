@@ -14,11 +14,10 @@ class BaryszMatrixBase(Descriptor):
     __slots__ = ()
 
 
-_carbon = Chem.Atom(6)
-
-
 class Barysz(BaryszMatrixBase):
     __slots__ = ('_prop',)
+
+    _carbon = Chem.Atom(6)
 
     def __reduce_ex__(self, version):
         return self.__class__, (self._prop,)
@@ -30,7 +29,7 @@ class Barysz(BaryszMatrixBase):
         return {'P': self._prop}
 
     def calculate(self, mol, P):
-        C = self._prop.prop(_carbon)
+        C = self._prop.prop(self._carbon)
 
         G = Graph()
 

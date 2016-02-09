@@ -63,8 +63,6 @@ class TotalSurfaceArea(CPSABase):
     def calculate(self, mol, conf, ASA):
         return np.sum(ASA)
 
-    rtype = float
-
 
 class AtomicCharge(CPSABase):
     require_3D = False
@@ -144,10 +142,10 @@ class DPSA(VersionCPSABase):
     """
 
     def dependencies(self):
-        return dict(
-            PPSA=PPSA(self._version),
-            PNSA=PNSA(self._version),
-        )
+        return {
+            'PPSA': PPSA(self._version),
+            'PNSA': PNSA(self._version),
+        }
 
     def calculate(self, mol, conf, PPSA, PNSA):
         return PPSA - PNSA
@@ -160,11 +158,14 @@ class FNSA(VersionCPSABase):
     :param version: one of :py:attr:`versions`
     """
 
+    def _SA(self):
+        return PNSA(self._version)
+
     def dependencies(self):
-        return dict(
-            ASA=AtomicSurfaceArea(),
-            SA=PNSA(self._version),
-        )
+        return {
+            'ASA': AtomicSurfaceArea(),
+            'SA': self._SA(),
+        }
 
     def calculate(self, mol, conf, SA, ASA):
         return SA / np.sum(ASA)
@@ -177,33 +178,33 @@ class FPSA(FNSA):
     :param version: one of :py:attr:`versions`
     """
 
-    def dependencies(self):
-        return dict(
-            ASA=AtomicSurfaceArea(),
-            SA=PPSA(self._version),
-        )
+    def _SA(self):
+        return PPSA(self._version)
 
 
-class WNSA(FNSA):
+class WxSAMixin(object):
+    def calculate(self, mol, conf, SA, ASA):
+        return SA * np.sum(ASA) / 1000.0
+
+
+class WNSA(WxSAMixin, FNSA):
     r"""surface weighted charged partial negative surface area descriptor.
 
     :type version: int
     :param version: one of :py:attr:`versions`
     """
 
-    def calculate(self, mol, conf, SA, ASA):
-        return SA * np.sum(ASA) / 1000.0
+    pass
 
 
-class WPSA(FPSA):
+class WPSA(WxSAMixin, FPSA):
     r"""surface weighted charged partial positive surface area descriptor.
 
     :type version: int
     :param version: one of :py:attr:`versions`
     """
 
-    def calculate(self, mol, conf, SA, ASA):
-        return SA * np.sum(ASA) / 1000.0
+    pass
 
 
 class RNCG(CPSABase):
@@ -239,12 +240,14 @@ class RPCG(RNCG):
 class RNCS(CPSABase):
     r"""relative negative charge surface area descriptor."""
 
+    _RCG = RNCG()
+
     def dependencies(self):
-        return dict(
-            RCG=RNCG(),
-            SA=AtomicSurfaceArea(),
-            charges=AtomicCharge(),
-        )
+        return {
+            'RCG': self._RCG,
+            'SA': AtomicSurfaceArea(),
+            'charges': AtomicCharge(),
+        }
 
     @staticmethod
     def _mask(charges):
@@ -271,12 +274,7 @@ class RPCS(RNCS):
     def _mask(charges):
         return charges > 0
 
-    def dependencies(self):
-        return dict(
-            RCG=RPCG(),
-            SA=AtomicSurfaceArea(),
-            charges=AtomicCharge(),
-        )
+    _RCG = RPCG()
 
 
 class TASA(CPSABase):
@@ -287,10 +285,10 @@ class TASA(CPSABase):
         return np.abs(charges) < 0.2
 
     def dependencies(self):
-        return dict(
-            SA=AtomicSurfaceArea(),
-            charges=AtomicCharge(),
-        )
+        return {
+            'SA': AtomicSurfaceArea(),
+            'charges': AtomicCharge(),
+        }
 
     def calculate(self, mol, conf, SA, charges):
         if charges is None:
@@ -310,11 +308,13 @@ class TPSA(TASA):
 class RASA(CPSABase):
     r"""relative hydrophobic surface area descriptor."""
 
+    _TxSA = TASA()
+
     def dependencies(self):
-        return dict(
-            TxSA=TASA(),
-            SASA=AtomicSurfaceArea(),
-        )
+        return {
+            'TxSA': self._TxSA,
+            'SASA': AtomicSurfaceArea(),
+        }
 
     def calculate(self, mol, conf, TxSA, SASA):
         return TxSA / np.sum(SASA)
@@ -323,8 +323,4 @@ class RASA(CPSABase):
 class RPSA(RASA):
     r"""relative polar surface area descriptor."""
 
-    def dependencies(self):
-        return dict(
-            TxSA=TPSA(),
-            SASA=AtomicSurfaceArea(),
-        )
+    _TxSA = TPSA()

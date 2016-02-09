@@ -59,11 +59,11 @@ class VdwVolumeABC(Descriptor):
         return self.__class__, ()
 
     def dependencies(self):
-        return dict(
-            Nb=BondCount(),
-            NRa=RingCount(None, False, False, True, None),
-            NRA=RingCount(None, False, False, False, None),
-        )
+        return {
+            'Nb': BondCount(),
+            'NRa': RingCount(None, False, False, True, None),
+            'NRA': RingCount(None, False, False, False, None),
+        }
 
     def calculate(self, mol, Nb, NRa, NRA):
         ac = sum(

@@ -4,7 +4,7 @@ from rdkit import Chem
 
 from . import _atomic_property as ap
 from ._base import Descriptor
-from ._common import DistanceMatrix
+from ._graph_matrix import DistanceMatrix
 from ._ring_count import RingCount
 from ._util import atoms_to_numpy
 
@@ -24,7 +24,7 @@ class AlterMolecule(Descriptor):
 
     def calculate(self, mol):
         new = Chem.RWMol(Chem.Mol())
-        ids = dict()
+        ids = {}
         for a in mol.GetAtoms():
             if a.GetAtomicNum() == 1:
                 continue
@@ -119,7 +119,7 @@ class EtaCoreCount(EtaBase):
 
     def dependencies(self):
         if self._reference:
-            return dict(rmol=AlterMolecule(self.explicit_hydrogens))
+            return {'rmol': AlterMolecule(self.explicit_hydrogens)}
 
     def calculate(self, mol, rmol=None):
         if self._reference:
@@ -169,7 +169,7 @@ class EtaShapeIndex(EtaBase):
         self._type = type
 
     def dependencies(self):
-        return dict(a=EtaCoreCount(False))
+        return {'a': EtaCoreCount(False)}
 
     def calculate(self, mol, a):
         d = self._type_to_degree[self._type]
@@ -351,12 +351,12 @@ class EtaCompositeIndex(EtaBase):
         self._averaged = averaged
 
     def dependencies(self):
-        D = dict(D=DistanceMatrix(self.explicit_hydrogens))
+        deps = {'D': DistanceMatrix(self.explicit_hydrogens)}
 
         if self._reference:
-            D['rmol'] = AlterMolecule(self.explicit_hydrogens)
+            deps['rmol'] = AlterMolecule(self.explicit_hydrogens)
 
-        return D
+        return deps
 
     def calculate(self, mol, D, rmol=None):
         if self._reference:
@@ -430,10 +430,10 @@ class EtaFunctionalityIndex(EtaBase):
         self._averaged = averaged
 
     def dependencies(self):
-        return dict(
-            eta=EtaCompositeIndex(local=self._local),
-            eta_R=EtaCompositeIndex(local=self._local, reference=True),
-        )
+        return {
+            'eta': EtaCompositeIndex(local=self._local),
+            'eta_R': EtaCompositeIndex(local=self._local, reference=True),
+        }
 
     def calculate(self, mol, eta, eta_R):
         v = eta_R - eta
@@ -490,10 +490,10 @@ class EtaBranchingIndex(EtaBase):
         self._averaged = averaged
 
     def dependencies(self):
-        return dict(
-            eta_RL=EtaCompositeIndex(reference=True, local=True),
-            NR=RingCount() if self._ring else None,
-        )
+        return {
+            'eta_RL': EtaCompositeIndex(reference=True, local=True),
+            'NR': RingCount() if self._ring else None,
+        }
 
     def calculate(self, mol, eta_RL, NR):
         N = mol.GetNumAtoms()
@@ -545,10 +545,10 @@ class EtaDeltaAlpha(EtaBase):
         self._type = type
 
     def dependencies(self):
-        return dict(
-            alpha=EtaCoreCount(),
-            alpha_R=EtaCoreCount(reference=True),
-        )
+        return {
+            'alpha': EtaCoreCount(),
+            'alpha_R': EtaCoreCount(reference=True),
+        }
 
     def calculate(self, mol, alpha, alpha_R):
         if self._type == 'A':
@@ -607,9 +607,9 @@ class EtaEpsilon(EtaBase):
 
     def dependencies(self):
         if self._type == 3:
-            return dict(rmol=AlterMolecule(self.explicit_hydrogens))
+            return {'rmol': AlterMolecule(self.explicit_hydrogens)}
         elif self._type == 4:
-            return dict(rmol=AlterMolecule(self.explicit_hydrogens, True))
+            return {'rmol': AlterMolecule(self.explicit_hydrogens, True)}
 
     def calculate(self, mol, rmol=None):
         if self._type in [3, 4]:
@@ -671,10 +671,10 @@ class EtaDeltaEpsilon(EtaBase):
 
     def dependencies(self):
         L, R = self._deps[self._type]
-        return dict(
-            L=EtaEpsilon(L),
-            R=EtaEpsilon(R),
-        )
+        return {
+            'L': EtaEpsilon(L),
+            'R': EtaEpsilon(R),
+        }
 
     def calculate(self, mol, L, R):
         return L - R
@@ -711,10 +711,10 @@ class EtaDeltaBeta(EtaBase):
         self._averaged = averaged
 
     def dependencies(self):
-        return dict(
-            ns=EtaVEMCount('ns'),
-            s=EtaVEMCount('s'),
-        )
+        return {
+            'ns': EtaVEMCount('ns'),
+            's': EtaVEMCount('s'),
+        }
 
     def calculate(self, mol, ns, s):
         v = ns - s
@@ -743,10 +743,10 @@ class EtaPsi(EtaBase):
         return self.__class__, ()
 
     def dependencies(self):
-        return dict(
-            a=EtaCoreCount(),
-            e=EtaEpsilon(2),
-        )
+        return {
+            'a': EtaCoreCount(),
+            'e': EtaEpsilon(2),
+        }
 
     def calculate(self, mol, a, e):
         return a / (mol.GetNumAtoms() * e)
@@ -784,7 +784,7 @@ class EtaDeltaPsi(EtaBase):
         self._type = type
 
     def dependencies(self):
-        return dict(psi=EtaPsi())
+        return {'psi': EtaPsi()}
 
     def calculate(self, mol, psi):
         L = 0.714

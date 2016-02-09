@@ -2,7 +2,7 @@ import numpy as np
 
 from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
-from ._common import DistanceMatrix
+from ._graph_matrix import DistanceMatrix
 
 
 class AutocorrelationBase(Descriptor):
@@ -75,7 +75,7 @@ class CAVec(AutocorrelationProp):
     __slots__ = ('_prop',)
 
     def dependencies(self):
-        return dict(avec=self._avec)
+        return {'avec': self._avec}
 
     def calculate(self, mol, avec):
         return avec - avec.mean()
@@ -85,9 +85,7 @@ class GMat(AutocorrelationOrder):
     __slots__ = ('_order',)
 
     def dependencies(self):
-        return dict(
-            dmat=DistanceMatrix(self.explicit_hydrogens)
-        )
+        return {'dmat': DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, mol, dmat):
         return dmat == self._order
@@ -97,7 +95,7 @@ class GSum(AutocorrelationOrder):
     __slots__ = ('_order',)
 
     def dependencies(self):
-        return dict(gmat=GMat(self._order))
+        return {'gmat': GMat(self._order)}
 
     def calculate(self, mol, gmat):
         s = gmat.sum()
@@ -153,7 +151,7 @@ class ATS(AutocorrelationBase):
         )
 
     def dependencies(self):
-        return dict(avec=self._avec, gmat=self._gmat)
+        return {'avec': self._avec, 'gmat': self._gmat}
 
     def calculate(self, mol, avec, gmat):
         if self._order == 0:
@@ -183,7 +181,7 @@ class AATS(ATS):
     __slots__ = ('_order', '_prop',)
 
     def dependencies(self):
-        return dict(ATS=self._ATS, gsum=self._gsum)
+        return {'ATS': self._ATS, 'gsum': self._gsum}
 
     def calculate(self, mol, ATS, gsum):
         return ATS / (gsum or np.nan)
@@ -213,7 +211,7 @@ class ATSC(AutocorrelationBase):
         )
 
     def dependencies(self):
-        return dict(cavec=self._cavec, gmat=self._gmat)
+        return {'cavec': self._cavec, 'gmat': self._gmat}
 
     def calculate(self, mol, cavec, gmat):
         if self._order == 0:
@@ -243,7 +241,7 @@ class AATSC(ATSC):
     __slots__ = ('_order', '_prop',)
 
     def dependencies(self):
-        return dict(ATSC=self._ATSC, gsum=self._gsum)
+        return {'ATSC': self._ATSC, 'gsum': self._gsum}
 
     def calculate(self, mol, ATSC, gsum):
         return ATSC / (gsum or np.nan)
@@ -279,7 +277,11 @@ class MATS(AutocorrelationBase):
         )
 
     def dependencies(self):
-        return dict(avec=self._avec, AATSC=self._AATSC, cavec=self._cavec)
+        return {
+            'avec': self._avec,
+            'AATSC': self._AATSC,
+            'cavec': self._cavec,
+        }
 
     def calculate(self, mol, avec, AATSC, cavec):
         return len(avec) * AATSC / ((cavec ** 2).sum() or np.nan)
@@ -300,7 +302,12 @@ class GATS(MATS):
     __slots__ = ('_order', '_prop',)
 
     def dependencies(self):
-        return dict(avec=self._avec, gmat=self._gmat, gsum=self._gsum, cavec=self._cavec)
+        return {
+            'avec': self._avec,
+            'gmat': self._gmat,
+            'gsum': self._gsum,
+            'cavec': self._cavec,
+        }
 
     def calculate(self, mol, avec, gmat, gsum, cavec):
         if np.any(~np.isfinite(avec)):

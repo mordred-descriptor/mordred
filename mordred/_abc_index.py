@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 from ._base import Descriptor
-from ._common import DistanceMatrix
+from ._graph_matrix import DistanceMatrix
 
 
 class ABCIndexBase(Descriptor):

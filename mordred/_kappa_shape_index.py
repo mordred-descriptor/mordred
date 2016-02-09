@@ -21,9 +21,7 @@ class KappaShapeIndexBase(Descriptor):
         self._order = int(self.__class__.__name__[-1])
 
     def dependencies(self):
-        return dict(
-            Chi=ChiCache(self._order)
-        )
+        return {'Chi': ChiCache(self._order)}
 
     def _common(self, mol, Chi):
         P = len(Chi.path)

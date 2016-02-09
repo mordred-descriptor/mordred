@@ -104,7 +104,7 @@ class AtomTypeEState(EStateBase):
         self._estate = estate
 
     def dependencies(self):
-        return dict(E=EStateCache())
+        return {'E': EStateCache()}
 
     def calculate(self, mol, E):
         if self._type == AggrType.count:

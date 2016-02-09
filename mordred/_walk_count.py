@@ -1,7 +1,7 @@
 import numpy as np
 
 from ._base import Descriptor
-from ._common import AdjacencyMatrix
+from ._graph_matrix import AdjacencyMatrix
 
 
 class WalkCount(Descriptor):
@@ -60,12 +60,12 @@ class WalkCount(Descriptor):
 
             return dict([W])
 
-        return dict(
-            An=AdjacencyMatrix(
+        return {
+            'An': AdjacencyMatrix(
                 self.explicit_hydrogens,
                 order=self._order,
             )
-        )
+        }
 
     def calculate(self, mol, An=None, T=None, W=None):
         if self._total:

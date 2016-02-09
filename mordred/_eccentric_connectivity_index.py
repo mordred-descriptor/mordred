@@ -1,5 +1,5 @@
 from ._base import Descriptor
-from ._common import Eccentricity, Valence
+from ._graph_matrix import Eccentricity, Valence
 
 
 class EccentricConnectivityIndex(Descriptor):
@@ -28,10 +28,10 @@ class EccentricConnectivityIndex(Descriptor):
         return self.__class__, ()
 
     def dependencies(self):
-        return dict(
-            E=Eccentricity(self.explicit_hydrogens),
-            V=Valence(self.explicit_hydrogens),
-        )
+        return {
+            'E': Eccentricity(self.explicit_hydrogens),
+            'V': Valence(self.explicit_hydrogens),
+        }
 
     def calculate(self, mol, E, V):
         return int((E.astype('int') * V).sum())

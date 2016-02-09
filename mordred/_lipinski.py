@@ -29,12 +29,12 @@ class Lipinski(LipinskiLike):
     __slots__ = ()
 
     def dependencies(self):
-        return dict(
-            LogP=SLogP(),
-            MW=Weight(),
-            HBDon=HBondDonor(),
-            HBAcc=HBondAcceptor(),
-        )
+        return {
+            'LogP': SLogP(),
+            'MW': Weight(),
+            'HBDon': HBondDonor(),
+            'HBAcc': HBondAcceptor(),
+        }
 
     def calculate(self, mol, LogP, MW, HBDon, HBAcc):
         return\
@@ -53,11 +53,11 @@ class GhoseFilter(LipinskiLike):
     __slots__ = ()
 
     def dependencies(self):
-        return dict(
-            LogP=SLogP(),
-            MR=SMR(),
-            MW=Weight(),
-        )
+        return {
+            'LogP': SLogP(),
+            'MR': SMR(),
+            'MW': Weight(),
+        }
 
     def calculate(self, mol, MW, LogP, MR):
         return\

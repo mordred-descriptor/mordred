@@ -23,7 +23,7 @@ class FusedRings(RingCountBase):
     __slots__ = ()
 
     def dependencies(self):
-        return dict(Rings=Rings())
+        return {'Rings': Rings()}
 
     def calculate(self, mol, Rings):
         if len(Rings) < 2:
@@ -118,9 +118,9 @@ class RingCount(RingCountBase):
         self._hetero = hetero
 
     def dependencies(self):
-        return dict(
-            Rs=(FusedRings if self._fused else Rings)()
-        )
+        return {
+            'Rs': (FusedRings if self._fused else Rings)()
+        }
 
     def _check_order(self, R):
         if self._order is None:

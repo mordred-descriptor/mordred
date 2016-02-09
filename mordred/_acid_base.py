@@ -10,7 +10,7 @@ class SmartsCountBase(Descriptor):
     def preset(cls):
         yield cls()
 
-    def _get_smarts(self):
+    def _create_smarts(self):
         s = ','.join('$(' + s + ')' for s in self.SMARTS)
         self._mol = Chem.MolFromSmarts('[' + s + ']')
         return self._mol
@@ -26,7 +26,7 @@ class SmartsCountBase(Descriptor):
         return self.__class__, ()
 
     def calculate(self, mol):
-        pat = getattr(self, '_mol', None) or self._get_smarts()
+        pat = getattr(self, '_mol', None) or self._create_smarts()
         return len(mol.GetSubstructMatches(pat))
 
     rtype = int

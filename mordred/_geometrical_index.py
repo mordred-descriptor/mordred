@@ -1,6 +1,6 @@
 from ._base import Descriptor
-from ._common import Diameter3D as CDiameter3D
-from ._common import Radius3D as CRadius3D
+from ._graph_matrix import Diameter3D as CDiameter3D
+from ._graph_matrix import Radius3D as CRadius3D
 
 
 class GeometricalIndexBase(Descriptor):
@@ -26,9 +26,7 @@ class Radius3D(GeometricalIndexBase):
         return 'GeomRadius'
 
     def dependencies(self):
-        return dict(
-            R=CRadius3D(self.explicit_hydrogens)
-        )
+        return {'R': CRadius3D(self.explicit_hydrogens)}
 
     def calculate(self, mol, conf, R):
         return R
@@ -43,9 +41,7 @@ class Diameter3D(GeometricalIndexBase):
         return 'GeomDiameter'
 
     def dependencies(self):
-        return dict(
-            D=CDiameter3D(self.explicit_hydrogens)
-        )
+        return {'D': CDiameter3D(self.explicit_hydrogens)}
 
     def calculate(self, mol, conf, D):
         return D
@@ -71,10 +67,10 @@ class GeometricalShapeIndex(GeometricalIndexBase):
         return 'GeomShapeIndex'
 
     def dependencies(self):
-        return dict(
-            R=CRadius3D(self.explicit_hydrogens),
-            D=CDiameter3D(self.explicit_hydrogens),
-        )
+        return {
+            'R': CRadius3D(self.explicit_hydrogens),
+            'D': CDiameter3D(self.explicit_hydrogens),
+        }
 
     def calculate(self, mol, conf, R, D):
         if R == 0:

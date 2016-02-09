@@ -91,10 +91,10 @@ class ChiCache(ChiBase):
         self._order = order
 
     def calculate(self, mol):
-        chain = list()
-        path = list()
-        path_cluster = list()
-        cluster = list()
+        chain = []
+        path = []
+        path_cluster = []
+        cluster = []
         for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self._order):
 
             dfs = DFS(mol, bonds)

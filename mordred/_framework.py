@@ -15,9 +15,7 @@ class FrameworkCache(FrameworkBase):
         return self.__class__, ()
 
     def dependencies(self):
-        return dict(
-            Rs=Rings()
-        )
+        return {'Rs': Rings()}
 
     def calculate(self, mol, Rs):
         G = nx.Graph()
@@ -73,9 +71,7 @@ class Framework(FrameworkBase):
         return self.__class__, ()
 
     def dependencies(self):
-        return dict(
-            F=FrameworkCache()
-        )
+        return {'F': FrameworkCache()}
 
     def calculate(self, mol, F):
         linkers, rings = F

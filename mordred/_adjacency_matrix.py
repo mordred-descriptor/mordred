@@ -1,5 +1,5 @@
 from ._base import Descriptor
-from ._common import AdjacencyMatrix as A
+from ._graph_matrix import AdjacencyMatrix as A
 from ._matrix_attributes import get_method, methods
 
 
@@ -28,13 +28,13 @@ class AdjacencyMatrix(Descriptor):
         self._type = get_method(type)
 
     def dependencies(self):
-        return dict(
-            result=self._type(
+        return {
+            'result': self._type(
                 A(self.explicit_hydrogens),
                 self.explicit_hydrogens,
                 self.kekulize,
             )
-        )
+        }
 
     def calculate(self, mol, result):
         return result

@@ -168,13 +168,13 @@ class DetourMatrix(DetourMatrixBase):
         self._type = ma.get_method(type)
 
     def dependencies(self):
-        return dict(
-            result=self._type(
+        return {
+            'result': self._type(
                 DetourMatrixCache(),
                 self.explicit_hydrogens,
                 self.kekulize,
             )
-        )
+        }
 
     def calculate(self, mol, result):
         return result
@@ -209,9 +209,7 @@ class DetourIndex(DetourMatrixBase):
         return 'DetourIndex'
 
     def dependencies(self):
-        return dict(
-            D=DetourMatrixCache()
-        )
+        return {'D': DetourMatrixCache()}
 
     def calculate(self, mol, D):
         return int(0.5 * D.sum())

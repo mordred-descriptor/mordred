@@ -1,7 +1,7 @@
 import numpy as np
 
 from ._base import Descriptor
-from ._common import Valence
+from ._graph_matrix import Valence
 
 
 class ZagrebIndex(Descriptor):
@@ -49,9 +49,7 @@ class ZagrebIndex(Descriptor):
         self._variable = variable
 
     def dependencies(self):
-        return dict(
-            V=Valence(self.explicit_hydrogens),
-        )
+        return {'V': Valence(self.explicit_hydrogens)}
 
     def calculate(self, mol, V):
         V = V.astype('float')

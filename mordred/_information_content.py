@@ -3,7 +3,7 @@ from itertools import groupby
 import numpy as np
 
 from ._base import Descriptor
-from ._common import DistanceMatrix
+from ._graph_matrix import DistanceMatrix
 
 
 class BFSTree(object):
@@ -96,9 +96,7 @@ class Ag(InformationContentBase):
     __slots__ = ('_order',)
 
     def dependencies(self):
-        return dict(
-            D=DistanceMatrix(self.explicit_hydrogens)
-        )
+        return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, mol, D):
         atoms = [neighborhood_code(mol, i, self._order) for i in range(mol.GetNumAtoms())]
@@ -133,7 +131,7 @@ class InformationContent(InformationContentBase):
     _name = 'IC'
 
     def dependencies(self):
-        return dict(iAgs=Ag(self._order))
+        return {'iAgs': Ag(self._order)}
 
     def calculate(self, mol, iAgs):
         _, Ags = iAgs
@@ -153,7 +151,7 @@ class TotalIC(InformationContentBase):
     _name = 'TIC'
 
     def dependencies(self):
-        return dict(ICm=InformationContent(self._order))
+        return {'ICm': InformationContent(self._order)}
 
     def calculate(self, mol, ICm):
         A = mol.GetNumAtoms()
@@ -161,7 +159,7 @@ class TotalIC(InformationContentBase):
         return A * ICm
 
 
-class StructuralIC(InformationContentBase):
+class StructuralIC(TotalIC):
     r"""structural information content descriptor.
 
     .. math::
@@ -173,16 +171,13 @@ class StructuralIC(InformationContentBase):
 
     _name = 'SIC'
 
-    def dependencies(self):
-        return dict(ICm=InformationContent(self._order))
-
     def calculate(self, mol, ICm):
         A = mol.GetNumAtoms()
 
         return ICm / np.log2(A)
 
 
-class BondingIC(InformationContentBase):
+class BondingIC(TotalIC):
     r"""bonding information content descriptor.
 
     .. math::
@@ -195,9 +190,6 @@ class BondingIC(InformationContentBase):
     """
 
     _name = 'BIC'
-
-    def dependencies(self):
-        return dict(ICm=InformationContent(self._order))
 
     def calculate(self, mol, ICm):
         B = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
@@ -212,7 +204,7 @@ class BondingIC(InformationContentBase):
         return ICm / log2B
 
 
-class ComplementaryIC(InformationContentBase):
+class ComplementaryIC(TotalIC):
     r"""complementary information content descriptor.
 
     .. math::
@@ -224,16 +216,13 @@ class ComplementaryIC(InformationContentBase):
 
     _name = 'CIC'
 
-    def dependencies(self):
-        return dict(ICm=InformationContent(self._order))
-
     def calculate(self, mol, ICm):
         A = mol.GetNumAtoms()
 
         return np.log2(A) - ICm
 
 
-class ModifiedIC(InformationContentBase):
+class ModifiedIC(InformationContent):
     r"""modified information content index descriptor.
 
     :type order: int
@@ -242,16 +231,13 @@ class ModifiedIC(InformationContentBase):
 
     _name = 'MIC'
 
-    def dependencies(self):
-        return dict(iAgs=Ag(self._order))
-
     def calculate(self, mol, iAgs):
         ids, Ags = iAgs
         w = np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetMass())(ids)
         return shannon_entropy(Ags, w)
 
 
-class ZModifiedIC(InformationContentBase):
+class ZModifiedIC(InformationContent):
     r"""Z-modified information content index descriptor.
 
     :type order: int
@@ -259,9 +245,6 @@ class ZModifiedIC(InformationContentBase):
     """
 
     _name = 'ZMIC'
-
-    def dependencies(self):
-        return dict(iAgs=Ag(self._order))
 
     def calculate(self, mol, iAgs):
         ids, Ags = iAgs

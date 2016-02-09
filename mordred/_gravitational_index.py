@@ -1,7 +1,7 @@
 import numpy as np
 
 from ._base import Descriptor
-from ._common import DistanceMatrix3D, AdjacencyMatrix
+from ._graph_matrix import DistanceMatrix3D, AdjacencyMatrix
 from ._util import atoms_to_numpy
 
 
