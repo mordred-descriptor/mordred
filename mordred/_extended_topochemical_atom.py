@@ -315,12 +315,8 @@ class EtaCompositeIndex(EtaBase):
 
     @classmethod
     def preset(cls):
-        return (
-            cls(r, l, a)
-            for r in [False, True]
-            for l in [False, True]
-            for a in [False, True]
-        )
+        ft = [False, True]
+        return (cls(r, l, a) for r in ft for l in ft for a in ft)
 
     def __str__(self):
         name = 'ETA_eta'

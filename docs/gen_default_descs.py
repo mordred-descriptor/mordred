@@ -34,7 +34,11 @@ def main(out):
                 else:
                     mdl_ppr = ''
 
-                cnst, args = repr(desc).split('(')
+                try:
+                    cnst, args = repr(desc).split('(')
+                except ValueError:
+                    raise ValueError(repr(desc))
+
                 cnst = ':py:class:`~mordred.{}.{}` ({}'.format(mdl_name, cnst, args)
 
                 dim = '3D' if desc.require_3D else '2D'
