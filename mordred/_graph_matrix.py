@@ -1,3 +1,5 @@
+import numpy as np
+
 from rdkit import Chem
 
 from ._base import Descriptor
@@ -125,10 +127,7 @@ class DistanceMatrix3D(Descriptor):
         self.useAtomWts = useAtomWts
 
     def calculate(self, mol, conf):
-        return Chem.Get3DDistanceMatrix(
-            mol, confId=conf.GetId(),
-            useAtomWts=self.useAtomWts, force=True,
-        )
+        return np.sqrt(np.sum((conf[:, np.newaxis] - conf) ** 2, axis=2))
 
 
 class Eccentricity3D(DistanceMatrix3D):

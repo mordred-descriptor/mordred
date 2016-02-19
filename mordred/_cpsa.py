@@ -3,7 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._atomic_property import Rvdw, AtomicProperty
 from .surface_area import SurfaceArea
-from ._util import conformer_to_numpy, atoms_to_numpy
+from ._util import atoms_to_numpy
 
 
 class CPSABase(Descriptor):
@@ -50,10 +50,10 @@ class AtomicSurfaceArea(CPSABase):
     def calculate(self, mol, conf):
         rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] + self._solvent_radius, mol)
 
-        ps = conformer_to_numpy(conf)
-
-        sa = SurfaceArea(rs, ps, self._level)
+        sa = SurfaceArea(rs, conf, self._level)
         return np.array(sa.surface_area())
+
+    rtype = None
 
 
 class TotalSurfaceArea(CPSABase):
@@ -76,6 +76,8 @@ class AtomicCharge(CPSABase):
 
         else:
             return charges
+
+    rtype = None
 
 
 class PNSA(VersionCPSABase):

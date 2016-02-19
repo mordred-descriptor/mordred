@@ -1,9 +1,7 @@
 import numpy as np
 
-from rdkit.Chem.Descriptors import MolWt
-
 from ._base import Descriptor
-from ._util import conformer_to_numpy, atoms_to_numpy
+from ._util import atoms_to_numpy
 
 
 class MomentOfInertiaBase(Descriptor):
@@ -12,8 +10,7 @@ class MomentOfInertiaBase(Descriptor):
     @staticmethod
     def _numpy(mol, conf):
         ws = atoms_to_numpy(lambda a: a.GetMass(), mol)
-        ps = conformer_to_numpy(conf)
-        ps -= np.sum(ws[:, np.newaxis] * ps, axis=0) / np.sum(ws)
+        ps = conf - np.sum(ws[:, np.newaxis] * conf, axis=0) / np.sum(ws)
 
         return ws, ps
 

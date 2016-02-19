@@ -69,7 +69,7 @@ def test_VEA():
         mol = Chem.MolFromSmiles(smi)
 
         desireds = dict(zip(descs, map(parse_reference, line[1:])))
-        actuals = {str(k): v for k, v in calc(mol)}
+        actuals = {str(k): v for k, v in zip(calc.descriptors, calc(mol))}
 
         for desc in descs:
             decimal, desired = desireds[desc]

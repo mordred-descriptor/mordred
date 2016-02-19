@@ -1,4 +1,3 @@
-import math
 import os
 import sys
 
@@ -7,17 +6,16 @@ from importlib import import_module
 from inspect import getsourcelines, isabstract
 from sys import maxsize
 from types import ModuleType
+from numbers import Real
+import numpy as np
 
 from rdkit import Chem
 
+import traceback
 import six
+from logging import getLogger
 
-from ._exception import DescriptorException
-
-
-def pretty(a):
-    p = getattr(a, 'name', None)
-    return repr(a if p is None else p)
+from ._exception import FragmentError
 
 
 class Descriptor(six.with_metaclass(ABCMeta, object)):
@@ -34,9 +32,14 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def __reduce_ex__(self, version):
         pass
 
+    @staticmethod
+    def _pretty(a):
+        p = getattr(a, 'name', None)
+        return repr(a if p is None else p)
+
     def __repr__(self):
         cls, args = self.__reduce_ex__(self._reduce_ex_version)
-        return '{}({})'.format(cls.__name__, ', '.join(map(pretty, args)))
+        return '{}({})'.format(cls.__name__, ', '.join(map(self._pretty, args)))
 
     def __hash__(self):
         return hash(self.__reduce_ex__(self._reduce_ex_version))
@@ -54,17 +57,15 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         r = other.__reduce_ex__(self._reduce_ex_version)
         return l.__lt__(r)
 
-    rtype = type(None)
+    rtype = None
 
     @classmethod
     def preset(cls):
         r"""generate preset descriptor instances.
 
-        (abstract classmethod)
-
         :rtype: iterable
         """
-        pass
+        return ()
 
     def dependencies(self):
         r"""descriptor dependencies.
@@ -87,7 +88,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         :returns: descriptor result
         :rtype: scalar
         """
-        return Calculator(self)(mol, coord_id)[0][1]
+        return Calculator(self)(mol, coord_id)[0]
 
     @classmethod
     def is_descriptor_class(cls, desc):
@@ -102,37 +103,61 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         )
 
 
-class Molecule(object):
-    def __init__(self, orig):
-        Chem.SanitizeMol(orig)
-        self.orig = orig
-        self.hydration_cache = dict()
-        self.kekulize_cache = dict()
-        self.is_connected = len(Chem.GetMolFrags(orig)) == 1
+def conformer_to_numpy(conf):
+    return np.array(
+        [list(conf.GetAtomPosition(i)) for i in range(conf.GetNumAtoms())]
+    )
 
-    def hydration(self, explicitH):
-        if explicitH in self.hydration_cache:
-            return self.hydration_cache[explicitH]
 
-        mol = Chem.AddHs(self.orig) if explicitH else Chem.RemoveHs(self.orig)
-        self.hydration_cache[explicitH] = mol
-        return mol
+class Context(object):
+    def __reduce_ex__(self, version):
+        return self.__class__, (None,), {
+            '_mols': self._mols,
+            '_coords': self._coords,
+            'n_frags': self.n_frags,
+            'name': self.name,
+        }
 
-    def kekulize(self, mol, explicitH):
-        if explicitH in self.kekulize_cache:
-            return self.kekulize_cache[explicitH]
+    def __str__(self):
+        return self.name
 
-        mol = Chem.Mol(mol)
-        Chem.Kekulize(mol)
-        self.kekulize_cache[explicitH] = mol
-        return mol
+    @classmethod
+    def from_calculator(cls, calc, mol, id):
+        return cls(mol, calc._require_3D, calc._explicit_hydrogens, calc._kekulizes, id)
 
-    def get(self, explicitH, kekulize):
-        mol = self.hydration(explicitH)
-        if kekulize:
-            mol = self.kekulize(mol, explicitH)
+    _tf = set([True, False])
 
-        return mol
+    def __init__(self, mol, require_3D=False, explicit_hydrogens=_tf, kekulizes=_tf, id=-1):
+        if mol is None:
+            return
+
+        self._mols = {}
+        self._coords = {}
+
+        self.n_frags = len(Chem.GetMolFrags(mol))
+
+        if mol.HasProp('_Name'):
+            self.name = mol.GetProp('_Name')
+        else:
+            self.name = Chem.MolToSmiles(Chem.RemoveHs(mol))
+
+        for eh, ke in ((eh, ke) for eh in explicit_hydrogens for ke in kekulizes):
+            m = (Chem.AddHs if eh else Chem.RemoveHs)(mol)
+
+            if ke:
+                Chem.Kekulize(m)
+
+            if require_3D:
+                self._coords[eh, ke] = conformer_to_numpy(m.GetConformer(id))
+
+            m.RemoveAllConformers()
+            self._mols[eh, ke] = m
+
+    def get_coord(self, desc):
+        return self._coords[desc.explicit_hydrogens, desc.kekulize]
+
+    def get_mol(self, desc):
+        return self._mols[desc.explicit_hydrogens, desc.kekulize]
 
 
 class Calculator(object):
@@ -141,27 +166,62 @@ class Calculator(object):
     :param descs: see :py:meth:`register` method
     """
 
+    def __reduce_ex__(self, version):
+        return self.__class__, (), {
+            '_descriptors': self._descriptors,
+            '_explicit_hydrogens': self._explicit_hydrogens,
+            '_kekulizes': self._kekulizes,
+            '_require_3D': self._require_3D,
+        }
+
+    logger = getLogger(__name__)
+
     def __init__(self, *descs):
-        self.descriptors = []
-        self.explicitH = False
-        self.kekulize = False
+        self._descriptors = []
+
+        self._explicit_hydrogens = set()
+        self._kekulizes = set()
+        self._require_3D = False
 
         self.register(*descs)
 
-    def __reduce_ex__(self, version):
-        return self.__class__, tuple(self.descriptors)
+    @property
+    def descriptors(self):
+        r'''all descriptors.
 
-    def _register_one(self, desc):
+        you can get/set/delete descriptor.
+        '''
+        return tuple(self._descriptors)
+
+    @descriptors.setter
+    def descriptors(self, descs):
+        del self.descriptors
+        self.register(descs)
+
+    @descriptors.deleter
+    def descriptors(self):
+        self._descriptors[:] = []
+        self._explicit_hydrogens.clear()
+        self._kekulizes.clear()
+        self._require_3D = False
+
+    def __len__(self):
+        return len(self._descriptors)
+
+    def _register_one(self, desc, check_only=False):
         if not isinstance(desc, Descriptor):
             raise ValueError('{!r} is not descriptor'.format(desc))
 
-        self.descriptors.append(desc)
+        self._explicit_hydrogens.add(bool(desc.explicit_hydrogens))
+        self._kekulizes.add(bool(desc.kekulize))
+        self._require_3D |= desc.require_3D
 
-        if desc.explicit_hydrogens:
-            self.explicitH = True
+        for dep in (desc.dependencies() or {}).values():
+            if isinstance(dep, Descriptor):
+                self._register_one(dep, True)
 
-        if desc.kekulize:
-            self.kekulize = True
+        if not check_only:
+            self._descriptors.append(desc)
 
     def register(self, *descs):
         r"""register descriptors.
@@ -174,7 +234,6 @@ class Calculator(object):
 
             * :py:class:`module`: Descriptors in module
             * :py:class:`Descriptor` class: use :py:meth:`Descriptor.preset`
-
         """
         for desc in descs:
             if not hasattr(desc, '__iter__'):
@@ -192,139 +251,120 @@ class Calculator(object):
                 for d in desc:
                     self.register(d)
 
-    def _calculate(self, desc, cache, coord_id, parent=None):
-        if desc in cache:
-            return cache[desc]
+    def _calculate_one(self, cxt, desc, caller=None):
+        if desc in self._cache:
+            return self._cache[desc]
 
-        if desc.require_connected and not self.molecule.is_connected:
-            cache[desc] = float('nan')
-            return float('nan')
+        if caller is None:
+            caller = desc
+
+        if desc.require_connected and cxt.n_frags != 1:
+            raise FragmentError(cxt, caller)
 
         args = {
-            name: self._calculate(dep, cache, coord_id, parent or desc)
+            name: self._calculate_one(cxt, dep, caller)
             if dep is not None else None
             for name, dep in (desc.dependencies() or {}).items()
         }
 
-        mol = self.molecule.get(
-            explicitH=desc.explicit_hydrogens,
-            kekulize=desc.kekulize,
-        )
+        mol = cxt.get_mol(desc)
 
-        try:
-            if desc.require_3D:
-                conf = mol.GetConformer(coord_id)
-                if not conf.Is3D():
-                    raise ValueError('conformer id {} is not 3D coordinate'.format(coord_id))
+        if desc.require_3D:
+            r = desc.calculate(mol, cxt.get_coord(desc), **args)
+        else:
+            r = desc.calculate(mol, **args)
 
-                r = desc.calculate(mol, conf, **args)
-            else:
-                r = desc.calculate(mol, **args)
-        except Exception as e:
-            raise DescriptorException(desc, e, mol, parent)
+        if desc.rtype is not None and (not isinstance(r, Real) or not isinstance(r, desc.rtype)):
+            self.logger.debug(
+                '%s excepted returning %s, but returns %s',
+                repr(desc), desc.rtype.__name__, repr(r)
+            )
 
-        cache[desc] = r
+        self._cache[desc] = r
+
         return r
 
-    def __call__(self, mol, coord_id=-1, error_callback=None):
+    def _calculate(self, cxt):
+        self._cache = {}
+        self._exceptions = set()
+        try:
+            for desc in self.descriptors:
+                try:
+                    yield self._calculate_one(cxt, desc)
+                except Exception as e:
+                    if e.__class__ not in self._exceptions:
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        tbs = traceback.extract_tb(exc_traceback)[-1:]
+                        for tb in tbs:
+                            filename, line, _, text = tb
+                            self.logger.warning(
+                                '%s:%d %s',
+                                os.path.basename(filename), line, str(e)
+                            )
+                        self._exceptions.add(e.__class__)
+
+                    yield float('nan')
+
+        finally:
+            del self._cache
+            del self._exceptions
+
+    def __call__(self, mol, id=-1):
         r"""calculate descriptors.
 
         :type mol: rdkit.Chem.Mol
         :param mol: molecular
 
-        :type error_callback: callable
-        :param error_callback: call when ransed Exception
+        :type id: int
+        :param id: conformer id
 
-        :rtype: [(Descriptor, scalar or nan)]
+        :rtype: [scalar or nan]
         :returns: iterator of descriptor and value
         """
-        cache = {}
-        self.molecule = Molecule(mol)
+        return list(self._calculate(Context.from_calculator(self, mol, id)))
 
-        if error_callback is None:
-            def raise_error(e):
-                raise e
-
-            error_callback = raise_error
-
-        rs = []
-        for desc in self.descriptors:
-            try:
-                r = self._calculate(desc, cache, coord_id)
-            except Exception as e:
-                r = error_callback(e)
-
-            if not math.isnan(r) and not isinstance(r, desc.rtype):
-                r = error_callback(DescriptorException(
-                    desc,
-                    TypeError('{!r}({}) is not {!r}'.format(r, type(r), desc.rtype)),
-                    mol
-                ))
-
-            if math.isnan(r):
-                rs.append((desc, float('nan')))
-                continue
-
-            rs.append((desc, desc.rtype(r)))
-
-        return rs
-
-    def _parallel(self, mols, processes, error_mode, callback, error_callback):
+    def _parallel(self, mols, processes, callback):
         from multiprocessing import Pool
 
         try:
             pool = Pool(
                 processes,
                 initializer=initializer,
-                initargs=(self, error_mode),
+                initargs=(self,),
             )
 
-            kws = dict()
+            def do_task(mol):
+                args = Context.from_calculator(self, mol, -1),
+                if callback is None:
+                    return pool.apply_async(worker, args)
+                else:
+                    return pool.apply_async(worker, args, callback=callback)
 
-            if callback is not None:
-                kws['callback'] = callback
-
-            if error_callback is not None:
-                kws['error_callback'] = error_callback
-
-            def do_task(m):
-                return pool.apply_async(
-                    worker,
-                    (m.ToBinary(),),
-                    **kws
-                )
+            if six.PY3:
+                def get_result(r):
+                    return r.get()
+            else:
+                # timeout: avoid python2 KeyboardInterrupt bug.
+                # http://stackoverflow.com/a/1408476
+                def get_result(r):
+                    return r.get(1e9)
 
             for m, result in [(m, do_task(m)) for m in mols]:
-
-                if six.PY3:
-                    yield m, result.get()
-                else:
-                    # timeout: avoid python2 KeyboardInterrupt bug.
-                    # http://stackoverflow.com/a/1408476
-                    yield m, result.get(1e9)
+                yield m, get_result(result)
 
         finally:
             pool.terminate()
             pool.join()
 
-    def _serial(self, mols, error_mode, callback, error_callback):
-        calculate = make_calculator(self, error_mode)
-
+    def _serial(self, mols, callback):
         for m in mols:
-            if error_callback is not None:
-                try:
-                    r = calculate(m)
-                except Exception as e:
-                    r = error_callback(e)
-            else:
-                r = calculate(m)
-
+            r = list(self._calculate(Context.from_calculator(self, m, -1)))
             if callback is not None:
-                callback(r)
+                callback((m, r))
 
             yield m, r
 
-    def map(self, mols, processes=None, error_mode='raise', callback=None, error_callback=None):
+    def map(self, mols, processes=None, callback=None):
         r"""calculate descriptors over mols.
 
         :type mols: :py:class:`Iterable` (:py:class:`Mol`)
@@ -333,60 +373,30 @@ class Calculator(object):
         :type processes: :py:class:`int` or :py:class:`None`
         :param processes: number of process. None is :py:func:`multiprocessing.cpu_count`
 
-        :type error_mode: :py:class:`str`
-        :param error_mode:
-
-            * 'raise': raise Exception
-            * 'ignore': ignore Exception
-            * 'log': print Exception to stderr and ignore Exception
-
-        :type callback: :py:class:`Callable` ([(:py:class:`Descriptor`, scalar)])
+        :type callback: :py:class:`Callable` ([scalar])
             -> :py:class:`None`
 
         :param callback: call when calculate finished par molecule
 
-        :type error_callback: :py:class:`Callable` (:py:class:`Exception`) -> scalar
-        :param error_callback: call when Exception raised
-
-        :rtype: :py:class:`Iterator` ((:py:class:`Mol`, [(:py:class:`Descriptor`, scalar)]]))
+        :rtype: :py:class:`Iterator` ((:py:class:`Mol`, [scalar]]))
         """
-        assert error_mode in set(['raise', 'ignore', 'log'])
-
         if processes == 1:
-            return self._serial(mols, error_mode, callback, error_callback)
+            return self._serial(mols, callback=callback)
         else:
-            return self._parallel(mols, processes, error_mode, callback, error_callback)
+            return self._parallel(mols, processes, callback=callback)
 
 
-calculate = None
+calculator = None
 
 
-def initializer(calc, e_mode):
-    global calculate
+def initializer(calc):
+    global calculator
 
-    calculate = make_calculator(calc, e_mode)
-
-
-def make_calculator(calc, e_mode):
-    if e_mode == 'raise':
-        return calc
-
-    elif e_mode == 'ignore':
-        def ignore(e):
-            return float('nan')
-
-        return lambda m: calc(m, error_callback=ignore)
-
-    else:
-        def ignore_and_log(e):
-            sys.stderr.write('ERROR: {}\n'.format(e))
-            return float('nan')
-
-        return lambda m: calc(m, error_callback=ignore_and_log)
+    calculator = calc
 
 
-def worker(binary):
-    return calculate(Chem.Mol(binary))
+def worker(cxt):
+    return list(calculator._calculate(cxt))
 
 
 def all_modules():

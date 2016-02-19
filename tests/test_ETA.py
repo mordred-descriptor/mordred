@@ -108,7 +108,7 @@ def test_ETA():
 
     for smi, desireds in references.items():
         mol = Chem.MolFromSmiles(smi)
-        actuals = {str(d): v for d, v in calc(mol)}
+        actuals = {str(d): v for d, v in zip(calc.descriptors, calc(mol))}
 
         for name, desired in desireds.items():
             yield assert_almost_equal, actuals['ETA_' + name], desired, 2, '{} of {}'.format(name, smi)

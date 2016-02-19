@@ -193,8 +193,7 @@ def main(descs, prog=None):
             def callback(r):
                 bar.update()
 
-            for mol, val in calc.map(
-                    mols, args.processes, error_mode='raise', callback=callback):
+            for mol, val in calc.map(mols, args.processes, callback=callback):
 
                 def ppr(a):
                     if isinstance(a, float) and math.isnan(a):
@@ -202,7 +201,7 @@ def main(descs, prog=None):
                     else:
                         return str(a)
 
-                writer.writerow([mol.GetProp('_Name')] + [ppr(v[1]) for v in val])
+                writer.writerow([mol.GetProp('_Name')] + [ppr(v) for v in val])
 
     return 0
 

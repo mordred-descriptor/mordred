@@ -93,6 +93,8 @@ class Ag(InformationContentBase):
     def preset(cls):
         return ()
 
+    _name = 'Ag'
+
     __slots__ = ('_order',)
 
     def dependencies(self):
@@ -107,6 +109,8 @@ class Ag(InformationContentBase):
             np.fromiter((ad[k] for k, _ in Ags), 'int', Nags),
             np.fromiter((ag for _, ag in Ags), 'float', Nags),
         )
+
+    rtype = None
 
 
 def _shannon_entropy_term(a):

@@ -60,6 +60,8 @@ class AutocorrelationProp(AutocorrelationBase):
     def __init__(self, prop):
         self._prop = prop
 
+    rtype = None
+
 
 class AutocorrelationOrder(AutocorrelationBase):
     _prop = lambda _: float('nan')
@@ -70,9 +72,12 @@ class AutocorrelationOrder(AutocorrelationBase):
     def __init__(self, order):
         self._order = order
 
+    rtype = None
+
 
 class CAVec(AutocorrelationProp):
     __slots__ = ('_prop',)
+    _order = 0
 
     def dependencies(self):
         return {'avec': self._avec}

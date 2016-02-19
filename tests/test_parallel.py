@@ -16,6 +16,5 @@ def test_parallel():
         Chem.EmbedMolecule(mol)
 
     for (_, serial), (_, parallel) in zip(calc.map(mols, processes=1), calc.map(mols)):
-        for (d, s), (f, p) in zip(serial, parallel):
-            yield eq_, d, f
-            yield assert_almost_equal, s, p, 3, str(d)
+        for d, s, p in zip(calc.descriptors, serial, parallel):
+            yield assert_almost_equal, s, p, 7, str(d)
