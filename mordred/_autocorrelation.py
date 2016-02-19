@@ -315,7 +315,7 @@ class GATS(MATS):
         }
 
     def calculate(self, mol, avec, gmat, gsum, cavec):
-        if np.any(~np.isfinite(avec)):
+        if np.any(~np.isfinite(avec)) or len(avec) <= 1:
             return np.nan
 
         n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * (gsum or np.nan))

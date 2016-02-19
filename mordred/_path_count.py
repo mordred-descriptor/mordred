@@ -151,7 +151,7 @@ class PathCount(PathCountBase):
 
     def calculate(self, mol, PC, acc=None):
         if self._order == 0:
-            return mol.GetNumAtoms()
+            return self.rtype(mol.GetNumAtoms())
 
         v = PC[1] if self._pi else PC[0]
 

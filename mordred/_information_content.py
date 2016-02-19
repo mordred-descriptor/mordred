@@ -176,9 +176,11 @@ class StructuralIC(TotalIC):
     _name = 'SIC'
 
     def calculate(self, mol, ICm):
-        A = mol.GetNumAtoms()
+        d = np.log2(mol.GetNumAtoms())
+        if d == 0:
+            return np.nan
 
-        return ICm / np.log2(A)
+        return ICm / d
 
 
 class BondingIC(TotalIC):

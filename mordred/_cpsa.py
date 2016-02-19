@@ -226,6 +226,9 @@ class RNCG(CPSABase):
             return np.nan
 
         charges = charges[self._mask(charges)]
+        if len(charges) == 0:
+            return 0.0
+
         Qmax = charges[np.argmax(np.abs(charges))]
 
         return Qmax / np.sum(charges)
@@ -261,6 +264,8 @@ class RNCS(CPSABase):
 
         mask = self._mask(charges)
         charges = charges[mask]
+        if len(charges) == 0:
+            return 0.0
 
         SAmax = SA[mask][np.argmax(np.abs(charges))]
 
