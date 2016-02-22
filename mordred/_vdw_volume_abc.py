@@ -8,6 +8,7 @@ from .BondCount import BondCount
 from .RingCount import RingCount
 
 from ._base import Descriptor
+from ._atomic_property import table
 
 bondi_radii = {
     'H': 1.20,
@@ -24,9 +25,6 @@ bondi_radii = {
     'Si': 2.10,
     'Se': 1.90,
 }
-
-
-table = Chem.GetPeriodicTable()
 
 
 atom_contrib = {

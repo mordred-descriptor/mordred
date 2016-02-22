@@ -6,8 +6,7 @@ from six import integer_types, string_types
 
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix, Valence
-
-table = Chem.GetPeriodicTable()
+from ._atomic_property import table
 
 
 class MolecularDistanceEdge(Descriptor):

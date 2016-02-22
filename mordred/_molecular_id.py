@@ -5,7 +5,7 @@ from networkx import Graph
 from rdkit import Chem
 
 from ._base import Descriptor
-from ._atomic_property import halogen
+from ._atomic_property import halogen, table
 
 
 class AtomicId(object):
@@ -56,9 +56,6 @@ class AtomicId(object):
             self.get_atomic_id(i)
             for i in range(self.G.number_of_nodes())
         ]
-
-
-table = Chem.GetPeriodicTable()
 
 
 class MolecularIdBase(Descriptor):
