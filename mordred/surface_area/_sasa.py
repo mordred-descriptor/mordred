@@ -3,6 +3,7 @@ from collections import defaultdict
 import numpy as np
 
 from ._mesh import SphereMesh
+from .._atomic_property import table, Rvdw
 from .._util import atoms_to_numpy
 
 
@@ -104,7 +105,6 @@ class SurfaceArea(object):
         :rtype: SurfaceArea
         """
 
-        from .._atomic_property import Rvdw
         rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] + solvent_radius, mol)
 
         conf = mol.GetConformer(conformer)
@@ -112,3 +112,19 @@ class SurfaceArea(object):
         ps = np.array([list(conf.GetAtomPosition(i)) for i in range(mol.GetNumAtoms())])
 
         return cls(rs, ps, level)
+
+    @classmethod
+    def from_pdb(cls, pdb, solvent_radius=1.4, level=3):
+        try:
+            from Bio.PDB import PDBParser
+        except ImportError:
+            raise ImportError("There isn't biopython package.")
+
+        rs = []
+        coords = []
+
+        for atom in PDBParser().get_structure('', pdb).get_atoms():
+            rs.append(Rvdw[table.GetAtomicNumber(atom.element)] + solvent_radius)
+            coords.append(atom.coord)
+
+        return cls(np.array(rs), np.array(coords), level)
