@@ -333,11 +333,13 @@ class Calculator(object):
                 initargs=(self,),
             )
 
-            def do_task(mol):
-                args = Context.from_calculator(self, mol, -1),
-                if callback is None:
+            if callback is None:
+                def do_task(mol):
+                    args = Context.from_calculator(self, mol, -1),
                     return pool.apply_async(worker, args)
-                else:
+            else:
+                def do_task(mol):
+                    args = Context.from_calculator(self, mol, -1),
                     return pool.apply_async(worker, args, callback=callback)
 
             if six.PY3:
