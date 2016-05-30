@@ -52,7 +52,7 @@ after_success:
   - set -e
   - coveralls
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
-      pip install sphinx sphinxcontrib-bibtex;
+      pip install sphinx sphinxcontrib-bibtex sphinx_rtd_theme;
 
       cd docs;
       make html;

@@ -10,11 +10,6 @@ engine:
  - python=3.5
 
 script:
-  - if [[ "$GIT_BRANCH" != release ]]; then
-      echo "beta version";
-      sed -i -e 's/$/b0/' mordred/version.txt;
-      echo $BINSTAR_BUILD_MAJOR > __conda_buildnum__.txt;
-    fi
   - cp mordred/version.txt __conda_version__.txt
   - conda update --all -y
   - conda config --add channels rdkit
