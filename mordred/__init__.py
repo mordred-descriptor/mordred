@@ -1,5 +1,7 @@
 r"""modred descriptor calculator."""
 
+from ._version import __version__
+
 from ._base import (
     all_modules, all_descriptors,
     Calculator, Descriptor,
@@ -12,5 +14,3 @@ __all__ = (
     'Calculator', 'Descriptor',
     'get_descriptors_from_module',
 )
-
-__version__ = '0.1.0'
