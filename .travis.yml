@@ -34,11 +34,9 @@ install:
   - conda update -q conda
   - conda info -a
 
-  - conda create -c rdkit -c mordred-descriptor -q -n test-environment python=$TRAVIS_PYTHON_VERSION rdkit --file=requirements.txt
+  - conda create -c rdkit -c mordred-descriptor -q -n test-environment python=$TRAVIS_PYTHON_VERSION rdkit
   - source activate test-environment
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      conda install enum34;
-    fi
+  - pip install '.[test]'
   - pip install coveralls
 
 script:

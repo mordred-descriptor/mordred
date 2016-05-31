@@ -1,8 +1,6 @@
 from setuptools import setup, find_packages
 import sys
 
-import mordred
-
 install_requires = [
     'six>=1.10',
     'numpy>=1.10',
@@ -14,9 +12,12 @@ install_requires = [
 if sys.version_info < (3, 4, 0):
     install_requires += ['enum34']
 
+sandbox = {}
+exec(open('mordred/_version.py').read(), sandbox, sandbox)
+
 setup(
     name='mordred',
-    version=mordred.__version__,
+    version=sandbox['__version__'],
     packages=find_packages(),
 
     install_requires=install_requires,
