@@ -7,7 +7,6 @@ from inspect import getsourcelines, isabstract
 from sys import maxsize
 from types import ModuleType
 from numbers import Real
-import numpy as np
 
 from rdkit import Chem
 
@@ -16,6 +15,7 @@ import six
 from logging import getLogger
 
 from ._exception import FragmentError
+from ._util import conformer_to_numpy
 
 
 class Descriptor(six.with_metaclass(ABCMeta, object)):
@@ -44,18 +44,21 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def __hash__(self):
         return hash(self.__reduce_ex__(self._reduce_ex_version))
 
-    def __eq__(self, other):
-        l = self.__reduce_ex__(self._reduce_ex_version)
-        r = other.__reduce_ex__(self._reduce_ex_version)
-        return l.__eq__(r)
+    def __compare_by_reduce(meth):
+        def compare(self, other):
+            l = self.__reduce_ex__(self._reduce_ex_version)
+            r = other.__reduce_ex__(other._reduce_ex_version)
+            return getattr(l, meth)(r)
 
-    def __ne__(self, other):
-        return not self == other
+        return compare
 
-    def __lt__(self, other):
-        l = self.__reduce_ex__(self._reduce_ex_version)
-        r = other.__reduce_ex__(self._reduce_ex_version)
-        return l.__lt__(r)
+    __eq__ = __compare_by_reduce('__eq__')
+    __ne__ = __compare_by_reduce('__ne__')
+
+    __lt__ = __compare_by_reduce('__lt__')
+    __gt__ = __compare_by_reduce('__gt__')
+    __le__ = __compare_by_reduce('__le__')
+    __ge__ = __compare_by_reduce('__ge__')
 
     rtype = None
 
@@ -103,12 +106,6 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         )
 
 
-def conformer_to_numpy(conf):
-    return np.array(
-        [list(conf.GetAtomPosition(i)) for i in range(conf.GetNumAtoms())]
-    )
-
-
 class Context(object):
     def __reduce_ex__(self, version):
         return self.__class__, (None,), {
@@ -125,9 +122,9 @@ class Context(object):
     def from_calculator(cls, calc, mol, id):
         return cls(mol, calc._require_3D, calc._explicit_hydrogens, calc._kekulizes, id)
 
-    _tf = set([True, False])
+    __tf = set([True, False])
 
-    def __init__(self, mol, require_3D=False, explicit_hydrogens=_tf, kekulizes=_tf, id=-1):
+    def __init__(self, mol, require_3D=False, explicit_hydrogens=__tf, kekulizes=__tf, id=-1):
         if mol is None:
             return
 
