@@ -11,13 +11,16 @@ engine:
 
 script:
   - cp mordred/version.txt __conda_version__.txt
-  - conda update --all -y
   - conda config --add channels rdkit
   - conda config --add channels mordred-descriptor
+  - rm -rf .git
   - conda build .
 
 after_success:
-  - conda convert /opt/miniconda/conda-bld/linux-64/*.tar.bz2 -p osx-64 -p win-32 -p win-64
+  - if [[ ! -d "$CONDA_BUILD_DIR" ]]; then
+      CONDA_BUILD_DIR=/opt/miniconda/conda-bld/linux-64;
+    fi
+  - conda convert $CONDA_BUILD_DIR/*.tar.bz2 -p osx-64 -p win-32 -p win-64
 
 build_targets:
   - conda

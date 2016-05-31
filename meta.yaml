@@ -2,6 +2,9 @@ package:
   name: mordred
   version: 0
 
+source:
+  path: .
+
 build:
   number: 0
   script:
@@ -31,8 +34,8 @@ requirements:
     - tqdm
 
 test:
-  requires:
-    - nose
+  imports:
+    - mordred
 
   commands:
-    - cd $SRC_DIR/tests && nosetests
+    - python -c 'from mordred import all_descriptors; all_descriptors()'
