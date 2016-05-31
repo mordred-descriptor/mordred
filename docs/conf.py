@@ -64,7 +64,9 @@ author = 'Hirotomo Moriwaki'
 # built documents.
 #
 # The short X.Y version.
-version = open('../mordred/version.txt').read().strip()
+sandbox = {}
+exec(open('../mordred/_version.py').read(), sandbox, sandbox)
+version = sandbox['__version__']
 # The full version, including alpha/beta/rc tags.
 release = version
 
