@@ -8,6 +8,7 @@ install_requires = [
     'numpy>=1.10',
     'networkx>=1.10',
     'tqdm>=3.7.1',
+    'click>=6.6',
 ]
 
 if sys.version_info < (3, 4, 0):

@@ -13,25 +13,26 @@ build:
 requirements:
   build:
     - python
-    - setuptools
-
     - networkx
     - numpy
     - six
-    - pyyaml
     - rdkit
     - enum34 [py27]
     - tqdm
+    - click
+
+    - setuptools
+    - pyyaml
 
   run:
     - python
     - networkx
     - numpy
     - six
-    - pyyaml
     - rdkit
     - enum34 [py27]
     - tqdm
+    - click
 
 test:
   imports:
