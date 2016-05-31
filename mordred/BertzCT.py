@@ -29,8 +29,3 @@ class BertzCT(Descriptor):
         return float(RDKit.BertzCT(mol, dMat=D))
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

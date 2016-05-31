@@ -68,8 +68,3 @@ class GhoseFilter(LipinskiLike):
             (20 <= mol.GetNumAtoms() <= 70) and\
             (-0.4 <= LogP <= 5.6) and\
             (40 <= MR <= 130)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

@@ -43,8 +43,3 @@ class DistanceMatrix(Descriptor):
         return result
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

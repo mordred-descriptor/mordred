@@ -43,8 +43,3 @@ class SMR(WildmanCrippenBase):
 
     def calculate(self, mol):
         return Crippen.MolMR(mol)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

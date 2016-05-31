@@ -810,8 +810,3 @@ class EtaDeltaPsi(EtaBase):
             L, R = R, L
 
         return max(L - R, 0.0)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

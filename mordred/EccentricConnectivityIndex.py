@@ -40,8 +40,3 @@ class EccentricConnectivityIndex(Descriptor):
         return int((E.astype('int') * V).sum())
 
     rtype = int
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

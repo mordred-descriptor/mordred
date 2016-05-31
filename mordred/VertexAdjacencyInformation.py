@@ -45,8 +45,3 @@ class VertexAdjacencyInformation(Descriptor):
         return 1 + np.log2(m)
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

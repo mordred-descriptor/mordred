@@ -40,8 +40,3 @@ class WienerIndex(Descriptor):
             return int(0.5 * D.sum())
 
     rtype = int
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

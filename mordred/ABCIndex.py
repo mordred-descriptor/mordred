@@ -68,8 +68,3 @@ class ABCGGIndex(ABCIndexBase):
             self._each_bond(bond, D)
             for bond in mol.GetBonds()
         ))
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

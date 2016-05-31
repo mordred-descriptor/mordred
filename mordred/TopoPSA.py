@@ -118,8 +118,3 @@ class TopoPSA(Descriptor):
         return 0.0
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

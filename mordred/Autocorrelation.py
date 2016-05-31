@@ -325,8 +325,3 @@ class GATS(MATS):
         n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * (gsum or np.nan))
         d = (cavec ** 2).sum() / (len(avec) - 1)
         return n / (d or np.nan)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

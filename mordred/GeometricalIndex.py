@@ -106,8 +106,3 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
             return float('nan')
 
         return float(D - R) / float(D)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

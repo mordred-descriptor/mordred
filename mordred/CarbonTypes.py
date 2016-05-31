@@ -123,8 +123,3 @@ class HybridizationRatio(CarbonTypesBase):
         return Nsp3 / (Nsp2 + Nsp3)
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

@@ -86,8 +86,3 @@ class KappaShapeIndex3(KappaShapeIndexBase):
             Pmax = float((A - 1) * (A - 3)) / 4.0
 
         return 4 * Pmax * Pmin / (P * P)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

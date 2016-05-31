@@ -131,8 +131,3 @@ class AtomTypeEState(EStateBase):
         """
 
         return int if self._type == AggrType.count else float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

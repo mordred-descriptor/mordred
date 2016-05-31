@@ -65,8 +65,3 @@ class BasicGroupCount(SmartsCountBase):
         'N=C-N',
         'N-C=N',
     )
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

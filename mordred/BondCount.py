@@ -82,8 +82,3 @@ class BondCount(Descriptor):
         return sum(1 for b in mol.GetBonds() if self._check_bond(b))
 
     rtype = int
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

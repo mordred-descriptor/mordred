@@ -40,8 +40,3 @@ class FragmentComplexity(Descriptor):
         return abs(B ** 2 - A ** 2 + A) + float(H) / 100
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

@@ -2,8 +2,6 @@ import math
 
 from networkx import Graph
 
-from rdkit import Chem
-
 from ._base import Descriptor
 from ._atomic_property import halogen, table
 
@@ -155,8 +153,3 @@ class MolecularId(MolecularIdBase):
         return v
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

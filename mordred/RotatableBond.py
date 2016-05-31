@@ -64,8 +64,3 @@ class RotatableBondsRatio(RotatableBondsBase):
         return float(nRot) / float(nB)
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

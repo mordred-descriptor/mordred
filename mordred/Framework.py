@@ -80,8 +80,3 @@ class Framework(Descriptor):
         return float(Nmf) / float(N)
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

@@ -113,8 +113,3 @@ class VSA_EState(MoeTypeBase):
     __slots__ = ('_k',)
     _module = RDKit_EState_VSA
     k_max = 10
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

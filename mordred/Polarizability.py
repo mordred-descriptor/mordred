@@ -57,8 +57,3 @@ class BPol(PolarizabilityBase):
             return abs(table[a] - table[b])
 
         return float(sum(bond_pol(b) for b in mol.GetBonds()))
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

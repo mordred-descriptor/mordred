@@ -85,8 +85,3 @@ class MolecularDistanceEdge(Descriptor):
         return n / (dx ** 2)
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

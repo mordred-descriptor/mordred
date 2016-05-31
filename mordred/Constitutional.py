@@ -81,8 +81,3 @@ class ConstitutionalMean(ConstitutionalSum):
 
     def calculate(self, mol, S):
         return S / mol.GetNumAtoms()
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

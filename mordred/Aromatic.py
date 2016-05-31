@@ -48,8 +48,3 @@ class AromaticBondsCount(AromaticBase):
             for b in mol.GetBonds()
             if b.GetIsAromatic()
         )
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

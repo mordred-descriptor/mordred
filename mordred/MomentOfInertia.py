@@ -66,8 +66,3 @@ class MomentOfInertia(MomentOfInertiaBase):
         return I[self._axis_to_index[self._axis]]
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

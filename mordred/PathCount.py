@@ -175,8 +175,3 @@ class PathCount(PathCountBase):
         * pi = False: :py:class:`int`
         """
         return float if self._pi else int
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

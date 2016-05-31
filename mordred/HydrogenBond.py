@@ -46,8 +46,3 @@ class HBondDonor(HBondBase):
 
     def calculate(self, mol):
         return rdMolDescriptors.CalcNumHBD(mol)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

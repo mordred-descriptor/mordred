@@ -76,8 +76,3 @@ class VdwVolumeABC(Descriptor):
         return ac - 5.92 * Nb - 14.7 * NRa - 3.8 * NRA
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

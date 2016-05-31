@@ -31,8 +31,3 @@ class McGowanVolume(Descriptor):
         return a - mol.GetNumBonds() * 6.56
 
     rtype = float
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

@@ -69,8 +69,3 @@ class AtomCount(Descriptor):
             return self._calc(mol)
 
     rtype = int
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()

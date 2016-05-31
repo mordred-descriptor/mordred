@@ -263,8 +263,3 @@ class ZModifiedIC(InformationContent):
         ids, Ags = iAgs
         w = Ags * np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
         return shannon_entropy(Ags, w)
-
-
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()
