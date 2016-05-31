@@ -21,10 +21,6 @@ before_install:
   - git config --global user.email "philopon.dependence@gmail.com"
   - git config --global user.name "philopon"
 
-  - if [[ "$TRAVIS_BRANCH" != release ]]; then
-      sed -i -e 's/$/b0/' mordred/version.txt;
-    fi
-
 install:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;

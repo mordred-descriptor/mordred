@@ -10,7 +10,7 @@ engine:
  - python=3.5
 
 script:
-  - cp mordred/version.txt __conda_version__.txt
+  - python -c 'import mordred; print(mordred.__version__)' > __conda_version__.txt
   - conda config --add channels rdkit
   - conda config --add channels mordred-descriptor
   - rm -rf .git
