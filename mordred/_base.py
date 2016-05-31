@@ -431,15 +431,16 @@ def get_descriptors_from_module(mdl):
 
     :rtype: [:py:class:`Descriptor`]
     """
-    descs = []
 
-    for name in dir(mdl):
-        if name[:1] == '_':
-            continue
+    __all__ = getattr(mdl, '__all__', None)
+    if __all__ is None:
+        __all__ = dir(mdl)
 
-        desc = getattr(mdl, name)
-        if Descriptor.is_descriptor_class(desc):
-            descs.append(desc)
+    descs = [
+        fn
+        for fn in (getattr(mdl, name) for name in __all__ if name[:1] != '_')
+        if Descriptor.is_descriptor_class(fn)
+    ]
 
     def key_by_def(d):
         try:
