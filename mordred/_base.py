@@ -171,10 +171,9 @@ class Calculator(object):
             '_require_3D': self._require_3D,
         }
 
-    logger = getLogger(__name__)
-
     def __init__(self, *descs):
         self._descriptors = []
+        self.logger = getLogger(__name__)
 
         self._explicit_hydrogens = set()
         self._kekulizes = set()
