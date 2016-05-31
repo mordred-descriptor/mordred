@@ -417,7 +417,7 @@ def all_descriptors(with_3D=True):
 
     for mdl in all_modules():
         for desc in get_descriptors_from_module(mdl):
-            if not with_3D and desc.require_3D:
+            if not with_3D and desc.require_3D is True:
                 continue
 
             yield desc

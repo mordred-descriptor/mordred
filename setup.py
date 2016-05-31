@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 import sys
-import os
+
+import mordred
 
 install_requires = [
     'six>=1.10',
@@ -14,12 +15,8 @@ if sys.version_info < (3, 4, 0):
 
 setup(
     name='mordred',
-    version=open(os.path.join(os.path.dirname(__file__), 'mordred', 'version.txt')).read().strip(),
+    version=mordred.__version__,
     packages=find_packages(),
-
-    package_data={
-        'mordred': ['version.txt']
-    },
 
     install_requires=install_requires,
 
