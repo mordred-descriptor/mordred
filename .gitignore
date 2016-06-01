@@ -4,6 +4,7 @@ __pycache__
 .DS_Store
 .ipynb_checkpoints
 /dist
+/.direnv
 .eggs/
 /.coverage
 /htmlcov
@@ -12,3 +13,4 @@ __pycache__
 /docs/_build
 /docs/api
 /docs/descriptors.rst
+build/

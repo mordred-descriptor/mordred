@@ -1,5 +1,5 @@
 import conf
-from mordred import all_modules, get_descriptors_from_module
+from mordred import all_descriptors, get_descriptors_from_module
 
 prelude = '''
 Descriptor List
@@ -22,7 +22,7 @@ def main(out):
     
     i = 0
 
-    for mdl in all_modules():
+    for mdl in all_descriptors():
         for Desc in get_descriptors_from_module(mdl):
             for desc in Desc.preset():
                 i += 1

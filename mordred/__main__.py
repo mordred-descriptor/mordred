@@ -5,7 +5,7 @@ import click
 import csv
 import math
 from importlib import import_module
-from . import __version__, all_modules, all_descriptors, Calculator
+from . import __version__, all_descriptors, Calculator
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
@@ -54,7 +54,7 @@ class DummyBar(object):
 def get_module_names():
     return [
         '.'.join(m.__name__.split('.')[1:])
-        for m in all_modules()
+        for m in all_descriptors()
     ]
 
 
@@ -163,7 +163,7 @@ def callback_quiet(cxt, param, value):
 )
 @click.option(
     'nproc', '-p', '--processes',
-    default=1, type=click.INT,
+    default=None, type=click.INT,
     help='number of processes', metavar='N'
 )
 @click.option(
@@ -196,24 +196,17 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
         N = len(mols)
 
     # Descriptors
+    calc = Calculator()
     if len(descriptor) == 0:
-        descriptors = all_descriptors(with3D)
+        calc.register(all_descriptors(), exclude3D=not with3D)
     else:
-        if with3D:
-            def check(d):
-                return True
-        else:
-            def check(d):
-                return d.require_3D is False
-
-        descriptors = (
-            d
-            for m in descriptor
-            for d in get_descriptors_from_module(import_module('.' + m, __package__))
-            if check(d)
+        calc.register(
+            (d
+             for m in descriptor
+             for d in get_descriptors_from_module(import_module('.' + m, __package__))
+             ),
+            exclude3D=not with3D
         )
-
-    calc = Calculator(descriptors)
 
     # Progress bar
     progress_args = dict(

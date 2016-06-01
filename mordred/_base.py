@@ -171,7 +171,7 @@ class Calculator(object):
             '_require_3D': self._require_3D,
         }
 
-    def __init__(self, *descs):
+    def __init__(self, descs=[], exclude3D=False):
         self._descriptors = []
         self.logger = getLogger(__name__)
 
@@ -179,7 +179,7 @@ class Calculator(object):
         self._kekulizes = set()
         self._require_3D = False
 
-        self.register(*descs)
+        self.register(descs, exclude3D=exclude3D)
 
     @property
     def descriptors(self):
@@ -204,9 +204,12 @@ class Calculator(object):
     def __len__(self):
         return len(self._descriptors)
 
-    def _register_one(self, desc, check_only=False):
+    def _register_one(self, desc, check_only=False, exclude3D=False):
         if not isinstance(desc, Descriptor):
             raise ValueError('{!r} is not descriptor'.format(desc))
+
+        if exclude3D and desc.require_3D:
+            return
 
         self._explicit_hydrogens.add(bool(desc.explicit_hydrogens))
         self._kekulizes.add(bool(desc.kekulize))
@@ -214,38 +217,37 @@ class Calculator(object):
 
         for dep in (desc.dependencies() or {}).values():
             if isinstance(dep, Descriptor):
-                self._register_one(dep, True)
+                self._register_one(dep, check_only=True)
 
         if not check_only:
             self._descriptors.append(desc)
 
-    def register(self, *descs):
+    def register(self, desc, exclude3D=False):
         r"""register descriptors.
 
-        :type descs: :py:class:`module`,
+        :type desc: :py:class:`module`,
             :py:class:`Descriptor` class/instance or
             :py:class:`Iterable`
 
-        :param descs: descriptors to register
+        :param desc: descriptors to register
 
             * :py:class:`module`: Descriptors in module
             * :py:class:`Descriptor` class: use :py:meth:`Descriptor.preset`
         """
-        for desc in descs:
-            if not hasattr(desc, '__iter__'):
-                if Descriptor.is_descriptor_class(desc):
-                    for d in desc.preset():
-                        self._register_one(d)
+        if not hasattr(desc, '__iter__'):
+            if Descriptor.is_descriptor_class(desc):
+                for d in desc.preset():
+                    self._register_one(d, exclude3D=exclude3D)
 
-                elif isinstance(desc, ModuleType):
-                    self.register(get_descriptors_from_module(desc))
-
-                else:
-                    self._register_one(desc)
+            elif isinstance(desc, ModuleType):
+                self.register(get_descriptors_from_module(desc), exclude3D=exclude3D)
 
             else:
-                for d in desc:
-                    self.register(d)
+                self._register_one(desc, exclude3D=exclude3D)
+
+        else:
+            for d in desc:
+                self.register(d, exclude3D=exclude3D)
 
     def _calculate_one(self, cxt, desc, caller=None):
         if desc in self._cache:
@@ -397,7 +399,12 @@ def worker(cxt):
     return list(calculator._calculate(cxt))
 
 
-def all_modules():
+def all_descriptors():
+    r"""yield all descriptor modules.
+
+    :returns: all modules
+    :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
+    """
     base_dir = os.path.dirname(__file__)
 
     for name in os.listdir(base_dir):
@@ -406,21 +413,6 @@ def all_modules():
             continue
 
         yield import_module('.' + name, __package__)
-
-
-def all_descriptors(with_3D=True):
-    r"""yield all descriptors.
-
-    :returns: all modules
-    :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
-    """
-
-    for mdl in all_modules():
-        for desc in get_descriptors_from_module(mdl):
-            if not with_3D and desc.require_3D is True:
-                continue
-
-            yield desc
 
 
 def get_descriptors_from_module(mdl):

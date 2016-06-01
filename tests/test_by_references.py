@@ -23,13 +23,14 @@ data_dir = os.path.join(
 def test_by_references():
     calc = Calculator(
         d
-        for d in all_descriptors(with_3D=True)
+        for d in all_descriptors()
         if d.__class__ not in [Polarizability.APol, Polarizability.BPol]
     )
 
-    calc.register(Polarizability.APol(True),
-                  Polarizability.BPol(True),
-                  )
+    calc.register([
+        Polarizability.APol(True),
+        Polarizability.BPol(True),
+    ])
 
     actuals = dict()
     for mol in Chem.SDMolSupplier(os.path.join(data_dir, 'structures.sdf'), removeHs=False):
@@ -50,7 +51,8 @@ def test_by_references():
             if digit is None:
                 assert_f = eq_
             else:
-                assert_f = lambda a, d, m: assert_almost_equal(a, d, digit, m)
+                def assert_f(a, d, m):
+                    return assert_almost_equal(a, d, digit, m)
 
             for mname, descs in desireds:
                 for dname, desired in descs:
