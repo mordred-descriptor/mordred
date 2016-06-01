@@ -85,7 +85,7 @@ class AtomicCharge(CPSABase):
     require_3D = False
 
     def dependencies(self):
-        return {'charges': AtomicProperty.create(self.explicit_hydrogens, 'c')}
+        return {'charges': AtomicProperty(self.explicit_hydrogens, 'c')}
 
     def calculate(self, mol, charges):
         if not np.all(np.isfinite(charges)):

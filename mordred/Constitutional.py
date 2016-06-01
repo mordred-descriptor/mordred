@@ -35,7 +35,7 @@ class ConstitutionalSum(Descriptor):
         return self.__class__, (self._prop,)
 
     def __init__(self, prop='v'):
-        self._prop = AtomicProperty.create(self.explicit_hydrogens, prop)
+        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
 
         if self._prop.prop == get_sanderson_en:
             self._prop_name = 'se'

@@ -172,7 +172,7 @@ class Chi(ChiBase):
     def __init__(self, type='path', order=0, prop='delta', averaged=False):
         self._type = parse_enum(ChiType, type)
         self._order = order
-        self._prop = AtomicProperty.create(self.explicit_hydrogens, prop)
+        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
         self._averaged = averaged
 
     def dependencies(self):

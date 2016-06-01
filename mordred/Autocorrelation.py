@@ -27,7 +27,7 @@ class AutocorrelationBase(Descriptor):
 
     @property
     def _avec(self):
-        return AtomicProperty.create(self.explicit_hydrogens, self._prop)
+        return AtomicProperty(self.explicit_hydrogens, self._prop)
 
     @property
     def _cavec(self):

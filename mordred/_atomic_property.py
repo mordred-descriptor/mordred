@@ -483,20 +483,23 @@ def get_properties(charge=False, istate=False):
 
 
 class AtomicProperty(Descriptor):
-    @classmethod
-    def create(cls, explicit_hydrogens, prop):
-        if isinstance(prop, cls):
-            return prop
-
-        return cls(explicit_hydrogens, prop)
-
     def __str__(self):
         return getattr(self.prop, 'name', self.prop.__name__)
 
     def __reduce_ex__(self, version):
         return self.__class__, (self.explicit_hydrogens, self.prop)
 
+    def __new__(cls, explicit_hydrogens, prop):
+        if isinstance(prop, cls):
+            prop._initialized = True
+            return prop
+
+        return super(AtomicProperty, cls).__new__(cls)
+
     def __init__(self, explicit_hydrogens, prop):
+        if getattr(self, '_initialized', False):
+            return
+
         self.explicit_hydrogens = explicit_hydrogens
         self.prop = getters.get(prop)
 
