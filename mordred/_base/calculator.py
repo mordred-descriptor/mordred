@@ -205,7 +205,10 @@ class Calculator(object):
         :param nmols: number of all mols for display progress bar
 
         :type quiet: :py:class:`bool`
-        :param quiet: weather display progress bar or not
+        :param quiet: suppress progress bar
+
+        :type ipynb: :py:class:`bool`
+        :param ipynb: use ipython notebook progress bar
 
         :type id: :py:class:`int`
         :param id: conformer id
