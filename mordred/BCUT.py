@@ -108,7 +108,7 @@ class BCUT(BCUTBase):
         return self.__class__, (self._prop, self._nth)
 
     def __init__(self, prop='m', nth=0):
-        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
+        self._prop = AtomicProperty.create(self.explicit_hydrogens, prop)
         self._nth = nth
 
     def dependencies(self):

@@ -20,16 +20,12 @@ def attr(**attrs):
     return proc
 
 
-@attr(name='c')
-def get_charge_explicitHs(atom):
-    return atom.GetDoubleProp('_GasteigerCharge')
-
-
-@attr(name='c')
-def get_charge_implicitHs(atom):
-    return atom.GetDoubleProp('_GasteigerCharge') +\
-        atom.GetDoubleProp('_GasteigerHCharge')
-
+@attr(name='c', gasteiger_charges=True)
+def get_gasteiger_charge(atom):
+    return (
+        atom.GetDoubleProp('_GasteigerCharge') +
+        atom.GetDoubleProp('_GasteigerHCharge') if atom.HasProp('_GasteigerHCharge') else 0.0
+    )
 
 nan = float('nan')
 na = nan
@@ -469,6 +465,7 @@ getters = {
     'p': get_polarizability,
     'i': get_ionpotential,
     's': get_intrinsic_state,
+    'c': get_gasteiger_charge,
     'delta': get_sigma_electrons,
     'delta_v': get_valence_electrons,
 }
@@ -486,41 +483,34 @@ def get_properties(charge=False, istate=False):
 
 
 class AtomicProperty(Descriptor):
+    @classmethod
+    def create(cls, explicit_hydrogens, prop):
+        if isinstance(prop, cls):
+            return prop
+
+        return cls(explicit_hydrogens, prop)
+
     def __str__(self):
         return getattr(self.prop, 'name', self.prop.__name__)
 
-    @property
-    def name(self):
-        return str(self)
-
     def __reduce_ex__(self, version):
-        return self.__class__, (self.explicit_hydrogens, self.prop,)
+        return self.__class__, (self.explicit_hydrogens, self.prop)
 
     def __init__(self, explicit_hydrogens, prop):
-        if isinstance(prop, self.__class__):
-            return self.__init__(prop.explicit_hydrogens, prop.prop)
-
         self.explicit_hydrogens = explicit_hydrogens
-        self.gasteiger_charges = False
+        self.prop = getters.get(prop)
 
-        if hasattr(prop, 'require_connected'):
-            self.require_connected = prop.require_connected
+        if self.prop is not None:
+            return
 
-        if prop in getters:
-            self.prop = getters[prop]
-
-        elif prop == 'c':
-            self.gasteiger_charges = True
-            self.prop = get_charge_explicitHs if explicit_hydrogens else get_charge_implicitHs
-
-        elif hasattr(prop, '__call__'):
+        if hasattr(prop, '__call__'):
             self.prop = prop
+            return
 
-        else:
-            raise ValueError('atomic property is not callable: {!r}'.format(prop))
+        raise ValueError('atomic property is not callable: {!r}'.format(prop))
 
     def calculate(self, mol):
-        if self.gasteiger_charges:
+        if getattr(self.prop, 'gasteiger_charges', False):
             ComputeGasteigerCharges(mol)
 
         return atoms_to_numpy(self.prop, mol)

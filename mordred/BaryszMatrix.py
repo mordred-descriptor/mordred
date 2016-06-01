@@ -80,7 +80,7 @@ class BaryszMatrix(BaryszMatrixBase):
         return self.__class__, (self._prop, self._type)
 
     def __init__(self, prop='Z', type='SpMax'):
-        self._prop = AtomicProperty(self.explicit_hydrogens, prop)
+        self._prop = AtomicProperty.create(self.explicit_hydrogens, prop)
         self._type = get_method(type)
 
     def dependencies(self):

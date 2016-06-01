@@ -32,7 +32,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def __compare_by_reduce(meth):
         def compare(self, other):
             l = self.__reduce_ex__(self._reduce_ex_version)
-            r = other.__reduce_ex__(other._reduce_ex_version)
+            r = other.__reduce_ex__(self._reduce_ex_version)
             return getattr(l, meth)(r)
 
         return compare
