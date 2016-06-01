@@ -1,7 +1,7 @@
 import six
 from multiprocessing import Pool
 from .context import Context
-
+from .._util import Capture, get_bar
 
 calculator = None
 
@@ -13,10 +13,13 @@ def initializer(self):
 
 
 def worker(cxt):
-    return list(calculator._calculate(cxt))
+    with Capture() as capture:
+        r = list(calculator._calculate(cxt))
+
+        return r, capture.result
 
 
-def parallel(self, mols, nproc, callback):
+def parallel(self, mols, nproc=None, nmols=None, quiet=False, id=-1):
     if six.PY3:
         def get_result(r):
             return r.get()
@@ -31,11 +34,22 @@ def parallel(self, mols, nproc, callback):
         pool = Pool(nproc, initializer=initializer, initargs=(self,))
 
         def do_task(mol):
-            args = Context.from_calculator(self, mol, -1)
+            args = Context.from_calculator(self, mol, id)
             return pool.apply_async(worker, (args,))
 
-        for m, result in [(m, do_task(m)) for m in mols]:
-            yield m, get_result(result)
+        with get_bar(quiet, self.logger, nmols) as bar:
+            for m, result in [(m, do_task(m)) for m in mols]:
+                r, err = get_result(result)
+
+                for e in err:
+                    e = e.rstrip()
+                    if not e:
+                        continue
+
+                    bar.write(e)
+
+                yield m, r
+                bar.update()
     finally:
         pool.terminate()
         pool.join()

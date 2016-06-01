@@ -9,6 +9,7 @@ import traceback
 from .context import Context
 from inspect import getsourcelines
 from sys import maxsize
+from .._util import Capture, get_bar
 
 
 class Calculator(object):
@@ -175,34 +176,46 @@ class Calculator(object):
         """
         return list(self._calculate(Context.from_calculator(self, mol, id)))
 
-    def _serial(self, mols, callback):
-        for m in mols:
-            r = list(self._calculate(Context.from_calculator(self, m, -1)))
-            if callback is not None:
-                callback((m, r))
+    def _serial(self, mols, nmols=None, quiet=False, id=-1):
+        with get_bar(quiet, self.logger, nmols) as bar:
+            for m in mols:
+                with Capture() as capture:
+                    r = list(self._calculate(Context.from_calculator(self, m, id)))
 
-            yield m, r
+                for e in capture.result:
+                    e = e.rstrip()
+                    if not e:
+                        continue
 
-    def map(self, mols, processes=None, callback=None):
+                    bar.write(e, file=capture.orig)
+
+                yield m, r
+                bar.update()
+
+    def map(self, mols, nproc=None, nmols=None, quiet=False, id=-1):
         r"""calculate descriptors over mols.
 
         :type mols: :py:class:`Iterable` (:py:class:`Mol`)
         :param mols: moleculars
 
-        :type processes: :py:class:`int` or :py:class:`None`
-        :param processes: number of process. None is :py:func:`multiprocessing.cpu_count`
+        :type nproc: :py:class:`int` or :py:class:`None`
+        :param nproc: number of process. None is :py:func:`multiprocessing.cpu_count`
 
-        :type callback: :py:class:`Callable` ([scalar])
-            -> :py:class:`None`
+        :type nmols: :py:class:`None` or :py:class:`int`
+        :param nmols: number of all mols for display progress bar
 
-        :param callback: call when calculate finished par molecule
+        :type quiet: :py:class:`bool`
+        :param quiet: weather display progress bar or not
+
+        :type id: :py:class:`int`
+        :param id: conformer id
 
         :rtype: :py:class:`Iterator` ((:py:class:`Mol`, [scalar]]))
         """
-        if processes == 1:
-            return self._serial(mols, callback=callback)
+        if nproc == 1:
+            return self._serial(mols, nmols=nmols, quiet=quiet, id=id)
         else:
-            return self._parallel(mols, processes, callback=callback)
+            return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, id=id)
 
 
 def get_descriptors_from_module(mdl):

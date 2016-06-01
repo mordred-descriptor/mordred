@@ -9,46 +9,9 @@ from . import __version__, all_descriptors, Calculator
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
-from tqdm import tqdm
-from contextlib import contextmanager
 
 
 logger = getLogger(__name__)
-
-
-class DummyIO(object):
-    def __init__(self, to):
-        self.to = to
-
-    def write(self, output, *args):
-        output = output.rstrip()
-        if len(output) > 0:
-            tqdm.write(output, file=self.to)
-
-    def flush(self):
-        pass
-
-
-@contextmanager
-def capture_stdout():
-    stderr = sys.stderr
-    sys.stderr = DummyIO(sys.stderr)
-    yield
-    sys.stderr = stderr
-
-
-class DummyBar(object):
-    def __init__(self, *args, **kws):
-        pass
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kws):
-        pass
-
-    def update(self, *args, **kws):
-        pass
 
 
 def get_module_names():
@@ -208,25 +171,9 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
             exclude3D=not with3D
         )
 
-    # Progress bar
-    progress_args = dict(
-        dynamic_ncols=True,
-        leave=True
-    )
-
-    Progress = tqdm
-
-    if quiet:
-        Progress = DummyBar
-    elif N is not None:
-        progress_args['total'] = N
-
-    with capture_stdout(), output, Progress(**progress_args) as bar:
+    with output:
         writer = csv.writer(output)
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
-
-        def callback(r):
-            bar.update()
 
         def pretty(v):
             if isinstance(v, float) and math.isnan(v):
@@ -234,7 +181,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
 
             return str(v)
 
-        for mol, val in calc.map(mols, nproc, callback=callback):
+        for mol, val in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
             writer.writerow([mol.GetProp('_Name')] + [pretty(v) for v in val])
 
 

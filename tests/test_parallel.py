@@ -1,6 +1,5 @@
 from mordred import Calculator, all_descriptors
 from rdkit.Chem import AllChem as Chem
-from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 
 
@@ -15,6 +14,6 @@ def test_parallel():
     for mol in mols:
         Chem.EmbedMolecule(mol)
 
-    for (_, serial), (_, parallel) in zip(calc.map(mols, processes=1), calc.map(mols)):
+    for (_, serial), (_, parallel) in zip(calc.map(mols, nproc=1, quiet=True), calc.map(mols, quiet=True)):
         for d, s, p in zip(calc.descriptors, serial, parallel):
             yield assert_almost_equal, s, p, 7, str(d)
