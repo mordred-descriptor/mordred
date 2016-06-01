@@ -30,8 +30,15 @@ def all_descriptors():
         yield import_module('..' + name, __package__)
 
 
-def Descriptor__call__(self, mol, coord_id=-1):
-    return Calculator(self)(mol, coord_id)[0]
+def Descriptor__call__(self, mol, id=-1):
+    r"""calculate single descriptor value.
+    :type id: int
+    :param id: conformer id
+
+    :returns: descriptor result
+    :rtype: scalar
+    """
+    return Calculator(self)(mol, id)[0]
 
 
 Descriptor.__call__ = Descriptor__call__
