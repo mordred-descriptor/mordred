@@ -176,8 +176,8 @@ class Calculator(object):
         """
         return list(self._calculate(Context.from_calculator(self, mol, id)))
 
-    def _serial(self, mols, nmols=None, quiet=False, id=-1):
-        with get_bar(quiet, self.logger, nmols) as bar:
+    def _serial(self, mols, nmols, quiet, ipynb, id):
+        with get_bar(quiet, self.logger, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
                     r = list(self._calculate(Context.from_calculator(self, m, id)))
@@ -192,7 +192,7 @@ class Calculator(object):
                 yield m, r
                 bar.update()
 
-    def map(self, mols, nproc=None, nmols=None, quiet=False, id=-1):
+    def map(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""calculate descriptors over mols.
 
         :type mols: :py:class:`Iterable` (:py:class:`Mol`)
@@ -213,9 +213,9 @@ class Calculator(object):
         :rtype: :py:class:`Iterator` ((:py:class:`Mol`, [scalar]]))
         """
         if nproc == 1:
-            return self._serial(mols, nmols=nmols, quiet=quiet, id=id)
+            return self._serial(mols, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
         else:
-            return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, id=id)
+            return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
 
 
 def get_descriptors_from_module(mdl):

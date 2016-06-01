@@ -19,7 +19,7 @@ def worker(cxt):
         return r, capture.result
 
 
-def parallel(self, mols, nproc=None, nmols=None, quiet=False, id=-1):
+def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
     if six.PY3:
         def get_result(r):
             return r.get()
@@ -37,7 +37,7 @@ def parallel(self, mols, nproc=None, nmols=None, quiet=False, id=-1):
             args = Context.from_calculator(self, mol, id)
             return pool.apply_async(worker, (args,))
 
-        with get_bar(quiet, self.logger, nmols) as bar:
+        with get_bar(quiet, self.logger, nmols, ipynb) as bar:
             for m, result in [(m, do_task(m)) for m in mols]:
                 r, err = get_result(result)
 

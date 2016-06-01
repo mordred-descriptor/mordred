@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from tqdm import tqdm
+from tqdm import tqdm, tqdm_notebook
 
 
 def parse_enum(enum, v):
@@ -60,7 +60,24 @@ class DummyBar(object):
         self.logger.warn(text)
 
 
-def get_bar(quiet, logger, total, **kwargs):
+class NotebookWrapper(object):
+    def __init__(self, **kwargs):
+        self.bar = tqdm_notebook(**kwargs)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        pass
+
+    def update(self, *args, **kwargs):
+        self.bar.update(*args, **kwargs)
+
+    def write(self, *args, **kwargs):
+        self.bar.update(*args, **kwargs)
+
+
+def get_bar(quiet, logger, total, ipynb, **kwargs):
     if quiet:
         return DummyBar(logger)
     else:
@@ -70,4 +87,7 @@ def get_bar(quiet, logger, total, **kwargs):
         )
         args.update(kwargs)
         args['total'] = total
-        return tqdm(**args)
+        if ipynb:
+            return NotebookWrapper(**args)
+        else:
+            return tqdm(**args)
