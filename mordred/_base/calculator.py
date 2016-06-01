@@ -1,160 +1,14 @@
-import os
-import sys
-
-from abc import ABCMeta, abstractmethod
-from importlib import import_module
-from inspect import getsourcelines, isabstract
-from sys import maxsize
-from types import ModuleType
-from numbers import Real
-
-from rdkit import Chem
-
-import traceback
-import six
+from .descriptor import Descriptor
 from logging import getLogger
-
-from ._exception import FragmentError
-from ._util import conformer_to_numpy
-
-
-class Descriptor(six.with_metaclass(ABCMeta, object)):
-    r"""abstract base class of descriptors."""
-
-    explicit_hydrogens = True
-    kekulize = False
-    require_connected = False
-    require_3D = False
-
-    _reduce_ex_version = 3
-
-    @abstractmethod
-    def __reduce_ex__(self, version):
-        pass
-
-    @staticmethod
-    def _pretty(a):
-        p = getattr(a, 'name', None)
-        return repr(a if p is None else p)
-
-    def __repr__(self):
-        cls, args = self.__reduce_ex__(self._reduce_ex_version)
-        return '{}({})'.format(cls.__name__, ', '.join(map(self._pretty, args)))
-
-    def __hash__(self):
-        return hash(self.__reduce_ex__(self._reduce_ex_version))
-
-    def __compare_by_reduce(meth):
-        def compare(self, other):
-            l = self.__reduce_ex__(self._reduce_ex_version)
-            r = other.__reduce_ex__(other._reduce_ex_version)
-            return getattr(l, meth)(r)
-
-        return compare
-
-    __eq__ = __compare_by_reduce('__eq__')
-    __ne__ = __compare_by_reduce('__ne__')
-
-    __lt__ = __compare_by_reduce('__lt__')
-    __gt__ = __compare_by_reduce('__gt__')
-    __le__ = __compare_by_reduce('__le__')
-    __ge__ = __compare_by_reduce('__ge__')
-
-    rtype = None
-
-    @classmethod
-    def preset(cls):
-        r"""generate preset descriptor instances.
-
-        :rtype: iterable
-        """
-        return ()
-
-    def dependencies(self):
-        r"""descriptor dependencies.
-
-        :rtype: {:py:class:`str`: (:py:class:`Descriptor` or :py:class:`None`)} or :py:class:`None`
-        """
-        pass
-
-    @abstractmethod
-    def calculate(self, mol):
-        r"""calculate descriptor value.
-
-        (abstract method)
-        """
-        pass
-
-    def __call__(self, mol, coord_id=-1):
-        r"""calculate single descriptor value.
-
-        :returns: descriptor result
-        :rtype: scalar
-        """
-        return Calculator(self)(mol, coord_id)[0]
-
-    @classmethod
-    def is_descriptor_class(cls, desc):
-        r"""check calculatable descriptor class or not.
-
-        :rtype: :py:class:`bool`
-        """
-        return (
-            isinstance(desc, type) and
-            issubclass(desc, cls) and
-            not isabstract(desc)
-        )
-
-
-class Context(object):
-    def __reduce_ex__(self, version):
-        return self.__class__, (None,), {
-            '_mols': self._mols,
-            '_coords': self._coords,
-            'n_frags': self.n_frags,
-            'name': self.name,
-        }
-
-    def __str__(self):
-        return self.name
-
-    @classmethod
-    def from_calculator(cls, calc, mol, id):
-        return cls(mol, calc._require_3D, calc._explicit_hydrogens, calc._kekulizes, id)
-
-    __tf = set([True, False])
-
-    def __init__(self, mol, require_3D=False, explicit_hydrogens=__tf, kekulizes=__tf, id=-1):
-        if mol is None:
-            return
-
-        self._mols = {}
-        self._coords = {}
-
-        self.n_frags = len(Chem.GetMolFrags(mol))
-
-        if mol.HasProp('_Name'):
-            self.name = mol.GetProp('_Name')
-        else:
-            self.name = Chem.MolToSmiles(Chem.RemoveHs(mol))
-
-        for eh, ke in ((eh, ke) for eh in explicit_hydrogens for ke in kekulizes):
-            m = (Chem.AddHs if eh else Chem.RemoveHs)(mol)
-
-            if ke:
-                Chem.Kekulize(m)
-
-            if require_3D:
-                self._coords[eh, ke] = conformer_to_numpy(m.GetConformer(id))
-
-            m.RemoveAllConformers()
-            self._mols[eh, ke] = m
-
-    def get_coord(self, desc):
-        return self._coords[desc.explicit_hydrogens, desc.kekulize]
-
-    def get_mol(self, desc):
-        return self._mols[desc.explicit_hydrogens, desc.kekulize]
+from types import ModuleType
+from .exception import FragmentError
+from numbers import Real
+import sys
+import os
+import traceback
+from .context import Context
+from inspect import getsourcelines
+from sys import maxsize
 
 
 class Calculator(object):
@@ -321,41 +175,6 @@ class Calculator(object):
         """
         return list(self._calculate(Context.from_calculator(self, mol, id)))
 
-    def _parallel(self, mols, processes, callback):
-        from multiprocessing import Pool
-
-        try:
-            pool = Pool(
-                processes,
-                initializer=initializer,
-                initargs=(self,),
-            )
-
-            if callback is None:
-                def do_task(mol):
-                    args = Context.from_calculator(self, mol, -1),
-                    return pool.apply_async(worker, args)
-            else:
-                def do_task(mol):
-                    args = Context.from_calculator(self, mol, -1),
-                    return pool.apply_async(worker, args, callback=callback)
-
-            if six.PY3:
-                def get_result(r):
-                    return r.get()
-            else:
-                # timeout: avoid python2 KeyboardInterrupt bug.
-                # http://stackoverflow.com/a/1408476
-                def get_result(r):
-                    return r.get(1e9)
-
-            for m, result in [(m, do_task(m)) for m in mols]:
-                yield m, get_result(result)
-
-        finally:
-            pool.terminate()
-            pool.join()
-
     def _serial(self, mols, callback):
         for m in mols:
             r = list(self._calculate(Context.from_calculator(self, m, -1)))
@@ -384,35 +203,6 @@ class Calculator(object):
             return self._serial(mols, callback=callback)
         else:
             return self._parallel(mols, processes, callback=callback)
-
-
-calculator = None
-
-
-def initializer(calc):
-    global calculator
-
-    calculator = calc
-
-
-def worker(cxt):
-    return list(calculator._calculate(cxt))
-
-
-def all_descriptors():
-    r"""yield all descriptor modules.
-
-    :returns: all modules
-    :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
-    """
-    base_dir = os.path.dirname(__file__)
-
-    for name in os.listdir(base_dir):
-        name, ext = os.path.splitext(name)
-        if name[:1] == '_' or ext != '.py':
-            continue
-
-        yield import_module('.' + name, __package__)
 
 
 def get_descriptors_from_module(mdl):
