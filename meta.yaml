@@ -39,4 +39,5 @@ test:
     - mordred
 
   commands:
-    - python -c 'from mordred import all_descriptors; all_descriptors()'
+    - python -c "from mordred import all_descriptors; all_descriptors()"
+    - python -m "mordred.tests"

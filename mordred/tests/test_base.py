@@ -1,6 +1,6 @@
 from nose.tools import eq_, ok_, raises
 from mordred import Calculator, Descriptor
-import Dummy
+from . import Dummy
 
 
 def test_Calculator_descriptors():

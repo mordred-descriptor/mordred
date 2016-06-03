@@ -40,7 +40,7 @@ install:
   - pip install coveralls
 
 script:
-  - nosetests tests --with-coverage --cover-package=mordred
+  - nosetests mordred --with-coverage --cover-package=mordred
 
 after_success:
   - set -e

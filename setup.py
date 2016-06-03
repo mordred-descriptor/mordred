@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 
+
 install_requires = [
     'six>=1.10',
     'numpy>=1.10',
@@ -10,26 +11,34 @@ install_requires = [
 ]
 
 if sys.version_info < (3, 4, 0):
-    install_requires += ['enum34']
+    install_requires.append('enum34')
 
-sandbox = {}
-exec(open('mordred/_version.py').read(), sandbox, sandbox)
+
+def get_version():
+    version_file = 'mordred/_version.py'
+
+    sandbox = {}
+    exec(open(version_file).read(), sandbox, sandbox)
+    return sandbox['__version__']
+
 
 setup(
     name='mordred',
-    version=sandbox['__version__'],
+    version=get_version(),
     packages=find_packages(),
 
     package_data={
-        'mordred': ['data/*']
+        'mordred': ['data/*'],
+        'mordred.tests': ['references/**/*'],
     },
 
     install_requires=install_requires,
 
     extras_require=dict(
-        test=['nose>=1.3',
-              'PyYaml>=3.11',
-              ]
+        test=[
+            'nose>=1.3',
+            'PyYaml>=3.11',
+        ]
     ),
 
     test_suite='nose.collector',
