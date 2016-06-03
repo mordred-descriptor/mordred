@@ -29,7 +29,7 @@ setup(
 
     package_data={
         'mordred': ['data/*'],
-        'mordred.tests': ['references/**/*'],
+        'mordred.tests': ['references/*', 'references/**/*'],
     },
 
     install_requires=install_requires,
