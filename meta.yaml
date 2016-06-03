@@ -38,6 +38,9 @@ test:
   imports:
     - mordred
 
+  requires:
+    - nose
+
   commands:
     - python -c "from mordred import all_descriptors; all_descriptors()"
     - python -m "mordred.tests"
