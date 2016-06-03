@@ -21,6 +21,10 @@ class BondType(IntEnum):
     aromatic = 6
     multiple = 7
 
+    @property
+    def as_argument(self):
+        return self.name
+
 
 bond_types = (
     (BondType.any, ('', lambda _: True)),

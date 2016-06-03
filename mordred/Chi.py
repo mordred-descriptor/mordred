@@ -21,6 +21,9 @@ class ChiType(IntEnum):
     path_cluster = 3
     chain = 4
 
+    def as_argument(self):
+        return self.name
+
 
 class DFS(object):
     __slots__ = ('mol', 'visited', 'vis_edges', 'is_chain', 'degrees', 'neighbors',)

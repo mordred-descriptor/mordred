@@ -52,6 +52,9 @@ class AggrType(IntEnum):
     max = 3
     min = 4
 
+    def as_argument(self):
+        return self.name
+
 aggr_names = (
     (AggrType.count, 'N'),
     (AggrType.sum, 'S'),

@@ -13,7 +13,7 @@ methods = []
 
 def method(cls):
     methods.append(cls)
-    cls.name = cls.__name__
+    cls.as_argument = cls.__name__
     return cls
 
 

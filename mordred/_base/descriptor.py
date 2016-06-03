@@ -17,14 +17,18 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def __reduce_ex__(self, version):
         pass
 
+    @property
+    def as_argument(self):
+        return self
+
     @staticmethod
-    def _pretty(a):
-        p = getattr(a, 'name', None)
-        return repr(a if p is None else p)
+    def _pretty(v):
+        v = getattr(v, 'as_argument', v)
+        return repr(v)
 
     def __repr__(self):
         cls, args = self.__reduce_ex__(self._reduce_ex_version)
-        return '{}({})'.format(cls.__name__, ', '.join(map(self._pretty, args)))
+        return '{}({})'.format(cls.__name__, ', '.join(self._pretty(a) for a in args))
 
     def __hash__(self):
         return hash(self.__reduce_ex__(self._reduce_ex_version))
@@ -68,7 +72,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
         (abstract method)
         """
-        pass
+        raise TypeError('not implemented Descriptor.calculate method')
 
     # def __call__(self, mol, coord_id=-1):
     #     r"""calculate single descriptor value.
