@@ -74,7 +74,7 @@ class BondCount(Descriptor):
 
     __slots__ = ('_type', '_bond_name', '_check_bond', 'kekulize',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type, self.kekulize)
 
     def __init__(self, type='any', kekulize=False):

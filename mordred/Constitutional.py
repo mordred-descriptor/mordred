@@ -31,7 +31,7 @@ class ConstitutionalSum(Descriptor):
 
     __slots__ = ('_prop', '_prop_name',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._prop,)
 
     def __init__(self, prop='v'):

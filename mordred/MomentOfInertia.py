@@ -19,7 +19,7 @@ class MomentOfInertiaBase(Descriptor):
 
 
 class PrincipalAxis(MomentOfInertiaBase):
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol, conf):
@@ -49,7 +49,7 @@ class MomentOfInertia(MomentOfInertiaBase):
     def __str__(self):
         return 'MOMI-{}'.format(self._axis)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._axis,)
 
     axes = ('X', 'Y', 'Z')

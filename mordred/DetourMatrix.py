@@ -134,7 +134,7 @@ class DetourMatrixBase(Descriptor):
 class DetourMatrixCache(DetourMatrixBase):
     __slots__ = ()
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):
@@ -164,7 +164,7 @@ class DetourMatrix(DetourMatrixBase):
 
     __slots__ = ('_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type,)
 
     def __init__(self, type='SpMax'):
@@ -199,7 +199,7 @@ class DetourIndex(DetourMatrixBase):
 
     __slots__ = ()
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     @classmethod

@@ -6,7 +6,7 @@ class Dummy1(Descriptor):
 
 
 class Dummy2(Dummy1):
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):

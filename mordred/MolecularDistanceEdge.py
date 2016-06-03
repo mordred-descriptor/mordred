@@ -45,7 +45,7 @@ class MolecularDistanceEdge(Descriptor):
 
     __slots__ = ('_valence1', '_valence2', '_atomic_num',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._valence1, self._valence2, self._atomic_num)
 
     def __init__(self, valence1=1, valence2=1, element='C'):

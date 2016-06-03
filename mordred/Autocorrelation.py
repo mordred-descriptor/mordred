@@ -18,7 +18,7 @@ class AutocorrelationBase(Descriptor):
             self._avec
         )
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._order, self._prop)
 
     def __init__(self, order=0, prop='m'):
@@ -57,7 +57,7 @@ class AutocorrelationBase(Descriptor):
 
 
 class AutocorrelationProp(AutocorrelationBase):
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._prop,)
 
     def __init__(self, prop):
@@ -70,7 +70,7 @@ class AutocorrelationOrder(AutocorrelationBase):
     def _prop(self):
         return np.nan
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._order,)
 
     def __init__(self, order):

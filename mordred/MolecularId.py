@@ -63,7 +63,7 @@ class MolecularIdBase(Descriptor):
     explicit_hydrogens = False
     require_connected = True
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._eps,)
 
 
@@ -116,7 +116,7 @@ class MolecularId(MolecularIdBase):
 
     __slots__ = ('_orig_type', '_averaged', '_eps',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._orig_type, self._averaged, self._eps)
 
     def __init__(self, type='any', averaged=False, _eps=1e-10):

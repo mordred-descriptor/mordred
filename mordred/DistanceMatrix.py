@@ -24,7 +24,7 @@ class DistanceMatrix(Descriptor):
 
     __slots__ = ('_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type,)
 
     def __init__(self, type='SpMax'):

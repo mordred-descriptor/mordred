@@ -90,7 +90,7 @@ ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
 class ChiCache(ChiBase):
     __slots__ = ('_order',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, self._order
 
     def __init__(self, order):
@@ -169,7 +169,7 @@ class Chi(ChiBase):
 
     __slots__ = ('_type', '_order', '_prop', '_averaged',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type, self._order, self._prop, self._averaged)
 
     def __init__(self, type='path', order=0, prop='delta', averaged=False):

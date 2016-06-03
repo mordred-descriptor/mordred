@@ -1,7 +1,7 @@
 from .descriptor import Descriptor
 from logging import getLogger
 from types import ModuleType
-from .exception import FragmentError
+from ..exception import FragmentError, MordredException
 from numbers import Real
 import sys
 import os
@@ -145,7 +145,10 @@ class Calculator(object):
             for desc in self.descriptors:
                 try:
                     yield self._calculate_one(cxt, desc)
-                except Exception as e:
+                except MordredException as e:
+                    if e.critical:
+                        raise e
+
                     if e.__class__ not in self._exceptions:
                         exc_type, exc_value, exc_traceback = sys.exc_info()
                         tbs = traceback.extract_tb(exc_traceback)[-1:]

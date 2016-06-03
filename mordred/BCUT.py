@@ -15,7 +15,7 @@ class BCUTBase(Descriptor):
 class Burden(BCUTBase):
     __slots__ = ()
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):
@@ -46,7 +46,7 @@ class Burden(BCUTBase):
 class BurdenEigenValues(BCUTBase):
     __slots__ = ('_prop',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._prop,)
 
     def __init__(self, prop):
@@ -104,7 +104,7 @@ class BCUT(BCUTBase):
 
     __slots__ = ('_prop', '_nth',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._prop, self._nth)
 
     def __init__(self, prop='m', nth=0):

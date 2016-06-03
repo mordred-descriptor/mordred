@@ -18,7 +18,7 @@ class CarbonTypesBase(Descriptor):
 class CarbonTypesCache(CarbonTypesBase):
     __slots__ = ()
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     _hybridization = {
@@ -70,7 +70,7 @@ class CarbonTypes(CarbonTypesBase):
 
     __slots__ = ('_nCarbon', '_SP',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._nCarbon, self._SP)
 
     def __init__(self, nCarbon=1, SP=3):
@@ -107,7 +107,7 @@ class HybridizationRatio(CarbonTypesBase):
     def __str__(self):
         return 'HybRatio'
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def dependencies(self):

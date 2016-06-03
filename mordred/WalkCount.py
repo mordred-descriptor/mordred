@@ -36,7 +36,7 @@ class WalkCount(Descriptor):
 
     __slots__ = ('_order', '_total', '_self_returning',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._order, self._total, self._self_returning)
 
     def __init__(self, order=1, total=False, self_returning=False):

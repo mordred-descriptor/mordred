@@ -20,7 +20,7 @@ def method(cls):
 class Common(Descriptor):
     require_connected = True
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (
             self.matrix,
             self.explicit_hydrogens,

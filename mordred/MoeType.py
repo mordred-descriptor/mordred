@@ -24,7 +24,7 @@ class LabuteASA(Descriptor):
     def __str__(self):
         return 'LabuteASA'
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):
@@ -44,7 +44,7 @@ class MoeTypeBase(Descriptor):
     def __str__(self):
         return self.__class__.__name__ + str(self._k)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._k,)
 
     def __init__(self, k=1):

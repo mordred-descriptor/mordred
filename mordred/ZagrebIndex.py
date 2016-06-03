@@ -43,7 +43,7 @@ class ZagrebIndex(Descriptor):
 
     __slots__ = ('_version', '_variable',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._version, self._variable)
 
     def __init__(self, version=1, variable=1):

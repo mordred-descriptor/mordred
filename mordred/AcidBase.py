@@ -25,7 +25,7 @@ class SmartsCountBase(Descriptor):
     def __str__(self):
         return self._name
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):

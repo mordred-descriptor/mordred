@@ -13,7 +13,7 @@ class PolarizabilityBase(Descriptor):
     def __str__(self):
         return self.__class__.__name__.lower() + ('78' if self._use78 else '')
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._use78,)
 
     def __init__(self, use78=False):

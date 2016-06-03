@@ -30,7 +30,7 @@ class CPSABase(Descriptor):
     def preset(cls):
         yield cls()
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def __str__(self):
@@ -44,7 +44,7 @@ class VersionCPSABase(CPSABase):
     def preset(cls):
         return map(cls, cls.versions)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._version,)
 
     versions = [1, 2, 3, 4, 5]
@@ -57,7 +57,7 @@ class VersionCPSABase(CPSABase):
 
 
 class AtomicSurfaceArea(CPSABase):
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._solvent_radius, self._level)
 
     def __init__(self, solvent_radius=1.4, level=5):

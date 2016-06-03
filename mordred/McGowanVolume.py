@@ -23,7 +23,7 @@ class McGowanVolume(Descriptor):
     def __str__(self):
         return 'VMcGowan'
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):

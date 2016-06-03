@@ -29,7 +29,7 @@ class GravitationalIndex(Descriptor):
             'p' if self._pair else '',
         )
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._heavy, self._pair)
 
     def __init__(self, heavy=True, pair=False):

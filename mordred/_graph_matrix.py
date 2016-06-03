@@ -8,7 +8,7 @@ from ._base import Descriptor
 class DistanceMatrix(Descriptor):
     __slots__ = ('explicit_hydrogens', 'useBO', 'useAtomWts',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (
             self.explicit_hydrogens,
             self.useBO,
@@ -62,7 +62,7 @@ class Diameter(Eccentricity):
 class AdjacencyMatrix(Descriptor):
     __slots__ = ('explicit_hydrogens', 'useBO', 'order',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (
             self.explicit_hydrogens,
             self.useBO,
@@ -116,7 +116,7 @@ class DistanceMatrix3D(Descriptor):
 
     require_3D = True
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (
             self.explicit_hydrogens,
             self.useAtomWts,

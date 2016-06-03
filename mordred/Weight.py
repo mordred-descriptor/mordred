@@ -27,7 +27,7 @@ class Weight(Descriptor):
 
     __slots__ = ('_averaged',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._averaged,)
 
     def __init__(self, averaged=False):

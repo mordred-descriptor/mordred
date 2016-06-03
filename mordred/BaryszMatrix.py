@@ -22,7 +22,7 @@ class Barysz(BaryszMatrixBase):
 
     _carbon = Chem.Atom(6)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._prop,)
 
     def __init__(self, prop):
@@ -76,7 +76,7 @@ class BaryszMatrix(BaryszMatrixBase):
 
     __slots__ = ('_prop', '_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._prop, self._type)
 
     def __init__(self, prop='Z', type='SpMax'):

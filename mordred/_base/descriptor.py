@@ -13,9 +13,12 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     _reduce_ex_version = 3
 
-    @abstractmethod
     def __reduce_ex__(self, version):
-        pass
+        return self.as_key()
+
+    @abstractmethod
+    def as_key(self):
+        raise TypeError('not implemented Descriptor.as_key method')
 
     @property
     def as_argument(self):
@@ -27,16 +30,16 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         return repr(v)
 
     def __repr__(self):
-        cls, args = self.__reduce_ex__(self._reduce_ex_version)
+        cls, args = self.as_key()
         return '{}({})'.format(cls.__name__, ', '.join(self._pretty(a) for a in args))
 
     def __hash__(self):
-        return hash(self.__reduce_ex__(self._reduce_ex_version))
+        return hash(self.as_key())
 
     def __compare_by_reduce(meth):
         def compare(self, other):
-            l = self.__reduce_ex__(self._reduce_ex_version)
-            r = other.__reduce_ex__(self._reduce_ex_version)
+            l = self.as_key()
+            r = other.as_key()
             return getattr(l, meth)(r)
 
         return compare

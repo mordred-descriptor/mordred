@@ -10,7 +10,7 @@ __all__ = ('Framework',)
 class FrameworkCache(Descriptor):
     __slots__ = ()
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def dependencies(self):
@@ -66,7 +66,7 @@ class Framework(Descriptor):
     def __str__(self):
         return 'fMF'
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def dependencies(self):

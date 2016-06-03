@@ -300,7 +300,7 @@ class AtomicProperty(Descriptor):
     def as_argument(self):
         return str(self)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self.explicit_hydrogens, self.prop)
 
     def __new__(cls, explicit_hydrogens, prop):

@@ -39,7 +39,7 @@ class EStateBase(Descriptor):
 class EStateCache(EStateBase):
     __slots__ = ()
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):
@@ -100,7 +100,7 @@ class AtomTypeEState(EStateBase):
 
     __slots__ = ('_type', '_estate',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type, self._estate)
 
     def __init__(self, type='count', estate='sLi'):

@@ -19,7 +19,7 @@ class PathCountBase(Descriptor):
 class PathCountCache(PathCountBase):
     __slots__ = ('_order',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._order,)
 
     def __init__(self, order):
@@ -132,7 +132,7 @@ class PathCount(PathCountBase):
 
     __slots__ = ('_order', '_pi', '_total', '_log',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._order, self._pi, self._total, self._log)
 
     def __init__(self, order=1, pi=False, total=False, log=False):

@@ -24,7 +24,7 @@ class WienerIndex(Descriptor):
 
     __slots__ = ('_polarity',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._polarity,)
 
     def __init__(self, polarity=False):

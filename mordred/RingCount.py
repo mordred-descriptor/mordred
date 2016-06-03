@@ -11,7 +11,7 @@ __all__ = ('RingCount',)
 class RingCountBase(Descriptor):
     explicit_hydrogens = False
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
 
@@ -107,7 +107,7 @@ class RingCount(RingCountBase):
 
     __slots__ = ('_order', '_greater', '_fused', '_aromatic', '_hetero',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return (
             self.__class__,
             (self._order, self._greater, self._fused, self._aromatic, self._hetero)

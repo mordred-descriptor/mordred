@@ -14,7 +14,7 @@ __all__ = ('TopologicalCharge',)
 class ChargeTermMatrix(Descriptor):
     explicit_hydrogens = False
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def dependencies(self):
@@ -69,7 +69,7 @@ class TopologicalCharge(Descriptor):
 
     __slots__ = ('_type', '_order',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type, self._order)
 
     def __init__(self, type='global', order=10):

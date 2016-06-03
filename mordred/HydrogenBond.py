@@ -26,7 +26,7 @@ class HBondAcceptor(HBondBase):
     def __str__(self):
         return 'nHBAcc'
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):
@@ -41,7 +41,7 @@ class HBondDonor(HBondBase):
     def __str__(self):
         return 'nHBDon'
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def calculate(self, mol):

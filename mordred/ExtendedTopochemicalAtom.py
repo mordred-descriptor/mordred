@@ -33,7 +33,7 @@ class AlterMolecule(Descriptor):
     kekulize = True
     require_connected = True
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self.explicit_hydrogens, self._saturated)
 
     def __init__(self, explicit_hydrogens, saturated=False):
@@ -128,7 +128,7 @@ class EtaCoreCount(EtaBase):
 
     __slots__ = ('_averaged', '_reference',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._averaged, self._reference)
 
     def __init__(self, averaged=False, reference=False):
@@ -178,7 +178,7 @@ class EtaShapeIndex(EtaBase):
 
     __slots__ = ('_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type,)
 
     def __init__(self, type='p'):
@@ -268,7 +268,7 @@ class EtaVEMCount(EtaBase):
 
     __slots__ = ('_type', '_averaged',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type, self._averaged)
 
     def __init__(self, type='', averaged=False):
@@ -356,7 +356,7 @@ class EtaCompositeIndex(EtaBase):
 
     __slots__ = ('_reference', '_local', '_averaged')
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._reference, self._local, self._averaged)
 
     def __init__(self, reference=False, local=False, averaged=False):
@@ -438,7 +438,7 @@ class EtaFunctionalityIndex(EtaBase):
 
     __slots__ = ('_local', '_averaged',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._local, self._averaged)
 
     def __init__(self, local=False, averaged=False):
@@ -498,7 +498,7 @@ class EtaBranchingIndex(EtaBase):
 
     __slots__ = ('_ring', '_averaged',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._ring, self._averaged)
 
     def __init__(self, ring=True, averaged=False):
@@ -552,7 +552,7 @@ class EtaDeltaAlpha(EtaBase):
 
     __slots__ = ('_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type,)
 
     def __init__(self, type='A'):
@@ -615,7 +615,7 @@ class EtaEpsilon(EtaBase):
 
     __slots__ = ('_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type,)
 
     def __init__(self, type=1):
@@ -672,7 +672,7 @@ class EtaDeltaEpsilon(EtaBase):
 
     __slots__ = ('_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type,)
 
     def __init__(self, type='A'):
@@ -720,7 +720,7 @@ class EtaDeltaBeta(EtaBase):
 
     __slots__ = ('_averaged',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._averaged,)
 
     def __init__(self, averaged=False):
@@ -755,7 +755,7 @@ class EtaPsi(EtaBase):
     def __str__(self):
         return 'ETA_psi_1'
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, ()
 
     def dependencies(self):
@@ -791,7 +791,7 @@ class EtaDeltaPsi(EtaBase):
 
     __slots__ = ('_type',)
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (self._type,)
 
     def __init__(self, type='A'):
