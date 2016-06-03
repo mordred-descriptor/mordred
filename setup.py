@@ -20,6 +20,10 @@ setup(
     version=sandbox['__version__'],
     packages=find_packages(),
 
+    package_data={
+        'mordred': ['data/*']
+    },
+
     install_requires=install_requires,
 
     extras_require=dict(

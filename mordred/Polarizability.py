@@ -1,4 +1,4 @@
-from ._atomic_property import Polarizabilities78, Polarizabilities94
+from ._atomic_property import polarizability78, polarizability94
 from ._base import Descriptor
 
 
@@ -20,7 +20,7 @@ class PolarizabilityBase(Descriptor):
         self._use78 = use78
 
     def _get_table(self):
-        return Polarizabilities78 if self._use78 else Polarizabilities94
+        return polarizability78 if self._use78 else polarizability94
 
     rtype = float
 

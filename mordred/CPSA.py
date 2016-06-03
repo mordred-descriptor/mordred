@@ -6,7 +6,7 @@ References
 import numpy as np
 
 from ._base import Descriptor
-from ._atomic_property import Rvdw, AtomicProperty
+from ._atomic_property import AtomicProperty, vdw_radii
 from .surface_area import SurfaceArea
 from ._util import atoms_to_numpy
 
@@ -65,7 +65,7 @@ class AtomicSurfaceArea(CPSABase):
         self._level = level
 
     def calculate(self, mol, conf):
-        rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] + self._solvent_radius, mol)
+        rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, mol)
 
         sa = SurfaceArea(rs, conf, self._level)
         return np.array(sa.surface_area())

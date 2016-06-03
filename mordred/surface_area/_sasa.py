@@ -3,7 +3,7 @@ from collections import defaultdict
 import numpy as np
 
 from ._mesh import SphereMesh
-from .._atomic_property import table, Rvdw
+from .._atomic_property import table, vdw_radii
 from .._util import atoms_to_numpy
 
 
@@ -105,7 +105,7 @@ class SurfaceArea(object):
         :rtype: SurfaceArea
         """
 
-        rs = atoms_to_numpy(lambda a: Rvdw[a.GetAtomicNum()] + solvent_radius, mol)
+        rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + solvent_radius, mol)
 
         conf = mol.GetConformer(conformer)
 
@@ -124,7 +124,7 @@ class SurfaceArea(object):
         coords = []
 
         for atom in PDBParser().get_structure('', pdb).get_atoms():
-            rs.append(Rvdw[table.GetAtomicNumber(atom.element)] + solvent_radius)
+            rs.append(vdw_radii[table.GetAtomicNumber(atom.element)] + solvent_radius)
             coords.append(atom.coord)
 
         return cls(np.array(rs), np.array(coords), level)
