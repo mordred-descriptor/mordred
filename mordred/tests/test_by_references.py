@@ -14,9 +14,11 @@ except ImportError:
     from yaml import Loader
 
 
-data_dir = os.path.join(
-    os.path.dirname(__file__),
-    'references'
+data_dir = os.path.relpath(
+    os.path.join(
+        os.path.dirname(__file__),
+        'references'
+    )
 )
 
 

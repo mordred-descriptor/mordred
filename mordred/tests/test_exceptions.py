@@ -8,7 +8,7 @@ from nose.tools import eq_, raises
 
 class DummyLogger(object):
     def warning(self, *args):
-        eq_(args[1], os.path.basename(__file__))
+        eq_(os.path.splitext(args[1])[0], os.path.splitext(os.path.basename(__file__))[0])
         eq_(args[3], 'test exception')
 
 
