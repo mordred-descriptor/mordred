@@ -10,6 +10,7 @@ from .context import Context
 from inspect import getsourcelines
 from sys import maxsize
 from .._util import Capture, get_bar
+from itertools import chain
 
 
 class Calculator(object):
@@ -215,10 +216,30 @@ class Calculator(object):
 
         :rtype: :py:class:`Iterator` ((:py:class:`Mol`, [scalar]]))
         """
+
+        if hasattr(mols, '__len__'):
+            nmols = len(mols)
+
         if nproc == 1:
             return self._serial(mols, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
         else:
             return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
+
+    def pandas(self, mols, mol_name='mol',
+               nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
+        r"""calculate descriptors over mols.
+
+        :type mol_name: str
+        :param mol_name: molecular column name
+
+        :rtype: :py:class:`pandas.DataFrame`
+        """
+        import pandas
+
+        return pandas.DataFrame(
+            (chain([m], d) for m, d in self.map(mols, nproc, nmols, quiet, ipynb, id)),
+            columns=list(chain([mol_name], (str(d) for d in self.descriptors)))
+        )
 
 
 def get_descriptors_from_module(mdl):
