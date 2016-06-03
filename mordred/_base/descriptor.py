@@ -11,8 +11,6 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     require_connected = False
     require_3D = False
 
-    _reduce_ex_version = 3
-
     def __reduce_ex__(self, version):
         return self.as_key()
 

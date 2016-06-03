@@ -136,7 +136,11 @@ class PNSA(VersionCPSABase):
         elif self._version == 4:
             f = np.sum(charges[mask]) / mol.GetNumAtoms()
         elif self._version == 5:
-            f = np.sum(charges[mask]) / np.sum(mask)
+            s = np.sum(mask)
+            if s == 0:
+                return np.nan
+
+            f = np.sum(charges[mask]) / s
 
         return np.sum(f * SA[mask])
 
