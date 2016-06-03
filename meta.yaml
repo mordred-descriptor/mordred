@@ -8,7 +8,7 @@ source:
 build:
   number: 0
   script:
-    - $PYTHON setup.py install
+    - python setup.py install
 
 requirements:
   build:

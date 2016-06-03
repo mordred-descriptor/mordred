@@ -10,20 +10,28 @@ engine:
  - python=3.5
 
 script:
-  - python -c 'exec(open("mordred/_version.py").read()); print(__version__)' > __conda_version__.txt
+  - python -c "exec(open('mordred/_version.py').read()); print(__version__)" > __conda_version__.txt
   - conda config --add channels rdkit
   - conda config --add channels mordred-descriptor
   - rm -rf .git
   - conda build .
 
-after_success:
-  - if [[ ! -d "$CONDA_BUILD_DIR" ]]; then
-      CONDA_BUILD_DIR=/opt/miniconda/conda-bld/linux-64;
-    fi
-  - conda convert $CONDA_BUILD_DIR/*.tar.bz2 -p osx-64 -p win-32 -p win-64
+---
+
+platform:
+  - win-64
+
+engine:
+ - python=2.7
+ - python=3.4
+ - python=3.5
+
+script:
+  - python -c "exec(open('mordred/_version.py').read()); print(__version__)" > __conda_version__.txt
+  - conda config --add channels rdkit
+  - conda config --add channels mordred-descriptor
+  - rd /q /s .git
+  - conda build .
 
 build_targets:
   - conda
-  - ./osx-64/*.tar.bz2
-  - ./win-64/*.tar.bz2
-  - ./win-32/*.tar.bz2
