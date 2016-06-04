@@ -31,7 +31,7 @@ class Radius3D(GeometricalIndexBase):
     def dependencies(self):
         return {'R': CRadius3D(self.explicit_hydrogens)}
 
-    def calculate(self, mol, conf, R):
+    def calculate(self, R):
         return R
 
 
@@ -46,7 +46,7 @@ class Diameter3D(GeometricalIndexBase):
     def dependencies(self):
         return {'D': CDiameter3D(self.explicit_hydrogens)}
 
-    def calculate(self, mol, conf, D):
+    def calculate(self, D):
         return D
 
 
@@ -75,7 +75,7 @@ class GeometricalShapeIndex(GeometricalIndexBase):
             'D': CDiameter3D(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, conf, R, D):
+    def calculate(self, R, D):
         if R == 0:
             return float('nan')
 
@@ -101,7 +101,7 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
     def __str__(self):
         return 'GeomPetitjeanIndex'
 
-    def calculate(self, mol, conf, R, D):
+    def calculate(self, R, D):
         if D == 0:
             return float('nan')
 

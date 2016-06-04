@@ -46,8 +46,8 @@ class Context(object):
             m.RemoveAllConformers()
             self._mols[eh, ke] = m
 
-    def get_coord(self, desc):
-        return self._coords[desc.explicit_hydrogens, desc.kekulize]
+    def get_coord(self, explicit_hydrogens, kekulize):
+        return self._coords[explicit_hydrogens, kekulize]
 
-    def get_mol(self, desc):
-        return self._mols[desc.explicit_hydrogens, desc.kekulize]
+    def get_mol(self, explicit_hydrogens, kekulize):
+        return self._mols[explicit_hydrogens, kekulize]

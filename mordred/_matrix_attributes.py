@@ -5,6 +5,7 @@ import numpy as np
 from six import string_types
 
 from ._base import Descriptor
+from .exception import MordredValueError
 
 Eig = namedtuple('eigen', 'val vec min max')
 
@@ -72,9 +73,9 @@ class Eigen(Common):
     def dependencies(self):
         return {'matrix': self.matrix}
 
-    def calculate(self, mol, matrix):
+    def calculate(self, matrix):
         if matrix is None:
-            return None
+            raise MordredValueError('Eigen: matrix is None')
 
         w, v = np.linalg.eig(matrix)
 
@@ -92,19 +93,13 @@ class Eigen(Common):
 
 @method
 class SpAbs(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig):
         return np.abs(eig.val).sum()
 
 
 @method
 class SpMax(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig):
         return eig.val[eig.max]
 
 
@@ -116,18 +111,12 @@ class SpDiam(Common):
             'SpMax': self._SpMax,
         }
 
-    def calculate(self, mol, SpMax, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, SpMax, eig):
         return SpMax - eig.val[eig.min]
 
 
 class SpMean(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig):
         return np.mean(eig.val)
 
 
@@ -139,10 +128,7 @@ class SpAD(Common):
             'SpMean': self._SpMean,
         }
 
-    def calculate(self, mol, eig, SpMean):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig, SpMean):
         return np.abs(eig.val - SpMean).sum()
 
 
@@ -151,16 +137,13 @@ class SpMAD(Common):
     def dependencies(self):
         return {'SpAD': self._SpAD}
 
-    def calculate(self, mol, SpAD):
-        return SpAD / mol.GetNumAtoms()
+    def calculate(self, SpAD):
+        return SpAD / self.mol.GetNumAtoms()
 
 
 @method
 class LogEE(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig):
         # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
         a = np.maximum(eig.val[eig.max], 0)
         sx = np.exp(eig.val - a).sum() + np.exp(-a)
@@ -169,19 +152,13 @@ class LogEE(Common):
 
 @method
 class SM1(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig):
         return eig.val.sum()
 
 
 @method
 class VE1(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig):
         return np.abs(eig.vec[:, eig.max]).sum()
 
 
@@ -190,8 +167,8 @@ class VE2(Common):
     def dependencies(self):
         return {'VE1': self._VE1}
 
-    def calculate(self, mol, VE1):
-        return VE1 / mol.GetNumAtoms()
+    def calculate(self, VE1):
+        return VE1 / self.mol.GetNumAtoms()
 
 
 @method
@@ -199,22 +176,19 @@ class VE3(Common):
     def dependencies(self):
         return {'VE1': self._VE1}
 
-    def calculate(self, mol, VE1):
+    def calculate(self, VE1):
         if VE1 == 0:
-            return np.nan
+            return MordredValueError('VE3: VE1 == zero')
         else:
-            return np.log(0.1 * mol.GetNumAtoms() * VE1)
+            return np.log(0.1 * self.mol.GetNumAtoms() * VE1)
 
 
 @method
 class VR1(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig):
         s = 0.0
 
-        for bond in mol.GetBonds():
+        for bond in self.mol.GetBonds():
             i = bond.GetBeginAtomIdx()
             j = bond.GetEndAtomIdx()
 
@@ -228,8 +202,8 @@ class VR2(Common):
     def dependencies(self):
         return {'VR1': self._VR1}
 
-    def calculate(self, mol, VR1):
-        return VR1 / mol.GetNumAtoms()
+    def calculate(self, VR1):
+        return VR1 / self.mol.GetNumAtoms()
 
 
 @method
@@ -237,11 +211,11 @@ class VR3(Common):
     def dependencies(self):
         return {'VR1': self._VR1}
 
-    def calculate(self, mol, VR1):
+    def calculate(self, VR1):
         if VR1 == 0:
-            return np.nan
+            return MordredValueError('VR3: VR1 == 0')
         else:
-            return np.log(0.1 * mol.GetNumAtoms() * VR1)
+            return np.log(0.1 * self.mol.GetNumAtoms() * VR1)
 
 
 method_dict = {m.__name__: m for m in methods}

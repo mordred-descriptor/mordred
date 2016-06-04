@@ -31,14 +31,14 @@ class Barysz(BaryszMatrixBase):
     def dependencies(self):
         return {'P': self._prop}
 
-    def calculate(self, mol, P):
+    def calculate(self, P):
         C = self._prop.prop(self._carbon)
 
         G = Graph()
 
-        G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
+        G.add_nodes_from(a.GetIdx() for a in self.mol.GetAtoms())
 
-        for bond in mol.GetBonds():
+        for bond in self.mol.GetBonds():
             i = bond.GetBeginAtomIdx()
             j = bond.GetEndAtomIdx()
 
@@ -51,7 +51,7 @@ class Barysz(BaryszMatrixBase):
             G.add_edge(i, j, weight=w)
 
         sp = floyd_warshall_numpy(G)
-        np.fill_diagonal(sp, [1. - float(C) / P[a.GetIdx()] for a in mol.GetAtoms()])
+        np.fill_diagonal(sp, [1. - float(C) / P[a.GetIdx()] for a in self.mol.GetAtoms()])
         return sp
 
 
@@ -92,7 +92,7 @@ class BaryszMatrix(BaryszMatrixBase):
             )
         )
 
-    def calculate(self, mol, result):
+    def calculate(self, result):
         return result
 
     rtype = float

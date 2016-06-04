@@ -39,7 +39,7 @@ class Lipinski(LipinskiLike):
             'HBAcc': HBondAcceptor(),
         }
 
-    def calculate(self, mol, LogP, MW, HBDon, HBAcc):
+    def calculate(self, LogP, MW, HBDon, HBAcc):
         return\
             HBDon <= 5 and\
             HBAcc <= 10 and\
@@ -62,9 +62,9 @@ class GhoseFilter(LipinskiLike):
             'MW': Weight(),
         }
 
-    def calculate(self, mol, MW, LogP, MR):
+    def calculate(self, MW, LogP, MR):
         return\
             (160 <= MW <= 480) and\
-            (20 <= mol.GetNumAtoms() <= 70) and\
+            (20 <= self.mol.GetNumAtoms() <= 70) and\
             (-0.4 <= LogP <= 5.6) and\
             (40 <= MR <= 130)

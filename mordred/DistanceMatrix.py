@@ -39,7 +39,7 @@ class DistanceMatrix(Descriptor):
             )
         }
 
-    def calculate(self, mol, result):
+    def calculate(self, result):
         return result
 
     rtype = float

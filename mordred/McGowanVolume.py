@@ -26,8 +26,8 @@ class McGowanVolume(Descriptor):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        a = sum(get_mc_gowan_volume(a) for a in mol.GetAtoms())
-        return a - mol.GetNumBonds() * 6.56
+    def calculate(self):
+        a = sum(get_mc_gowan_volume(a) for a in self.mol.GetAtoms())
+        return a - self.mol.GetNumBonds() * 6.56
 
     rtype = float

@@ -16,13 +16,13 @@ class FrameworkCache(Descriptor):
     def dependencies(self):
         return {'Rs': Rings()}
 
-    def calculate(self, mol, Rs):
+    def calculate(self, Rs):
         G = nx.Graph()
         Rd = {i: ('R', Ri) for Ri, R in enumerate(Rs) for i in R}
         R = list(set(Rd.values()))
         NR = len(R)
 
-        for bond in mol.GetBonds():
+        for bond in self.mol.GetBonds():
             a = bond.GetBeginAtomIdx()
             b = bond.GetEndAtomIdx()
 
@@ -72,10 +72,10 @@ class Framework(Descriptor):
     def dependencies(self):
         return {'F': FrameworkCache()}
 
-    def calculate(self, mol, F):
+    def calculate(self, F):
         linkers, rings = F
         Nmf = len(linkers) + len({i for ring in rings for i in ring})
-        N = mol.GetNumAtoms()
+        N = self.mol.GetNumAtoms()
 
         return float(Nmf) / float(N)
 

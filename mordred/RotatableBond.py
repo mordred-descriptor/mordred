@@ -31,8 +31,8 @@ class RotatableBondsCount(RotatableBondsBase):
     def __str__(self):
         return 'nRot'
 
-    def calculate(self, mol):
-        return CalcNumRotatableBonds(mol)
+    def calculate(self):
+        return CalcNumRotatableBonds(self.mol)
 
     rtype = int
 
@@ -57,7 +57,7 @@ class RotatableBondsRatio(RotatableBondsBase):
             'nB': BondCount('heavy'),
         }
 
-    def calculate(self, mol, nRot, nB):
+    def calculate(self, nRot, nB):
         if nB == 0:
             return np.nan
 

@@ -33,10 +33,10 @@ class Weight(Descriptor):
     def __init__(self, averaged=False):
         self._averaged = averaged
 
-    def calculate(self, mol):
-        w = ExactMolWt(mol)
+    def calculate(self):
+        w = ExactMolWt(self.mol)
         if self._averaged:
-            w /= mol.GetNumAtoms()
+            w /= self.mol.GetNumAtoms()
 
         return w
 

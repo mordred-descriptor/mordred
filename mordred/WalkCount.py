@@ -70,10 +70,10 @@ class WalkCount(Descriptor):
             )
         }
 
-    def calculate(self, mol, An=None, T=None, W=None):
+    def calculate(self, An=None, T=None, W=None):
         if self._total:
             if self._order == 1:
-                return mol.GetNumAtoms() + W
+                return self.mol.GetNumAtoms() + W
 
             return T + W
 

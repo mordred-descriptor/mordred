@@ -73,11 +73,11 @@ class AtomicIds(MolecularIdBase):
     def __init__(self, eps=1e-10):
         self._eps = eps
 
-    def calculate(self, mol):
-        aid = AtomicId(mol, self._eps)
+    def calculate(self):
+        aid = AtomicId(self.mol, self._eps)
         return [
             1 + aid.get_atomic_id(i) / 2.0
-            for i in range(mol.GetNumAtoms())
+            for i in range(self.mol.GetNumAtoms())
         ]
 
 
@@ -140,15 +140,15 @@ class MolecularId(MolecularIdBase):
     def dependencies(self):
         return {'aids': AtomicIds(self._eps)}
 
-    def calculate(self, mol, aids):
+    def calculate(self, aids):
         v = float(sum(
             aid
-            for aid, atom in zip(aids, mol.GetAtoms())
+            for aid, atom in zip(aids, self.mol.GetAtoms())
             if self._check(atom.GetAtomicNum())
         ))
 
         if self._averaged:
-            v /= mol.GetNumAtoms()
+            v /= self.mol.GetNumAtoms()
 
         return v
 

@@ -1,11 +1,12 @@
+import numpy as np
+
+
 class MordredException(Exception):
     critical = False
 
+    def __float__(self):
+        return np.nan
 
-class FragmentError(MordredException, ValueError):
-    def __init__(self, cxt, desc):
-        self.cxt = cxt
-        self.desc = desc
 
-    def __str__(self):
-        return '{!r} require just 1 fragmented molecule(molecule: {}).'.format(self.desc, self.cxt)
+class MordredValueError(MordredException, ValueError):
+    pass

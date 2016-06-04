@@ -33,7 +33,7 @@ class WienerIndex(Descriptor):
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
-    def calculate(self, mol, D):
+    def calculate(self, D):
         if self._polarity:
             return int(0.5 * (D == 3).sum())
         else:

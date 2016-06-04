@@ -23,7 +23,7 @@ class ChargeTermMatrix(Descriptor):
             'D': DistanceMatrix(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, A, D):
+    def calculate(self, A, D):
         D2 = D.copy()
         D2[D2 != 0] **= -2
         np.fill_diagonal(D2, 0)
@@ -85,7 +85,7 @@ class TopologicalCharge(Descriptor):
             'D': DistanceMatrix(self.explicit_hydrogens)
         }
 
-    def calculate(self, mol, CT, D):
+    def calculate(self, CT, D):
         D = D * np.tri(*D.shape)
         D[D == 0] = np.inf
 

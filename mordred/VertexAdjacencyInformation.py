@@ -31,10 +31,10 @@ class VertexAdjacencyInformation(Descriptor):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
+    def calculate(self):
         m = sum(
             1
-            for b in mol.GetBonds()
+            for b in self.mol.GetBonds()
             if b.GetBeginAtom().GetAtomicNum() != 1 and
             b.GetEndAtom().GetAtomicNum() != 1
         )

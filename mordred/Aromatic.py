@@ -27,10 +27,10 @@ class AromaticAtomsCount(AromaticBase):
 
     _name = 'nAromAtom'
 
-    def calculate(self, mol):
+    def calculate(self):
         return sum(
             1
-            for a in mol.GetAtoms()
+            for a in self.mol.GetAtoms()
             if a.GetIsAromatic()
         )
 
@@ -42,9 +42,9 @@ class AromaticBondsCount(AromaticBase):
 
     _name = 'nAromBond'
 
-    def calculate(self, mol):
+    def calculate(self):
         return sum(
             1
-            for b in mol.GetBonds()
+            for b in self.mol.GetBonds()
             if b.GetIsAromatic()
         )

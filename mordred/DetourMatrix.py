@@ -137,12 +137,12 @@ class DetourMatrixCache(DetourMatrixBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
+    def calculate(self):
         G = networkx.Graph()
-        G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
+        G.add_nodes_from(a.GetIdx() for a in self.mol.GetAtoms())
         G.add_edges_from(
             (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
-            for b in mol.GetBonds()
+            for b in self.mol.GetBonds()
         )
 
         return CalcDetour(G)()
@@ -179,7 +179,7 @@ class DetourMatrix(DetourMatrixBase):
             )
         }
 
-    def calculate(self, mol, result):
+    def calculate(self, result):
         return result
 
     rtype = float
@@ -214,7 +214,7 @@ class DetourIndex(DetourMatrixBase):
     def dependencies(self):
         return {'D': DetourMatrixCache()}
 
-    def calculate(self, mol, D):
+    def calculate(self, D):
         return int(0.5 * D.sum())
 
     rtype = int

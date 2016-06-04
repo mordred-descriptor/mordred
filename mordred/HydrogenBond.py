@@ -29,8 +29,8 @@ class HBondAcceptor(HBondBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        return rdMolDescriptors.CalcNumHBA(mol)
+    def calculate(self):
+        return rdMolDescriptors.CalcNumHBA(self.mol)
 
 
 class HBondDonor(HBondBase):
@@ -44,5 +44,5 @@ class HBondDonor(HBondBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        return rdMolDescriptors.CalcNumHBD(mol)
+    def calculate(self):
+        return rdMolDescriptors.CalcNumHBD(self.mol)

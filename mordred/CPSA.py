@@ -64,10 +64,10 @@ class AtomicSurfaceArea(CPSABase):
         self._solvent_radius = solvent_radius
         self._level = level
 
-    def calculate(self, mol, conf):
-        rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, mol)
+    def calculate(self):
+        rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, self.mol)
 
-        sa = SurfaceArea(rs, conf, self._level)
+        sa = SurfaceArea(rs, self.coord, self._level)
         return np.array(sa.surface_area())
 
     rtype = None
@@ -77,7 +77,7 @@ class TotalSurfaceArea(CPSABase):
     def dependencies(self):
         return {'ASA': AtomicSurfaceArea()}
 
-    def calculate(self, mol, conf, ASA):
+    def calculate(self, ASA):
         return np.sum(ASA)
 
 
@@ -87,7 +87,7 @@ class AtomicCharge(CPSABase):
     def dependencies(self):
         return {'charges': AtomicProperty(self.explicit_hydrogens, 'c')}
 
-    def calculate(self, mol, charges):
+    def calculate(self, charges):
         if not np.all(np.isfinite(charges)):
             return None
 
@@ -121,7 +121,7 @@ class PNSA(VersionCPSABase):
     def _mask(charges):
         return charges < 0.0
 
-    def calculate(self, mol, conf, SA, charges):
+    def calculate(self, SA, charges):
         if charges is None:
             return np.nan
 
@@ -134,7 +134,7 @@ class PNSA(VersionCPSABase):
         elif self._version == 3:
             f = charges[mask]
         elif self._version == 4:
-            f = np.sum(charges[mask]) / mol.GetNumAtoms()
+            f = np.sum(charges[mask]) / self.mol.GetNumAtoms()
         elif self._version == 5:
             s = np.sum(mask)
             if s == 0:
@@ -170,7 +170,7 @@ class DPSA(VersionCPSABase):
             'PNSA': PNSA(self._version),
         }
 
-    def calculate(self, mol, conf, PPSA, PNSA):
+    def calculate(self, PPSA, PNSA):
         return PPSA - PNSA
 
 
@@ -190,7 +190,7 @@ class FNSA(VersionCPSABase):
             'SA': self._SA(),
         }
 
-    def calculate(self, mol, conf, SA, ASA):
+    def calculate(self, SA, ASA):
         return SA / np.sum(ASA)
 
 
@@ -206,7 +206,7 @@ class FPSA(FNSA):
 
 
 class WxSAMixin(object):
-    def calculate(self, mol, conf, SA, ASA):
+    def calculate(self, SA, ASA):
         return SA * np.sum(ASA) / 1000.0
 
 
@@ -242,7 +242,7 @@ class RNCG(CPSABase):
     def dependencies(self):
         return {'charges': AtomicCharge()}
 
-    def calculate(self, mol, charges):
+    def calculate(self, charges):
         if charges is None:
             return np.nan
 
@@ -279,7 +279,7 @@ class RNCS(CPSABase):
     def _mask(charges):
         return charges < 0
 
-    def calculate(self, mol, conf, RCG, SA, charges):
+    def calculate(self, RCG, SA, charges):
         if charges is None:
             return np.nan
 
@@ -318,7 +318,7 @@ class TASA(CPSABase):
             'charges': AtomicCharge(),
         }
 
-    def calculate(self, mol, conf, SA, charges):
+    def calculate(self, SA, charges):
         if charges is None:
             return np.nan
 
@@ -344,7 +344,7 @@ class RASA(CPSABase):
             'SASA': AtomicSurfaceArea(),
         }
 
-    def calculate(self, mol, conf, TxSA, SASA):
+    def calculate(self, TxSA, SASA):
         return TxSA / np.sum(SASA)
 
 

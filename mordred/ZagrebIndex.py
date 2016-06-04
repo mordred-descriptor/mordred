@@ -54,7 +54,7 @@ class ZagrebIndex(Descriptor):
     def dependencies(self):
         return {'V': Valence(self.explicit_hydrogens)}
 
-    def calculate(self, mol, V):
+    def calculate(self, V):
         V = V.astype('float')
 
         if self._version == 1:
@@ -65,7 +65,7 @@ class ZagrebIndex(Descriptor):
         else:
             return float(sum(
                 (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
-                for b in mol.GetBonds()
+                for b in self.mol.GetBonds()
             ))
 
     rtype = float

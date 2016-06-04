@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from tqdm import tqdm, tqdm_notebook
+from logging import getLogger
 
 
 def parse_enum(enum, v):
@@ -43,10 +44,10 @@ class Capture(object):
         setattr(sys, self.target, self.orig)
 
 
-class DummyBar(object):
-    def __init__(self, logger):
-        self.logger = logger
+logger = getLogger('mordred')
 
+
+class DummyBar(object):
     def __enter__(self):
         return self
 
@@ -57,7 +58,7 @@ class DummyBar(object):
         pass
 
     def write(self, text, *args, **kwargs):
-        self.logger.warn(text)
+        logger.warn(text)
 
 
 class NotebookWrapper(object):
@@ -77,9 +78,9 @@ class NotebookWrapper(object):
         self.bar.update(*args, **kwargs)
 
 
-def get_bar(quiet, logger, total, ipynb, **kwargs):
+def get_bar(quiet, total, ipynb, **kwargs):
     if quiet:
-        return DummyBar(logger)
+        return DummyBar()
     else:
         args = dict(
             dynamic_ncols=True,

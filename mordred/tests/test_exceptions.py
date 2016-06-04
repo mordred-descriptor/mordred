@@ -1,15 +1,16 @@
 from rdkit import Chem
 from mordred import Descriptor, Calculator
 from mordred.exception import MordredException
-import os
 
-from nose.tools import eq_, raises
+from nose.tools import raises, eq_
 
 
 class DummyLogger(object):
+    def __init__(self):
+        self.results = []
+
     def warning(self, *args):
-        eq_(os.path.splitext(args[1])[0], os.path.splitext(os.path.basename(__file__))[0])
-        eq_(args[3], 'test exception')
+        self.results.append(args)
 
 
 class CriticalError(MordredException):
@@ -23,7 +24,7 @@ class RaiseDescriptor(Descriptor):
     def __init__(self, e):
         self.e = e
 
-    def calculate(self, mol):
+    def calculate(self):
         raise self.e
 
 
@@ -39,7 +40,10 @@ def test_through_unknown_exception():
 def test_catch_non_critical_error():
     calc = Calculator(RaiseDescriptor(MordredException('test exception')))
     calc.logger = DummyLogger()
-    calc(mol)
+
+    result = calc(mol)[0]
+    assert isinstance(result, MordredException)
+    eq_(result.args, ('test exception',))
 
 
 @raises(CriticalError)

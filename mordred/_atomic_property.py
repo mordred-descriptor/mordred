@@ -326,8 +326,8 @@ class AtomicProperty(Descriptor):
 
         raise ValueError('atomic property is not callable: {!r}'.format(prop))
 
-    def calculate(self, mol):
+    def calculate(self):
         if getattr(self.prop, 'gasteiger_charges', False):
-            ComputeGasteigerCharges(mol)
+            ComputeGasteigerCharges(self.mol)
 
-        return atoms_to_numpy(self.prop, mol)
+        return atoms_to_numpy(self.prop, self.mol)

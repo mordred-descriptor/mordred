@@ -96,14 +96,14 @@ class ChiCache(ChiBase):
     def __init__(self, order):
         self._order = order
 
-    def calculate(self, mol):
+    def calculate(self):
         chain = []
         path = []
         path_cluster = []
         cluster = []
-        for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self._order):
+        for bonds in Chem.FindAllSubgraphsOfLengthN(self.mol, self._order):
 
-            dfs = DFS(mol, bonds)
+            dfs = DFS(self.mol, bonds)
             typ = dfs()
             nodes = dfs.nodes
 
@@ -185,9 +185,9 @@ class Chi(ChiBase):
 
         return d
 
-    def calculate(self, mol, P, chi=None):
+    def calculate(self, P, chi=None):
         if self._order <= 0:
-            chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
+            chi = ChiBonds([], [{a.GetIdx()} for a in self.mol.GetAtoms()], [], [])
 
         x = 0.0
         node_sets = getattr(chi, self._type.name)

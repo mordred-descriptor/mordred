@@ -42,8 +42,8 @@ class EStateCache(EStateBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        return EState.TypeAtoms(mol), EState.EStateIndices(mol)
+    def calculate(self):
+        return EState.TypeAtoms(self.mol), EState.EStateIndices(self.mol)
 
 
 class AggrType(IntEnum):
@@ -112,7 +112,7 @@ class AtomTypeEState(EStateBase):
     def dependencies(self):
         return {'E': EStateCache()}
 
-    def calculate(self, mol, E):
+    def calculate(self, E):
         if self._type == AggrType.count:
             return reduce(lambda a, b: a + b, E[0]).count(self._estate)
 

@@ -39,7 +39,7 @@ class AdjacencyMatrix(Descriptor):
             )
         }
 
-    def calculate(self, mol, result):
+    def calculate(self, result):
         return result
 
     rtype = float

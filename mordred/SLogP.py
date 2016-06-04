@@ -32,8 +32,8 @@ class SLogP(WildmanCrippenBase):
 
     __slots__ = ()
 
-    def calculate(self, mol):
-        return Crippen.MolLogP(mol)
+    def calculate(self):
+        return Crippen.MolLogP(self.mol)
 
 
 class SMR(WildmanCrippenBase):
@@ -41,5 +41,5 @@ class SMR(WildmanCrippenBase):
 
     __slots__ = ()
 
-    def calculate(self, mol):
-        return Crippen.MolMR(mol)
+    def calculate(self):
+        return Crippen.MolMR(self.mol)

@@ -82,7 +82,7 @@ class BondCount(Descriptor):
         self._bond_name, self._check_bond = bond_type_dict[self._type]
         self.kekulize = kekulize
 
-    def calculate(self, mol):
-        return sum(1 for b in mol.GetBonds() if self._check_bond(b))
+    def calculate(self):
+        return sum(1 for b in self.mol.GetBonds() if self._check_bond(b))
 
     rtype = int

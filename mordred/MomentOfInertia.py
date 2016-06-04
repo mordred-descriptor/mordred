@@ -10,10 +10,9 @@ __all__ = ('MomentOfInertia',)
 class MomentOfInertiaBase(Descriptor):
     require_3D = True
 
-    @staticmethod
-    def _numpy(mol, conf):
-        ws = atoms_to_numpy(lambda a: a.GetMass(), mol)
-        ps = conf - np.sum(ws[:, np.newaxis] * conf, axis=0) / np.sum(ws)
+    def _numpy(self):
+        ws = atoms_to_numpy(lambda a: a.GetMass(), self.mol)
+        ps = self.coord - np.sum(ws[:, np.newaxis] * self.coord, axis=0) / np.sum(ws)
 
         return ws, ps
 
@@ -22,8 +21,8 @@ class PrincipalAxis(MomentOfInertiaBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol, conf):
-        ws, ps = self._numpy(mol, conf)
+    def calculate(self):
+        ws, ps = self._numpy()
 
         I = np.sum(
             -ws[:, np.newaxis, np.newaxis] *
@@ -62,7 +61,7 @@ class MomentOfInertia(MomentOfInertiaBase):
     def dependencies(self):
         return {'I': PrincipalAxis()}
 
-    def calculate(self, mol, conf, I):
+    def calculate(self, I):
         return I[self._axis_to_index[self._axis]]
 
     rtype = float

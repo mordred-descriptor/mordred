@@ -25,7 +25,7 @@ class BalabanJ(Descriptor):
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
-    def calculate(self, mol, D):
-        return float(RDKit.BalabanJ(mol, dMat=D))
+    def calculate(self, D):
+        return float(RDKit.BalabanJ(self.mol, dMat=D))
 
     rtype = float

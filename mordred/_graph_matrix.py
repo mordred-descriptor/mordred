@@ -20,9 +20,9 @@ class DistanceMatrix(Descriptor):
         self.useBO = useBO
         self.useAtomWts = useAtomWts
 
-    def calculate(self, mol):
+    def calculate(self):
         return Chem.GetDistanceMatrix(
-            mol, useBO=self.useBO, useAtomWts=self.useAtomWts, force=True,
+            self.mol, useBO=self.useBO, useAtomWts=self.useAtomWts, force=True,
         )
 
 
@@ -36,7 +36,7 @@ class Eccentricity(DistanceMatrix):
             )
         )
 
-    def calculate(self, mol, D):
+    def calculate(self, D):
         return D.max(axis=0)
 
 
@@ -50,12 +50,12 @@ class Radius(Eccentricity):
             )
         )
 
-    def calculate(self, mol, E):
+    def calculate(self, E):
         return E.min()
 
 
 class Diameter(Eccentricity):
-    def calculate(self, mol, D):
+    def calculate(self, D):
         return D.max()
 
 
@@ -91,9 +91,9 @@ class AdjacencyMatrix(Descriptor):
         else:
             return dict()
 
-    def calculate(self, mol, An=None, A1=None):
+    def calculate(self, An=None, A1=None):
         if self.order == 1:
-            return Chem.GetAdjacencyMatrix(mol, useBO=self.useBO, force=True)
+            return Chem.GetAdjacencyMatrix(self.mol, useBO=self.useBO, force=True)
 
         return An.dot(A1)
 
@@ -107,7 +107,7 @@ class Valence(AdjacencyMatrix):
             )
         )
 
-    def calculate(self, mol, D):
+    def calculate(self, D):
         return D.sum(axis=0)
 
 
@@ -126,8 +126,8 @@ class DistanceMatrix3D(Descriptor):
         self.explicit_hydrogens = explicit_hydrogens
         self.useAtomWts = useAtomWts
 
-    def calculate(self, mol, conf):
-        return np.sqrt(np.sum((conf[:, np.newaxis] - conf) ** 2, axis=2))
+    def calculate(self):
+        return np.sqrt(np.sum((self.coord[:, np.newaxis] - self.coord) ** 2, axis=2))
 
 
 class Eccentricity3D(DistanceMatrix3D):
@@ -139,7 +139,7 @@ class Eccentricity3D(DistanceMatrix3D):
             )
         )
 
-    def calculate(self, mol, conf, D):
+    def calculate(self, D):
         return D.max(axis=0)
 
 
@@ -152,10 +152,10 @@ class Radius3D(Eccentricity3D):
             )
         )
 
-    def calculate(self, mol, conf, E):
+    def calculate(self, E):
         return E.min()
 
 
 class Diameter3D(Eccentricity3D):
-    def calculate(self, mol, conf, D):
+    def calculate(self, D):
         return D.max()

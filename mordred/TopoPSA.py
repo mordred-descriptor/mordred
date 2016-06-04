@@ -36,12 +36,12 @@ class TopoPSA(Descriptor):
     def __init__(self, no_only=True):
         self._no_only = no_only
 
-    def calculate(self, mol):
-        tpsa = rdMolDescriptors.CalcTPSA(mol)
+    def calculate(self):
+        tpsa = rdMolDescriptors.CalcTPSA(self.mol)
         if self._no_only:
             return tpsa
 
-        for atom in mol.GetAtoms():
+        for atom in self.mol.GetAtoms():
             atomic_num = atom.GetAtomicNum()
 
             if atomic_num == 15:

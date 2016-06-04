@@ -33,10 +33,10 @@ class FragmentComplexity(Descriptor):
     def __str__(self):
         return 'fragCpx'
 
-    def calculate(self, mol):
-        A = mol.GetNumAtoms()
-        B = mol.GetNumBonds()
-        H = sum(1 for a in mol.GetAtoms() if a.GetAtomicNum() != 6)
+    def calculate(self):
+        A = self.mol.GetNumAtoms()
+        B = self.mol.GetNumBonds()
+        H = sum(1 for a in self.mol.GetAtoms() if a.GetAtomicNum() != 6)
         return abs(B ** 2 - A ** 2 + A) + float(H) / 100
 
     rtype = float

@@ -68,7 +68,7 @@ class AutocorrelationProp(AutocorrelationBase):
 
 class AutocorrelationOrder(AutocorrelationBase):
     def _prop(self):
-        return np.nan
+        pass
 
     def as_key(self):
         return self.__class__, (self._order,)
@@ -86,7 +86,7 @@ class CAVec(AutocorrelationProp):
     def dependencies(self):
         return {'avec': self._avec}
 
-    def calculate(self, mol, avec):
+    def calculate(self, avec):
         return avec - avec.mean()
 
 
@@ -96,7 +96,7 @@ class GMat(AutocorrelationOrder):
     def dependencies(self):
         return {'dmat': DistanceMatrix(self.explicit_hydrogens)}
 
-    def calculate(self, mol, dmat):
+    def calculate(self, dmat):
         return dmat == self._order
 
 
@@ -106,7 +106,7 @@ class GSum(AutocorrelationOrder):
     def dependencies(self):
         return {'gmat': GMat(self._order)}
 
-    def calculate(self, mol, gmat):
+    def calculate(self, gmat):
         s = gmat.sum()
 
         return s if self._order == 0 else 0.5 * s
@@ -162,7 +162,7 @@ class ATS(AutocorrelationBase):
     def dependencies(self):
         return {'avec': self._avec, 'gmat': self._gmat}
 
-    def calculate(self, mol, avec, gmat):
+    def calculate(self, avec, gmat):
         if self._order == 0:
             return (avec ** 2).sum().astype('float')
 
@@ -192,7 +192,7 @@ class AATS(ATS):
     def dependencies(self):
         return {'ATS': self._ATS, 'gsum': self._gsum}
 
-    def calculate(self, mol, ATS, gsum):
+    def calculate(self, ATS, gsum):
         return ATS / (gsum or np.nan)
 
 
@@ -222,7 +222,7 @@ class ATSC(AutocorrelationBase):
     def dependencies(self):
         return {'cavec': self._cavec, 'gmat': self._gmat}
 
-    def calculate(self, mol, cavec, gmat):
+    def calculate(self, cavec, gmat):
         if self._order == 0:
             return (cavec ** 2).sum().astype('float')
 
@@ -252,7 +252,7 @@ class AATSC(ATSC):
     def dependencies(self):
         return {'ATSC': self._ATSC, 'gsum': self._gsum}
 
-    def calculate(self, mol, ATSC, gsum):
+    def calculate(self, ATSC, gsum):
         return ATSC / (gsum or np.nan)
 
 
@@ -292,7 +292,7 @@ class MATS(AutocorrelationBase):
             'cavec': self._cavec,
         }
 
-    def calculate(self, mol, avec, AATSC, cavec):
+    def calculate(self, avec, AATSC, cavec):
         return len(avec) * AATSC / ((cavec ** 2).sum() or np.nan)
 
 
@@ -318,7 +318,7 @@ class GATS(MATS):
             'cavec': self._cavec,
         }
 
-    def calculate(self, mol, avec, gmat, gsum, cavec):
+    def calculate(self, avec, gmat, gsum, cavec):
         if np.any(~np.isfinite(avec)) or len(avec) <= 1:
             return np.nan
 

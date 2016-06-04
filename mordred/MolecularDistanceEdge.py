@@ -64,16 +64,16 @@ class MolecularDistanceEdge(Descriptor):
             'V': Valence(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, D, V):
-        N = mol.GetNumAtoms()
+    def calculate(self, D, V):
+        N = self.mol.GetNumAtoms()
         Dv = [
             D[i, j]
             for i in range(N)
             for j in range(i + 1, N)
             if (V[i] == self._valence1 and V[j] == self._valence2) or
             (V[j] == self._valence1 and V[i] == self._valence2)
-            if mol.GetAtomWithIdx(i).GetAtomicNum() ==
-            mol.GetAtomWithIdx(j).GetAtomicNum() ==
+            if self.mol.GetAtomWithIdx(i).GetAtomicNum() ==
+            self.mol.GetAtomWithIdx(j).GetAtomicNum() ==
             self._atomic_num
         ]
         n = len(Dv)

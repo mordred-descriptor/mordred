@@ -1,11 +1,6 @@
 from .descriptor import Descriptor
-from logging import getLogger
 from types import ModuleType
-from ..exception import FragmentError, MordredException
-from numbers import Real
-import sys
-import os
-import traceback
+from ..exception import MordredException, MordredValueError
 from .context import Context
 from inspect import getsourcelines
 from sys import maxsize
@@ -29,7 +24,6 @@ class Calculator(object):
 
     def __init__(self, descs=[], exclude3D=False):
         self._descriptors = []
-        self.logger = getLogger(__name__)
 
         self._explicit_hydrogens = set()
         self._kekulizes = set()
@@ -105,66 +99,49 @@ class Calculator(object):
             for d in desc:
                 self.register(d, exclude3D=exclude3D)
 
-    def _calculate_one(self, cxt, desc, caller=None):
+    def _calculate_one(self, cxt, desc):
         if desc in self._cache:
             return self._cache[desc]
 
-        if caller is None:
-            caller = desc
+        desc._context = cxt
 
-        if desc.require_connected and cxt.n_frags != 1:
-            raise FragmentError(cxt, caller)
+        if desc.require_connected and desc._context.n_frags != 1:
+            raise MordredValueError('{}: multiple fragments'.format(desc))
 
         args = {
-            name: self._calculate_one(cxt, dep, caller)
+            name: self._calculate_one(cxt, dep)
             if dep is not None else None
             for name, dep in (desc.dependencies() or {}).items()
         }
 
-        mol = cxt.get_mol(desc)
+        r = desc.calculate(**args)
 
-        if desc.require_3D:
-            r = desc.calculate(mol, cxt.get_coord(desc), **args)
-        else:
-            r = desc.calculate(mol, **args)
-
-        if desc.rtype is not None and (not isinstance(r, Real) or not isinstance(r, desc.rtype)):
-            self.logger.debug(
-                '%s excepted returning %s, but returns %s',
-                repr(desc), desc.rtype.__name__, repr(r)
-            )
+        self._check_rtype(desc, r)
 
         self._cache[desc] = r
 
         return r
 
+    def _check_rtype(self, desc, result):
+        if desc.rtype is None:
+            return
+
+        if isinstance(result, MordredException):
+            return
+
+        if not isinstance(result, desc.rtype):
+            pass  # TODO
+
     def _calculate(self, cxt):
         self._cache = {}
-        self._exceptions = set()
-        try:
-            for desc in self.descriptors:
-                try:
-                    yield self._calculate_one(cxt, desc)
-                except MordredException as e:
-                    if e.critical:
-                        raise e
+        for desc in self.descriptors:
+            try:
+                yield self._calculate_one(cxt, desc)
+            except MordredException as e:
+                if e.critical:
+                    raise e
 
-                    if e.__class__ not in self._exceptions:
-                        exc_type, exc_value, exc_traceback = sys.exc_info()
-                        tbs = traceback.extract_tb(exc_traceback)[-1:]
-                        for tb in tbs:
-                            filename, line, _, text = tb
-                            self.logger.warning(
-                                '%s:%d %s',
-                                os.path.basename(filename), line, str(e)
-                            )
-                        self._exceptions.add(e.__class__)
-
-                    yield float('nan')
-
-        finally:
-            del self._cache
-            del self._exceptions
+                yield e
 
     def __call__(self, mol, id=-1):
         r"""calculate descriptors.
@@ -181,7 +158,7 @@ class Calculator(object):
         return list(self._calculate(Context.from_calculator(self, mol, id)))
 
     def _serial(self, mols, nmols, quiet, ipynb, id):
-        with get_bar(quiet, self.logger, nmols, ipynb) as bar:
+        with get_bar(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
                     r = list(self._calculate(Context.from_calculator(self, m, id)))

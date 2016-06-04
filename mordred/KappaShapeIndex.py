@@ -26,12 +26,12 @@ class KappaShapeIndexBase(Descriptor):
     def dependencies(self):
         return {'Chi': ChiCache(self._order)}
 
-    def _common(self, mol, Chi):
+    def _common(self, Chi):
         P = len(Chi.path)
         if P == 0:
             P = nan
 
-        A = mol.GetNumAtoms()
+        A = self.mol.GetNumAtoms()
         Pmin = A - self._order
 
         return P, A, Pmin
@@ -47,8 +47,8 @@ class KappaShapeIndex1(KappaShapeIndexBase):
 
     __slots__ = ()
 
-    def calculate(self, mol, Chi):
-        P, A, Pmin = self._common(mol, Chi)
+    def calculate(self, Chi):
+        P, A, Pmin = self._common(Chi)
         Pmax = float(A * (A - 1)) / 2.0
 
         return 2 * Pmax * Pmin / (P * P)
@@ -62,8 +62,8 @@ class KappaShapeIndex2(KappaShapeIndexBase):
 
     __slots__ = ()
 
-    def calculate(self, mol, Chi):
-        P, A, Pmin = self._common(mol, Chi)
+    def calculate(self, Chi):
+        P, A, Pmin = self._common(Chi)
         Pmax = float((A - 1) * (A - 2)) / 2.0
 
         return 2 * Pmax * Pmin / (P * P)
@@ -77,8 +77,8 @@ class KappaShapeIndex3(KappaShapeIndexBase):
 
     __slots__ = ()
 
-    def calculate(self, mol, Chi):
-        P, A, Pmin = self._common(mol, Chi)
+    def calculate(self, Chi):
+        P, A, Pmin = self._common(Chi)
 
         if A % 2 == 0:
             Pmax = float((A - 2) ** 2) / 4.0

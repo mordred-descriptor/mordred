@@ -18,12 +18,12 @@ class Burden(BCUTBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        N = mol.GetNumAtoms()
+    def calculate(self):
+        N = self.mol.GetNumAtoms()
 
         mat = 0.001 * np.ones((N, N))
 
-        for bond in mol.GetBonds():
+        for bond in self.mol.GetBonds():
             a = bond.GetBeginAtom()
             b = bond.GetEndAtom()
             i = a.GetIdx()
@@ -58,7 +58,7 @@ class BurdenEigenValues(BCUTBase):
             'burden': Burden(),
         }
 
-    def calculate(self, mol, burden, ps):
+    def calculate(self, burden, ps):
         bmat = burden.copy()
 
         if np.any(np.isnan(ps)):
@@ -114,7 +114,7 @@ class BCUT(BCUTBase):
     def dependencies(self):
         return {'bev': BurdenEigenValues(self._prop)}
 
-    def calculate(self, mol, bev):
+    def calculate(self, bev):
         try:
             return bev[self._nth]
         except IndexError:

@@ -107,8 +107,8 @@ class Ag(InformationContentBase):
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
-    def calculate(self, mol, D):
-        atoms = [neighborhood_code(mol, i, self._order) for i in range(mol.GetNumAtoms())]
+    def calculate(self, D):
+        atoms = [neighborhood_code(self.mol, i, self._order) for i in range(self.mol.GetNumAtoms())]
         ad = {a: i for i, a in enumerate(atoms)}
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]
         Nags = len(Ags)
@@ -144,7 +144,7 @@ class InformationContent(InformationContentBase):
     def dependencies(self):
         return {'iAgs': Ag(self._order)}
 
-    def calculate(self, mol, iAgs):
+    def calculate(self, iAgs):
         _, Ags = iAgs
         return shannon_entropy(Ags)
 
@@ -164,8 +164,8 @@ class TotalIC(InformationContentBase):
     def dependencies(self):
         return {'ICm': InformationContent(self._order)}
 
-    def calculate(self, mol, ICm):
-        A = mol.GetNumAtoms()
+    def calculate(self, ICm):
+        A = self.mol.GetNumAtoms()
 
         return A * ICm
 
@@ -182,8 +182,8 @@ class StructuralIC(TotalIC):
 
     _name = 'SIC'
 
-    def calculate(self, mol, ICm):
-        d = np.log2(mol.GetNumAtoms())
+    def calculate(self, ICm):
+        d = np.log2(self.mol.GetNumAtoms())
         if d == 0:
             return np.nan
 
@@ -204,8 +204,8 @@ class BondingIC(TotalIC):
 
     _name = 'BIC'
 
-    def calculate(self, mol, ICm):
-        B = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
+    def calculate(self, ICm):
+        B = sum(b.GetBondTypeAsDouble() for b in self.mol.GetBonds())
 
         if B == 0:
             return np.nan
@@ -229,8 +229,8 @@ class ComplementaryIC(TotalIC):
 
     _name = 'CIC'
 
-    def calculate(self, mol, ICm):
-        A = mol.GetNumAtoms()
+    def calculate(self, ICm):
+        A = self.mol.GetNumAtoms()
 
         return np.log2(A) - ICm
 
@@ -244,9 +244,9 @@ class ModifiedIC(InformationContent):
 
     _name = 'MIC'
 
-    def calculate(self, mol, iAgs):
+    def calculate(self, iAgs):
         ids, Ags = iAgs
-        w = np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetMass())(ids)
+        w = np.vectorize(lambda i: self.mol.GetAtomWithIdx(int(i)).GetMass())(ids)
         return shannon_entropy(Ags, w)
 
 
@@ -259,7 +259,7 @@ class ZModifiedIC(InformationContent):
 
     _name = 'ZMIC'
 
-    def calculate(self, mol, iAgs):
+    def calculate(self, iAgs):
         ids, Ags = iAgs
-        w = Ags * np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
+        w = Ags * np.vectorize(lambda i: self.mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
         return shannon_entropy(Ags, w)

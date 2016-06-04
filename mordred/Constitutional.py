@@ -48,7 +48,7 @@ class ConstitutionalSum(Descriptor):
     def dependencies(self):
         return {'P': self._prop}
 
-    def calculate(self, mol, P):
+    def calculate(self, P):
         C = self._prop.prop(self._carbon)
         return np.sum(P / C)
 
@@ -79,5 +79,5 @@ class ConstitutionalMean(ConstitutionalSum):
     def dependencies(self):
         return {'S': ConstitutionalSum(self._prop)}
 
-    def calculate(self, mol, S):
-        return S / mol.GetNumAtoms()
+    def calculate(self, S):
+        return S / self.mol.GetNumAtoms()

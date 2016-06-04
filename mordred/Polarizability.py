@@ -34,9 +34,9 @@ class APol(PolarizabilityBase):
 
     __slots__ = ('_use78',)
 
-    def calculate(self, mol):
+    def calculate(self):
         table = self._get_table()
-        return sum(table[a.GetAtomicNum()] for a in mol.GetAtoms())
+        return sum(table[a.GetAtomicNum()] for a in self.mol.GetAtoms())
 
 
 class BPol(PolarizabilityBase):
@@ -48,7 +48,7 @@ class BPol(PolarizabilityBase):
 
     __slots__ = ('_use78',)
 
-    def calculate(self, mol):
+    def calculate(self):
         table = self._get_table()
 
         def bond_pol(bond):
@@ -56,4 +56,4 @@ class BPol(PolarizabilityBase):
             b = bond.GetEndAtom().GetAtomicNum()
             return abs(table[a] - table[b])
 
-        return float(sum(bond_pol(b) for b in mol.GetBonds()))
+        return float(sum(bond_pol(b) for b in self.mol.GetBonds()))

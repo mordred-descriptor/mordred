@@ -44,8 +44,8 @@ class GravitationalIndex(Descriptor):
 
         return d
 
-    def calculate(self, mol, conf, D, A=1.0):
-        w = atoms_to_numpy(lambda a: a.GetMass(), mol)
+    def calculate(self, D, A=1.0):
+        w = atoms_to_numpy(lambda a: a.GetMass(), self.mol)
 
         w = w[:, np.newaxis] * w
         np.fill_diagonal(w, 0)

@@ -46,26 +46,26 @@ class AtomCount(Descriptor):
     def __init__(self, type='Atom'):
         self._type = type
 
-    def _calc_X(self, mol):
+    def _calc_X(self):
         X = halogen
-        return sum(a.GetAtomicNum() in X for a in mol.GetAtoms())
+        return sum(a.GetAtomicNum() in X for a in self.mol.GetAtoms())
 
-    def _calc(self, mol):
-        return sum(a.GetSymbol() == self._type for a in mol.GetAtoms())
+    def _calc(self):
+        return sum(a.GetSymbol() == self._type for a in self.mol.GetAtoms())
 
-    def _calc_all(self, mol):
-        return mol.GetNumAtoms()
+    def _calc_all(self):
+        return self.mol.GetNumAtoms()
 
-    def calculate(self, mol):
+    def calculate(self):
         if self._type == 'X':
-            return self._calc_X(mol)
+            return self._calc_X()
         elif self._type in ['Atom', 'HeavyAtom']:
-            return self._calc_all(mol)
+            return self._calc_all()
         elif self._type == 'Spiro':
-            return rdMolDescriptors.CalcNumSpiroAtoms(mol)
+            return rdMolDescriptors.CalcNumSpiroAtoms(self.mol)
         elif self._type == 'Bridgehead':
-            return rdMolDescriptors.CalcNumBridgeheadAtoms(mol)
+            return rdMolDescriptors.CalcNumBridgeheadAtoms(self.mol)
         else:
-            return self._calc(mol)
+            return self._calc()
 
     rtype = int

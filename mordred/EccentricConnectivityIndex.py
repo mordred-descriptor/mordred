@@ -36,7 +36,7 @@ class EccentricConnectivityIndex(Descriptor):
             'V': Valence(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, E, V):
+    def calculate(self, E, V):
         return int((E.astype('int') * V).sum())
 
     rtype = int

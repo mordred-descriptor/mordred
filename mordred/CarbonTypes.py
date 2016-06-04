@@ -29,9 +29,9 @@ class CarbonTypesCache(CarbonTypesBase):
         HybridizationType.SP3D2: 3,
     }
 
-    def calculate(self, mol):
+    def calculate(self):
         r = defaultdict(lambda: defaultdict(int))
-        for a in mol.GetAtoms():
+        for a in self.mol.GetAtoms():
             if a.GetAtomicNum() != 6:
                 continue
 
@@ -82,7 +82,7 @@ class CarbonTypes(CarbonTypesBase):
     def dependencies(self):
         return {'CT': CarbonTypesCache()}
 
-    def calculate(self, mol, CT):
+    def calculate(self, CT):
         return CT[self._SP][self._nCarbon]
 
     rtype = int
@@ -113,7 +113,7 @@ class HybridizationRatio(CarbonTypesBase):
     def dependencies(self):
         return {'CT': CarbonTypesCache()}
 
-    def calculate(self, mol, CT):
+    def calculate(self, CT):
         Nsp3 = float(sum(CT[3].values()))
         Nsp2 = float(sum(CT[2].values()))
 
