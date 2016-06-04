@@ -1,39 +1,32 @@
-import os
 import sys
-import argparse
+import os
+import click
 
 from rdkit import Chem
 
 from . import SurfaceArea
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog='{} -m {}'.format(os.path.basename(sys.executable), __package__)
-    )
-
-    parser.add_argument(
-        'FILE', type=str,
-        help='input sdf/mol file',
-    )
-
-    parser.add_argument(
-        '-s', '--solvent-radius',
-        type=float, default=1.4, metavar='R',
-        help='solvent radius (default: %(default)s)',
-    )
-
-    parser.add_argument(
-        '-l', '--mesh-level',
-        type=int, default=5, metavar='L',
-        help='mesh level (default: %(default)s)',
-    )
-
-    args = parser.parse_args()
-
-    for i, mol in enumerate(Chem.SDMolSupplier(args.FILE, removeHs=False)):
+@click.command(
+    context_settings={
+        'help_option_names': ['-h', '--help']
+    }
+)
+@click.argument('SDF', type=click.Path(exists=True))
+@click.option(
+    '-s', '--solvent-radius',
+    type=click.FLOAT, default=1.4,
+    help='solvent radius'
+)
+@click.option(
+    '-l', '--mesh-level',
+    type=click.INT, default=5,
+    help='mesh level'
+)
+def main(sdf, solvent_radius, mesh_level):
+    for i, mol in enumerate(Chem.SDMolSupplier(sdf, removeHs=False)):
         name = mol.GetProp('_Name') if mol.HasProp('_Name') else str(i)
-        sa = SurfaceArea.from_mol(mol, solvent_radius=args.solvent_radius, level=args.mesh_level)
+        sa = SurfaceArea.from_mol(mol, solvent_radius=solvent_radius, level=mesh_level)
 
         print(name)
 
@@ -46,4 +39,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(prog_name='{} -m {}'.format(os.path.basename(sys.executable), __package__))

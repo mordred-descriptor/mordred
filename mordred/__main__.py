@@ -14,11 +14,10 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_module_names():
-    return [
-        '.'.join(m.__name__.split('.')[1:])
-        for m in all_descriptors()
-    ]
+all_descs = [
+    '.'.join(m.__name__.split('.')[1:])
+    for m in all_descriptors()
+]
 
 
 def smiles_parser(path):
@@ -100,6 +99,7 @@ def callback_quiet(cxt, param, value):
 
 
 @click.command(
+    epilog='===== descriptors =====\n\n{}'.format(' '.join(all_descs)),
     context_settings={
         'help_option_names': ['-h', '--help']
     }
@@ -116,18 +116,18 @@ def callback_quiet(cxt, param, value):
 @click.option(
     'parser', '-t', '--type', default='auto',
     type=click.Choice(['auto', 'smi', 'mol', 'sdf']),
-    help='input filetype', metavar='TYPE',
+    help='input filetype',
     callback=callback_filetype
 )
 @click.option(
     '-o', '--output',
     default=sys.stdout, type=click.File('w') if six.PY3 else click.File('wb'),
-    help='output csv file', metavar='PATH'
+    help='output csv file'
 )
 @click.option(
     'nproc', '-p', '--processes',
     default=None, type=click.INT,
-    help='number of processes', metavar='N'
+    help='number of processes'
 )
 @click.option(
     '-q', '--quiet', callback=callback_quiet,
@@ -141,8 +141,8 @@ def callback_quiet(cxt, param, value):
 )
 @click.option(
     '-d', '--descriptor', multiple=True,
-    type=click.Choice(get_module_names()),
-    help='descriptors', metavar='NAME'
+    type=click.Choice(all_descs),
+    help='descriptors', metavar='DESC'
 )
 @click.option(
     'with3D', '-3', '--3D',
@@ -186,4 +186,4 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
 
 
 if __name__ == '__main__':
-    main()
+    main(prog_name='{} -m {}'.format(os.path.basename(sys.executable), __package__))
