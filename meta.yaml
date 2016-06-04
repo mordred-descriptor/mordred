@@ -2,6 +2,9 @@ package:
   name: mordred
   version: 0
 
+source:
+  path: .
+
 build:
   number: 0
   script:
@@ -10,29 +13,35 @@ build:
 requirements:
   build:
     - python
-    - setuptools
-
     - networkx
     - numpy
     - six
-    - pyyaml
     - rdkit
     - enum34 [py27]
     - tqdm
+    - click
+
+    - setuptools
+    - pyyaml
 
   run:
     - python
     - networkx
     - numpy
     - six
-    - pyyaml
     - rdkit
     - enum34 [py27]
     - tqdm
+    - click
 
 test:
+  imports:
+    - mordred
+
   requires:
     - nose
+    - pyyaml
 
   commands:
-    - cd $SRC_DIR/tests && nosetests
+    - python -c "from mordred import all_descriptors; all_descriptors()"
+    - python -m "mordred.tests"

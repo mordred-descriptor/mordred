@@ -21,10 +21,6 @@ before_install:
   - git config --global user.email "philopon.dependence@gmail.com"
   - git config --global user.name "philopon"
 
-  - if [[ "$TRAVIS_BRANCH" != release ]]; then
-      sed -i -e 's/$/b0/' mordred/version.txt;
-    fi
-
 install:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -38,21 +34,19 @@ install:
   - conda update -q conda
   - conda info -a
 
-  - conda create -c rdkit -c mordred-descriptor -q -n test-environment python=$TRAVIS_PYTHON_VERSION rdkit --file=requirements.txt
+  - conda create -c rdkit -c mordred-descriptor -q -n test-environment python=$TRAVIS_PYTHON_VERSION rdkit
   - source activate test-environment
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      conda install enum34;
-    fi
+  - pip install '.[test]'
   - pip install coveralls
 
 script:
-  - nosetests tests --with-coverage --cover-package=mordred
+  - nosetests mordred --with-coverage --cover-package=mordred
 
 after_success:
   - set -e
   - coveralls
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
-      pip install sphinx sphinxcontrib-bibtex;
+      pip install sphinx sphinxcontrib-bibtex sphinx_rtd_theme;
 
       cd docs;
       make html;

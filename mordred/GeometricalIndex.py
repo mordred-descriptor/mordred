@@ -1,10 +1,108 @@
-from ._geometrical_index import (
-    Radius3D, Diameter3D,
-    GeometricalShapeIndex, PetitjeanIndex3D,
-)
+from ._base import Descriptor
+from ._graph_matrix import Diameter3D as CDiameter3D
+from ._graph_matrix import Radius3D as CRadius3D
+
 
 __all__ = ('Diameter3D', 'Radius3D', 'GeometricalShapeIndex', 'PetitjeanIndex3D',)
 
-if __name__ == '__main__':
-    from .__main__ import submodule
-    submodule()
+
+class GeometricalIndexBase(Descriptor):
+    explicit_hydrogens = True
+    require_3D = True
+
+    @classmethod
+    def preset(cls):
+        yield cls()
+
+    def as_key(self):
+        return self.__class__, ()
+
+    rtype = float
+
+
+class Radius3D(GeometricalIndexBase):
+    r"""geometric radius descriptor."""
+
+    __slots__ = ()
+
+    def __str__(self):
+        return 'GeomRadius'
+
+    def dependencies(self):
+        return {'R': CRadius3D(self.explicit_hydrogens)}
+
+    def calculate(self, mol, conf, R):
+        return R
+
+
+class Diameter3D(GeometricalIndexBase):
+    r"""geometric diameter descriptor."""
+
+    __slots__ = ()
+
+    def __str__(self):
+        return 'GeomDiameter'
+
+    def dependencies(self):
+        return {'D': CDiameter3D(self.explicit_hydrogens)}
+
+    def calculate(self, mol, conf, D):
+        return D
+
+
+class GeometricalShapeIndex(GeometricalIndexBase):
+    r"""geometrical shape index descriptor.
+
+    .. math::
+
+        I_{\rm topo} = \frac{D - R}{R}
+
+    where
+    :math:`R` is geometric radius,
+    :math:`D` is geometric diameter.
+
+    :returns: NaN when :math:`R = 0`
+    """
+
+    __slots__ = ()
+
+    def __str__(self):
+        return 'GeomShapeIndex'
+
+    def dependencies(self):
+        return {
+            'R': CRadius3D(self.explicit_hydrogens),
+            'D': CDiameter3D(self.explicit_hydrogens),
+        }
+
+    def calculate(self, mol, conf, R, D):
+        if R == 0:
+            return float('nan')
+
+        return float(D - R) / float(R)
+
+
+class PetitjeanIndex3D(GeometricalShapeIndex):
+    r"""geometric Petitjean index descriptor.
+
+    .. math::
+
+        I_{\rm Petitjean} = \frac{D - R}{D}
+
+    where
+    :math:`R` is geometric radius,
+    :math:`D` is geometric diameter.
+
+    :returns: NaN when :math:`D = 0`
+    """
+
+    __slots__ = ()
+
+    def __str__(self):
+        return 'GeomPetitjeanIndex'
+
+    def calculate(self, mol, conf, R, D):
+        if D == 0:
+            return float('nan')
+
+        return float(D - R) / float(D)

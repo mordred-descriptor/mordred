@@ -1,219 +1,189 @@
-import argparse
-import csv
-import math
+import six
 import os
 import sys
-
+import click
+import csv
+import math
+from importlib import import_module
+from . import __version__, all_descriptors, Calculator
+from ._base import get_descriptors_from_module
 from rdkit import Chem
-
-import six
-
-import tqdm
-
-from ._base import Calculator, all_descriptors, get_descriptors_from_module
+from logging import getLogger
 
 
-def smiles_parser(ifile):
-    with ifile as f:
-        for line in f:
-            line = line.strip().split()
-            if len(line) == 1:
-                smi = line[0]
-                name = smi
-            else:
-                smi = line[0]
-                name = ' '.join(line[1:])
-
-            mol = Chem.MolFromSmiles(smi)
-
-            if mol is None:
-                sys.stderr.write('read failure: {}\n'.format(name))
-                sys.stderr.flush()
-                continue
-
-            mol.SetProp('_Name', name)
-            yield mol
+logger = getLogger(__name__)
 
 
-def sdf_parser(path):
-    for mol in Chem.SDMolSupplier(path, removeHs=False):
+def get_module_names():
+    return [
+        '.'.join(m.__name__.split('.')[1:])
+        for m in all_descriptors()
+    ]
+
+
+def smiles_parser(path):
+    for line in open(path):
+        line = line.strip().split()
+        if len(line) == 1:
+            smi = line[0]
+            name = smi
+        else:
+            smi = line[0]
+            name = ' '.join(line[1:])
+
+        mol = Chem.MolFromSmiles(smi)
+
+        if mol is None:
+            logger.warn('smiles read failure: %s', name)
+            continue
+
+        mol.SetProp('_Name', name)
         yield mol
 
 
-def mol_parser(path):
-    mol = Chem.MolFromMolFile(path, removeHs=False)
-    if mol is None:
-        return ()
+def sdf_parser(path):
+    base = os.path.splitext(os.path.basename(path))[0]
 
-    if mol.GetProp('_Name') == '':
-        mol.SetProp(
-            '_Name',
-            os.path.splitext(os.path.basename(path))[0],
-        )
+    for i, mol in enumerate(Chem.SDMolSupplier(path, removeHs=False)):
+        if mol is None:
+            logger.warn('mol read failure: %s.%s', base, i)
+            continue
 
-    return [mol]
+        if mol.GetProp('_Name') == '':
+            mol.SetProp(
+                '_Name',
+                '{}.{}'.format(base, i)
+            )
 
-
-def dir_parser(d, fmt):
-    for root, dirs, files in os.walk(d):
-        for f in files:
-            for m in file_parser(os.path.join(root, f), fmt):
-                yield m
+        yield mol
 
 
-def file_parser(ifile, fmt):
-    if fmt == 'smi':
-        if isinstance(ifile, six.string_types):
-            ifile = open(ifile)
+def auto_parser(path):
+    ext = os.path.splitext(path)[1]
+    if ext == '.smi':
+        r = smiles_parser(path)
+    elif ext in ['.mol', '.sdf']:
+        r = sdf_parser(path)
+    else:
+        logger.warn('cannot detect file format: %s', path)
+        r = ()
 
-        it = smiles_parser(ifile)
-    elif fmt in 'sdf':
-        it = sdf_parser(ifile)
-    elif fmt == 'mol':
-        it = mol_parser(ifile)
-    elif fmt == 'auto':
-        if ifile == sys.stdin:
-            it = file_parser(ifile, 'smi')
-        elif os.path.isdir(ifile):
-            it = dir_parser(ifile, fmt)
+    for m in r:
+        yield m
+
+
+def callback_input(cxt, param, value):
+    if len(value) == 0:
+        if sys.stdin.isatty():
+            click.echo(cxt.get_help())
+            cxt.exit()
         else:
-            ext = os.path.splitext(ifile)[1][1:]
-            it = file_parser(ifile, ext)
+            return (sys.stdin,)
+
+    return value
+
+
+def callback_filetype(cxt, param, value):
+    if value == 'auto':
+        return auto_parser
+    elif value == 'smi':
+        return smiles_parser
+
+    return sdf_parser
+
+
+def callback_quiet(cxt, param, value):
+    if cxt.params['output'].isatty():
+        return True
+
+    return value
+
+
+@click.command(
+    context_settings={
+        'help_option_names': ['-h', '--help']
+    }
+)
+@click.version_option(
+    __version__, '-v', '--version',
+    prog_name='mordred'
+)
+@click.argument(
+    'INPUT', nargs=-1,
+    type=click.Path(exists=True),
+    callback=callback_input
+)
+@click.option(
+    'parser', '-t', '--type', default='auto',
+    type=click.Choice(['auto', 'smi', 'mol', 'sdf']),
+    help='input filetype', metavar='TYPE',
+    callback=callback_filetype
+)
+@click.option(
+    '-o', '--output',
+    default=sys.stdout, type=click.File('w') if six.PY3 else click.File('wb'),
+    help='output csv file', metavar='PATH'
+)
+@click.option(
+    'nproc', '-p', '--processes',
+    default=None, type=click.INT,
+    help='number of processes', metavar='N'
+)
+@click.option(
+    '-q', '--quiet', callback=callback_quiet,
+    default=False, flag_value=True,
+    help='hide progress bar'
+)
+@click.option(
+    '-s', '--stream',
+    default=False, flag_value=True,
+    help='stream read'
+)
+@click.option(
+    '-d', '--descriptor', multiple=True,
+    type=click.Choice(get_module_names()),
+    help='descriptors', metavar='NAME'
+)
+@click.option(
+    'with3D', '-3', '--3D',
+    default=False, flag_value=True,
+    help='use 3D descriptors (require sdf or mol file)'
+)
+def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
+    mols = (m for i in input for m in parser(i))
+
+    if stream:
+        N = None
     else:
-        raise ValueError('unknown format: {!r}'.format(fmt))
-
-    return (mol for mol in it if mol is not None)
-
-
-class DummyBar(object):
-    def __init__(self, *args, **kws):
-        pass
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kws):
-        pass
-
-    def update(self, *args, **kws):
-        pass
-
-
-def main(descs, prog=None):
-    parser_options = dict()
-    if prog is not None:
-        parser_options['prog'] = '{} -m {}'.format(os.path.basename(sys.executable), prog)
-
-    parser = argparse.ArgumentParser(**parser_options)
-
-    parser.add_argument(
-        'INPUT', type=str, default=sys.stdin,
-        help='input file or directory(default: stdin)',
-    )
-
-    parser.add_argument(
-        '-f', '--from', metavar='TYPE',
-        default='auto', choices=['auto', 'smi', 'sdf', 'mol'],
-        help='input filetype(one of %(choices)s, default: %(default)s)',
-    )
-
-    parser.add_argument(
-        '-o', '--output', metavar='PATH',
-        type=str, default=None,
-        help='output csv file(default: stdout)'
-    )
-
-    parser.add_argument(
-        '-p', '--processes', metavar='N',
-        default=None, type=int,
-        help='number of processes to use(default: number of threads)',
-    )
-
-    parser.add_argument(
-        '-q', '--quiet',
-        default=False, action='store_true',
-        help="hide progress bar",
-    )
-
-    parser.add_argument(
-        '-s', '--stream',
-        default=False, action='store_true',
-        help='stream read',
-    )
-
-    parser.add_argument(
-        '-3', '--with-3D',
-        default=False, action='store_true',
-        help='calculate 3D descriptor(require sdf or mol file)'
-    )
-
-    args = parser.parse_args()
-
-    if args.INPUT == sys.stdin and args.INPUT.isatty():
-        sys.exit(parser.print_help())
-
-    if args.output is None:
-        args.output = sys.stdout
-    elif six.PY3:
-        args.output = open(args.output, 'w', newline='')
-    else:
-        args.output = open(args.output, 'wb')
-
-    if args.output.isatty():
-        args.quiet = True
-
-    mols = file_parser(args.INPUT, getattr(args, 'from'))
-
-    if not args.stream:
         mols = list(mols)
         N = len(mols)
+
+    # Descriptors
+    calc = Calculator()
+    if len(descriptor) == 0:
+        calc.register(all_descriptors(), exclude3D=not with3D)
     else:
-        N = None
+        calc.register(
+            (d
+             for m in descriptor
+             for d in get_descriptors_from_module(import_module('.' + m, __package__))
+             ),
+            exclude3D=not with3D
+        )
 
-    if not args.with_3D:
-        descs = [desc for desc in descs if not desc.require_3D]
-
-    calc = Calculator(descs)
-
-    with args.output as output:
-        progress_args = {'dynamic_ncols': True, 'leave': True}
-        if args.quiet:
-            Progress = DummyBar
-        elif N is None:
-            Progress = tqdm.tqdm
-        else:
-            Progress = tqdm.tqdm
-            progress_args.update({'total': N})
-
+    with output:
         writer = csv.writer(output)
-
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
-        with Progress(**progress_args) as bar:
-            def callback(r):
-                bar.update()
+        def pretty(v):
+            if isinstance(v, float) and math.isnan(v):
+                return ''
 
-            for mol, val in calc.map(
-                    mols, args.processes, error_mode='log', callback=callback):
+            return str(v)
 
-                def ppr(a):
-                    if isinstance(a, float) and math.isnan(a):
-                        return ''
-                    else:
-                        return str(a)
-
-                writer.writerow([mol.GetProp('_Name')] + [ppr(v[1]) for v in val])
-
-    return 0
-
-
-def submodule(name='__main__'):
-    mdl = sys.modules[name]
-    descs = get_descriptors_from_module(mdl)
-
-    prog = __package__ + '.' + os.path.split(os.path.splitext(mdl.__file__)[0])[1]
-    sys.exit(main(descs, prog=prog))
+        for mol, val in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
+            writer.writerow([mol.GetProp('_Name')] + [pretty(v) for v in val])
 
 
 if __name__ == '__main__':
-    sys.exit(main(all_descriptors(), prog=__package__))
+    main()

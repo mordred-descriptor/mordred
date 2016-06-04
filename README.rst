@@ -55,9 +55,6 @@ examples
 as command
 ~~~~~~~~~~
 
-all descriptors
-^^^^^^^^^^^^^^^
-
 .. code:: console
 
     usage: python -m mordred [-h] [-f TYPE] [-o PATH] [-p N] [-q] [-s] [-3] INPUT
@@ -76,23 +73,6 @@ all descriptors
       -s, --stream          stream read
       -3, --with-3D         calculate 3D descriptor(require sdf or mol file)
 
-descriptors in submodule
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code:: console
-
-    $ python -m mordred.TPSA -i tests/references/structures.smi
-    name,TPSA(NO),TPSA
-    Hexane,0.0,0.0
-    Benzene,0.0,0.0
-    Caffeine,61.82,61.82
-    Cyanidin,112.45,112.45
-    Lycopene,0.0,0.0
-    Epicatechin,110.38,110.38
-    Limonene,0.0,0.0
-    Allicin,17.07,61.58
-    Glutathione,158.82,197.62
-
 as library
 ^^^^^^^^^^
 
@@ -103,15 +83,29 @@ as library
     from mordred import Calculator, all_descriptors
 
     # create descriptor calculator with all descriptors
-    calc = Calculator(all_descriptors(with_3D=False))
+    calc = Calculator(all_descriptors(), exclude3D=True)
 
-    # calculate and print descriptors
-    for desc, value in calc(Chem.MolFromSmiles('c1ccccc1O')):
-       print('{}\t{}'.format(desc, value))
+    mol = Chem.MolFromSmiles('c1ccccc1')
+
+    mols = map(Chem.MolFromSmiles, [
+        'c1ccccc1Cl',
+        'c1ccccc1O',
+        'c1ccccc1N'
+    ])
+
+    # calculate single molecule
+    for desc, value in zip(calc.descriptors, calc(mol)):
+        print('{}\t{}'.format(desc, value))
+
+    # calculate multiple molecule
+    for mol, values in calc.map(mols, processes=1):
+        print(Chem.MolToSmiles(mol))
+        for desc, value in zip(calc.descriptors, values):
+            print('{}\t{}'.format(desc, value))
 
 Documentation
 -------------
 
--  `stable <http://mordred-descriptor.github.io/documentation/release>`__
--  `beta <http://mordred-descriptor.github.io/documentation/master>`__
+-  `v0.2.0 <http://mordred-descriptor.github.io/documentation/v0.2.0>`__
+-  `v0.1.0 <http://mordred-descriptor.github.io/documentation/v0.1.0>`__
 

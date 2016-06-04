@@ -13,38 +13,35 @@ methods = []
 
 def method(cls):
     methods.append(cls)
-    cls.name = cls.__name__
+    cls.as_argument = cls.__name__
     return cls
 
 
 class Common(Descriptor):
     require_connected = True
 
-    def __reduce_ex__(self, version):
+    def as_key(self):
         return self.__class__, (
             self.matrix,
             self.explicit_hydrogens,
-            self.gasteiger_charges,
             self.kekulize,
         )
 
-    def __init__(self, matrix, explicit_hydrogens=True, gasteiger_charges=False, kekulize=False):
+    def __init__(self, matrix, explicit_hydrogens, kekulize):
         self.matrix = matrix
         self.explicit_hydrogens = explicit_hydrogens
-        self.gasteiger_charges = gasteiger_charges
         self.kelulize = kekulize
 
     @property
     def _key_args(self):
-        return [
+        return (
             self.matrix,
             self.explicit_hydrogens,
-            self.gasteiger_charges,
             self.kekulize
-        ]
+        )
 
     def dependencies(self):
-        return dict(eig=Eigen(*self._key_args))
+        return {'eig': Eigen(*self._key_args)}
 
     @property
     def _eig(self):
@@ -73,7 +70,7 @@ class Common(Descriptor):
 
 class Eigen(Common):
     def dependencies(self):
-        return dict(matrix=self.matrix)
+        return {'matrix': self.matrix}
 
     def calculate(self, mol, matrix):
         if matrix is None:
@@ -114,7 +111,10 @@ class SpMax(Common):
 @method
 class SpDiam(Common):
     def dependencies(self):
-        return dict(eig=self._eig, SpMax=self._SpMax)
+        return {
+            'eig': self._eig,
+            'SpMax': self._SpMax,
+        }
 
     def calculate(self, mol, SpMax, eig):
         if eig is None:
@@ -134,7 +134,10 @@ class SpMean(Common):
 @method
 class SpAD(Common):
     def dependencies(self):
-        return dict(eig=self._eig, SpMean=self._SpMean)
+        return {
+            'eig': self._eig,
+            'SpMean': self._SpMean,
+        }
 
     def calculate(self, mol, eig, SpMean):
         if eig is None:
@@ -146,7 +149,7 @@ class SpAD(Common):
 @method
 class SpMAD(Common):
     def dependencies(self):
-        return dict(SpAD=self._SpAD)
+        return {'SpAD': self._SpAD}
 
     def calculate(self, mol, SpAD):
         return SpAD / mol.GetNumAtoms()
@@ -185,7 +188,7 @@ class VE1(Common):
 @method
 class VE2(Common):
     def dependencies(self):
-        return dict(VE1=self._VE1)
+        return {'VE1': self._VE1}
 
     def calculate(self, mol, VE1):
         return VE1 / mol.GetNumAtoms()
@@ -194,7 +197,7 @@ class VE2(Common):
 @method
 class VE3(Common):
     def dependencies(self):
-        return dict(VE1=self._VE1)
+        return {'VE1': self._VE1}
 
     def calculate(self, mol, VE1):
         if VE1 == 0:
@@ -223,7 +226,7 @@ class VR1(Common):
 @method
 class VR2(Common):
     def dependencies(self):
-        return dict(VR1=self._VR1)
+        return {'VR1': self._VR1}
 
     def calculate(self, mol, VR1):
         return VR1 / mol.GetNumAtoms()
@@ -232,7 +235,7 @@ class VR2(Common):
 @method
 class VR3(Common):
     def dependencies(self):
-        return dict(VR1=self._VR1)
+        return {'VR1': self._VR1}
 
     def calculate(self, mol, VR1):
         if VR1 == 0:
