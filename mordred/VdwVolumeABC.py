@@ -45,10 +45,9 @@ class VdwVolumeABC(Descriptor):
     References
         * :cite:`10.1021/jo034808o`
     """
+    __slots__ = ()
 
     compat_atoms = tuple(bondi_radii)
-
-    __slots__ = ()
 
     @classmethod
     def preset(cls):

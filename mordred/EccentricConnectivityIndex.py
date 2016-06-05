@@ -15,9 +15,7 @@ class EccentricConnectivityIndex(Descriptor):
     :math:`E` is eccentricity of atoms,
     :math:`V` is valences of atoms.
     """
-
     __slots__ = ()
-
     explicit_hydrogens = False
 
     @classmethod

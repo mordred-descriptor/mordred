@@ -127,6 +127,7 @@ class CalcDetour(object):
 
 
 class DetourMatrixBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
     require_connected = True
 
@@ -154,6 +155,7 @@ class DetourMatrix(DetourMatrixBase):
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
     """
+    __slots__ = ('_type',)
 
     @classmethod
     def preset(cls):
@@ -161,8 +163,6 @@ class DetourMatrix(DetourMatrixBase):
 
     def __str__(self):
         return '{}_Dt'.format(self._type.__name__)
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)
@@ -196,7 +196,6 @@ class DetourIndex(DetourMatrixBase):
     :math:`D` is detour matrix,
     :math:`A` is number of atoms.
     """
-
     __slots__ = ()
 
     def as_key(self):

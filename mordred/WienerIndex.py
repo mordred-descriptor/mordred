@@ -11,7 +11,7 @@ class WienerIndex(Descriptor):
     :type polarity: bool
     :param polarity: use polarity Wiener index
     """
-
+    __slots__ = ('_polarity',)
     explicit_hydrogens = False
 
     @classmethod
@@ -21,8 +21,6 @@ class WienerIndex(Descriptor):
 
     def __str__(self):
         return 'WPol' if self._polarity else 'WPath'
-
-    __slots__ = ('_polarity',)
 
     def as_key(self):
         return self.__class__, (self._polarity,)

@@ -16,7 +16,6 @@ class VertexAdjacencyInformation(Descriptor):
 
     :returns: :math:`m = 0`
     """
-
     __slots__ = ()
 
     @classmethod

@@ -18,7 +18,6 @@ class FragmentComplexity(Descriptor):
     References
         * :cite:`10.1021/ci050521b`
     """
-
     __slots__ = ()
 
     @classmethod

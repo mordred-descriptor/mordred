@@ -24,6 +24,7 @@ __all__ = (
 
 
 class CPSABase(Descriptor):
+    __slots__ = ()
     require_3D = True
 
     @classmethod
@@ -40,6 +41,8 @@ class CPSABase(Descriptor):
 
 
 class VersionCPSABase(CPSABase):
+    __slots__ = '_version',
+
     @classmethod
     def preset(cls):
         return map(cls, cls.versions)
@@ -57,6 +60,8 @@ class VersionCPSABase(CPSABase):
 
 
 class AtomicSurfaceArea(CPSABase):
+    __slots__ = '_solvent_radius', '_level'
+
     def as_key(self):
         return self.__class__, (self._solvent_radius, self._level)
 
@@ -74,6 +79,8 @@ class AtomicSurfaceArea(CPSABase):
 
 
 class TotalSurfaceArea(CPSABase):
+    __slots__ = ()
+
     def dependencies(self):
         return {'ASA': AtomicSurfaceArea()}
 
@@ -82,6 +89,7 @@ class TotalSurfaceArea(CPSABase):
 
 
 class AtomicCharge(CPSABase):
+    __slots__ = ()
     require_3D = False
 
     def dependencies(self):
@@ -106,6 +114,7 @@ class PNSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def dependencies(self):
         return {
@@ -141,6 +150,7 @@ class PPSA(PNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -153,6 +163,7 @@ class DPSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def dependencies(self):
         return {
@@ -170,6 +181,7 @@ class FNSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def _SA(self):
         return PNSA(self._version)
@@ -190,6 +202,7 @@ class FPSA(FNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def _SA(self):
         return PPSA(self._version)
@@ -206,8 +219,7 @@ class WNSA(WxSAMixin, FNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
-
-    pass
+    __slots__ = ()
 
 
 class WPSA(WxSAMixin, FPSA):
@@ -216,13 +228,12 @@ class WPSA(WxSAMixin, FPSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
-
-    pass
+    __slots__ = ()
 
 
 class RNCG(CPSABase):
     r"""relative negative charge descriptor."""
-
+    __slots__ = ()
     require_3D = False
 
     @staticmethod
@@ -244,6 +255,7 @@ class RNCG(CPSABase):
 
 class RPCG(RNCG):
     r"""relative positive charge descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -252,7 +264,7 @@ class RPCG(RNCG):
 
 class RNCS(CPSABase):
     r"""relative negative charge surface area descriptor."""
-
+    __slots__ = ()
     _RCG = RNCG()
 
     def dependencies(self):
@@ -281,6 +293,7 @@ class RNCS(CPSABase):
 
 class RPCS(RNCS):
     r"""relative positive charge surface area descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -291,6 +304,7 @@ class RPCS(RNCS):
 
 class TASA(CPSABase):
     r"""total hydrophobic surface area descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -308,6 +322,7 @@ class TASA(CPSABase):
 
 class TPSA(TASA):
     r"""total polar surface area descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -316,7 +331,7 @@ class TPSA(TASA):
 
 class RASA(CPSABase):
     r"""relative hydrophobic surface area descriptor."""
-
+    __slots__ = ()
     _TxSA = TASA()
 
     def dependencies(self):
@@ -331,5 +346,5 @@ class RASA(CPSABase):
 
 class RPSA(RASA):
     r"""relative polar surface area descriptor."""
-
+    __slots__ = ()
     _TxSA = TPSA()

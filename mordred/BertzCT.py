@@ -9,7 +9,7 @@ __all__ = ('BertzCT',)
 
 class BertzCT(Descriptor):
     r"""Bertz CT descriptor(rdkit wrapper)."""
-
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod

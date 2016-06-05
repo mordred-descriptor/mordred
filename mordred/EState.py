@@ -31,6 +31,7 @@ es_type_set = set(es_types)
 
 
 class EStateBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
 
@@ -45,6 +46,8 @@ class EStateCache(EStateBase):
 
 
 class AggrType(IntEnum):
+    __slots__ = ()
+
     count = 1
     sum = 2
     max = 3
@@ -78,6 +81,7 @@ class AtomTypeEState(EStateBase):
     References
         * :cite:`10.1021/ci00028a014`
     """
+    __slots__ = ('_type', '_estate',)
 
     aggr_types = tuple(a.name for a in AggrType)
 
@@ -95,8 +99,6 @@ class AtomTypeEState(EStateBase):
         aggr = aggr_name_dict[self._type]
 
         return aggr + self._estate
-
-    __slots__ = ('_type', '_estate',)
 
     def as_key(self):
         return self.__class__, (self._type, self._estate)

@@ -56,7 +56,6 @@ class Framework(Descriptor):
     References
         * :cite:`10.1021/jm9602928`
     """
-
     __slots__ = ()
 
     @classmethod

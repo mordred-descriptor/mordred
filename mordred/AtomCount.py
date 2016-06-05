@@ -22,6 +22,7 @@ class AtomCount(Descriptor):
         * 'X' - all halogen
         * element symbol
     """
+    __slots__ = ('_type',)
 
     @classmethod
     def preset(cls):
@@ -37,8 +38,6 @@ class AtomCount(Descriptor):
 
     def __str__(self):
         return 'n' + self._type
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)

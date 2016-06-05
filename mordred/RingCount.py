@@ -9,6 +9,7 @@ __all__ = ('RingCount',)
 
 
 class RingCountBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     def as_key(self):
@@ -69,6 +70,7 @@ class RingCount(RingCountBase):
         * False: count carbon rings
         * None: count any rings
     """
+    __slots__ = ('_order', '_greater', '_fused', '_aromatic', '_hetero',)
 
     @classmethod
     def preset(cls):
@@ -104,8 +106,6 @@ class RingCount(RingCountBase):
             attrs.append('C')
 
         return 'n{}Ring'.format(''.join(attrs))
-
-    __slots__ = ('_order', '_greater', '_fused', '_aromatic', '_hetero',)
 
     def as_key(self):
         return (

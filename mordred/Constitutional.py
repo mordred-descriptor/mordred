@@ -22,14 +22,13 @@ class ConstitutionalSum(Descriptor):
     :type prop: :py:class:`str` or :py:class:`function`
     :param prop: :ref:`atomic_properties`
     """
+    __slots__ = ('_prop', '_prop_name',)
 
     @classmethod
     def preset(cls):
         return map(cls, get_properties())
 
     _carbon = Chem.Atom(6)
-
-    __slots__ = ('_prop', '_prop_name',)
 
     def as_key(self):
         return self.__class__, (self._prop,)
@@ -66,7 +65,6 @@ class ConstitutionalMean(ConstitutionalSum):
 
     :rtype: float
     """
-
     __slots__ = ('_prop_name', '_prop',)
 
     @classmethod

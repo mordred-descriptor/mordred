@@ -9,6 +9,8 @@ __all__ = ('AcidicGroupCount', 'BasicGroupCount',)
 
 
 class SmartsCountBase(Descriptor):
+    __slots__ = '_mol',
+
     @classmethod
     def preset(cls):
         yield cls()

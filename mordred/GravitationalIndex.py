@@ -9,6 +9,8 @@ __all__ = ('GravitationalIndex',)
 
 
 class GravitationalIndex(Descriptor):
+    __slots__ = '_heavy', '_pair'
+
     @classmethod
     def preset(cls):
         return (

@@ -11,6 +11,7 @@ __all__ = (
 
 
 class CarbonTypesBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
     kekulize = True
 
@@ -56,6 +57,7 @@ class CarbonTypes(CarbonTypesBase):
     :type SP: int
     :param SP: count :math:`{\rm SP}n` carbon
     """
+    __slots__ = ('_nCarbon', '_SP',)
 
     @classmethod
     def preset(cls):
@@ -67,8 +69,6 @@ class CarbonTypes(CarbonTypesBase):
 
     def __str__(self):
         return 'C{}SP{}'.format(self._nCarbon, self._SP)
-
-    __slots__ = ('_nCarbon', '_SP',)
 
     def as_key(self):
         return self.__class__, (self._nCarbon, self._SP)
@@ -97,7 +97,6 @@ class HybridizationRatio(CarbonTypesBase):
 
     :returns: NaN when :math:`N_{\rm SP2} + N_{\rm SP3} = 0`.
     """
-
     __slots__ = ()
 
     @classmethod

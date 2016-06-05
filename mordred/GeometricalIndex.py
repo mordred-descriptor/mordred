@@ -7,6 +7,7 @@ __all__ = ('Diameter3D', 'Radius3D', 'GeometricalShapeIndex', 'PetitjeanIndex3D'
 
 
 class GeometricalIndexBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = True
     require_3D = True
 
@@ -22,7 +23,6 @@ class GeometricalIndexBase(Descriptor):
 
 class Radius3D(GeometricalIndexBase):
     r"""geometric radius descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -37,7 +37,6 @@ class Radius3D(GeometricalIndexBase):
 
 class Diameter3D(GeometricalIndexBase):
     r"""geometric diameter descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -63,7 +62,6 @@ class GeometricalShapeIndex(GeometricalIndexBase):
 
     :returns: NaN when :math:`R = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):
@@ -93,7 +91,6 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
 
     :returns: NaN when :math:`D = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):

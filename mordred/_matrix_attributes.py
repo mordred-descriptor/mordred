@@ -18,6 +18,7 @@ def method(cls):
 
 
 class Common(Descriptor):
+    __slots__ = 'matrix', 'explicit_hydrogens', 'kekulize'
     require_connected = True
 
     def as_key(self):
@@ -30,7 +31,7 @@ class Common(Descriptor):
     def __init__(self, matrix, explicit_hydrogens, kekulize):
         self.matrix = matrix
         self.explicit_hydrogens = explicit_hydrogens
-        self.kelulize = kekulize
+        self.kekulize = kekulize
 
     @property
     def _key_args(self):
@@ -80,6 +81,8 @@ class Common(Descriptor):
 
 
 class Eigen(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'matrix': self.matrix}
 
@@ -103,18 +106,24 @@ class Eigen(Common):
 
 @method
 class SpAbs(Common):
+    __slots__ = ()
+
     def calculate(self, eig):
         return np.abs(eig.val).sum()
 
 
 @method
 class SpMax(Common):
+    __slots__ = ()
+
     def calculate(self, eig):
         return eig.val[eig.max]
 
 
 @method
 class SpDiam(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {
             'eig': self._eig,
@@ -126,12 +135,16 @@ class SpDiam(Common):
 
 
 class SpMean(Common):
+    __slots__ = ()
+
     def calculate(self, eig):
         return np.mean(eig.val)
 
 
 @method
 class SpAD(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {
             'eig': self._eig,
@@ -144,6 +157,8 @@ class SpAD(Common):
 
 @method
 class SpMAD(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'SpAD': self._SpAD}
 
@@ -153,6 +168,8 @@ class SpMAD(Common):
 
 @method
 class LogEE(Common):
+    __slots__ = ()
+
     def calculate(self, eig):
         # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
         a = np.maximum(eig.val[eig.max], 0)
@@ -162,18 +179,24 @@ class LogEE(Common):
 
 @method
 class SM1(Common):
+    __slots__ = ()
+
     def calculate(self, eig):
         return eig.val.sum()
 
 
 @method
 class VE1(Common):
+    __slots__ = ()
+
     def calculate(self, eig):
         return np.abs(eig.vec[:, eig.max]).sum()
 
 
 @method
 class VE2(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VE1': self._VE1}
 
@@ -183,6 +206,8 @@ class VE2(Common):
 
 @method
 class VE3(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VE1': self._VE1}
 
@@ -193,6 +218,8 @@ class VE3(Common):
 
 @method
 class VR1(Common):
+    __slots__ = ()
+
     def calculate(self, eig):
         s = 0.0
 
@@ -207,6 +234,8 @@ class VR1(Common):
 
 @method
 class VR2(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VR1': self._VR1}
 
@@ -216,6 +245,8 @@ class VR2(Common):
 
 @method
 class VR3(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VR1': self._VR1}
 

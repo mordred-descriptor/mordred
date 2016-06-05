@@ -11,6 +11,8 @@ __all__ = ('BondCount',)
 
 
 class BondType(IntEnum):
+    __slots__ = ()
+
     any = 1
     heavy = 2
 
@@ -52,6 +54,7 @@ class BondCount(Descriptor):
     :type kekulize: bool
     :param kekulize: use kekulized structure
     """
+    __slots__ = ('_type', '_bond_name', '_check_bond', 'kekulize',)
 
     bond_types = tuple(b.name for b in BondType)
 
@@ -71,8 +74,6 @@ class BondCount(Descriptor):
     @property
     def explicit_hydrogens(self):
         return self._type in (BondType.any, BondType.single)
-
-    __slots__ = ('_type', '_bond_name', '_check_bond', 'kekulize',)
 
     def as_key(self):
         return self.__class__, (self._type, self.kekulize)

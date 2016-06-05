@@ -9,6 +9,7 @@ __all__ = ('ATS', 'AATS', 'ATSC', 'AATSC', 'MATS', 'GATS',)
 
 
 class AutocorrelationBase(Descriptor):
+    __slots__ = '_prop', '_order'
     explicit_hydrogens = True
 
     def __str__(self):
@@ -57,6 +58,8 @@ class AutocorrelationBase(Descriptor):
 
 
 class AutocorrelationProp(AutocorrelationBase):
+    __slots__ = ()
+
     def as_key(self):
         return self.__class__, (self._prop,)
 
@@ -67,6 +70,8 @@ class AutocorrelationProp(AutocorrelationBase):
 
 
 class AutocorrelationOrder(AutocorrelationBase):
+    __slots__ = ()
+
     def _prop(self):
         pass
 
@@ -80,7 +85,7 @@ class AutocorrelationOrder(AutocorrelationBase):
 
 
 class CAVec(AutocorrelationProp):
-    __slots__ = ('_prop',)
+    __slots__ = ()
     _order = 0
 
     def dependencies(self):
@@ -91,7 +96,7 @@ class CAVec(AutocorrelationProp):
 
 
 class GMat(AutocorrelationOrder):
-    __slots__ = ('_order',)
+    __slots__ = ()
 
     def dependencies(self):
         return {'dmat': DistanceMatrix(self.explicit_hydrogens)}
@@ -101,7 +106,7 @@ class GMat(AutocorrelationOrder):
 
 
 class GSum(AutocorrelationOrder):
-    __slots__ = ('_order',)
+    __slots__ = ()
 
     def dependencies(self):
         return {'gmat': GMat(self._order)}
@@ -149,7 +154,7 @@ class ATS(AutocorrelationBase):
     :returns: NaN when any properties are NaN
     """
 
-    __slots__ = ('_order', '_prop',)
+    __slots__ = ()
 
     @classmethod
     def preset(cls):
@@ -187,7 +192,7 @@ class AATS(ATS):
         * some properties are NaN
     """
 
-    __slots__ = ('_order', '_prop',)
+    __slots__ = ()
 
     def dependencies(self):
         return {'ATS': self._ATS, 'gsum': self._gsum}
@@ -210,7 +215,7 @@ class ATSC(AutocorrelationBase):
     :returns: NaN when any properties are NaN
     """
 
-    __slots__ = ('_order', '_prop',)
+    __slots__ = ()
 
     @classmethod
     def preset(cls):
@@ -248,7 +253,7 @@ class AATSC(ATSC):
         * any properties are NaN
     """
 
-    __slots__ = ('_order', '_prop',)
+    __slots__ = ()
 
     def dependencies(self):
         return {'ATSC': self._ATSC, 'gsum': self._gsum}
@@ -277,7 +282,7 @@ class MATS(AutocorrelationBase):
         * denominator = 0
     """
 
-    __slots__ = ('_order', '_prop',)
+    __slots__ = ()
 
     @classmethod
     def preset(cls):
@@ -311,7 +316,7 @@ class GATS(MATS):
         * denominator = 0
     """
 
-    __slots__ = ('_order', '_prop',)
+    __slots__ = ()
 
     def dependencies(self):
         return {

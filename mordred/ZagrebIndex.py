@@ -25,7 +25,7 @@ class ZagrebIndex(Descriptor):
 
     :returns: NaN when valence of any atoms are 0
     """
-
+    __slots__ = ('_version', '_variable',)
     explicit_hydrogens = False
 
     @classmethod
@@ -38,8 +38,6 @@ class ZagrebIndex(Descriptor):
             return '{}Zagreb{}'.format(m, self._version)
 
         return 'Zagreb{}_{}'.format(self._version, self._variable)
-
-    __slots__ = ('_version', '_variable',)
 
     def as_key(self):
         return self.__class__, (self._version, self._variable)

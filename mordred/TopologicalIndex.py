@@ -7,6 +7,7 @@ __all__ = ('Diameter', 'Radius', 'TopologicalShapeIndex', 'PetitjeanIndex',)
 
 
 class TopologicalIndexBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod
@@ -21,7 +22,6 @@ class TopologicalIndexBase(Descriptor):
 
 class Radius(TopologicalIndexBase):
     r"""radius descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -36,7 +36,6 @@ class Radius(TopologicalIndexBase):
 
 class Diameter(TopologicalIndexBase):
     r"""diameter descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -62,7 +61,6 @@ class TopologicalShapeIndex(TopologicalIndexBase):
 
     :returns: NaN when :math:`R = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):
@@ -94,7 +92,6 @@ class PetitjeanIndex(TopologicalShapeIndex):
 
     :returns: NaN when :math:`D = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):

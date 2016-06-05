@@ -88,6 +88,8 @@ class AlterMolecule(Descriptor):
 
 
 class EtaBase(Descriptor):
+    __slots__ = ()
+
     explicit_hydrogens = False
     kekulize = True
     require_connected = True
@@ -114,6 +116,7 @@ class EtaCoreCount(EtaBase):
 
     :returns: reference and valence of any atoms > 4
     """
+    __slots__ = ('_averaged', '_reference',)
 
     @classmethod
     def preset(cls):
@@ -126,8 +129,6 @@ class EtaCoreCount(EtaBase):
             name += '_R'
 
         return name + ("'" if self._averaged else '')
-
-    __slots__ = ('_averaged', '_reference',)
 
     def as_key(self):
         return self.__class__, (self._averaged, self._reference)
@@ -162,6 +163,7 @@ class EtaShapeIndex(EtaBase):
     :type type: str
     :param type: one of shape_types
     """
+    __slots__ = ('_type',)
 
     shape_types = ('p', 'y', 'x',)
     _type_to_degree = dict(p=1, y=3, x=4)
@@ -172,8 +174,6 @@ class EtaShapeIndex(EtaBase):
 
     def __str__(self):
         return 'ETA_shape_{}'.format(self._type)
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)
@@ -241,6 +241,7 @@ class EtaVEMCount(EtaBase):
     :type averaged: bool
     :param averaged: averaged by heavy atom count
     """
+    __slots__ = ('_type', '_averaged',)
 
     @classmethod
     def preset(cls):
@@ -262,8 +263,6 @@ class EtaVEMCount(EtaBase):
         return name
 
     beta_types = ('', 's', 'ns', 'ns_d')
-
-    __slots__ = ('_type', '_averaged',)
 
     def as_key(self):
         return self.__class__, (self._type, self._averaged)
@@ -325,7 +324,6 @@ class EtaCompositeIndex(EtaBase):
 
     :returns: reference and valence of any atoms > 4
     """
-
     __slots__ = ('_reference', '_local', '_averaged',)
 
     @classmethod
@@ -350,8 +348,6 @@ class EtaCompositeIndex(EtaBase):
             name += "'"
 
         return name
-
-    __slots__ = ('_reference', '_local', '_averaged')
 
     def as_key(self):
         return self.__class__, (self._reference, self._local, self._averaged)
@@ -409,6 +405,7 @@ class EtaFunctionalityIndex(EtaBase):
     :type averaged: bool
     :param averaged: averaged
     """
+    __slots__ = ('_local', '_averaged',)
 
     @classmethod
     def preset(cls):
@@ -428,8 +425,6 @@ class EtaFunctionalityIndex(EtaBase):
             name += "'"
 
         return name
-
-    __slots__ = ('_local', '_averaged',)
 
     def as_key(self):
         return self.__class__, (self._local, self._averaged)
@@ -469,6 +464,7 @@ class EtaBranchingIndex(EtaBase):
 
     :returns: NaN when A < 2
     """
+    __slots__ = ('_ring', '_averaged',)
 
     @classmethod
     def preset(cls):
@@ -488,8 +484,6 @@ class EtaBranchingIndex(EtaBase):
             name += "'"
 
         return name
-
-    __slots__ = ('_ring', '_averaged',)
 
     def as_key(self):
         return self.__class__, (self._ring, self._averaged)
@@ -533,6 +527,7 @@ class EtaDeltaAlpha(EtaBase):
     :type type: str
     :param type: one of delta_types
     """
+    __slots__ = ('_type',)
 
     delta_types = ('A', 'B',)
 
@@ -542,8 +537,6 @@ class EtaDeltaAlpha(EtaBase):
 
     def __str__(self):
         return 'ETA_dAlpha_{}'.format(self._type)
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)
@@ -592,6 +585,7 @@ class EtaEpsilon(EtaBase):
 
     :returns: type = 3 and valence of any atoms > 4
     """
+    __slots__ = ('_type',)
 
     @classmethod
     def preset(cls):
@@ -605,8 +599,6 @@ class EtaEpsilon(EtaBase):
         return self._type != 2
 
     epsilon_types = tuple(range(1, 6))
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)
@@ -649,6 +641,7 @@ class EtaDeltaEpsilon(EtaBase):
     :type type: str
     :param type: one of delta_epsilon_types
     """
+    __slots__ = ('_type',)
 
     @classmethod
     def preset(cls):
@@ -658,8 +651,6 @@ class EtaDeltaEpsilon(EtaBase):
         return 'ETA_dEpsilon_{}'.format(self._type)
 
     delta_epsilon_types = tuple('ABCD')
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)
@@ -694,6 +685,7 @@ class EtaDeltaBeta(EtaBase):
     :type averaged: bool
     :param averaged: averaged
     """
+    __slots__ = ('_averaged',)
 
     @classmethod
     def preset(cls):
@@ -706,8 +698,6 @@ class EtaDeltaBeta(EtaBase):
             name += "'"
 
         return name
-
-    __slots__ = ('_averaged',)
 
     def as_key(self):
         return self.__class__, (self._averaged,)
@@ -768,6 +758,7 @@ class EtaDeltaPsi(EtaBase):
     :type type: str
     :param type: one of delta_psi_types
     """
+    __slots__ = ('_type',)
 
     @classmethod
     def preset(cls):
@@ -777,8 +768,6 @@ class EtaDeltaPsi(EtaBase):
         return 'ETA_dPsi_{}'.format(self._type)
 
     delta_psi_types = ('A', 'B',)
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)

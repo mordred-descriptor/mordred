@@ -64,6 +64,7 @@ class BaryszMatrix(BaryszMatrixBase):
 
     :returns: NaN when any properties are NaN
     """
+    __slots__ = ('_prop', '_type',)
 
     @classmethod
     def preset(cls):
@@ -71,8 +72,6 @@ class BaryszMatrix(BaryszMatrixBase):
 
     def __str__(self):
         return '{}_Dz{}'.format(self._type.__name__, self._prop)
-
-    __slots__ = ('_prop', '_type',)
 
     def as_key(self):
         return self.__class__, (self._prop, self._type)

@@ -8,6 +8,7 @@ __all__ = ('BCUT',)
 
 
 class BCUTBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
     require_connected = True
 
@@ -84,6 +85,7 @@ class BCUT(BCUTBase):
         * any atomic properties are NaN
         * :math:`\left| nth \right| > A`
     """
+    __slots__ = ('_prop', '_nth',)
 
     @classmethod
     def preset(cls):
@@ -98,8 +100,6 @@ class BCUT(BCUTBase):
             return 'BCUT{}-{}l'.format(self._prop, np.abs(self._nth))
         else:
             return 'BCUT{}-{}h'.format(self._prop, self._nth + 1)
-
-    __slots__ = ('_prop', '_nth',)
 
     def as_key(self):
         return self.__class__, (self._prop, self._nth)

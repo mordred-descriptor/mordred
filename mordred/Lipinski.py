@@ -9,6 +9,7 @@ __all__ = ('Lipinski', 'GhoseFilter')
 
 
 class LipinskiLike(Descriptor):
+    __slots__ = ()
 
     @classmethod
     def preset(cls):
@@ -28,7 +29,6 @@ class Lipinski(LipinskiLike):
 
     LogP: SLogP
     """
-
     __slots__ = ()
 
     def dependencies(self):
@@ -52,7 +52,6 @@ class GhoseFilter(LipinskiLike):
 
     LogP, MR: SLogP, SMR
     """
-
     __slots__ = ()
 
     def dependencies(self):

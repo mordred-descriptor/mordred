@@ -11,6 +11,7 @@ __all__ = (
 
 
 class RotatableBondsBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod
@@ -23,7 +24,6 @@ class RotatableBondsBase(Descriptor):
 
 class RotatableBondsCount(RotatableBondsBase):
     r"""ratatable bonds count descriptor(rdkit wrapper)."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -43,7 +43,6 @@ class RotatableBondsRatio(RotatableBondsBase):
 
     :returns: NaN when :math:`N_{\rm bonds} = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):

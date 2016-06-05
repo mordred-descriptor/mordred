@@ -6,6 +6,8 @@ from contextlib import contextmanager
 
 
 class Error(Exception):
+    __slots__ = 'error', 'stack', 'critical', 'warning'
+
     def __reduce_ex__(self, version):
         return self.__class__, (self.error, self.stack, self.critical, self.warning)
 

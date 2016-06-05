@@ -8,6 +8,7 @@ __all__ = ('MomentOfInertia',)
 
 
 class MomentOfInertiaBase(Descriptor):
+    __slots__ = ()
     require_3D = True
 
     def _numpy(self):
@@ -18,6 +19,8 @@ class MomentOfInertiaBase(Descriptor):
 
 
 class PrincipalAxis(MomentOfInertiaBase):
+    __slots__ = ()
+
     def as_key(self):
         return self.__class__, ()
 
@@ -41,6 +44,8 @@ class PrincipalAxis(MomentOfInertiaBase):
 
 
 class MomentOfInertia(MomentOfInertiaBase):
+    __slots__ = '_axis',
+
     @classmethod
     def preset(cls):
         return map(cls, cls.axes)

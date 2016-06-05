@@ -12,7 +12,7 @@ class DistanceMatrix(Descriptor):
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
     """
-
+    __slots__ = ('_type',)
     explicit_hydrogens = False
 
     @classmethod
@@ -21,8 +21,6 @@ class DistanceMatrix(Descriptor):
 
     def __str__(self):
         return '{}_D'.format(self._type.__name__)
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)

@@ -9,6 +9,7 @@ __all__ = ('BalabanJ',)
 
 class BalabanJ(Descriptor):
     r"""Balaban's J index descriptor(rdkit wrapper)."""
+    __slots__ = ()
 
     explicit_hydrogens = False
 

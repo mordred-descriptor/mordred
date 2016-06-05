@@ -75,6 +75,7 @@ def neighborhood_code(mol, i, order):
 
 
 class InformationContentBase(Descriptor):
+    __slots__ = ('_order',)
     kekulize = True
 
     def __str__(self):
@@ -83,8 +84,6 @@ class InformationContentBase(Descriptor):
     @classmethod
     def preset(cls):
         return (cls(o) for o in range(6))
-
-    __slots__ = ('_order',)
 
     def as_key(self):
         return self.__class__, (self._order,)
@@ -96,13 +95,13 @@ class InformationContentBase(Descriptor):
 
 
 class Ag(InformationContentBase):
+    __slots__ = ('_order',)
+
     @classmethod
     def preset(cls):
         return ()
 
     _name = 'Ag'
-
-    __slots__ = ('_order',)
 
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
@@ -142,6 +141,7 @@ class InformationContent(InformationContentBase):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'IC'
 
@@ -162,6 +162,7 @@ class TotalIC(InformationContentBase):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'TIC'
 
@@ -183,6 +184,7 @@ class StructuralIC(TotalIC):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'SIC'
 
@@ -204,6 +206,7 @@ class BondingIC(TotalIC):
 
     :returns: NaN when :math:`\sum^B_{b=1} \pi^{*}_b <= 0`
     """
+    __slots__ = ()
 
     _name = 'BIC'
 
@@ -224,6 +227,7 @@ class ComplementaryIC(TotalIC):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'CIC'
 
@@ -239,6 +243,7 @@ class ModifiedIC(InformationContent):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'MIC'
 
@@ -254,6 +259,7 @@ class ZModifiedIC(InformationContent):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'ZMIC'
 

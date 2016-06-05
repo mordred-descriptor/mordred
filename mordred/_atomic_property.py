@@ -290,6 +290,8 @@ def get_properties(charge=False, istate=False):
 
 
 class AtomicProperty(Descriptor):
+    __slots__ = 'explicit_hydrogens', 'prop', '_initialized'
+
     def __str__(self):
         return getattr(self.prop, 'name', self.prop.__name__)
 

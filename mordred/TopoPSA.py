@@ -19,6 +19,7 @@ class TopoPSA(Descriptor):
     References
         * :cite:`10.1021/jm000942e`
     """
+    __slots__ = ('_no_only',)
 
     @classmethod
     def preset(cls):
@@ -27,8 +28,6 @@ class TopoPSA(Descriptor):
 
     def __str__(self):
         return 'TopoPSA(NO)' if self._no_only else 'TopoPSA'
-
-    __slots__ = ('_no_only',)
 
     def as_key(self):
         return self.__class__, (self._no_only,)

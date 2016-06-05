@@ -10,6 +10,8 @@ __all__ = ('MolecularId',)
 
 
 class AtomicId(object):
+    __slots__ = ('G', 'lim', 'start', 'id', 'visited', 'weights')
+
     def __init__(self, mol, eps):
         G = Graph()
 
@@ -60,6 +62,7 @@ class AtomicId(object):
 
 
 class MolecularIdBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
     require_connected = True
 
@@ -98,6 +101,7 @@ class MolecularId(MolecularIdBase):
     :type _eps: float
     :param _eps: internally used
     """
+    __slots__ = ('_orig_type', '_averaged', '_eps', '_type', '_check')
 
     @classmethod
     def preset(cls):
@@ -113,8 +117,6 @@ class MolecularId(MolecularIdBase):
             n = '{}_{}'.format(n, self._type)
 
         return n
-
-    __slots__ = ('_orig_type', '_averaged', '_eps',)
 
     def as_key(self):
         return self.__class__, (self._orig_type, self._averaged, self._eps)

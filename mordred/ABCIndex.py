@@ -13,6 +13,8 @@ __all__ = ('ABCIndex', 'ABCGGIndex',)
 
 
 class ABCIndexBase(Descriptor):
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()
@@ -31,6 +33,7 @@ class ABCIndexBase(Descriptor):
 class ABCIndex(ABCIndexBase):
     r"""atom-bond connectivity indez descriptor.
     """
+    __slots__ = ()
 
     @staticmethod
     def _each_bond(bond):
@@ -51,6 +54,7 @@ class ABCIndex(ABCIndexBase):
 class ABCGGIndex(ABCIndexBase):
     r"""Graovac-Ghorbani atom-bond connectivity index descriptor.
     """
+    __slots__ = ()
 
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}

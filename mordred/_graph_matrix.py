@@ -27,6 +27,8 @@ class DistanceMatrix(Descriptor):
 
 
 class Eccentricity(DistanceMatrix):
+    __slots__ = ()
+
     def dependencies(self):
         return dict(
             D=DistanceMatrix(
@@ -41,6 +43,8 @@ class Eccentricity(DistanceMatrix):
 
 
 class Radius(Eccentricity):
+    __slots__ = ()
+
     def dependencies(self):
         return dict(
             E=Eccentricity(
@@ -55,6 +59,8 @@ class Radius(Eccentricity):
 
 
 class Diameter(Eccentricity):
+    __slots__ = ()
+
     def calculate(self, D):
         return D.max()
 
@@ -99,6 +105,8 @@ class AdjacencyMatrix(Descriptor):
 
 
 class Valence(AdjacencyMatrix):
+    __slots__ = ()
+
     def dependencies(self):
         return dict(
             D=AdjacencyMatrix(
@@ -131,6 +139,8 @@ class DistanceMatrix3D(Descriptor):
 
 
 class Eccentricity3D(DistanceMatrix3D):
+    __slots__ = ()
+
     def dependencies(self):
         return dict(
             D=DistanceMatrix3D(
@@ -144,6 +154,8 @@ class Eccentricity3D(DistanceMatrix3D):
 
 
 class Radius3D(Eccentricity3D):
+    __slots__ = ()
+
     def dependencies(self):
         return dict(
             E=Eccentricity3D(
@@ -157,5 +169,7 @@ class Radius3D(Eccentricity3D):
 
 
 class Diameter3D(Eccentricity3D):
+    __slots__ = ()
+
     def calculate(self, D):
         return D.max()

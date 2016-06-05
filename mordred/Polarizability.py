@@ -6,6 +6,8 @@ __all__ = ('APol', 'BPol',)
 
 
 class PolarizabilityBase(Descriptor):
+    __slots__ = '_use78',
+
     @classmethod
     def preset(cls):
         yield cls()
@@ -31,8 +33,7 @@ class APol(PolarizabilityBase):
     :type use78: bool
     :param use78: use old atomic polarizability data
     """
-
-    __slots__ = ('_use78',)
+    __slots__ = ()
 
     def calculate(self):
         table = self._get_table()
@@ -45,8 +46,7 @@ class BPol(PolarizabilityBase):
     :type use78: bool
     :param use78: use old atomic polarizability data
     """
-
-    __slots__ = ('_use78',)
+    __slots__ = ()
 
     def calculate(self):
         table = self._get_table()

@@ -12,7 +12,7 @@ class AdjacencyMatrix(Descriptor):
     :type type: :py:class:`str`
     :param type: :ref:`matrix_aggregating_methods`
     """
-
+    __slots__ = ('_type',)
     explicit_hydrogens = False
 
     @classmethod
@@ -21,8 +21,6 @@ class AdjacencyMatrix(Descriptor):
 
     def __str__(self):
         return '{}_A'.format(self._type.__name__)
-
-    __slots__ = ('_type',)
 
     def as_key(self):
         return self.__class__, (self._type,)

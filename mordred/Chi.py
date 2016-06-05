@@ -14,6 +14,8 @@ __all__ = ('Chi',)
 
 
 class ChiType(IntEnum):
+    __slots__ = ()
+
     path = 1
     cluster = 2
     path_cluster = 3
@@ -79,6 +81,7 @@ class DFS(object):
 
 
 class ChiBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
 
@@ -146,6 +149,7 @@ class Chi(ChiBase):
         * any atomic properties <= 0
         * averaged and :math:`N_{\chi} = 0`
     """
+    __slots__ = ('_type', '_order', '_prop', '_averaged',)
 
     chi_types = tuple(t.name for t in ChiType)
 
@@ -164,8 +168,6 @@ class Chi(ChiBase):
         p = 'A' if self._averaged else ''
 
         return '{}{}{}-{}'.format(p, prop, ct, self._order)
-
-    __slots__ = ('_type', '_order', '_prop', '_averaged',)
 
     def as_key(self):
         return self.__class__, (self._type, self._order, self._prop, self._averaged)
