@@ -6,6 +6,9 @@ from contextlib import contextmanager
 
 
 class Error(Exception):
+    def __reduce_ex__(self, version):
+        return self.__class__, (self.error, self.stack, self.critical, self.warning)
+
     def __init__(self, error, stack, critical=False, warning=False):
         self.error = error
         self.stack = stack
