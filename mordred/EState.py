@@ -1,8 +1,6 @@
 from enum import IntEnum
 from functools import reduce
 
-from numpy import nan
-
 from rdkit.Chem import EState
 
 from ._base import Descriptor
@@ -123,8 +121,8 @@ class AtomTypeEState(EStateBase):
 
         try:
             return float(getattr(builtins, self._type.name)(indices))
-        except ValueError:  # min, max to empty list
-            return nan
+        except ValueError as e:  # min, max to empty list
+            self.fail(e)
 
     @property
     def rtype(self):

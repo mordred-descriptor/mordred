@@ -3,6 +3,14 @@ from .._util import conformer_to_numpy
 
 
 class Context(object):
+    __slots__ = '_mols', '_coords', 'n_frags', 'name', '_stack'
+
+    def __setstate__(self, dict):
+        self._mols = dict.get('_mols', {})
+        self._coords = dict.get('_coords', {})
+        self.n_frags = dict.get('n_frags', -1)
+        self.name = dict.get('name', 'unknown')
+
     def __reduce_ex__(self, version):
         return self.__class__, (None,), {
             '_mols': self._mols,
@@ -51,3 +59,12 @@ class Context(object):
 
     def get_mol(self, explicit_hydrogens, kekulize):
         return self._mols[explicit_hydrogens, kekulize]
+
+    def reset(self):
+        self._stack = []
+
+    def add_stack(self, d):
+        self._stack.append(d)
+
+    def get_stack(self):
+        return self._stack

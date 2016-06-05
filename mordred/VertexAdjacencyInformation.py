@@ -39,9 +39,7 @@ class VertexAdjacencyInformation(Descriptor):
             b.GetEndAtom().GetAtomicNum() != 1
         )
 
-        if m == 0:
-            return np.nan
-
-        return 1 + np.log2(m)
+        with self.rethrow_zerodiv():
+            return 1 + np.log2(m)
 
     rtype = float

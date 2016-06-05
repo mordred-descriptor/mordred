@@ -1,5 +1,3 @@
-import numpy as np
-
 from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
 from .BondCount import BondCount
@@ -58,9 +56,7 @@ class RotatableBondsRatio(RotatableBondsBase):
         }
 
     def calculate(self, nRot, nB):
-        if nB == 0:
-            return np.nan
-
-        return float(nRot) / float(nB)
+        with self.rethrow_zerodiv():
+            return float(nRot) / float(nB)
 
     rtype = float

@@ -1,4 +1,4 @@
-from numpy import nan, product
+from numpy import product
 
 from six import integer_types, string_types
 
@@ -77,10 +77,9 @@ class MolecularDistanceEdge(Descriptor):
             self._atomic_num
         ]
         n = len(Dv)
-        if n == 0:
-            return nan
 
-        dx = product(Dv) ** (1. / (2. * n))
+        with self.rethrow_zerodiv():
+            dx = product(Dv) ** (1. / (2. * n))
 
         return n / (dx ** 2)
 

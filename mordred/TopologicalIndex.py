@@ -75,10 +75,8 @@ class TopologicalShapeIndex(TopologicalIndexBase):
         }
 
     def calculate(self, R, D):
-        if R == 0:
-            return float('nan')
-
-        return float(D - R) / float(R)
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(R)
 
     rtype = float
 
@@ -103,7 +101,5 @@ class PetitjeanIndex(TopologicalShapeIndex):
         return 'PetitjeanIndex'
 
     def calculate(self, R, D):
-        if D == 0:
-            return float('nan')
-
-        return float(D - R) / float(D)
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(D)

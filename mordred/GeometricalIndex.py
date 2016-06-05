@@ -76,10 +76,8 @@ class GeometricalShapeIndex(GeometricalIndexBase):
         }
 
     def calculate(self, R, D):
-        if R == 0:
-            return float('nan')
-
-        return float(D - R) / float(R)
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(R)
 
 
 class PetitjeanIndex3D(GeometricalShapeIndex):
@@ -102,7 +100,5 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
         return 'GeomPetitjeanIndex'
 
     def calculate(self, R, D):
-        if D == 0:
-            return float('nan')
-
-        return float(D - R) / float(D)
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(D)

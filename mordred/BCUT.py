@@ -32,7 +32,7 @@ class Burden(BCUTBase):
             try:
                 w = bond.GetBondTypeAsDouble() / 10.0
             except RuntimeError:
-                w = 1.0
+                self.fail(ValueError('unknown bond type'))
 
             if a.GetDegree() == 1 or b.GetDegree() == 1:
                 w += 0.01
@@ -60,9 +60,6 @@ class BurdenEigenValues(BCUTBase):
 
     def calculate(self, burden, ps):
         bmat = burden.copy()
-
-        if np.any(np.isnan(ps)):
-            return np.array([np.nan])
 
         np.fill_diagonal(bmat, ps)
         ev = np.linalg.eig(bmat)[0]
@@ -118,6 +115,6 @@ class BCUT(BCUTBase):
         try:
             return bev[self._nth]
         except IndexError:
-            return np.nan
+            self.fail(ValueError('nth greater then atom count'))
 
     rtype = float

@@ -1,5 +1,3 @@
-import numpy as np
-
 from ._base import Descriptor
 from ._graph_matrix import Valence
 
@@ -58,14 +56,14 @@ class ZagrebIndex(Descriptor):
         V = V.astype('float')
 
         if self._version == 1:
-            if np.any(V == 0):
-                return float('nan')
-
-            return (V ** (self._variable * 2)).sum()
+            with self.rethrow_zerodiv():
+                return (V ** (self._variable * 2)).sum()
         else:
-            return float(sum(
-                (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
-                for b in self.mol.GetBonds()
-            ))
+            return float(
+                sum(
+                    (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
+                    for b in self.mol.GetBonds()
+                )
+            )
 
     rtype = float

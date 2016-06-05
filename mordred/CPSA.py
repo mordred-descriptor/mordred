@@ -88,11 +88,7 @@ class AtomicCharge(CPSABase):
         return {'charges': AtomicProperty(self.explicit_hydrogens, 'c')}
 
     def calculate(self, charges):
-        if not np.all(np.isfinite(charges)):
-            return None
-
-        else:
-            return charges
+        return charges
 
     rtype = None
 
@@ -122,9 +118,6 @@ class PNSA(VersionCPSABase):
         return charges < 0.0
 
     def calculate(self, SA, charges):
-        if charges is None:
-            return np.nan
-
         mask = self._mask(charges)
 
         if self._version == 1:
@@ -136,11 +129,8 @@ class PNSA(VersionCPSABase):
         elif self._version == 4:
             f = np.sum(charges[mask]) / self.mol.GetNumAtoms()
         elif self._version == 5:
-            s = np.sum(mask)
-            if s == 0:
-                return np.nan
-
-            f = np.sum(charges[mask]) / s
+            with self.rethrow_zerodiv():
+                f = np.sum(charges[mask]) / np.sum(mask)
 
         return np.sum(f * SA[mask])
 
@@ -243,9 +233,6 @@ class RNCG(CPSABase):
         return {'charges': AtomicCharge()}
 
     def calculate(self, charges):
-        if charges is None:
-            return np.nan
-
         charges = charges[self._mask(charges)]
         if len(charges) == 0:
             return 0.0
@@ -280,9 +267,6 @@ class RNCS(CPSABase):
         return charges < 0
 
     def calculate(self, RCG, SA, charges):
-        if charges is None:
-            return np.nan
-
         mask = self._mask(charges)
         charges = charges[mask]
         if len(charges) == 0:
@@ -319,9 +303,6 @@ class TASA(CPSABase):
         }
 
     def calculate(self, SA, charges):
-        if charges is None:
-            return np.nan
-
         return np.sum(SA[self._mask(charges)])
 
 

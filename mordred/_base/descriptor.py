@@ -1,6 +1,28 @@
+import numpy as np
 import six
 from abc import ABCMeta, abstractmethod
 from inspect import isabstract
+from contextlib import contextmanager
+
+
+class Error(Exception):
+    def __init__(self, error, stack, critical=False, warning=False):
+        self.error = error
+        self.stack = stack
+        self.critical = critical
+        self.warning = warning
+
+    def __float__(self):
+        return np.nan
+
+    def __add__(self, other):
+        return np.nan
+
+    def __sub__(self, other):
+        return np.nan
+
+    def __str__(self):
+        return '{} ({})'.format(self.error, '/'.join(str(d) for d in self.stack))
 
 
 class Descriptor(six.with_metaclass(ABCMeta, object)):
@@ -96,3 +118,14 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     @property
     def coord(self):
         return self._context.get_coord(self.explicit_hydrogens, self.kekulize)
+
+    def fail(self, ex, critical=False, warning=False):
+        raise Error(ex, self._context.get_stack(), critical, warning)
+
+    @contextmanager
+    def rethrow_zerodiv(self):
+        with np.errstate(divide='raise', invalid='raise'):
+            try:
+                yield
+            except (FloatingPointError, ZeroDivisionError) as e:
+                self.fail(ZeroDivisionError(*e.args))

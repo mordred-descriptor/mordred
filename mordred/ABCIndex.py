@@ -37,13 +37,15 @@ class ABCIndex(ABCIndexBase):
         du = bond.GetBeginAtom().GetDegree()
         dv = bond.GetEndAtom().GetDegree()
 
-        return np.sqrt(float(du + dv - 2) / (du * dv))
+        return np.sqrt((du + dv - 2.0) / (du * dv))
 
     def calculate(self):
-        return float(sum(
-            self._each_bond(bond)
-            for bond in self.mol.GetBonds()
-        ))
+        return np.float(
+            np.sum(
+                self._each_bond(bond)
+                for bond in self.mol.GetBonds()
+            )
+        )
 
 
 class ABCGGIndex(ABCIndexBase):
@@ -61,10 +63,12 @@ class ABCGGIndex(ABCIndexBase):
         nu = np.sum(D[u, :] < D[v, :])
         nv = np.sum(D[v, :] < D[u, :])
 
-        return np.sqrt(float(nu + nv - 2) / (nu * nv))
+        return np.sqrt((nu + nv - 2.0) / (nu * nv))
 
     def calculate(self, D):
-        return float(sum(
-            self._each_bond(bond, D)
-            for bond in self.mol.GetBonds()
-        ))
+        return np.float(
+            np.sum(
+                self._each_bond(bond, D)
+                for bond in self.mol.GetBonds()
+            )
+        )

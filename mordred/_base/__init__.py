@@ -1,14 +1,14 @@
 import os
 from importlib import import_module
 
-from .descriptor import Descriptor
+from .descriptor import Descriptor, Error
 from .calculator import Calculator, get_descriptors_from_module
 from .parallel import parallel
 
 
 __all__ = (
     'all_descriptors',
-    'Descriptor',
+    'Descriptor', 'Error',
     'Calculator',
     'get_descriptors_from_module',
 )

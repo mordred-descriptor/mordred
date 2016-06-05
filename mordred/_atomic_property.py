@@ -1,5 +1,5 @@
-from math import pi
 import os
+import numpy as np
 
 from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
@@ -29,9 +29,6 @@ def get_gasteiger_charge(atom):
     )
 
 
-nan = float('nan')
-
-
 class PeriodicTable(object):
     __slots__ = 'data',
 
@@ -47,7 +44,7 @@ class PeriodicTable(object):
     def load(cls, name, conv=float):
         def read(v):
             if '-' in v:
-                return nan
+                return np.nan
 
             try:
                 return conv(v)
@@ -67,12 +64,12 @@ class PeriodicTable(object):
 
     def __getitem__(self, i):
         if i < 1:
-            return nan
+            return np.nan
 
         try:
             return self.data[i - 1]
         except IndexError:
-            return nan
+            return np.nan
 
     def map(self, f):
         new = self.__class__()
@@ -81,7 +78,7 @@ class PeriodicTable(object):
 
 mass = PeriodicTable.load('mass.txt')
 vdw_radii = PeriodicTable.load('van_der_waals_radii.txt')
-vdw_volume = vdw_radii.map(lambda r: 4. / 3. * pi * r ** 3)
+vdw_volume = vdw_radii.map(lambda r: 4. / 3. * np.pi * r ** 3)
 sanderson = PeriodicTable.load('sanderson_electron_negativity.txt')
 pauling = PeriodicTable.load('pauling_electron_negativity.txt')
 allred_rocow = PeriodicTable.load('allred_rocow_electron_negativity.txt')
@@ -130,7 +127,7 @@ def get_intrinsic_state(atom):
     dv = get_valence_electrons(atom)
 
     if d == 0:
-        return nan
+        return np.nan
 
     return ((2. / period[i]) ** 2 * dv + 1) / d
 
@@ -215,7 +212,7 @@ def get_eta_beta_non_sigma(atom):
 def get_eta_gamma(atom):
     beta = get_eta_beta_sigma(atom) + get_eta_beta_non_sigma(atom) + get_eta_beta_delta(atom)
     if beta == 0:
-        return nan
+        return np.nan
 
     return get_core_count(atom) / beta
 
@@ -330,4 +327,9 @@ class AtomicProperty(Descriptor):
         if getattr(self.prop, 'gasteiger_charges', False):
             ComputeGasteigerCharges(self.mol)
 
-        return atoms_to_numpy(self.prop, self.mol)
+        r = atoms_to_numpy(self.prop, self.mol)
+
+        if not np.all(np.isfinite(r)):
+            self.fail(ValueError('some properties are NaN'))
+
+        return r

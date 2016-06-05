@@ -5,7 +5,6 @@ import numpy as np
 from six import string_types
 
 from ._base import Descriptor
-from .exception import MordredValueError
 
 Eig = namedtuple('eigen', 'val vec min max')
 
@@ -68,6 +67,17 @@ class Common(Descriptor):
     def _VR1(self):
         return VR1(*self._key_args)
 
+    def __str__(self):
+        n = self.__class__.__name__
+
+        if self.kekulize:
+            n += 'K'
+
+        if self.explicit_hydrogens:
+            n += 'H'
+
+        return n
+
 
 class Eigen(Common):
     def dependencies(self):
@@ -75,7 +85,7 @@ class Eigen(Common):
 
     def calculate(self, matrix):
         if matrix is None:
-            raise MordredValueError('Eigen: matrix is None')
+            self.fail(ValueError('matrix is None'))
 
         w, v = np.linalg.eig(matrix)
 
@@ -177,9 +187,7 @@ class VE3(Common):
         return {'VE1': self._VE1}
 
     def calculate(self, VE1):
-        if VE1 == 0:
-            return MordredValueError('VE3: VE1 == zero')
-        else:
+        with self.rethrow_zerodiv():
             return np.log(0.1 * self.mol.GetNumAtoms() * VE1)
 
 
@@ -212,9 +220,7 @@ class VR3(Common):
         return {'VR1': self._VR1}
 
     def calculate(self, VR1):
-        if VR1 == 0:
-            return MordredValueError('VR3: VR1 == 0')
-        else:
+        with self.rethrow_zerodiv():
             return np.log(0.1 * self.mol.GetNumAtoms() * VR1)
 
 

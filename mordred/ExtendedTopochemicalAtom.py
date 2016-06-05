@@ -61,7 +61,7 @@ class AlterMolecule(Descriptor):
             aj = bond.GetEndAtom()
 
             if not self._saturated and (ai.GetDegree() > 4 or aj.GetDegree() > 4):
-                return None
+                self.fail(ValueError('bond degree greater then 4'))
 
             i = ids.get(ai.GetIdx())
             j = ids.get(aj.GetIdx())
@@ -76,7 +76,8 @@ class AlterMolecule(Descriptor):
 
         new = Chem.Mol(new)
         if Chem.SanitizeMol(new, catchErrors=True) != 0:
-            return None
+            typ = 'saturated' if self._saturated else 'referense'
+            self.fail(ValueError('cannot sanitize {} mol'.format(typ)))
 
         if self.explicit_hydrogens:
             new = Chem.AddHs(new)
@@ -140,12 +141,7 @@ class EtaCoreCount(EtaBase):
             return {'rmol': AlterMolecule(self.explicit_hydrogens)}
 
     def calculate(self, rmol=None):
-        mol = self.mol
-        if self._reference:
-            if rmol is None:
-                return np.nan
-
-            mol = rmol
+        mol = rmol if self._reference else self.mol
 
         v = sum(ap.get_core_count(a) for a in mol.GetAtoms())
         if self._averaged:
@@ -374,12 +370,7 @@ class EtaCompositeIndex(EtaBase):
         return deps
 
     def calculate(self, D, rmol=None):
-        mol = self.mol
-        if self._reference:
-            if rmol is None:
-                return np.nan
-
-            mol = rmol
+        mol = rmol if self._reference else self.mol
 
         if self._local:
             def checker(r):
@@ -517,7 +508,7 @@ class EtaBranchingIndex(EtaBase):
         N = self.mol.GetNumAtoms()
 
         if N <= 1:
-            return np.nan
+            self.fail(ValueError('single atom'))
         elif N == 2:
             eta_NL = 1.0
         else:
@@ -630,12 +621,7 @@ class EtaEpsilon(EtaBase):
             return {'rmol': AlterMolecule(self.explicit_hydrogens, True)}
 
     def calculate(self, rmol=None):
-        mol = self.mol
-        if self._type in [3, 4]:
-            if rmol is None:
-                return np.nan
-
-            mol = rmol
+        mol = rmol if self._type in [3, 4] else self.mol
 
         if self._type == 5:
             eps = [

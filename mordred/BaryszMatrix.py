@@ -45,8 +45,6 @@ class Barysz(BaryszMatrixBase):
             pi = bond.GetBondTypeAsDouble()
 
             w = float(C * C) / float(P[i] * P[j] * pi)
-            if not np.isfinite(w):
-                return None
 
             G.add_edge(i, j, weight=w)
 

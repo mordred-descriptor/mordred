@@ -1,6 +1,5 @@
-from .descriptor import Descriptor
+from .descriptor import Descriptor, Error
 from types import ModuleType
-from ..exception import MordredException, MordredValueError
 from .context import Context
 from inspect import getsourcelines
 from sys import maxsize
@@ -13,6 +12,17 @@ class Calculator(object):
 
     :param descs: see :py:meth:`register` method
     """
+
+    __slots__ = (
+        '_descriptors', '_explicit_hydrogens', '_kekulizes', '_require_3D',
+        '_cache',
+    )
+
+    def __setstate__(self, dict):
+        self._descriptors = dict.get('_descriptors', [])
+        self._explicit_hydrogens = dict.get('_explicit_hydrogens', set([True, False]))
+        self._kekulizes = dict.get('_kekulizes', set([True, False]))
+        self._require_3D = dict.get('_require_3D', False)
 
     def __reduce_ex__(self, version):
         return self.__class__, (), {
@@ -99,17 +109,20 @@ class Calculator(object):
             for d in desc:
                 self.register(d, exclude3D=exclude3D)
 
-    def _calculate_one(self, cxt, desc):
+    def _calculate_one(self, cxt, desc, reset):
         if desc in self._cache:
             return self._cache[desc]
 
+        if reset:
+            cxt.reset()
         desc._context = cxt
+        cxt.add_stack(desc)
 
         if desc.require_connected and desc._context.n_frags != 1:
-            raise MordredValueError('{}: multiple fragments'.format(desc))
+            desc.fail(ValueError('multiple fragments'), warning=True)
 
         args = {
-            name: self._calculate_one(cxt, dep)
+            name: self._calculate_one(cxt, dep, False)
             if dep is not None else None
             for name, dep in (desc.dependencies() or {}).items()
         }
@@ -126,7 +139,7 @@ class Calculator(object):
         if desc.rtype is None:
             return
 
-        if isinstance(result, MordredException):
+        if isinstance(result, Error):
             return
 
         if not isinstance(result, desc.rtype):
@@ -136,8 +149,8 @@ class Calculator(object):
         self._cache = {}
         for desc in self.descriptors:
             try:
-                yield self._calculate_one(cxt, desc)
-            except MordredException as e:
+                yield self._calculate_one(cxt, desc, True)
+            except Error as e:
                 if e.critical:
                     raise e
 
@@ -152,7 +165,7 @@ class Calculator(object):
         :type id: int
         :param id: conformer id
 
-        :rtype: [scalar or nan]
+        :rtype: [scalar or Error]
         :returns: iterator of descriptor and value
         """
         return list(self._calculate(Context.from_calculator(self, mol, id)))

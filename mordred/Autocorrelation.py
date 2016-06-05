@@ -184,7 +184,7 @@ class AATS(ATS):
     :returns: NaN when
 
         * :math:`\Delta_k = 0`
-        * any properties are NaN
+        * some properties are NaN
     """
 
     __slots__ = ('_order', '_prop',)
@@ -193,7 +193,8 @@ class AATS(ATS):
         return {'ATS': self._ATS, 'gsum': self._gsum}
 
     def calculate(self, ATS, gsum):
-        return ATS / (gsum or np.nan)
+        with self.rethrow_zerodiv():
+            return ATS / gsum
 
 
 class ATSC(AutocorrelationBase):
@@ -253,7 +254,8 @@ class AATSC(ATSC):
         return {'ATSC': self._ATSC, 'gsum': self._gsum}
 
     def calculate(self, ATSC, gsum):
-        return ATSC / (gsum or np.nan)
+        with self.rethrow_zerodiv():
+            return ATSC / gsum
 
 
 class MATS(AutocorrelationBase):
@@ -271,7 +273,7 @@ class MATS(AutocorrelationBase):
 
     :returns: NaN when
 
-        * any properties are NaN
+        * some properties are NaN
         * denominator = 0
     """
 
@@ -293,7 +295,8 @@ class MATS(AutocorrelationBase):
         }
 
     def calculate(self, avec, AATSC, cavec):
-        return len(avec) * AATSC / ((cavec ** 2).sum() or np.nan)
+        with self.rethrow_zerodiv():
+            return len(avec) * AATSC / (cavec ** 2).sum()
 
 
 class GATS(MATS):
@@ -319,9 +322,10 @@ class GATS(MATS):
         }
 
     def calculate(self, avec, gmat, gsum, cavec):
-        if np.any(~np.isfinite(avec)) or len(avec) <= 1:
-            return np.nan
+        if len(avec) <= 1:
+            self.fail(ValueError('no bond'))
 
-        n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * (gsum or np.nan))
-        d = (cavec ** 2).sum() / (len(avec) - 1)
-        return n / (d or np.nan)
+        with self.rethrow_zerodiv():
+            n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * gsum)
+            d = (cavec ** 2).sum() / (len(avec) - 1)
+            return n / d

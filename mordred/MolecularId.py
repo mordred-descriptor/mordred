@@ -141,11 +141,13 @@ class MolecularId(MolecularIdBase):
         return {'aids': AtomicIds(self._eps)}
 
     def calculate(self, aids):
-        v = float(sum(
-            aid
-            for aid, atom in zip(aids, self.mol.GetAtoms())
-            if self._check(atom.GetAtomicNum())
-        ))
+        v = float(
+            sum(
+                aid
+                for aid, atom in zip(aids, self.mol.GetAtoms())
+                if self._check(atom.GetAtomicNum())
+            )
+        )
 
         if self._averaged:
             v /= self.mol.GetNumAtoms()

@@ -52,8 +52,8 @@ class GravitationalIndex(Descriptor):
 
         D = D.copy()
         np.fill_diagonal(D, 1)
-        D[D == 0] = np.nan
 
-        return 0.5 * np.sum(w * A / D ** 2)
+        with self.rethrow_zerodiv():
+            return 0.5 * np.sum(w * A / D ** 2)
 
     rtype = float

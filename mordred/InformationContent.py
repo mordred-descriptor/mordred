@@ -108,7 +108,11 @@ class Ag(InformationContentBase):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, D):
-        atoms = [neighborhood_code(self.mol, i, self._order) for i in range(self.mol.GetNumAtoms())]
+        atoms = [
+            neighborhood_code(self.mol, i, self._order)
+            for i in range(self.mol.GetNumAtoms())
+        ]
+
         ad = {a: i for i, a in enumerate(atoms)}
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]
         Nags = len(Ags)
@@ -184,10 +188,9 @@ class StructuralIC(TotalIC):
 
     def calculate(self, ICm):
         d = np.log2(self.mol.GetNumAtoms())
-        if d == 0:
-            return np.nan
 
-        return ICm / d
+        with self.rethrow_zerodiv():
+            return ICm / d
 
 
 class BondingIC(TotalIC):
@@ -207,14 +210,9 @@ class BondingIC(TotalIC):
     def calculate(self, ICm):
         B = sum(b.GetBondTypeAsDouble() for b in self.mol.GetBonds())
 
-        if B == 0:
-            return np.nan
-
-        log2B = np.log2(B)
-        if log2B == 0:
-            return np.nan
-
-        return ICm / log2B
+        with self.rethrow_zerodiv():
+            log2B = np.log2(B)
+            return ICm / log2B
 
 
 class ComplementaryIC(TotalIC):

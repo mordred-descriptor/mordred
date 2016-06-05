@@ -1,5 +1,3 @@
-from numpy import nan
-
 from ._base import Descriptor
 from .Chi import ChiCache
 
@@ -28,8 +26,6 @@ class KappaShapeIndexBase(Descriptor):
 
     def _common(self, Chi):
         P = len(Chi.path)
-        if P == 0:
-            P = nan
 
         A = self.mol.GetNumAtoms()
         Pmin = A - self._order
@@ -51,7 +47,8 @@ class KappaShapeIndex1(KappaShapeIndexBase):
         P, A, Pmin = self._common(Chi)
         Pmax = float(A * (A - 1)) / 2.0
 
-        return 2 * Pmax * Pmin / (P * P)
+        with self.rethrow_zerodiv():
+            return 2 * Pmax * Pmin / (P * P)
 
 
 class KappaShapeIndex2(KappaShapeIndexBase):
@@ -66,7 +63,8 @@ class KappaShapeIndex2(KappaShapeIndexBase):
         P, A, Pmin = self._common(Chi)
         Pmax = float((A - 1) * (A - 2)) / 2.0
 
-        return 2 * Pmax * Pmin / (P * P)
+        with self.rethrow_zerodiv():
+            return 2 * Pmax * Pmin / (P * P)
 
 
 class KappaShapeIndex3(KappaShapeIndexBase):
@@ -85,4 +83,5 @@ class KappaShapeIndex3(KappaShapeIndexBase):
         else:
             Pmax = float((A - 1) * (A - 3)) / 4.0
 
-        return 4 * Pmax * Pmin / (P * P)
+        with self.rethrow_zerodiv():
+            return 4 * Pmax * Pmin / (P * P)

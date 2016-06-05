@@ -3,8 +3,6 @@ from collections import namedtuple
 from enum import IntEnum
 from itertools import chain
 
-import numpy as np
-
 from rdkit import Chem
 
 from ._atomic_property import AtomicProperty
@@ -197,12 +195,13 @@ class Chi(ChiBase):
                 c *= P[node]
 
             if c <= 0:
-                return np.nan
+                self.fail(ValueError('some properties less then or equal to 0'))
 
             x += c ** -0.5
 
         if self._averaged:
-            x /= len(node_sets) or np.nan
+            with self.rethrow_zerodiv():
+                x /= len(node_sets)
 
         return x
 
