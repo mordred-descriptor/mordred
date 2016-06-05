@@ -21,6 +21,5 @@ def test_parallel():
         for d, s, p in zip(calc.descriptors, serial, parallel):
             if isinstance(s, Error):
                 yield eq_, pickle.dumps(s), pickle.dumps(p), str(d)
-                return
-
-            yield assert_almost_equal, s, p, 7, str(d)
+            else:
+                yield assert_almost_equal, s, p, 7, str(d)
