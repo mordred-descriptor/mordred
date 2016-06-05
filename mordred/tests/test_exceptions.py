@@ -1,48 +1,33 @@
 from rdkit import Chem
-from mordred import Descriptor, Calculator
-from mordred.exception import MordredException
-import os
+from mordred import Descriptor, Calculator, Error
 
-from nose.tools import eq_, raises
-
-
-class DummyLogger(object):
-    def warning(self, *args):
-        eq_(os.path.splitext(args[1])[0], os.path.splitext(os.path.basename(__file__))[0])
-        eq_(args[3], 'test exception')
-
-
-class CriticalError(MordredException):
-    critical = True
+from nose.tools import raises, eq_
 
 
 class RaiseDescriptor(Descriptor):
     def as_key(self):
         return self.__class__, ()
 
-    def __init__(self, e):
+    def __init__(self, e, critical):
         self.e = e
+        self.critical = critical
 
-    def calculate(self, mol):
-        raise self.e
+    def calculate(self):
+        self.fail(self.e, critical=self.critical)
 
 
 mol = Chem.MolFromSmiles('c1ccccc1')
 
 
-@raises(ValueError)
-def test_through_unknown_exception():
-    calc = Calculator(RaiseDescriptor(ValueError()))
+@raises(Error)
+def test_through_critical_error():
+    calc = Calculator(RaiseDescriptor(ValueError(), True))
     calc(mol)
 
 
 def test_catch_non_critical_error():
-    calc = Calculator(RaiseDescriptor(MordredException('test exception')))
-    calc.logger = DummyLogger()
-    calc(mol)
+    calc = Calculator(RaiseDescriptor(ValueError('test exception'), False))
 
-
-@raises(CriticalError)
-def test_through_critical_error():
-    calc = Calculator(RaiseDescriptor(CriticalError()))
-    calc(mol)
+    result = calc(mol)[0]
+    assert isinstance(result, Error)
+    eq_(result.error.args, ('test exception',))

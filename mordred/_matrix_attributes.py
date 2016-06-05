@@ -18,6 +18,7 @@ def method(cls):
 
 
 class Common(Descriptor):
+    __slots__ = 'matrix', 'explicit_hydrogens', 'kekulize'
     require_connected = True
 
     def as_key(self):
@@ -30,7 +31,7 @@ class Common(Descriptor):
     def __init__(self, matrix, explicit_hydrogens, kekulize):
         self.matrix = matrix
         self.explicit_hydrogens = explicit_hydrogens
-        self.kelulize = kekulize
+        self.kekulize = kekulize
 
     @property
     def _key_args(self):
@@ -67,14 +68,27 @@ class Common(Descriptor):
     def _VR1(self):
         return VR1(*self._key_args)
 
+    def __str__(self):
+        n = self.__class__.__name__
+
+        if self.kekulize:
+            n += 'K'
+
+        if self.explicit_hydrogens:
+            n += 'H'
+
+        return n
+
 
 class Eigen(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'matrix': self.matrix}
 
-    def calculate(self, mol, matrix):
+    def calculate(self, matrix):
         if matrix is None:
-            return None
+            self.fail(ValueError('matrix is None'))
 
         w, v = np.linalg.eig(matrix)
 
@@ -92,75 +106,71 @@ class Eigen(Common):
 
 @method
 class SpAbs(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
+    __slots__ = ()
 
+    def calculate(self, eig):
         return np.abs(eig.val).sum()
 
 
 @method
 class SpMax(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
+    __slots__ = ()
 
+    def calculate(self, eig):
         return eig.val[eig.max]
 
 
 @method
 class SpDiam(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {
             'eig': self._eig,
             'SpMax': self._SpMax,
         }
 
-    def calculate(self, mol, SpMax, eig):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, SpMax, eig):
         return SpMax - eig.val[eig.min]
 
 
 class SpMean(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
+    __slots__ = ()
 
+    def calculate(self, eig):
         return np.mean(eig.val)
 
 
 @method
 class SpAD(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {
             'eig': self._eig,
             'SpMean': self._SpMean,
         }
 
-    def calculate(self, mol, eig, SpMean):
-        if eig is None:
-            return np.nan
-
+    def calculate(self, eig, SpMean):
         return np.abs(eig.val - SpMean).sum()
 
 
 @method
 class SpMAD(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'SpAD': self._SpAD}
 
-    def calculate(self, mol, SpAD):
-        return SpAD / mol.GetNumAtoms()
+    def calculate(self, SpAD):
+        return SpAD / self.mol.GetNumAtoms()
 
 
 @method
 class LogEE(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
+    __slots__ = ()
 
+    def calculate(self, eig):
         # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
         a = np.maximum(eig.val[eig.max], 0)
         sx = np.exp(eig.val - a).sum() + np.exp(-a)
@@ -169,52 +179,51 @@ class LogEE(Common):
 
 @method
 class SM1(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
+    __slots__ = ()
 
+    def calculate(self, eig):
         return eig.val.sum()
 
 
 @method
 class VE1(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
+    __slots__ = ()
 
+    def calculate(self, eig):
         return np.abs(eig.vec[:, eig.max]).sum()
 
 
 @method
 class VE2(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VE1': self._VE1}
 
-    def calculate(self, mol, VE1):
-        return VE1 / mol.GetNumAtoms()
+    def calculate(self, VE1):
+        return VE1 / self.mol.GetNumAtoms()
 
 
 @method
 class VE3(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VE1': self._VE1}
 
-    def calculate(self, mol, VE1):
-        if VE1 == 0:
-            return np.nan
-        else:
-            return np.log(0.1 * mol.GetNumAtoms() * VE1)
+    def calculate(self, VE1):
+        with self.rethrow_zerodiv():
+            return np.log(0.1 * self.mol.GetNumAtoms() * VE1)
 
 
 @method
 class VR1(Common):
-    def calculate(self, mol, eig):
-        if eig is None:
-            return np.nan
+    __slots__ = ()
 
+    def calculate(self, eig):
         s = 0.0
 
-        for bond in mol.GetBonds():
+        for bond in self.mol.GetBonds():
             i = bond.GetBeginAtomIdx()
             j = bond.GetEndAtomIdx()
 
@@ -225,23 +234,25 @@ class VR1(Common):
 
 @method
 class VR2(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VR1': self._VR1}
 
-    def calculate(self, mol, VR1):
-        return VR1 / mol.GetNumAtoms()
+    def calculate(self, VR1):
+        return VR1 / self.mol.GetNumAtoms()
 
 
 @method
 class VR3(Common):
+    __slots__ = ()
+
     def dependencies(self):
         return {'VR1': self._VR1}
 
-    def calculate(self, mol, VR1):
-        if VR1 == 0:
-            return np.nan
-        else:
-            return np.log(0.1 * mol.GetNumAtoms() * VR1)
+    def calculate(self, VR1):
+        with self.rethrow_zerodiv():
+            return np.log(0.1 * self.mol.GetNumAtoms() * VR1)
 
 
 method_dict = {m.__name__: m for m in methods}

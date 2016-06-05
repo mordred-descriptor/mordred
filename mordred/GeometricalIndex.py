@@ -7,6 +7,7 @@ __all__ = ('Diameter3D', 'Radius3D', 'GeometricalShapeIndex', 'PetitjeanIndex3D'
 
 
 class GeometricalIndexBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = True
     require_3D = True
 
@@ -22,7 +23,6 @@ class GeometricalIndexBase(Descriptor):
 
 class Radius3D(GeometricalIndexBase):
     r"""geometric radius descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -31,13 +31,12 @@ class Radius3D(GeometricalIndexBase):
     def dependencies(self):
         return {'R': CRadius3D(self.explicit_hydrogens)}
 
-    def calculate(self, mol, conf, R):
+    def calculate(self, R):
         return R
 
 
 class Diameter3D(GeometricalIndexBase):
     r"""geometric diameter descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -46,7 +45,7 @@ class Diameter3D(GeometricalIndexBase):
     def dependencies(self):
         return {'D': CDiameter3D(self.explicit_hydrogens)}
 
-    def calculate(self, mol, conf, D):
+    def calculate(self, D):
         return D
 
 
@@ -63,7 +62,6 @@ class GeometricalShapeIndex(GeometricalIndexBase):
 
     :returns: NaN when :math:`R = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):
@@ -75,11 +73,9 @@ class GeometricalShapeIndex(GeometricalIndexBase):
             'D': CDiameter3D(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, conf, R, D):
-        if R == 0:
-            return float('nan')
-
-        return float(D - R) / float(R)
+    def calculate(self, R, D):
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(R)
 
 
 class PetitjeanIndex3D(GeometricalShapeIndex):
@@ -95,14 +91,11 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
 
     :returns: NaN when :math:`D = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):
         return 'GeomPetitjeanIndex'
 
-    def calculate(self, mol, conf, R, D):
-        if D == 0:
-            return float('nan')
-
-        return float(D - R) / float(D)
+    def calculate(self, R, D):
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(D)

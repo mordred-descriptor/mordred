@@ -9,7 +9,7 @@ __all__ = ('BertzCT',)
 
 class BertzCT(Descriptor):
     r"""Bertz CT descriptor(rdkit wrapper)."""
-
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod
@@ -25,7 +25,7 @@ class BertzCT(Descriptor):
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
-    def calculate(self, mol, D):
-        return float(RDKit.BertzCT(mol, dMat=D))
+    def calculate(self, D):
+        return float(RDKit.BertzCT(self.mol, dMat=D))
 
     rtype = float

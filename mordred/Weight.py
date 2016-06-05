@@ -14,7 +14,7 @@ class Weight(Descriptor):
     :type averaged: bool
     :param averaged: averaged by number of atom
     """
-
+    __slots__ = ('_averaged',)
     explicit_hydrogens = True
 
     @classmethod
@@ -25,18 +25,16 @@ class Weight(Descriptor):
     def __str__(self):
         return 'AMW' if self._averaged else 'MW'
 
-    __slots__ = ('_averaged',)
-
     def as_key(self):
         return self.__class__, (self._averaged,)
 
     def __init__(self, averaged=False):
         self._averaged = averaged
 
-    def calculate(self, mol):
-        w = ExactMolWt(mol)
+    def calculate(self):
+        w = ExactMolWt(self.mol)
         if self._averaged:
-            w /= mol.GetNumAtoms()
+            w /= self.mol.GetNumAtoms()
 
         return w
 

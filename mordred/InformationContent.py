@@ -75,6 +75,7 @@ def neighborhood_code(mol, i, order):
 
 
 class InformationContentBase(Descriptor):
+    __slots__ = ('_order',)
     kekulize = True
 
     def __str__(self):
@@ -83,8 +84,6 @@ class InformationContentBase(Descriptor):
     @classmethod
     def preset(cls):
         return (cls(o) for o in range(6))
-
-    __slots__ = ('_order',)
 
     def as_key(self):
         return self.__class__, (self._order,)
@@ -96,19 +95,23 @@ class InformationContentBase(Descriptor):
 
 
 class Ag(InformationContentBase):
+    __slots__ = ('_order',)
+
     @classmethod
     def preset(cls):
         return ()
 
     _name = 'Ag'
 
-    __slots__ = ('_order',)
-
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
-    def calculate(self, mol, D):
-        atoms = [neighborhood_code(mol, i, self._order) for i in range(mol.GetNumAtoms())]
+    def calculate(self, D):
+        atoms = [
+            neighborhood_code(self.mol, i, self._order)
+            for i in range(self.mol.GetNumAtoms())
+        ]
+
         ad = {a: i for i, a in enumerate(atoms)}
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]
         Nags = len(Ags)
@@ -138,13 +141,14 @@ class InformationContent(InformationContentBase):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'IC'
 
     def dependencies(self):
         return {'iAgs': Ag(self._order)}
 
-    def calculate(self, mol, iAgs):
+    def calculate(self, iAgs):
         _, Ags = iAgs
         return shannon_entropy(Ags)
 
@@ -158,14 +162,15 @@ class TotalIC(InformationContentBase):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'TIC'
 
     def dependencies(self):
         return {'ICm': InformationContent(self._order)}
 
-    def calculate(self, mol, ICm):
-        A = mol.GetNumAtoms()
+    def calculate(self, ICm):
+        A = self.mol.GetNumAtoms()
 
         return A * ICm
 
@@ -179,15 +184,15 @@ class StructuralIC(TotalIC):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'SIC'
 
-    def calculate(self, mol, ICm):
-        d = np.log2(mol.GetNumAtoms())
-        if d == 0:
-            return np.nan
+    def calculate(self, ICm):
+        d = np.log2(self.mol.GetNumAtoms())
 
-        return ICm / d
+        with self.rethrow_zerodiv():
+            return ICm / d
 
 
 class BondingIC(TotalIC):
@@ -201,20 +206,16 @@ class BondingIC(TotalIC):
 
     :returns: NaN when :math:`\sum^B_{b=1} \pi^{*}_b <= 0`
     """
+    __slots__ = ()
 
     _name = 'BIC'
 
-    def calculate(self, mol, ICm):
-        B = sum(b.GetBondTypeAsDouble() for b in mol.GetBonds())
+    def calculate(self, ICm):
+        B = sum(b.GetBondTypeAsDouble() for b in self.mol.GetBonds())
 
-        if B == 0:
-            return np.nan
-
-        log2B = np.log2(B)
-        if log2B == 0:
-            return np.nan
-
-        return ICm / log2B
+        with self.rethrow_zerodiv():
+            log2B = np.log2(B)
+            return ICm / log2B
 
 
 class ComplementaryIC(TotalIC):
@@ -226,11 +227,12 @@ class ComplementaryIC(TotalIC):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'CIC'
 
-    def calculate(self, mol, ICm):
-        A = mol.GetNumAtoms()
+    def calculate(self, ICm):
+        A = self.mol.GetNumAtoms()
 
         return np.log2(A) - ICm
 
@@ -241,12 +243,13 @@ class ModifiedIC(InformationContent):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'MIC'
 
-    def calculate(self, mol, iAgs):
+    def calculate(self, iAgs):
         ids, Ags = iAgs
-        w = np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetMass())(ids)
+        w = np.vectorize(lambda i: self.mol.GetAtomWithIdx(int(i)).GetMass())(ids)
         return shannon_entropy(Ags, w)
 
 
@@ -256,10 +259,11 @@ class ZModifiedIC(InformationContent):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+    __slots__ = ()
 
     _name = 'ZMIC'
 
-    def calculate(self, mol, iAgs):
+    def calculate(self, iAgs):
         ids, Ags = iAgs
-        w = Ags * np.vectorize(lambda i: mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
+        w = Ags * np.vectorize(lambda i: self.mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
         return shannon_entropy(Ags, w)

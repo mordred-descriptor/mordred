@@ -9,6 +9,8 @@ __all__ = ('AcidicGroupCount', 'BasicGroupCount',)
 
 
 class SmartsCountBase(Descriptor):
+    __slots__ = '_mol',
+
     @classmethod
     def preset(cls):
         yield cls()
@@ -28,9 +30,9 @@ class SmartsCountBase(Descriptor):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
+    def calculate(self):
         pat = getattr(self, '_mol', None) or self._create_smarts()
-        return len(mol.GetSubstructMatches(pat))
+        return len(self.mol.GetSubstructMatches(pat))
 
     rtype = int
 

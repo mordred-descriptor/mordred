@@ -7,6 +7,7 @@ __all__ = ('Diameter', 'Radius', 'TopologicalShapeIndex', 'PetitjeanIndex',)
 
 
 class TopologicalIndexBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod
@@ -21,7 +22,6 @@ class TopologicalIndexBase(Descriptor):
 
 class Radius(TopologicalIndexBase):
     r"""radius descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -30,13 +30,12 @@ class Radius(TopologicalIndexBase):
     def dependencies(self):
         return {'R': CRadius(self.explicit_hydrogens)}
 
-    def calculate(self, mol, R):
+    def calculate(self, R):
         return int(R)
 
 
 class Diameter(TopologicalIndexBase):
     r"""diameter descriptor."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -45,7 +44,7 @@ class Diameter(TopologicalIndexBase):
     def dependencies(self):
         return {'D': CDiameter(self.explicit_hydrogens)}
 
-    def calculate(self, mol, D):
+    def calculate(self, D):
         return int(D)
 
 
@@ -62,7 +61,6 @@ class TopologicalShapeIndex(TopologicalIndexBase):
 
     :returns: NaN when :math:`R = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):
@@ -74,11 +72,9 @@ class TopologicalShapeIndex(TopologicalIndexBase):
             'D': CDiameter(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, R, D):
-        if R == 0:
-            return float('nan')
-
-        return float(D - R) / float(R)
+    def calculate(self, R, D):
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(R)
 
     rtype = float
 
@@ -96,14 +92,11 @@ class PetitjeanIndex(TopologicalShapeIndex):
 
     :returns: NaN when :math:`D = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):
         return 'PetitjeanIndex'
 
-    def calculate(self, mol, R, D):
-        if D == 0:
-            return float('nan')
-
-        return float(D - R) / float(D)
+    def calculate(self, R, D):
+        with self.rethrow_zerodiv():
+            return float(D - R) / float(D)

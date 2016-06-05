@@ -1,11 +1,5 @@
-from .descriptor import Descriptor
-from logging import getLogger
+from .descriptor import Descriptor, Error
 from types import ModuleType
-from ..exception import FragmentError, MordredException
-from numbers import Real
-import sys
-import os
-import traceback
 from .context import Context
 from inspect import getsourcelines
 from sys import maxsize
@@ -19,6 +13,17 @@ class Calculator(object):
     :param descs: see :py:meth:`register` method
     """
 
+    __slots__ = (
+        '_descriptors', '_explicit_hydrogens', '_kekulizes', '_require_3D',
+        '_cache',
+    )
+
+    def __setstate__(self, dict):
+        self._descriptors = dict.get('_descriptors', [])
+        self._explicit_hydrogens = dict.get('_explicit_hydrogens', set([True, False]))
+        self._kekulizes = dict.get('_kekulizes', set([True, False]))
+        self._require_3D = dict.get('_require_3D', False)
+
     def __reduce_ex__(self, version):
         return self.__class__, (), {
             '_descriptors': self._descriptors,
@@ -29,7 +34,6 @@ class Calculator(object):
 
     def __init__(self, descs=[], exclude3D=False):
         self._descriptors = []
-        self.logger = getLogger(__name__)
 
         self._explicit_hydrogens = set()
         self._kekulizes = set()
@@ -105,66 +109,52 @@ class Calculator(object):
             for d in desc:
                 self.register(d, exclude3D=exclude3D)
 
-    def _calculate_one(self, cxt, desc, caller=None):
+    def _calculate_one(self, cxt, desc, reset):
         if desc in self._cache:
             return self._cache[desc]
 
-        if caller is None:
-            caller = desc
+        if reset:
+            cxt.reset()
+        desc._context = cxt
+        cxt.add_stack(desc)
 
-        if desc.require_connected and cxt.n_frags != 1:
-            raise FragmentError(cxt, caller)
+        if desc.require_connected and desc._context.n_frags != 1:
+            desc.fail(ValueError('multiple fragments'), warning=True)
 
         args = {
-            name: self._calculate_one(cxt, dep, caller)
+            name: self._calculate_one(cxt, dep, False)
             if dep is not None else None
             for name, dep in (desc.dependencies() or {}).items()
         }
 
-        mol = cxt.get_mol(desc)
+        r = desc.calculate(**args)
 
-        if desc.require_3D:
-            r = desc.calculate(mol, cxt.get_coord(desc), **args)
-        else:
-            r = desc.calculate(mol, **args)
-
-        if desc.rtype is not None and (not isinstance(r, Real) or not isinstance(r, desc.rtype)):
-            self.logger.debug(
-                '%s excepted returning %s, but returns %s',
-                repr(desc), desc.rtype.__name__, repr(r)
-            )
+        self._check_rtype(desc, r)
 
         self._cache[desc] = r
 
         return r
 
+    def _check_rtype(self, desc, result):
+        if desc.rtype is None:
+            return
+
+        if isinstance(result, Error):
+            return
+
+        if not isinstance(result, desc.rtype):
+            pass  # TODO
+
     def _calculate(self, cxt):
         self._cache = {}
-        self._exceptions = set()
-        try:
-            for desc in self.descriptors:
-                try:
-                    yield self._calculate_one(cxt, desc)
-                except MordredException as e:
-                    if e.critical:
-                        raise e
+        for desc in self.descriptors:
+            try:
+                yield self._calculate_one(cxt, desc, True)
+            except Error as e:
+                if e.critical:
+                    raise e
 
-                    if e.__class__ not in self._exceptions:
-                        exc_type, exc_value, exc_traceback = sys.exc_info()
-                        tbs = traceback.extract_tb(exc_traceback)[-1:]
-                        for tb in tbs:
-                            filename, line, _, text = tb
-                            self.logger.warning(
-                                '%s:%d %s',
-                                os.path.basename(filename), line, str(e)
-                            )
-                        self._exceptions.add(e.__class__)
-
-                    yield float('nan')
-
-        finally:
-            del self._cache
-            del self._exceptions
+                yield e
 
     def __call__(self, mol, id=-1):
         r"""calculate descriptors.
@@ -175,13 +165,13 @@ class Calculator(object):
         :type id: int
         :param id: conformer id
 
-        :rtype: [scalar or nan]
+        :rtype: [scalar or Error]
         :returns: iterator of descriptor and value
         """
         return list(self._calculate(Context.from_calculator(self, mol, id)))
 
     def _serial(self, mols, nmols, quiet, ipynb, id):
-        with get_bar(quiet, self.logger, nmols, ipynb) as bar:
+        with get_bar(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
                     r = list(self._calculate(Context.from_calculator(self, m, id)))

@@ -1,5 +1,3 @@
-import numpy as np
-
 from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
 from .BondCount import BondCount
@@ -13,6 +11,7 @@ __all__ = (
 
 
 class RotatableBondsBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod
@@ -25,14 +24,13 @@ class RotatableBondsBase(Descriptor):
 
 class RotatableBondsCount(RotatableBondsBase):
     r"""ratatable bonds count descriptor(rdkit wrapper)."""
-
     __slots__ = ()
 
     def __str__(self):
         return 'nRot'
 
-    def calculate(self, mol):
-        return CalcNumRotatableBonds(mol)
+    def calculate(self):
+        return CalcNumRotatableBonds(self.mol)
 
     rtype = int
 
@@ -45,7 +43,6 @@ class RotatableBondsRatio(RotatableBondsBase):
 
     :returns: NaN when :math:`N_{\rm bonds} = 0`
     """
-
     __slots__ = ()
 
     def __str__(self):
@@ -57,10 +54,8 @@ class RotatableBondsRatio(RotatableBondsBase):
             'nB': BondCount('heavy'),
         }
 
-    def calculate(self, mol, nRot, nB):
-        if nB == 0:
-            return np.nan
-
-        return float(nRot) / float(nB)
+    def calculate(self, nRot, nB):
+        with self.rethrow_zerodiv():
+            return float(nRot) / float(nB)
 
     rtype = float

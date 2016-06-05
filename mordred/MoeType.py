@@ -14,7 +14,7 @@ __all__ = (
 
 class LabuteASA(Descriptor):
     r"""Labute's Approximate Surface Area descriptor(rdkit wrapper)."""
-
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod
@@ -27,13 +27,14 @@ class LabuteASA(Descriptor):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        return MolSurf.LabuteASA(mol)
+    def calculate(self):
+        return MolSurf.LabuteASA(self.mol)
 
     rtype = float
 
 
 class MoeTypeBase(Descriptor):
+    __slots__ = ('_k',)
     explicit_hydrogens = False
     _module = MolSurf
 
@@ -51,9 +52,9 @@ class MoeTypeBase(Descriptor):
         assert 1 <= k <= self.k_max
         self._k = k
 
-    def calculate(self, mol):
+    def calculate(self):
         f = getattr(self._module, str(self))
-        return f(mol)
+        return f(self.mol)
 
     rtype = float
 
@@ -64,8 +65,7 @@ class PEOE_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
-
-    __slots__ = ('_k',)
+    __slots__ = ()
     k_max = 14
 
 
@@ -75,8 +75,7 @@ class SMR_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
-
-    __slots__ = ('_k',)
+    __slots__ = ()
     k_max = 10
 
 
@@ -86,8 +85,7 @@ class SlogP_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
-
-    __slots__ = ('_k',)
+    __slots__ = ()
     k_max = 12
 
 
@@ -97,8 +95,7 @@ class EState_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
-
-    __slots__ = ('_k',)
+    __slots__ = ()
     _module = RDKit_EState_VSA
     k_max = 11
 
@@ -109,7 +106,6 @@ class VSA_EState(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
-
-    __slots__ = ('_k',)
+    __slots__ = ()
     _module = RDKit_EState_VSA
     k_max = 10

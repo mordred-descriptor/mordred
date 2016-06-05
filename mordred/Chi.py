@@ -3,8 +3,6 @@ from collections import namedtuple
 from enum import IntEnum
 from itertools import chain
 
-import numpy as np
-
 from rdkit import Chem
 
 from ._atomic_property import AtomicProperty
@@ -16,6 +14,8 @@ __all__ = ('Chi',)
 
 
 class ChiType(IntEnum):
+    __slots__ = ()
+
     path = 1
     cluster = 2
     path_cluster = 3
@@ -81,6 +81,7 @@ class DFS(object):
 
 
 class ChiBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
 
@@ -96,14 +97,14 @@ class ChiCache(ChiBase):
     def __init__(self, order):
         self._order = order
 
-    def calculate(self, mol):
+    def calculate(self):
         chain = []
         path = []
         path_cluster = []
         cluster = []
-        for bonds in Chem.FindAllSubgraphsOfLengthN(mol, self._order):
+        for bonds in Chem.FindAllSubgraphsOfLengthN(self.mol, self._order):
 
-            dfs = DFS(mol, bonds)
+            dfs = DFS(self.mol, bonds)
             typ = dfs()
             nodes = dfs.nodes
 
@@ -148,6 +149,7 @@ class Chi(ChiBase):
         * any atomic properties <= 0
         * averaged and :math:`N_{\chi} = 0`
     """
+    __slots__ = ('_type', '_order', '_prop', '_averaged',)
 
     chi_types = tuple(t.name for t in ChiType)
 
@@ -167,8 +169,6 @@ class Chi(ChiBase):
 
         return '{}{}{}-{}'.format(p, prop, ct, self._order)
 
-    __slots__ = ('_type', '_order', '_prop', '_averaged',)
-
     def as_key(self):
         return self.__class__, (self._type, self._order, self._prop, self._averaged)
 
@@ -185,9 +185,9 @@ class Chi(ChiBase):
 
         return d
 
-    def calculate(self, mol, P, chi=None):
+    def calculate(self, P, chi=None):
         if self._order <= 0:
-            chi = ChiBonds([], [{a.GetIdx()} for a in mol.GetAtoms()], [], [])
+            chi = ChiBonds([], [{a.GetIdx()} for a in self.mol.GetAtoms()], [], [])
 
         x = 0.0
         node_sets = getattr(chi, self._type.name)
@@ -197,12 +197,13 @@ class Chi(ChiBase):
                 c *= P[node]
 
             if c <= 0:
-                return np.nan
+                self.fail(ValueError('some properties less then or equal to 0'))
 
             x += c ** -0.5
 
         if self._averaged:
-            x /= len(node_sets) or np.nan
+            with self.rethrow_zerodiv():
+                x /= len(node_sets)
 
         return x
 

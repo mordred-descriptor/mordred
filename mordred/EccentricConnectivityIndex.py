@@ -15,9 +15,7 @@ class EccentricConnectivityIndex(Descriptor):
     :math:`E` is eccentricity of atoms,
     :math:`V` is valences of atoms.
     """
-
     __slots__ = ()
-
     explicit_hydrogens = False
 
     @classmethod
@@ -36,7 +34,7 @@ class EccentricConnectivityIndex(Descriptor):
             'V': Valence(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, E, V):
+    def calculate(self, E, V):
         return int((E.astype('int') * V).sum())
 
     rtype = int

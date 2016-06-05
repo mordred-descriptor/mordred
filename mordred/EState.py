@@ -1,8 +1,6 @@
 from enum import IntEnum
 from functools import reduce
 
-from numpy import nan
-
 from rdkit.Chem import EState
 
 from ._base import Descriptor
@@ -33,6 +31,7 @@ es_type_set = set(es_types)
 
 
 class EStateBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
 
@@ -42,11 +41,13 @@ class EStateCache(EStateBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        return EState.TypeAtoms(mol), EState.EStateIndices(mol)
+    def calculate(self):
+        return EState.TypeAtoms(self.mol), EState.EStateIndices(self.mol)
 
 
 class AggrType(IntEnum):
+    __slots__ = ()
+
     count = 1
     sum = 2
     max = 3
@@ -80,6 +81,7 @@ class AtomTypeEState(EStateBase):
     References
         * :cite:`10.1021/ci00028a014`
     """
+    __slots__ = ('_type', '_estate',)
 
     aggr_types = tuple(a.name for a in AggrType)
 
@@ -98,8 +100,6 @@ class AtomTypeEState(EStateBase):
 
         return aggr + self._estate
 
-    __slots__ = ('_type', '_estate',)
-
     def as_key(self):
         return self.__class__, (self._type, self._estate)
 
@@ -112,7 +112,7 @@ class AtomTypeEState(EStateBase):
     def dependencies(self):
         return {'E': EStateCache()}
 
-    def calculate(self, mol, E):
+    def calculate(self, E):
         if self._type == AggrType.count:
             return reduce(lambda a, b: a + b, E[0]).count(self._estate)
 
@@ -123,8 +123,8 @@ class AtomTypeEState(EStateBase):
 
         try:
             return float(getattr(builtins, self._type.name)(indices))
-        except ValueError:  # min, max to empty list
-            return nan
+        except ValueError as e:  # min, max to empty list
+            self.fail(e)
 
     @property
     def rtype(self):

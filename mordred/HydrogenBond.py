@@ -9,6 +9,7 @@ __all__ = (
 
 
 class HBondBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     @classmethod
@@ -20,7 +21,6 @@ class HBondBase(Descriptor):
 
 class HBondAcceptor(HBondBase):
     r"""hydrogen bond acceptor descriptor(rdkit wrapper)."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -29,13 +29,12 @@ class HBondAcceptor(HBondBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        return rdMolDescriptors.CalcNumHBA(mol)
+    def calculate(self):
+        return rdMolDescriptors.CalcNumHBA(self.mol)
 
 
 class HBondDonor(HBondBase):
     r"""hydrogen bond donor descriptor(rdkit wrapper)."""
-
     __slots__ = ()
 
     def __str__(self):
@@ -44,5 +43,5 @@ class HBondDonor(HBondBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        return rdMolDescriptors.CalcNumHBD(mol)
+    def calculate(self):
+        return rdMolDescriptors.CalcNumHBD(self.mol)

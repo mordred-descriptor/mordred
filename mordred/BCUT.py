@@ -8,6 +8,7 @@ __all__ = ('BCUT',)
 
 
 class BCUTBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
     require_connected = True
 
@@ -18,12 +19,12 @@ class Burden(BCUTBase):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
-        N = mol.GetNumAtoms()
+    def calculate(self):
+        N = self.mol.GetNumAtoms()
 
         mat = 0.001 * np.ones((N, N))
 
-        for bond in mol.GetBonds():
+        for bond in self.mol.GetBonds():
             a = bond.GetBeginAtom()
             b = bond.GetEndAtom()
             i = a.GetIdx()
@@ -32,7 +33,7 @@ class Burden(BCUTBase):
             try:
                 w = bond.GetBondTypeAsDouble() / 10.0
             except RuntimeError:
-                w = 1.0
+                self.fail(ValueError('unknown bond type'))
 
             if a.GetDegree() == 1 or b.GetDegree() == 1:
                 w += 0.01
@@ -58,11 +59,8 @@ class BurdenEigenValues(BCUTBase):
             'burden': Burden(),
         }
 
-    def calculate(self, mol, burden, ps):
+    def calculate(self, burden, ps):
         bmat = burden.copy()
-
-        if np.any(np.isnan(ps)):
-            return np.array([np.nan])
 
         np.fill_diagonal(bmat, ps)
         ev = np.linalg.eig(bmat)[0]
@@ -87,6 +85,7 @@ class BCUT(BCUTBase):
         * any atomic properties are NaN
         * :math:`\left| nth \right| > A`
     """
+    __slots__ = ('_prop', '_nth',)
 
     @classmethod
     def preset(cls):
@@ -102,8 +101,6 @@ class BCUT(BCUTBase):
         else:
             return 'BCUT{}-{}h'.format(self._prop, self._nth + 1)
 
-    __slots__ = ('_prop', '_nth',)
-
     def as_key(self):
         return self.__class__, (self._prop, self._nth)
 
@@ -114,10 +111,10 @@ class BCUT(BCUTBase):
     def dependencies(self):
         return {'bev': BurdenEigenValues(self._prop)}
 
-    def calculate(self, mol, bev):
+    def calculate(self, bev):
         try:
             return bev[self._nth]
         except IndexError:
-            return np.nan
+            self.fail(ValueError('nth greater then atom count'))
 
     rtype = float

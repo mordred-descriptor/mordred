@@ -4,7 +4,8 @@ from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 from rdkit import Chem
 
-from mordred import Calculator, all_descriptors
+import numpy as np
+from mordred import Calculator, all_descriptors, Error
 from mordred import Polarizability
 
 import yaml
@@ -52,12 +53,18 @@ def test_by_references():
                 assert_f = eq_
             else:
                 def assert_f(a, d, m):
-                    return assert_almost_equal(a, d, digit, m)
+                    if np.isnan(d):
+                        assert isinstance(a, Error)
+                        return
+
+                    assert_almost_equal(a, d, digit, m)
 
             for mname, descs in desireds:
                 for dname, desired in descs:
                     if not desired == 'skip':
-                        yield assert_f,\
-                            actuals[mname][dname],\
-                            desired,\
+                        yield (
+                            assert_f,
+                            actuals[mname][dname],
+                            desired,
                             '{} of {}'.format(dname, mname)
+                        )

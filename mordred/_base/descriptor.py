@@ -1,10 +1,39 @@
+import numpy as np
 import six
 from abc import ABCMeta, abstractmethod
 from inspect import isabstract
+from contextlib import contextmanager
+
+
+class Error(Exception):
+    __slots__ = 'error', 'stack', 'critical', 'warning'
+
+    def __reduce_ex__(self, version):
+        return self.__class__, (self.error, self.stack, self.critical, self.warning)
+
+    def __init__(self, error, stack, critical=False, warning=False):
+        self.error = error
+        self.stack = stack
+        self.critical = critical
+        self.warning = warning
+
+    def __float__(self):
+        return np.nan
+
+    def __add__(self, other):
+        return np.nan
+
+    def __sub__(self, other):
+        return np.nan
+
+    def __str__(self):
+        return '{} ({})'.format(self.error, '/'.join(str(d) for d in self.stack))
 
 
 class Descriptor(six.with_metaclass(ABCMeta, object)):
     r"""abstract base class of descriptors."""
+
+    __slots__ = '_context',
 
     explicit_hydrogens = True
     kekulize = False
@@ -75,14 +104,6 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         """
         raise TypeError('not implemented Descriptor.calculate method')
 
-    # def __call__(self, mol, coord_id=-1):
-    #     r"""calculate single descriptor value.
-
-    #     :returns: descriptor result
-    #     :rtype: scalar
-    #     """
-    #     return Calculator(self)(mol, coord_id)[0]
-
     @classmethod
     def is_descriptor_class(cls, desc):
         r"""check calculatable descriptor class or not.
@@ -94,3 +115,22 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
             issubclass(desc, cls) and
             not isabstract(desc)
         )
+
+    @property
+    def mol(self):
+        return self._context.get_mol(self.explicit_hydrogens, self.kekulize)
+
+    @property
+    def coord(self):
+        return self._context.get_coord(self.explicit_hydrogens, self.kekulize)
+
+    def fail(self, ex, critical=False, warning=False):
+        raise Error(ex, self._context.get_stack(), critical, warning)
+
+    @contextmanager
+    def rethrow_zerodiv(self):
+        with np.errstate(divide='raise', invalid='raise'):
+            try:
+                yield
+            except (FloatingPointError, ZeroDivisionError) as e:
+                self.fail(ZeroDivisionError(*e.args))

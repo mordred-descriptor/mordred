@@ -22,14 +22,13 @@ class ConstitutionalSum(Descriptor):
     :type prop: :py:class:`str` or :py:class:`function`
     :param prop: :ref:`atomic_properties`
     """
+    __slots__ = ('_prop', '_prop_name',)
 
     @classmethod
     def preset(cls):
         return map(cls, get_properties())
 
     _carbon = Chem.Atom(6)
-
-    __slots__ = ('_prop', '_prop_name',)
 
     def as_key(self):
         return self.__class__, (self._prop,)
@@ -48,7 +47,7 @@ class ConstitutionalSum(Descriptor):
     def dependencies(self):
         return {'P': self._prop}
 
-    def calculate(self, mol, P):
+    def calculate(self, P):
         C = self._prop.prop(self._carbon)
         return np.sum(P / C)
 
@@ -66,7 +65,6 @@ class ConstitutionalMean(ConstitutionalSum):
 
     :rtype: float
     """
-
     __slots__ = ('_prop_name', '_prop',)
 
     @classmethod
@@ -79,5 +77,5 @@ class ConstitutionalMean(ConstitutionalSum):
     def dependencies(self):
         return {'S': ConstitutionalSum(self._prop)}
 
-    def calculate(self, mol, S):
-        return S / mol.GetNumAtoms()
+    def calculate(self, S):
+        return S / self.mol.GetNumAtoms()

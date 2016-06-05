@@ -24,6 +24,7 @@ __all__ = (
 
 
 class CPSABase(Descriptor):
+    __slots__ = ()
     require_3D = True
 
     @classmethod
@@ -40,6 +41,8 @@ class CPSABase(Descriptor):
 
 
 class VersionCPSABase(CPSABase):
+    __slots__ = '_version',
+
     @classmethod
     def preset(cls):
         return map(cls, cls.versions)
@@ -57,6 +60,8 @@ class VersionCPSABase(CPSABase):
 
 
 class AtomicSurfaceArea(CPSABase):
+    __slots__ = '_solvent_radius', '_level'
+
     def as_key(self):
         return self.__class__, (self._solvent_radius, self._level)
 
@@ -64,35 +69,34 @@ class AtomicSurfaceArea(CPSABase):
         self._solvent_radius = solvent_radius
         self._level = level
 
-    def calculate(self, mol, conf):
-        rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, mol)
+    def calculate(self):
+        rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, self.mol)
 
-        sa = SurfaceArea(rs, conf, self._level)
+        sa = SurfaceArea(rs, self.coord, self._level)
         return np.array(sa.surface_area())
 
     rtype = None
 
 
 class TotalSurfaceArea(CPSABase):
+    __slots__ = ()
+
     def dependencies(self):
         return {'ASA': AtomicSurfaceArea()}
 
-    def calculate(self, mol, conf, ASA):
+    def calculate(self, ASA):
         return np.sum(ASA)
 
 
 class AtomicCharge(CPSABase):
+    __slots__ = ()
     require_3D = False
 
     def dependencies(self):
         return {'charges': AtomicProperty(self.explicit_hydrogens, 'c')}
 
-    def calculate(self, mol, charges):
-        if not np.all(np.isfinite(charges)):
-            return None
-
-        else:
-            return charges
+    def calculate(self, charges):
+        return charges
 
     rtype = None
 
@@ -110,6 +114,7 @@ class PNSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def dependencies(self):
         return {
@@ -121,10 +126,7 @@ class PNSA(VersionCPSABase):
     def _mask(charges):
         return charges < 0.0
 
-    def calculate(self, mol, conf, SA, charges):
-        if charges is None:
-            return np.nan
-
+    def calculate(self, SA, charges):
         mask = self._mask(charges)
 
         if self._version == 1:
@@ -134,13 +136,10 @@ class PNSA(VersionCPSABase):
         elif self._version == 3:
             f = charges[mask]
         elif self._version == 4:
-            f = np.sum(charges[mask]) / mol.GetNumAtoms()
+            f = np.sum(charges[mask]) / self.mol.GetNumAtoms()
         elif self._version == 5:
-            s = np.sum(mask)
-            if s == 0:
-                return np.nan
-
-            f = np.sum(charges[mask]) / s
+            with self.rethrow_zerodiv():
+                f = np.sum(charges[mask]) / np.sum(mask)
 
         return np.sum(f * SA[mask])
 
@@ -151,6 +150,7 @@ class PPSA(PNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -163,6 +163,7 @@ class DPSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def dependencies(self):
         return {
@@ -170,7 +171,7 @@ class DPSA(VersionCPSABase):
             'PNSA': PNSA(self._version),
         }
 
-    def calculate(self, mol, conf, PPSA, PNSA):
+    def calculate(self, PPSA, PNSA):
         return PPSA - PNSA
 
 
@@ -180,6 +181,7 @@ class FNSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def _SA(self):
         return PNSA(self._version)
@@ -190,7 +192,7 @@ class FNSA(VersionCPSABase):
             'SA': self._SA(),
         }
 
-    def calculate(self, mol, conf, SA, ASA):
+    def calculate(self, SA, ASA):
         return SA / np.sum(ASA)
 
 
@@ -200,13 +202,14 @@ class FPSA(FNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+    __slots__ = ()
 
     def _SA(self):
         return PPSA(self._version)
 
 
 class WxSAMixin(object):
-    def calculate(self, mol, conf, SA, ASA):
+    def calculate(self, SA, ASA):
         return SA * np.sum(ASA) / 1000.0
 
 
@@ -216,8 +219,7 @@ class WNSA(WxSAMixin, FNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
-
-    pass
+    __slots__ = ()
 
 
 class WPSA(WxSAMixin, FPSA):
@@ -226,13 +228,12 @@ class WPSA(WxSAMixin, FPSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
-
-    pass
+    __slots__ = ()
 
 
 class RNCG(CPSABase):
     r"""relative negative charge descriptor."""
-
+    __slots__ = ()
     require_3D = False
 
     @staticmethod
@@ -242,10 +243,7 @@ class RNCG(CPSABase):
     def dependencies(self):
         return {'charges': AtomicCharge()}
 
-    def calculate(self, mol, charges):
-        if charges is None:
-            return np.nan
-
+    def calculate(self, charges):
         charges = charges[self._mask(charges)]
         if len(charges) == 0:
             return 0.0
@@ -257,6 +255,7 @@ class RNCG(CPSABase):
 
 class RPCG(RNCG):
     r"""relative positive charge descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -265,7 +264,7 @@ class RPCG(RNCG):
 
 class RNCS(CPSABase):
     r"""relative negative charge surface area descriptor."""
-
+    __slots__ = ()
     _RCG = RNCG()
 
     def dependencies(self):
@@ -279,10 +278,7 @@ class RNCS(CPSABase):
     def _mask(charges):
         return charges < 0
 
-    def calculate(self, mol, conf, RCG, SA, charges):
-        if charges is None:
-            return np.nan
-
+    def calculate(self, RCG, SA, charges):
         mask = self._mask(charges)
         charges = charges[mask]
         if len(charges) == 0:
@@ -297,6 +293,7 @@ class RNCS(CPSABase):
 
 class RPCS(RNCS):
     r"""relative positive charge surface area descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -307,6 +304,7 @@ class RPCS(RNCS):
 
 class TASA(CPSABase):
     r"""total hydrophobic surface area descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -318,15 +316,13 @@ class TASA(CPSABase):
             'charges': AtomicCharge(),
         }
 
-    def calculate(self, mol, conf, SA, charges):
-        if charges is None:
-            return np.nan
-
+    def calculate(self, SA, charges):
         return np.sum(SA[self._mask(charges)])
 
 
 class TPSA(TASA):
     r"""total polar surface area descriptor."""
+    __slots__ = ()
 
     @staticmethod
     def _mask(charges):
@@ -335,7 +331,7 @@ class TPSA(TASA):
 
 class RASA(CPSABase):
     r"""relative hydrophobic surface area descriptor."""
-
+    __slots__ = ()
     _TxSA = TASA()
 
     def dependencies(self):
@@ -344,11 +340,11 @@ class RASA(CPSABase):
             'SASA': AtomicSurfaceArea(),
         }
 
-    def calculate(self, mol, conf, TxSA, SASA):
+    def calculate(self, TxSA, SASA):
         return TxSA / np.sum(SASA)
 
 
 class RPSA(RASA):
     r"""relative polar surface area descriptor."""
-
+    __slots__ = ()
     _TxSA = TPSA()

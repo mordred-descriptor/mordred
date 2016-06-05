@@ -9,6 +9,7 @@ __all__ = ('BalabanJ',)
 
 class BalabanJ(Descriptor):
     r"""Balaban's J index descriptor(rdkit wrapper)."""
+    __slots__ = ()
 
     explicit_hydrogens = False
 
@@ -25,7 +26,7 @@ class BalabanJ(Descriptor):
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
-    def calculate(self, mol, D):
-        return float(RDKit.BalabanJ(mol, dMat=D))
+    def calculate(self, D):
+        return float(RDKit.BalabanJ(self.mol, dMat=D))
 
     rtype = float

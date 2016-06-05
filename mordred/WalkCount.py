@@ -19,6 +19,7 @@ class WalkCount(Descriptor):
     :type self_returning: bool
     :param self_returning: use self returning walk only
     """
+    __slots__ = ('_order', '_total', '_self_returning',)
 
     explicit_hydrogens = False
 
@@ -33,8 +34,6 @@ class WalkCount(Descriptor):
     def __str__(self):
         T = '{}SRW{:02d}' if self._self_returning else '{}MWC{:02d}'
         return T.format('T' if self._total else '', self._order)
-
-    __slots__ = ('_order', '_total', '_self_returning',)
 
     def as_key(self):
         return self.__class__, (self._order, self._total, self._self_returning)
@@ -70,10 +69,10 @@ class WalkCount(Descriptor):
             )
         }
 
-    def calculate(self, mol, An=None, T=None, W=None):
+    def calculate(self, An=None, T=None, W=None):
         if self._total:
             if self._order == 1:
-                return mol.GetNumAtoms() + W
+                return self.mol.GetNumAtoms() + W
 
             return T + W
 

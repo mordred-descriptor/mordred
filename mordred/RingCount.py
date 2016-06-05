@@ -9,6 +9,7 @@ __all__ = ('RingCount',)
 
 
 class RingCountBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     def as_key(self):
@@ -18,8 +19,8 @@ class RingCountBase(Descriptor):
 class Rings(RingCountBase):
     __slots__ = ()
 
-    def calculate(self, mol):
-        return [frozenset(s) for s in Chem.GetSymmSSSR(mol)]
+    def calculate(self):
+        return [frozenset(s) for s in Chem.GetSymmSSSR(self.mol)]
 
 
 class FusedRings(RingCountBase):
@@ -28,7 +29,7 @@ class FusedRings(RingCountBase):
     def dependencies(self):
         return {'Rings': Rings()}
 
-    def calculate(self, mol, Rings):
+    def calculate(self, Rings):
         if len(Rings) < 2:
             return []
 
@@ -69,6 +70,7 @@ class RingCount(RingCountBase):
         * False: count carbon rings
         * None: count any rings
     """
+    __slots__ = ('_order', '_greater', '_fused', '_aromatic', '_hetero',)
 
     @classmethod
     def preset(cls):
@@ -105,8 +107,6 @@ class RingCount(RingCountBase):
 
         return 'n{}Ring'.format(''.join(attrs))
 
-    __slots__ = ('_order', '_greater', '_fused', '_aromatic', '_hetero',)
-
     def as_key(self):
         return (
             self.__class__,
@@ -134,32 +134,34 @@ class RingCount(RingCountBase):
         else:
             return len(R) == self._order
 
-    def _check_arom(self, mol, R):
+    def _check_arom(self, R):
         if self._aromatic is None:
             return True
 
-        is_arom = all(mol.GetAtomWithIdx(i).GetIsAromatic() for i in R)
+        is_arom = all(self.mol.GetAtomWithIdx(i).GetIsAromatic() for i in R)
 
         if self._aromatic:
             return is_arom
 
         return not is_arom
 
-    def _check_hetero(self, mol, R):
+    def _check_hetero(self, R):
         if self._hetero is None:
             return True
 
-        has_hetero = any(mol.GetAtomWithIdx(i).GetAtomicNum() != 6 for i in R)
+        has_hetero = any(self.mol.GetAtomWithIdx(i).GetAtomicNum() != 6 for i in R)
 
         if self._hetero:
             return has_hetero
 
         return not has_hetero
 
-    def calculate(self, mol, Rs):
+    def calculate(self, Rs):
         return sum(
             1 for R in Rs
-            if self._check_order(R) and self._check_arom(mol, R) and self._check_hetero(mol, R)
+            if self._check_order(R) and
+            self._check_arom(R) and
+            self._check_hetero(R)
         )
 
     rtype = int

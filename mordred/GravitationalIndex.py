@@ -9,6 +9,8 @@ __all__ = ('GravitationalIndex',)
 
 
 class GravitationalIndex(Descriptor):
+    __slots__ = '_heavy', '_pair'
+
     @classmethod
     def preset(cls):
         return (
@@ -44,16 +46,16 @@ class GravitationalIndex(Descriptor):
 
         return d
 
-    def calculate(self, mol, conf, D, A=1.0):
-        w = atoms_to_numpy(lambda a: a.GetMass(), mol)
+    def calculate(self, D, A=1.0):
+        w = atoms_to_numpy(lambda a: a.GetMass(), self.mol)
 
         w = w[:, np.newaxis] * w
         np.fill_diagonal(w, 0)
 
         D = D.copy()
         np.fill_diagonal(D, 1)
-        D[D == 0] = np.nan
 
-        return 0.5 * np.sum(w * A / D ** 2)
+        with self.rethrow_zerodiv():
+            return 0.5 * np.sum(w * A / D ** 2)
 
     rtype = float

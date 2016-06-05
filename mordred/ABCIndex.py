@@ -13,6 +13,8 @@ __all__ = ('ABCIndex', 'ABCGGIndex',)
 
 
 class ABCIndexBase(Descriptor):
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()
@@ -31,24 +33,28 @@ class ABCIndexBase(Descriptor):
 class ABCIndex(ABCIndexBase):
     r"""atom-bond connectivity indez descriptor.
     """
+    __slots__ = ()
 
     @staticmethod
     def _each_bond(bond):
         du = bond.GetBeginAtom().GetDegree()
         dv = bond.GetEndAtom().GetDegree()
 
-        return np.sqrt(float(du + dv - 2) / (du * dv))
+        return np.sqrt((du + dv - 2.0) / (du * dv))
 
-    def calculate(self, mol):
-        return float(sum(
-            self._each_bond(bond)
-            for bond in mol.GetBonds()
-        ))
+    def calculate(self):
+        return np.float(
+            np.sum(
+                self._each_bond(bond)
+                for bond in self.mol.GetBonds()
+            )
+        )
 
 
 class ABCGGIndex(ABCIndexBase):
     r"""Graovac-Ghorbani atom-bond connectivity index descriptor.
     """
+    __slots__ = ()
 
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
@@ -61,10 +67,12 @@ class ABCGGIndex(ABCIndexBase):
         nu = np.sum(D[u, :] < D[v, :])
         nv = np.sum(D[v, :] < D[u, :])
 
-        return np.sqrt(float(nu + nv - 2) / (nu * nv))
+        return np.sqrt((nu + nv - 2.0) / (nu * nv))
 
-    def calculate(self, mol, D):
-        return float(sum(
-            self._each_bond(bond, D)
-            for bond in mol.GetBonds()
-        ))
+    def calculate(self, D):
+        return np.float(
+            np.sum(
+                self._each_bond(bond, D)
+                for bond in self.mol.GetBonds()
+            )
+        )

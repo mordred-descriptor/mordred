@@ -25,17 +25,16 @@ class PathCountCache(PathCountBase):
     def __init__(self, order):
         self._order = order
 
-    @staticmethod
-    def _bond_ids_to_atom_ids(mol, p):
+    def _bond_ids_to_atom_ids(self, p):
         it = iter(p)
 
         try:
-            b0 = mol.GetBondWithIdx(next(it))
+            b0 = self.mol.GetBondWithIdx(next(it))
         except StopIteration:
             return []
 
         try:
-            b1 = mol.GetBondWithIdx(next(it))
+            b1 = self.mol.GetBondWithIdx(next(it))
         except StopIteration:
             return [b0.GetBeginAtomIdx(), b0.GetEndAtomIdx()]
 
@@ -50,7 +49,7 @@ class PathCountCache(PathCountBase):
             current = a1f if a0t == a1t else a1t
 
         for i in it:
-            bn = mol.GetBondWithIdx(i)
+            bn = self.mol.GetBondWithIdx(i)
 
             anf, ant = bn.GetBeginAtomIdx(), bn.GetEndAtomIdx()
 
@@ -64,23 +63,23 @@ class PathCountCache(PathCountBase):
         path.append(current)
         return path
 
-    def calculate(self, mol):
+    def calculate(self):
         l = 0
         pi = 0
 
-        for path in Chem.FindAllPathsOfLengthN(mol, self._order):
+        for path in Chem.FindAllPathsOfLengthN(self.mol, self._order):
             aids = set()
             before = None
             w = 1
 
-            for i in self._bond_ids_to_atom_ids(mol, path):
+            for i in self._bond_ids_to_atom_ids(path):
                 if i in aids:
                     break
 
                 aids.add(i)
 
                 if before is not None:
-                    bond = mol.GetBondBetweenAtoms(before, i)
+                    bond = self.mol.GetBondBetweenAtoms(before, i)
                     w *= bond.GetBondTypeAsDouble()
 
                 before = i
@@ -154,9 +153,9 @@ class PathCount(PathCountBase):
 
         return deps
 
-    def calculate(self, mol, PC, acc=None):
+    def calculate(self, PC, acc=None):
         if self._order == 0:
-            return self.rtype(mol.GetNumAtoms())
+            return self.rtype(self.mol.GetNumAtoms())
 
         v = PC[1] if self._pi else PC[0]
 

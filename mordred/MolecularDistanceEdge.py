@@ -1,4 +1,4 @@
-from numpy import nan, product
+from numpy import product
 
 from six import integer_types, string_types
 
@@ -24,7 +24,7 @@ class MolecularDistanceEdge(Descriptor):
 
     :returns: NaN when :math:`N_{\rm MDE} = 0`
     """
-
+    __slots__ = ('_valence1', '_valence2', '_atomic_num',)
     explicit_hydrogens = False
 
     @classmethod
@@ -42,8 +42,6 @@ class MolecularDistanceEdge(Descriptor):
             self._valence1,
             self._valence2,
         )
-
-    __slots__ = ('_valence1', '_valence2', '_atomic_num',)
 
     def as_key(self):
         return self.__class__, (self._valence1, self._valence2, self._atomic_num)
@@ -64,23 +62,22 @@ class MolecularDistanceEdge(Descriptor):
             'V': Valence(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, D, V):
-        N = mol.GetNumAtoms()
+    def calculate(self, D, V):
+        N = self.mol.GetNumAtoms()
         Dv = [
             D[i, j]
             for i in range(N)
             for j in range(i + 1, N)
             if (V[i] == self._valence1 and V[j] == self._valence2) or
             (V[j] == self._valence1 and V[i] == self._valence2)
-            if mol.GetAtomWithIdx(i).GetAtomicNum() ==
-            mol.GetAtomWithIdx(j).GetAtomicNum() ==
+            if self.mol.GetAtomWithIdx(i).GetAtomicNum() ==
+            self.mol.GetAtomWithIdx(j).GetAtomicNum() ==
             self._atomic_num
         ]
         n = len(Dv)
-        if n == 0:
-            return nan
 
-        dx = product(Dv) ** (1. / (2. * n))
+        with self.rethrow_zerodiv():
+            dx = product(Dv) ** (1. / (2. * n))
 
         return n / (dx ** 2)
 

@@ -16,7 +16,6 @@ class VertexAdjacencyInformation(Descriptor):
 
     :returns: :math:`m = 0`
     """
-
     __slots__ = ()
 
     @classmethod
@@ -31,17 +30,15 @@ class VertexAdjacencyInformation(Descriptor):
     def as_key(self):
         return self.__class__, ()
 
-    def calculate(self, mol):
+    def calculate(self):
         m = sum(
             1
-            for b in mol.GetBonds()
+            for b in self.mol.GetBonds()
             if b.GetBeginAtom().GetAtomicNum() != 1 and
             b.GetEndAtom().GetAtomicNum() != 1
         )
 
-        if m == 0:
-            return np.nan
-
-        return 1 + np.log2(m)
+        with self.rethrow_zerodiv():
+            return 1 + np.log2(m)
 
     rtype = float

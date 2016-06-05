@@ -12,6 +12,7 @@ __all__ = ('TopologicalCharge',)
 
 
 class ChargeTermMatrix(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
     def as_key(self):
@@ -23,7 +24,7 @@ class ChargeTermMatrix(Descriptor):
             'D': DistanceMatrix(self.explicit_hydrogens),
         }
 
-    def calculate(self, mol, A, D):
+    def calculate(self, A, D):
         D2 = D.copy()
         D2[D2 != 0] **= -2
         np.fill_diagonal(D2, 0)
@@ -47,6 +48,7 @@ class TopologicalCharge(Descriptor):
     References
         * :cite:`10.1021/ci00019a008`
     """
+    __slots__ = ('_type', '_order',)
 
     explicit_hydrogens = False
 
@@ -67,8 +69,6 @@ class TopologicalCharge(Descriptor):
         else:
             return 'GGI{}'.format(self._order)
 
-    __slots__ = ('_type', '_order',)
-
     def as_key(self):
         return self.__class__, (self._type, self._order)
 
@@ -85,7 +85,7 @@ class TopologicalCharge(Descriptor):
             'D': DistanceMatrix(self.explicit_hydrogens)
         }
 
-    def calculate(self, mol, CT, D):
+    def calculate(self, CT, D):
         D = D * np.tri(*D.shape)
         D[D == 0] = np.inf
 

@@ -31,27 +31,25 @@ class Barysz(BaryszMatrixBase):
     def dependencies(self):
         return {'P': self._prop}
 
-    def calculate(self, mol, P):
+    def calculate(self, P):
         C = self._prop.prop(self._carbon)
 
         G = Graph()
 
-        G.add_nodes_from(a.GetIdx() for a in mol.GetAtoms())
+        G.add_nodes_from(a.GetIdx() for a in self.mol.GetAtoms())
 
-        for bond in mol.GetBonds():
+        for bond in self.mol.GetBonds():
             i = bond.GetBeginAtomIdx()
             j = bond.GetEndAtomIdx()
 
             pi = bond.GetBondTypeAsDouble()
 
             w = float(C * C) / float(P[i] * P[j] * pi)
-            if not np.isfinite(w):
-                return None
 
             G.add_edge(i, j, weight=w)
 
         sp = floyd_warshall_numpy(G)
-        np.fill_diagonal(sp, [1. - float(C) / P[a.GetIdx()] for a in mol.GetAtoms()])
+        np.fill_diagonal(sp, [1. - float(C) / P[a.GetIdx()] for a in self.mol.GetAtoms()])
         return sp
 
 
@@ -66,6 +64,7 @@ class BaryszMatrix(BaryszMatrixBase):
 
     :returns: NaN when any properties are NaN
     """
+    __slots__ = ('_prop', '_type',)
 
     @classmethod
     def preset(cls):
@@ -73,8 +72,6 @@ class BaryszMatrix(BaryszMatrixBase):
 
     def __str__(self):
         return '{}_Dz{}'.format(self._type.__name__, self._prop)
-
-    __slots__ = ('_prop', '_type',)
 
     def as_key(self):
         return self.__class__, (self._prop, self._type)
@@ -92,7 +89,7 @@ class BaryszMatrix(BaryszMatrixBase):
             )
         )
 
-    def calculate(self, mol, result):
+    def calculate(self, result):
         return result
 
     rtype = float

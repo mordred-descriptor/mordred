@@ -11,6 +11,7 @@ __all__ = (
 
 
 class CarbonTypesBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
     kekulize = True
 
@@ -29,9 +30,9 @@ class CarbonTypesCache(CarbonTypesBase):
         HybridizationType.SP3D2: 3,
     }
 
-    def calculate(self, mol):
+    def calculate(self):
         r = defaultdict(lambda: defaultdict(int))
-        for a in mol.GetAtoms():
+        for a in self.mol.GetAtoms():
             if a.GetAtomicNum() != 6:
                 continue
 
@@ -56,6 +57,7 @@ class CarbonTypes(CarbonTypesBase):
     :type SP: int
     :param SP: count :math:`{\rm SP}n` carbon
     """
+    __slots__ = ('_nCarbon', '_SP',)
 
     @classmethod
     def preset(cls):
@@ -67,8 +69,6 @@ class CarbonTypes(CarbonTypesBase):
 
     def __str__(self):
         return 'C{}SP{}'.format(self._nCarbon, self._SP)
-
-    __slots__ = ('_nCarbon', '_SP',)
 
     def as_key(self):
         return self.__class__, (self._nCarbon, self._SP)
@@ -82,7 +82,7 @@ class CarbonTypes(CarbonTypesBase):
     def dependencies(self):
         return {'CT': CarbonTypesCache()}
 
-    def calculate(self, mol, CT):
+    def calculate(self, CT):
         return CT[self._SP][self._nCarbon]
 
     rtype = int
@@ -97,7 +97,6 @@ class HybridizationRatio(CarbonTypesBase):
 
     :returns: NaN when :math:`N_{\rm SP2} + N_{\rm SP3} = 0`.
     """
-
     __slots__ = ()
 
     @classmethod
@@ -113,12 +112,12 @@ class HybridizationRatio(CarbonTypesBase):
     def dependencies(self):
         return {'CT': CarbonTypesCache()}
 
-    def calculate(self, mol, CT):
+    def calculate(self, CT):
         Nsp3 = float(sum(CT[3].values()))
         Nsp2 = float(sum(CT[2].values()))
 
         if Nsp3 == Nsp2 == 0:
-            return float('nan')
+            self.fail(ValueError('there are no sp3 and sp2 carbons'))
 
         return Nsp3 / (Nsp2 + Nsp3)
 

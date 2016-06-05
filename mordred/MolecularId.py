@@ -10,6 +10,8 @@ __all__ = ('MolecularId',)
 
 
 class AtomicId(object):
+    __slots__ = ('G', 'lim', 'start', 'id', 'visited', 'weights')
+
     def __init__(self, mol, eps):
         G = Graph()
 
@@ -60,6 +62,7 @@ class AtomicId(object):
 
 
 class MolecularIdBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
     require_connected = True
 
@@ -73,11 +76,11 @@ class AtomicIds(MolecularIdBase):
     def __init__(self, eps=1e-10):
         self._eps = eps
 
-    def calculate(self, mol):
-        aid = AtomicId(mol, self._eps)
+    def calculate(self):
+        aid = AtomicId(self.mol, self._eps)
         return [
             1 + aid.get_atomic_id(i) / 2.0
-            for i in range(mol.GetNumAtoms())
+            for i in range(self.mol.GetNumAtoms())
         ]
 
 
@@ -98,6 +101,7 @@ class MolecularId(MolecularIdBase):
     :type _eps: float
     :param _eps: internally used
     """
+    __slots__ = ('_orig_type', '_averaged', '_eps', '_type', '_check')
 
     @classmethod
     def preset(cls):
@@ -113,8 +117,6 @@ class MolecularId(MolecularIdBase):
             n = '{}_{}'.format(n, self._type)
 
         return n
-
-    __slots__ = ('_orig_type', '_averaged', '_eps',)
 
     def as_key(self):
         return self.__class__, (self._orig_type, self._averaged, self._eps)
@@ -140,15 +142,17 @@ class MolecularId(MolecularIdBase):
     def dependencies(self):
         return {'aids': AtomicIds(self._eps)}
 
-    def calculate(self, mol, aids):
-        v = float(sum(
-            aid
-            for aid, atom in zip(aids, mol.GetAtoms())
-            if self._check(atom.GetAtomicNum())
-        ))
+    def calculate(self, aids):
+        v = float(
+            sum(
+                aid
+                for aid, atom in zip(aids, self.mol.GetAtoms())
+                if self._check(atom.GetAtomicNum())
+            )
+        )
 
         if self._averaged:
-            v /= mol.GetNumAtoms()
+            v /= self.mol.GetNumAtoms()
 
         return v
 

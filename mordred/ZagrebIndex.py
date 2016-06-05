@@ -1,5 +1,3 @@
-import numpy as np
-
 from ._base import Descriptor
 from ._graph_matrix import Valence
 
@@ -27,7 +25,7 @@ class ZagrebIndex(Descriptor):
 
     :returns: NaN when valence of any atoms are 0
     """
-
+    __slots__ = ('_version', '_variable',)
     explicit_hydrogens = False
 
     @classmethod
@@ -41,8 +39,6 @@ class ZagrebIndex(Descriptor):
 
         return 'Zagreb{}_{}'.format(self._version, self._variable)
 
-    __slots__ = ('_version', '_variable',)
-
     def as_key(self):
         return self.__class__, (self._version, self._variable)
 
@@ -54,18 +50,18 @@ class ZagrebIndex(Descriptor):
     def dependencies(self):
         return {'V': Valence(self.explicit_hydrogens)}
 
-    def calculate(self, mol, V):
+    def calculate(self, V):
         V = V.astype('float')
 
         if self._version == 1:
-            if np.any(V == 0):
-                return float('nan')
-
-            return (V ** (self._variable * 2)).sum()
+            with self.rethrow_zerodiv():
+                return (V ** (self._variable * 2)).sum()
         else:
-            return float(sum(
-                (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
-                for b in mol.GetBonds()
-            ))
+            return float(
+                sum(
+                    (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
+                    for b in self.mol.GetBonds()
+                )
+            )
 
     rtype = float

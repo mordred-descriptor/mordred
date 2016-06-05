@@ -5,10 +5,11 @@ import click
 import csv
 import math
 from importlib import import_module
-from . import __version__, all_descriptors, Calculator
+from . import __version__, all_descriptors, Calculator, Error
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
+from tqdm import tqdm
 
 
 logger = getLogger(__name__)
@@ -175,14 +176,25 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
         writer = csv.writer(output)
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
-        def pretty(v):
+        def pretty(mol, v, err_set):
+            if (isinstance(v, Error) and v.warning and v.error.__class__ not in err_set):
+
+                if mol.HasProp('_Name'):
+                    name = mol.GetProp('_Name')
+                else:
+                    name = Chem.MolToSmiles(mol)
+
+                tqdm.write('{}: {}'.format(name, v))
+                err_set.add(v.error.__class__)
+
             if isinstance(v, float) and math.isnan(v):
                 return ''
 
             return str(v)
 
         for mol, val in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
-            writer.writerow([mol.GetProp('_Name')] + [pretty(v) for v in val])
+            err_set = set()
+            writer.writerow([mol.GetProp('_Name')] + [pretty(mol, v, err_set) for v in val])
 
 
 if __name__ == '__main__':

@@ -45,10 +45,9 @@ class VdwVolumeABC(Descriptor):
     References
         * :cite:`10.1021/jo034808o`
     """
+    __slots__ = ()
 
     compat_atoms = tuple(bondi_radii)
-
-    __slots__ = ()
 
     @classmethod
     def preset(cls):
@@ -67,10 +66,10 @@ class VdwVolumeABC(Descriptor):
             'NRA': RingCount(None, False, False, False, None),
         }
 
-    def calculate(self, mol, Nb, NRa, NRA):
+    def calculate(self, Nb, NRa, NRA):
         ac = sum(
             atom_contrib.get(a.GetAtomicNum(), np.nan)
-            for a in mol.GetAtoms()
+            for a in self.mol.GetAtoms()
         )
 
         return ac - 5.92 * Nb - 14.7 * NRa - 3.8 * NRA
