@@ -5,8 +5,8 @@ from numpy.testing import assert_almost_equal
 from rdkit import Chem
 
 import numpy as np
-from mordred import Calculator, all_descriptors, Error
-from mordred import Polarizability
+from mordred import Calculator, all_descriptors, Polarizability
+from mordred.error import Error
 
 import yaml
 try:
