@@ -88,7 +88,7 @@ class Eigen(Common):
 
     def calculate(self, matrix):
         if matrix is None:
-            self.fail(ValueError('matrix is None'))
+            raise ValueError('matrix is None')
 
         w, v = np.linalg.eig(matrix)
 

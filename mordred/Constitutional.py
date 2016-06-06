@@ -39,7 +39,7 @@ class ConstitutionalSum(Descriptor):
         if self._prop.prop == get_sanderson_en:
             self._prop_name = 'se'
         else:
-            self._prop_name = str(self._prop)
+            self._prop_name = self._prop.as_argument
 
     def __str__(self):
         return 'S{}'.format(self._prop_name)

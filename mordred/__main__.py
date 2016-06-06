@@ -3,9 +3,9 @@ import os
 import sys
 import click
 import csv
-import math
 from importlib import import_module
-from . import __version__, all_descriptors, Calculator, Error
+from . import __version__, all_descriptors, Calculator
+from .error import Error
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
@@ -176,25 +176,34 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
         writer = csv.writer(output)
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
-        def pretty(mol, v, err_set):
-            if (isinstance(v, Error) and v.warning and v.error.__class__ not in err_set):
+        def warning(name, v, err_set):
+            if not isinstance(v, Error):
+                return
 
-                if mol.HasProp('_Name'):
-                    name = mol.GetProp('_Name')
-                else:
-                    name = Chem.MolToSmiles(mol)
+            red = v.error.__class__, v.error.args
+            if red in err_set:
+                return
 
-                tqdm.write('{}: {}'.format(name, v))
-                err_set.add(v.error.__class__)
+            tqdm.write('{}: {}'.format(name, v))
+            err_set.add(red)
 
-            if isinstance(v, float) and math.isnan(v):
+        def pretty(name, v, err_set):
+            warning(name, v, err_set)
+
+            if isinstance(v, Error):
                 return ''
 
             return str(v)
 
         for mol, val in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
             err_set = set()
-            writer.writerow([mol.GetProp('_Name')] + [pretty(mol, v, err_set) for v in val])
+
+            if mol.HasProp('_Name'):
+                name = mol.GetProp('_Name')
+            else:
+                name = Chem.MolToSmiles(mol)
+
+            writer.writerow([name] + [pretty(name, v, err_set) for v in val])
 
 
 if __name__ == '__main__':

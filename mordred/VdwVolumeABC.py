@@ -1,7 +1,5 @@
 from math import pi
 
-import numpy as np
-
 from .BondCount import BondCount
 from .RingCount import RingCount
 
@@ -67,10 +65,13 @@ class VdwVolumeABC(Descriptor):
         }
 
     def calculate(self, Nb, NRa, NRA):
-        ac = sum(
-            atom_contrib.get(a.GetAtomicNum(), np.nan)
-            for a in self.mol.GetAtoms()
-        )
+        try:
+            ac = sum(
+                atom_contrib[a.GetAtomicNum()]
+                for a in self.mol.GetAtoms()
+            )
+        except KeyError:
+            raise ValueError('unknown atom type')
 
         return ac - 5.92 * Nb - 14.7 * NRa - 3.8 * NRA
 

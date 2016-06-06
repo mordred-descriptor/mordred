@@ -117,7 +117,7 @@ class HybridizationRatio(CarbonTypesBase):
         Nsp2 = float(sum(CT[2].values()))
 
         if Nsp3 == Nsp2 == 0:
-            self.fail(ValueError('there are no sp3 and sp2 carbons'))
+            raise ValueError('there are no sp3 and sp2 carbons')
 
         return Nsp3 / (Nsp2 + Nsp3)
 

@@ -71,7 +71,7 @@ class BaryszMatrix(BaryszMatrixBase):
         return (cls(p, m) for p in get_properties() for m in methods)
 
     def __str__(self):
-        return '{}_Dz{}'.format(self._type.__name__, self._prop)
+        return '{}_Dz{}'.format(self._type.__name__, self._prop.as_argument)
 
     def as_key(self):
         return self.__class__, (self._prop, self._type)

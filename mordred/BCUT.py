@@ -33,7 +33,7 @@ class Burden(BCUTBase):
             try:
                 w = bond.GetBondTypeAsDouble() / 10.0
             except RuntimeError:
-                self.fail(ValueError('unknown bond type'))
+                raise ValueError('unknown bond type')
 
             if a.GetDegree() == 1 or b.GetDegree() == 1:
                 w += 0.01
@@ -97,9 +97,9 @@ class BCUT(BCUTBase):
 
     def __str__(self):
         if self._nth < 0:
-            return 'BCUT{}-{}l'.format(self._prop, np.abs(self._nth))
+            return 'BCUT{}-{}l'.format(self._prop.as_argument, np.abs(self._nth))
         else:
-            return 'BCUT{}-{}h'.format(self._prop, self._nth + 1)
+            return 'BCUT{}-{}h'.format(self._prop.as_argument, self._nth + 1)
 
     def as_key(self):
         return self.__class__, (self._prop, self._nth)
@@ -115,6 +115,6 @@ class BCUT(BCUTBase):
         try:
             return bev[self._nth]
         except IndexError:
-            self.fail(ValueError('nth greater then atom count'))
+            raise ValueError('nth greater then atom count')
 
     rtype = float

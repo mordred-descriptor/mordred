@@ -163,7 +163,7 @@ class Chi(ChiBase):
         )
 
     def __str__(self):
-        prop = _prop_dict.get(str(self._prop), self._prop)
+        prop = _prop_dict.get(str(self._prop.as_argument), self._prop)
         ct = _chi_type_dict[self._type]
         p = 'A' if self._averaged else ''
 
@@ -197,7 +197,7 @@ class Chi(ChiBase):
                 c *= P[node]
 
             if c <= 0:
-                self.fail(ValueError('some properties less then or equal to 0'))
+                raise ValueError('some properties less then or equal to 0')
 
             x += c ** -0.5
 

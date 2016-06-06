@@ -121,10 +121,7 @@ class AtomTypeEState(EStateBase):
             filter(lambda e: self._estate in e[0], zip(*E))
         )
 
-        try:
-            return float(getattr(builtins, self._type.name)(indices))
-        except ValueError as e:  # min, max to empty list
-            self.fail(e)
+        return float(getattr(builtins, self._type.name)(indices))
 
     @property
     def rtype(self):

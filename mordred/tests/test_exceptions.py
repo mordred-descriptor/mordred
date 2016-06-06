@@ -1,7 +1,7 @@
 from rdkit import Chem
 from mordred import Descriptor, Calculator, Error
 
-from nose.tools import raises, eq_
+from nose.tools import eq_
 
 
 class RaiseDescriptor(Descriptor):
@@ -13,16 +13,10 @@ class RaiseDescriptor(Descriptor):
         self.critical = critical
 
     def calculate(self):
-        self.fail(self.e, critical=self.critical)
+        raise self.e
 
 
 mol = Chem.MolFromSmiles('c1ccccc1')
-
-
-@raises(Error)
-def test_through_critical_error():
-    calc = Calculator(RaiseDescriptor(ValueError(), True))
-    calc(mol)
 
 
 def test_catch_non_critical_error():

@@ -1,4 +1,5 @@
-from .descriptor import Descriptor, Error
+from .descriptor import Descriptor
+from ..error import Error, MultipleFragments
 from types import ModuleType
 from .context import Context
 from inspect import getsourcelines
@@ -56,7 +57,7 @@ class Calculator(object):
 
     @descriptors.deleter
     def descriptors(self):
-        self._descriptors[:] = []
+        self._descriptors = []
         self._explicit_hydrogens.clear()
         self._kekulizes.clear()
         self._require_3D = False
@@ -119,7 +120,7 @@ class Calculator(object):
         cxt.add_stack(desc)
 
         if desc.require_connected and desc._context.n_frags != 1:
-            desc.fail(ValueError('multiple fragments'), warning=True)
+            raise MultipleFragments()
 
         args = {
             name: self._calculate_one(cxt, dep, False)
@@ -150,11 +151,8 @@ class Calculator(object):
         for desc in self.descriptors:
             try:
                 yield self._calculate_one(cxt, desc, True)
-            except Error as e:
-                if e.critical:
-                    raise e
-
-                yield e
+            except Exception as e:
+                yield Error(e, desc._context.get_stack())
 
     def __call__(self, mol, id=-1):
         r"""calculate descriptors.

@@ -21,7 +21,7 @@ def attr(**attrs):
     return proc
 
 
-@attr(name='c', gasteiger_charges=True)
+@attr(short='c', long='gasteiger charge', gasteiger_charges=True)
 def get_gasteiger_charge(atom):
     return (
         atom.GetDoubleProp('_GasteigerCharge') +
@@ -98,7 +98,7 @@ table = Chem.GetPeriodicTable()
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
-@attr(name='delta_v')
+@attr(short='delta_v', long='valence electrons')
 def get_valence_electrons(atom):
     N = atom.GetAtomicNum()
     if N == 1:
@@ -112,7 +112,7 @@ def get_valence_electrons(atom):
     return float(Zv - h) / float(Z - Zv - 1)
 
 
-@attr(name='delta')
+@attr(short='delta', long='sigma electrons')
 def get_sigma_electrons(atom):
     return sum(1 for a in atom.GetNeighbors()
                if a.GetAtomicNum() != 1)
@@ -120,7 +120,7 @@ def get_sigma_electrons(atom):
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
 # p. 283
-@attr(require_connected=True, name='s')
+@attr(short='s', long='intrinsic state', require_connected=True)
 def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)
@@ -217,43 +217,43 @@ def get_eta_gamma(atom):
     return get_core_count(atom) / beta
 
 
-@attr(name='Z')
+@attr(short='Z', long='atomic number')
 def get_atomic_number(a):
     return a.GetAtomicNum()
 
 
-@attr(name='m')
+@attr(short='m', long='mass')
 def get_mass(a):
     return mass[a.GetAtomicNum()]
 
 
-@attr(name='v')
+@attr(short='v', long='vdw volume')
 def get_vdw_volume(a):
     return vdw_volume[a.GetAtomicNum()]
 
 
-@attr(name='e')
+@attr(short='e', long='sanderson EN')
 def get_sanderson_en(a):
     return sanderson[a.GetAtomicNum()]
 
 
-@attr(name='pe')
+@attr(short='pe', long='pauling EN')
 def get_pauling_en(a):
     return pauling[a.GetAtomicNum()]
 
 
-@attr(name='are')
+@attr(short='are', long='allred-rocow EN')
 def get_allred_rocow_en(a):
     return allred_rocow[a.GetAtomicNum()]
 
 
-@attr(name='p')
+@attr(short='p', long='polarizability')
 def get_polarizability(a):
     return polarizability94[a.GetAtomicNum()]
 
 
-@attr(name='i')
-def get_ionpotential(a):
+@attr(short='i', long='ionization potential')
+def get_ionization_potential(a):
     return ionization_potentials[a.GetAtomicNum()]
 
 
@@ -270,7 +270,7 @@ getters = {
     'pe': get_pauling_en,
     'are': get_allred_rocow_en,
     'p': get_polarizability,
-    'i': get_ionpotential,
+    'i': get_ionization_potential,
     's': get_intrinsic_state,
     'c': get_gasteiger_charge,
     'delta': get_sigma_electrons,
@@ -293,11 +293,14 @@ class AtomicProperty(Descriptor):
     __slots__ = 'explicit_hydrogens', 'prop', '_initialized'
 
     def __str__(self):
-        return getattr(self.prop, 'name', self.prop.__name__)
+        return 'Prop{}'.format(self.as_argument)
+
+    def get_long(self):
+        return getattr(self.prop, 'long', self.prop.__name__)
 
     @property
     def as_argument(self):
-        return str(self)
+        return getattr(self.prop, 'short', self.prop.__name__)
 
     def as_key(self):
         return self.__class__, (self.explicit_hydrogens, self.prop)
@@ -323,7 +326,7 @@ class AtomicProperty(Descriptor):
             self.prop = prop
             return
 
-        raise ValueError('atomic property is not callable: {!r}'.format(prop))
+        raise TypeError('atomic property is not callable: {!r}'.format(prop))
 
     def calculate(self):
         if getattr(self.prop, 'gasteiger_charges', False):
@@ -331,7 +334,9 @@ class AtomicProperty(Descriptor):
 
         r = atoms_to_numpy(self.prop, self.mol)
 
-        if not np.all(np.isfinite(r)):
-            self.fail(ValueError('some properties are NaN'))
+        nans = np.isnan(r)
+        if np.any(nans):
+            atms = set(np.array([a.GetSymbol() for a in self.mol.GetAtoms()])[nans])
+            raise ValueError('missing {} for {}'.format(self.get_long(), list(atms)))
 
         return r

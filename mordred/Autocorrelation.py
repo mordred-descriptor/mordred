@@ -16,7 +16,7 @@ class AutocorrelationBase(Descriptor):
         return '{}{}{}'.format(
             self.__class__.__name__,
             self._order,
-            self._avec
+            self._avec.as_argument
         )
 
     def as_key(self):
@@ -328,7 +328,7 @@ class GATS(MATS):
 
     def calculate(self, avec, gmat, gsum, cavec):
         if len(avec) <= 1:
-            self.fail(ValueError('no bond'))
+            raise ValueError('no bond')
 
         with self.rethrow_zerodiv():
             n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * gsum)

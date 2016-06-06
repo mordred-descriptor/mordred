@@ -5,31 +5,6 @@ from inspect import isabstract
 from contextlib import contextmanager
 
 
-class Error(Exception):
-    __slots__ = 'error', 'stack', 'critical', 'warning'
-
-    def __reduce_ex__(self, version):
-        return self.__class__, (self.error, self.stack, self.critical, self.warning)
-
-    def __init__(self, error, stack, critical=False, warning=False):
-        self.error = error
-        self.stack = stack
-        self.critical = critical
-        self.warning = warning
-
-    def __float__(self):
-        return np.nan
-
-    def __add__(self, other):
-        return np.nan
-
-    def __sub__(self, other):
-        return np.nan
-
-    def __str__(self):
-        return '{} ({})'.format(self.error, '/'.join(str(d) for d in self.stack))
-
-
 class Descriptor(six.with_metaclass(ABCMeta, object)):
     r"""abstract base class of descriptors."""
 
@@ -45,7 +20,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     @abstractmethod
     def as_key(self):
-        raise TypeError('not implemented Descriptor.as_key method')
+        raise NotImplementedError('not implemented Descriptor.as_key method')
 
     @property
     def as_argument(self):
@@ -65,9 +40,13 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     def __compare_by_reduce(meth):
         def compare(self, other):
-            l = self.as_key()
-            r = other.as_key()
-            return getattr(l, meth)(r)
+            if isinstance(other, self.__class__):
+                l = self.as_key()
+                r = other.as_key()
+                return getattr(l, meth)(r)
+
+            elif isinstance(other, str):
+                return getattr(str(l), meth)(str(r))
 
         return compare
 
@@ -102,7 +81,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
         (abstract method)
         """
-        raise TypeError('not implemented Descriptor.calculate method')
+        raise NotImplementedError('not implemented Descriptor.calculate method')
 
     @classmethod
     def is_descriptor_class(cls, desc):
@@ -124,13 +103,10 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def coord(self):
         return self._context.get_coord(self.explicit_hydrogens, self.kekulize)
 
-    def fail(self, ex, critical=False, warning=False):
-        raise Error(ex, self._context.get_stack(), critical, warning)
-
     @contextmanager
     def rethrow_zerodiv(self):
         with np.errstate(divide='raise', invalid='raise'):
             try:
                 yield
             except (FloatingPointError, ZeroDivisionError) as e:
-                self.fail(ZeroDivisionError(*e.args))
+                raise ZeroDivisionError(*e.args)
