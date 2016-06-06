@@ -5,6 +5,13 @@ from inspect import isabstract
 from contextlib import contextmanager
 
 
+class NAException(Exception):
+    __slots__ = ('error',)
+
+    def __init__(self, error):
+        self.error = error
+
+
 class Descriptor(six.with_metaclass(ABCMeta, object)):
     r"""abstract base class of descriptors."""
 
@@ -109,4 +116,14 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
             try:
                 yield
             except (FloatingPointError, ZeroDivisionError) as e:
-                raise ZeroDivisionError(*e.args)
+                self.fail(ZeroDivisionError(*e.args))
+
+    def fail(self, exception):
+        raise NAException(exception)
+
+    @contextmanager
+    def rethrow_na(self, exception):
+        try:
+            yield
+        except exception as e:
+            self.fail(e)

@@ -197,7 +197,7 @@ class Chi(ChiBase):
                 c *= P[node]
 
             if c <= 0:
-                raise ValueError('some properties less then or equal to 0')
+                self.fail(ValueError('some properties less then or equal to 0'))
 
             x += c ** -0.5
 

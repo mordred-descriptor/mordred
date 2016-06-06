@@ -337,6 +337,6 @@ class AtomicProperty(Descriptor):
         nans = np.isnan(r)
         if np.any(nans):
             atms = set(np.array([a.GetSymbol() for a in self.mol.GetAtoms()])[nans])
-            raise ValueError('missing {} for {}'.format(self.get_long(), list(atms)))
+            self.fail(ValueError('missing {} for {}'.format(self.get_long(), list(atms))))
 
         return r

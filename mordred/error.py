@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Error(object):
+class MissingValue(object):
     __slots__ = 'error', 'stack'
 
     def __reduce_ex__(self, version):
@@ -24,9 +24,18 @@ class Error(object):
         return '{} ({})'.format(self.error, '/'.join(str(d) for d in self.stack))
 
 
+class NA(MissingValue):
+    __slots__ = ()
+    header = 'WARNING'
+
+
+class Error(MissingValue):
+    __slots__ = ()
+    header = 'ERROR'
+
+
 class MordredException(Exception):
     __slots__ = ()
-    pass
 
 
 class MultipleFragments(MordredException):

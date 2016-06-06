@@ -1,5 +1,5 @@
-from .descriptor import Descriptor
-from ..error import Error, MultipleFragments
+from .descriptor import Descriptor, NAException
+from ..error import NA, Error, MultipleFragments
 from types import ModuleType
 from .context import Context
 from inspect import getsourcelines
@@ -120,7 +120,7 @@ class Calculator(object):
         cxt.add_stack(desc)
 
         if desc.require_connected and desc._context.n_frags != 1:
-            raise MultipleFragments()
+            desc.fail(MultipleFragments())
 
         args = {
             name: self._calculate_one(cxt, dep, False)
@@ -151,6 +151,8 @@ class Calculator(object):
         for desc in self.descriptors:
             try:
                 yield self._calculate_one(cxt, desc, True)
+            except NAException as e:
+                yield NA(e.error, desc._context.get_stack())
             except Exception as e:
                 yield Error(e, desc._context.get_stack())
 

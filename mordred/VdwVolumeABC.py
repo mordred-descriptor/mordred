@@ -71,7 +71,7 @@ class VdwVolumeABC(Descriptor):
                 for a in self.mol.GetAtoms()
             )
         except KeyError:
-            raise ValueError('unknown atom type')
+            self.fail(ValueError('unknown atom type'))
 
         return ac - 5.92 * Nb - 14.7 * NRa - 3.8 * NRA
 

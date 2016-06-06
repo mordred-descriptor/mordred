@@ -67,7 +67,7 @@ class AlterMolecule(Descriptor):
             aj = bond.GetEndAtom()
 
             if not self._saturated and (ai.GetDegree() > 4 or aj.GetDegree() > 4):
-                raise ValueError('bond degree greater then 4')
+                self.fail(ValueError('bond degree greater then 4'))
 
             i = ids.get(ai.GetIdx())
             j = ids.get(aj.GetIdx())
@@ -83,7 +83,7 @@ class AlterMolecule(Descriptor):
         new = Chem.Mol(new)
         if Chem.SanitizeMol(new, catchErrors=True) != 0:
             typ = 'saturated' if self._saturated else 'referense'
-            raise ValueError('cannot sanitize {} mol'.format(typ))
+            self.fail(ValueError('cannot sanitize {} mol'.format(typ)))
 
         if self.explicit_hydrogens:
             new = Chem.AddHs(new)
@@ -508,7 +508,7 @@ class EtaBranchingIndex(EtaBase):
         N = self.mol.GetNumAtoms()
 
         if N <= 1:
-            raise ValueError('single atom')
+            self.fail(ValueError('single atom'))
         elif N == 2:
             eta_NL = 1.0
         else:

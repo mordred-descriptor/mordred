@@ -5,7 +5,7 @@ import click
 import csv
 from importlib import import_module
 from . import __version__, all_descriptors, Calculator
-from .error import Error
+from .error import MissingValue
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
@@ -177,20 +177,20 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
         def warning(name, v, err_set):
-            if not isinstance(v, Error):
+            if not isinstance(v, MissingValue):
                 return
 
             red = v.error.__class__, v.error.args
             if red in err_set:
                 return
 
-            tqdm.write('{}: {}'.format(name, v))
+            tqdm.write('[{}] {}: {}'.format(v.header, name, v))
             err_set.add(red)
 
         def pretty(name, v, err_set):
             warning(name, v, err_set)
 
-            if isinstance(v, Error):
+            if isinstance(v, MissingValue):
                 return ''
 
             return str(v)

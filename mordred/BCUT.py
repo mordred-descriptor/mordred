@@ -33,7 +33,7 @@ class Burden(BCUTBase):
             try:
                 w = bond.GetBondTypeAsDouble() / 10.0
             except RuntimeError:
-                raise ValueError('unknown bond type')
+                self.fail(ValueError('unknown bond type'))
 
             if a.GetDegree() == 1 or b.GetDegree() == 1:
                 w += 0.01
@@ -115,6 +115,6 @@ class BCUT(BCUTBase):
         try:
             return bev[self._nth]
         except IndexError:
-            raise ValueError('nth greater then atom count')
+            self.fail(ValueError('nth greater then atom count'))
 
     rtype = float

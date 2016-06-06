@@ -121,7 +121,8 @@ class AtomTypeEState(EStateBase):
             filter(lambda e: self._estate in e[0], zip(*E))
         )
 
-        return float(getattr(builtins, self._type.name)(indices))
+        with self.rethrow_na(ValueError):
+            return float(getattr(builtins, self._type.name)(indices))
 
     @property
     def rtype(self):

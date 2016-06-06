@@ -328,7 +328,7 @@ class GATS(MATS):
 
     def calculate(self, avec, gmat, gsum, cavec):
         if len(avec) <= 1:
-            raise ValueError('no bond')
+            self.fail(ValueError('no bond'))
 
         with self.rethrow_zerodiv():
             n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * gsum)
