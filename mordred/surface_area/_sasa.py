@@ -24,11 +24,11 @@ class SurfaceArea(object):
             N_{\rm points} = 5 \times 4^{level} - 8
     """
 
-    def __init__(self, radiuses, xyzs, level=5):
+    def __init__(self, radiuses, xyzs, level=4):
         self.rads = radiuses
         self.xyzs = xyzs
         self._gen_neighbor_list()
-        self.sphere = SphereMesh(level=level).vertices_numpy
+        self.sphere = SphereMesh(level).vertices
 
     def _gen_neighbor_list(self):
         r = self.rads[:, np.newaxis] + self.rads
@@ -87,7 +87,7 @@ class SurfaceArea(object):
         return [self.atomic_sa(i) for i in range(len(self.rads))]
 
     @classmethod
-    def from_mol(cls, mol, conformer=-1, solvent_radius=1.4, level=5):
+    def from_mol(cls, mol, conformer=-1, solvent_radius=1.4, level=4):
         r"""construct SurfaceArea from rdkit Mol type.
 
         :type mol: rdkit.Chem.Mol

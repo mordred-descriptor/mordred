@@ -1,60 +1,30 @@
-import math
-
 import numpy as np
 
 # http://prideout.net/blog/?p=44
 # http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 
 
-class Vector3D(object):
-    def __init__(self, x, y, z):
-        self.x, self.y, self.z = x, y, z
-
-    def __add__(self, other):
-        return self.__class__(
-            self.x + other.x,
-            self.y + other.y,
-            self.z + other.z,
-        )
-
-    def __abs__(self):
-        return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
-
-    def normalize(self):
-        d = abs(self)
-
-        if d:
-            self.x /= d
-            self.y /= d
-            self.z /= d
-
-        return self
-
-    def __iter__(self):
-        return iter([self.x, self.y, self.z])
-
-
 class SphereMesh(object):
     def __init__(self, level=4):
-        t = (1.0 + math.sqrt(5.0)) / 2.0
-        self.vertices = [
-            Vector3D(-1, t, 0).normalize(),
-            Vector3D(1, t, 0).normalize(),
-            Vector3D(-1, -t, 0).normalize(),
-            Vector3D(1, -t, 0).normalize(),
+        t = (1.0 + np.sqrt(5.0)) / 2.0
+        self.vertices = np.array([
+            (-1, t, 0),
+            (1, t, 0),
+            (-1, -t, 0),
+            (1, -t, 0),
 
-            Vector3D(0, -1, t).normalize(),
-            Vector3D(0, 1, t).normalize(),
-            Vector3D(0, -1, -t).normalize(),
-            Vector3D(0, 1, -t).normalize(),
+            (0, -1, t),
+            (0, 1, t),
+            (0, -1, -t),
+            (0, 1, -t),
 
-            Vector3D(t, 0, -1).normalize(),
-            Vector3D(t, 0, 1).normalize(),
-            Vector3D(-t, 0, -1).normalize(),
-            Vector3D(-t, 0, 1).normalize(),
-        ]
+            (t, 0, -1),
+            (t, 0, 1),
+            (-t, 0, -1),
+            (-t, 0, 1),
+        ], dtype='float')
 
-        self.faces = [
+        self.faces = np.array([
             (0, 11, 5),
             (0, 5, 1),
             (0, 1, 7),
@@ -78,38 +48,53 @@ class SphereMesh(object):
             (6, 2, 10),
             (8, 6, 7),
             (9, 8, 1),
-        ]
+        ], dtype='int')
+
+        self.normalize(self.vertices)
 
         self.level = 1
         self.subdivide(level)
 
+    @staticmethod
+    def normalize(vs):
+        vs /= np.sqrt((vs ** 2).sum(axis=1))[:, np.newaxis]
+
     def _subdivide(self):
         self.level += 1
-        vs = self.vertices
-        fs = self.faces
 
-        for faceIndex, face in list(enumerate(fs)):
-            a, b, c = (vs[i] for i in face)
+        Nv = len(self.vertices)
+        Nf = len(self.faces)
 
-            vs.append((a + b).normalize())
-            vs.append((b + c).normalize())
-            vs.append((a + c).normalize())
+        A = self.faces[:, 0]
+        B = self.faces[:, 1]
+        C = self.faces[:, 2]
 
-            i = len(vs) - 3
-            j, k = i + 1, i + 2
+        Av = self.vertices[A]
+        Bv = self.vertices[B]
+        Cv = self.vertices[C]
 
-            fs.append((i, j, k))
-            fs.append((face[0], i, k))
-            fs.append((i, face[1], j))
-            fs[faceIndex] = (k, j, face[2])
+        newVs = np.r_[
+            Av + Bv,
+            Bv + Cv,
+            Av + Cv
+        ]
+        self.normalize(newVs)
+        self.vertices = np.r_[self.vertices, newVs]
+
+        AB = np.arange(len(self.faces)) + Nv
+        BC = AB + Nf
+        AC = AB + 2 * Nf
+
+        self.faces = np.r_[
+            np.c_[A, AB, AC],
+            np.c_[B, AB, BC],
+            np.c_[C, AC, BC],
+            np.c_[AB, AC, BC],
+        ]
 
     def subdivide(self, level):
         for _ in range(level - self.level):
             self._subdivide()
-
-    @property
-    def vertices_numpy(self):
-        return np.array([list(v) for v in self.vertices], dtype='float')
 
     def __len__(self):
         return len(self.vertices)
