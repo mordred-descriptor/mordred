@@ -5,7 +5,7 @@ from inspect import isabstract
 from contextlib import contextmanager
 
 
-class NAException(Exception):
+class MissingValueException(Exception):
     __slots__ = ('error',)
 
     def __init__(self, error):
@@ -119,7 +119,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
                 self.fail(ZeroDivisionError(*e.args))
 
     def fail(self, exception):
-        raise NAException(exception)
+        raise MissingValueException(exception)
 
     @contextmanager
     def rethrow_na(self, exception):

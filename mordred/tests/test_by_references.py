@@ -6,7 +6,7 @@ from rdkit import Chem
 
 import numpy as np
 from mordred import Calculator, all_descriptors, Polarizability
-from mordred.error import MissingValue
+from mordred.error import MissingValueBase
 
 import yaml
 try:
@@ -54,7 +54,7 @@ def test_by_references():
             else:
                 def assert_f(a, d, m):
                     if np.isnan(d):
-                        assert isinstance(a, MissingValue)
+                        assert isinstance(a, MissingValueBase)
                         return
 
                     assert_almost_equal(a, d, digit, m)

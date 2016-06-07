@@ -1,5 +1,5 @@
 from mordred import Calculator, all_descriptors
-from mordred.error import MissingValue
+from mordred.error import MissingValueBase
 from rdkit.Chem import AllChem as Chem
 from numpy.testing import assert_almost_equal
 from nose.tools import eq_
@@ -20,7 +20,7 @@ def test_parallel():
     for (_, serial), (_, parallel) in zip(calc.map(mols, nproc=1, quiet=True),
                                           calc.map(mols, quiet=True)):
         for d, s, p in zip(calc.descriptors, serial, parallel):
-            if isinstance(s, MissingValue):
+            if isinstance(s, MissingValueBase):
                 yield eq_, pickle.dumps(s), pickle.dumps(p), str(d)
             else:
                 yield assert_almost_equal, s, p, 7, str(d)

@@ -1,5 +1,5 @@
-from .descriptor import Descriptor, NAException
-from ..error import NA, Error, MultipleFragments
+from .descriptor import Descriptor, MissingValueException
+from ..error import Missing, Error, MultipleFragments
 from types import ModuleType
 from .context import Context
 from inspect import getsourcelines
@@ -22,7 +22,7 @@ class Calculator(object):
 
     __slots__ = (
         '_descriptors', '_explicit_hydrogens', '_kekulizes', '_require_3D',
-        '_cache', '_progress_bar'
+        '_cache', '_debug', '_progress_bar'
     )
 
     def __setstate__(self, dict):
@@ -45,6 +45,7 @@ class Calculator(object):
         self._explicit_hydrogens = set()
         self._kekulizes = set()
         self._require_3D = False
+        self._debug = False
 
         self.register(descs, exclude3D=exclude3D)
 
@@ -136,7 +137,8 @@ class Calculator(object):
 
         r = desc.calculate(**args)
 
-        self._check_rtype(desc, r)
+        if self._debug:
+            self._check_rtype(desc, r)
 
         self._cache[desc] = r
 
@@ -150,15 +152,15 @@ class Calculator(object):
             return
 
         if not isinstance(result, desc.rtype):
-            pass  # TODO
+            raise TypeError('{} not match {}'.format(result, desc.rtype))
 
     def _calculate(self, cxt):
         self._cache = {}
         for desc in self.descriptors:
             try:
                 yield self._calculate_one(cxt, desc, True)
-            except NAException as e:
-                yield NA(e.error, desc._context.get_stack())
+            except MissingValueException as e:
+                yield Missing(e.error, desc._context.get_stack())
             except Exception as e:
                 yield Error(e, desc._context.get_stack())
 

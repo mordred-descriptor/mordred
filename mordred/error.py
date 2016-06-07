@@ -1,7 +1,9 @@
 import numpy as np
+import six
+from abc import ABCMeta, abstractproperty
 
 
-class MissingValue(object):
+class MissingValueBase(six.with_metaclass(ABCMeta, object)):
     __slots__ = 'error', 'stack'
 
     def __reduce_ex__(self, version):
@@ -23,13 +25,17 @@ class MissingValue(object):
     def __str__(self):
         return '{} ({})'.format(self.error, '/'.join(str(d) for d in self.stack))
 
+    @abstractproperty
+    def header(self):
+        raise NotImplementedError('require header')
 
-class NA(MissingValue):
+
+class Missing(MissingValueBase):
     __slots__ = ()
-    header = 'WARNING'
+    header = 'Missing'
 
 
-class Error(MissingValue):
+class Error(MissingValueBase):
     __slots__ = ()
     header = 'ERROR'
 

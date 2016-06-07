@@ -5,7 +5,7 @@ import click
 import csv
 from importlib import import_module
 from . import __version__, all_descriptors, Calculator
-from .error import MissingValue
+from .error import MissingValueBase
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
@@ -149,7 +149,8 @@ def callback_quiet(cxt, param, value):
     default=False, flag_value=True,
     help='use 3D descriptors (require sdf or mol file)'
 )
-def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
+@click.option('--debug', default=False, flag_value=True)
+def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, debug):
     mols = (m for i in input for m in parser(i))
 
     if stream:
@@ -160,6 +161,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
 
     # Descriptors
     calc = Calculator()
+    calc._debug = debug
     if len(descriptor) == 0:
         calc.register(all_descriptors(), exclude3D=not with3D)
     else:
@@ -176,7 +178,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
         writer.writerow(['name'] + [str(d) for d in calc.descriptors])
 
         def warning(name, v, err_set):
-            if not isinstance(v, MissingValue):
+            if not isinstance(v, MissingValueBase):
                 return
 
             red = v.error.__class__, v.error.args
@@ -189,7 +191,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
         def pretty(name, v, err_set):
             warning(name, v, err_set)
 
-            if isinstance(v, MissingValue):
+            if isinstance(v, MissingValueBase):
                 return ''
 
             return str(v)
