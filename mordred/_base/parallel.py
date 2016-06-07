@@ -1,7 +1,7 @@
 import six
 from multiprocessing import Pool
 from .context import Context
-from .._util import Capture, get_bar
+from .._util import Capture
 
 calculator = None
 
@@ -37,7 +37,7 @@ def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
             args = Context.from_calculator(self, mol, id)
             return pool.apply_async(worker, (args,))
 
-        with get_bar(quiet, nmols, ipynb) as bar:
+        with self._progress(quiet, nmols, ipynb) as bar:
             for m, result in [(m, do_task(m)) for m in mols]:
                 r, err = get_result(result)
 
@@ -50,6 +50,7 @@ def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
 
                 yield m, r
                 bar.update()
+
     finally:
         pool.terminate()
         pool.join()

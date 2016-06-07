@@ -3,9 +3,15 @@ from ..error import NA, Error, MultipleFragments
 from types import ModuleType
 from .context import Context
 from inspect import getsourcelines
-from sys import maxsize
-from .._util import Capture, get_bar
+import sys
+from .._util import Capture, DummyBar, NotebookWrapper
 from itertools import chain
+from contextlib import contextmanager
+from tqdm import tqdm
+from logging import getLogger
+
+
+logger = getLogger('mordred')
 
 
 class Calculator(object):
@@ -16,7 +22,7 @@ class Calculator(object):
 
     __slots__ = (
         '_descriptors', '_explicit_hydrogens', '_kekulizes', '_require_3D',
-        '_cache',
+        '_cache', '_progress_bar'
     )
 
     def __setstate__(self, dict):
@@ -171,7 +177,7 @@ class Calculator(object):
         return list(self._calculate(Context.from_calculator(self, mol, id)))
 
     def _serial(self, mols, nmols, quiet, ipynb, id):
-        with get_bar(quiet, nmols, ipynb) as bar:
+        with self._progress(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
                     r = list(self._calculate(Context.from_calculator(self, m, id)))
@@ -185,6 +191,35 @@ class Calculator(object):
 
                 yield m, r
                 bar.update()
+
+    @contextmanager
+    def _progress(self, quiet, total, ipynb):
+        args = {
+            'dynamic_ncols': True,
+            'leave': True,
+            'total': total
+        }
+
+        if quiet:
+            Bar = DummyBar
+        elif ipynb:
+            Bar = NotebookWrapper
+        else:
+            Bar = tqdm
+
+        try:
+            with Bar(**args) as self._progress_bar:
+                yield self._progress_bar
+        finally:
+            del self._progress_bar
+
+    def logging(self, s):
+        p = getattr(self, '_progress_bar', None)
+        if p is not None:
+            p.write(s, file=sys.stderr)
+            return
+
+        logger.warn(s)
 
     def map(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""calculate descriptors over mols.
@@ -258,7 +293,7 @@ def get_descriptors_from_module(mdl):
         try:
             return getsourcelines(d)[1]
         except IOError:
-            return maxsize
+            return sys.maxsize
 
     descs.sort(key=key_by_def)
     return descs

@@ -9,7 +9,6 @@ from .error import MissingValue
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
-from tqdm import tqdm
 
 
 logger = getLogger(__name__)
@@ -184,7 +183,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D):
             if red in err_set:
                 return
 
-            tqdm.write('[{}] {}: {}'.format(v.header, name, v))
+            calc.logging('[{}] {}: {}'.format(v.header, name, v))
             err_set.add(red)
 
         def pretty(name, v, err_set):

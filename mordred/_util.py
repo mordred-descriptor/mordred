@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from tqdm import tqdm, tqdm_notebook
+from tqdm import tqdm_notebook
 from logging import getLogger
 
 
@@ -48,6 +48,9 @@ logger = getLogger('mordred')
 
 
 class DummyBar(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
     def __enter__(self):
         return self
 
@@ -76,19 +79,3 @@ class NotebookWrapper(object):
 
     def write(self, *args, **kwargs):
         self.bar.update(*args, **kwargs)
-
-
-def get_bar(quiet, total, ipynb, **kwargs):
-    if quiet:
-        return DummyBar()
-    else:
-        args = dict(
-            dynamic_ncols=True,
-            leave=True,
-        )
-        args.update(kwargs)
-        args['total'] = total
-        if ipynb:
-            return NotebookWrapper(**args)
-        else:
-            return tqdm(**args)
