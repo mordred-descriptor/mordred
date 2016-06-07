@@ -163,6 +163,9 @@ class Calculator(object):
                 yield Missing(e.error, desc._context.get_stack())
             except Exception as e:
                 yield Error(e, desc._context.get_stack())
+            finally:
+                if hasattr(desc, '_context'):
+                    del desc._context
 
     def __call__(self, mol, id=-1):
         r"""calculate descriptors.
