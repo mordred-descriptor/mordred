@@ -213,7 +213,8 @@ class Calculator(object):
             with Bar(**args) as self._progress_bar:
                 yield self._progress_bar
         finally:
-            del self._progress_bar
+            if hasattr(self, '_progress_bar'):
+                del self._progress_bar
 
     def logging(self, s):
         p = getattr(self, '_progress_bar', None)
