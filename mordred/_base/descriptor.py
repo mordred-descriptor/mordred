@@ -104,11 +104,11 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     @property
     def mol(self):
-        return self._context.get_mol(self.explicit_hydrogens, self.kekulize)
+        return self._context.get_mol(self)
 
     @property
     def coord(self):
-        return self._context.get_coord(self.explicit_hydrogens, self.kekulize)
+        return self._context.get_coord(self)
 
     @contextmanager
     def rethrow_zerodiv(self):
