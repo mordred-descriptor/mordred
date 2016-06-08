@@ -5,7 +5,7 @@ import click
 import csv
 from importlib import import_module
 from . import __version__, all_descriptors, Calculator
-from .error import MissingValueBase
+from .error import MissingValueBase, Missing
 from ._base import get_descriptors_from_module
 from rdkit import Chem
 from logging import getLogger
@@ -105,7 +105,7 @@ def callback_quiet(cxt, param, value):
     }
 )
 @click.version_option(
-    __version__, '-v', '--version',
+    __version__, '--version',
     prog_name='mordred'
 )
 @click.argument(
@@ -149,8 +149,12 @@ def callback_quiet(cxt, param, value):
     default=False, flag_value=True,
     help='use 3D descriptors (require sdf or mol file)'
 )
-@click.option('--debug', default=False, flag_value=True)
-def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, debug):
+@click.option(
+    '-v', '--verbosity',
+    type=click.IntRange(0, 2), count=True,
+    help='verbosity (0-2)'
+)
+def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity):
     mols = (m for i in input for m in parser(i))
 
     if stream:
@@ -161,7 +165,10 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, debug)
 
     # Descriptors
     calc = Calculator()
-    calc._debug = debug
+
+    if verbosity >= 2:
+        calc._debug = True
+
     if len(descriptor) == 0:
         calc.register(all_descriptors(), exclude3D=not with3D)
     else:
@@ -179,6 +186,9 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, debug)
 
         def warning(name, v, err_set):
             if not isinstance(v, MissingValueBase):
+                return
+
+            if verbosity == 0 and isinstance(v, Missing):
                 return
 
             red = v.error.__class__, v.error.args
