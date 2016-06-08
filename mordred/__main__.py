@@ -1,8 +1,8 @@
-import six
+from __future__ import print_function
+
 import os
 import sys
 import click
-import csv
 from importlib import import_module
 from . import __version__, all_descriptors, Calculator
 from .error import MissingValueBase, Missing
@@ -73,11 +73,7 @@ def auto_parser(path):
 
 def callback_input(cxt, param, value):
     if len(value) == 0:
-        if sys.stdin.isatty():
-            click.echo(cxt.get_help())
-            cxt.exit()
-        else:
-            return (sys.stdin,)
+        cxt.fail('INPUT file required')
 
     return value
 
@@ -89,13 +85,6 @@ def callback_filetype(cxt, param, value):
         return smiles_parser
 
     return sdf_parser
-
-
-def callback_quiet(cxt, param, value):
-    if cxt.params['output'].isatty():
-        return True
-
-    return value
 
 
 @click.command(
@@ -121,7 +110,7 @@ def callback_quiet(cxt, param, value):
 )
 @click.option(
     '-o', '--output',
-    default=sys.stdout, type=click.File('w') if six.PY3 else click.File('wb'),
+    default=sys.stdout, type=click.File('w'),
     help='output csv file'
 )
 @click.option(
@@ -130,7 +119,7 @@ def callback_quiet(cxt, param, value):
     help='number of processes'
 )
 @click.option(
-    '-q', '--quiet', callback=callback_quiet,
+    '-q', '--quiet',
     default=False, flag_value=True,
     help='hide progress bar'
 )
@@ -157,6 +146,9 @@ def callback_quiet(cxt, param, value):
 def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity):
     mols = (m for i in input for m in parser(i))
 
+    if output.isatty():
+        quiet = True
+
     if stream:
         N = None
     else:
@@ -181,8 +173,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbos
         )
 
     with output:
-        writer = csv.writer(output)
-        writer.writerow(['name'] + [str(d) for d in calc.descriptors])
+        write_row(output, ['name'] + [str(d) for d in calc.descriptors])
 
         def warning(name, v, err_set):
             if not isinstance(v, MissingValueBase):
@@ -214,7 +205,17 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbos
             else:
                 name = Chem.MolToSmiles(mol)
 
-            writer.writerow([name] + [pretty(name, v, err_set) for v in val])
+            write_row(output, [name] + [pretty(name, v, err_set) for v in val])
+
+
+def write_row(file, data):
+    file.write(
+        ','.join(
+            str(v).replace('"', '""').replace('\n', '').replace('\r', '')
+            for v in data
+        )
+    )
+    file.write('\n')
 
 
 if __name__ == '__main__':
