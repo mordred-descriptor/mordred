@@ -3,16 +3,15 @@ import os
 from rdkit.Chem import AllChem as Chem
 
 
-def main():
-    smi = os.path.join(
-        os.path.dirname(__file__),
-        'structures.smi'
-    )
+BASE = os.path.join(
+    os.path.dirname(__file__),
+    '..', 'mordred', 'tests', 'references'
+)
 
-    sdf = os.path.join(
-        os.path.dirname(__file__),
-        '..', 'mordred', 'tests', 'references', 'structures.sdf'
-    )
+
+def main():
+    smi = os.path.join(BASE, 'structures.smi')
+    sdf = os.path.join(BASE, 'structures.sdf')
 
     writer = Chem.SDWriter(sdf)
     for line in open(smi):
