@@ -25,11 +25,10 @@ def get_version():
 
 def get_test_data():
     for p, _, fs in os.walk('mordred/tests/references'):
-        p = p.split(os.sep)[3:]
+        p = p.split(os.sep)[2:]
 
         for f in fs:
             yield os.path.join(*(p + [f]))
-
 
 setup(
     name='mordred',
