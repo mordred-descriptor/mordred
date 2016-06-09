@@ -1,7 +1,8 @@
+from __future__ import print_function
+
 import sys
 import numpy as np
 from tqdm import tqdm_notebook
-from logging import getLogger
 
 
 def parse_enum(enum, v):
@@ -44,9 +45,6 @@ class Capture(object):
         setattr(sys, self.target, self.orig)
 
 
-logger = getLogger('mordred')
-
-
 class DummyBar(object):
     def __init__(self, *args, **kwargs):
         pass
@@ -60,8 +58,9 @@ class DummyBar(object):
     def update(self, *args, **kws):
         pass
 
-    def write(self, text, *args, **kwargs):
-        logger.warn(text)
+    @classmethod
+    def write(cls, s, file=sys.stdout, end='\n'):
+        print(s, file=file, end=end)
 
 
 class NotebookWrapper(object):

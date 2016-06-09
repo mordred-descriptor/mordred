@@ -8,10 +8,7 @@ from . import __version__, all_descriptors, Calculator
 from .error import MissingValueBase, Missing
 from ._base import get_descriptors_from_module
 from rdkit import Chem
-from logging import getLogger
-
-
-logger = getLogger(__name__)
+import logging
 
 
 all_descs = [
@@ -33,7 +30,7 @@ def smiles_parser(path):
         mol = Chem.MolFromSmiles(smi)
 
         if mol is None:
-            logger.warn('smiles read failure: %s', name)
+            logging.warning('smiles read failure: %s', name)
             continue
 
         mol.SetProp('_Name', name)
@@ -45,7 +42,7 @@ def sdf_parser(path):
 
     for i, mol in enumerate(Chem.SDMolSupplier(path, removeHs=False)):
         if mol is None:
-            logger.warn('mol read failure: %s.%s', base, i)
+            logging.warning('mol read failure: %s.%s', base, i)
             continue
 
         if mol.GetProp('_Name') == '':
@@ -64,7 +61,7 @@ def auto_parser(path):
     elif ext in ['.mol', '.sdf']:
         r = sdf_parser(path)
     else:
-        logger.warn('cannot detect file format: %s', path)
+        logging.warning('cannot detect file format: %s', path)
         r = ()
 
     for m in r:
@@ -186,7 +183,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbos
             if red in err_set:
                 return
 
-            calc.logging('[{}] {}: {}'.format(v.header, name, v))
+            calc.echo('[{}] {}: {}'.format(v.header, name, v), file=sys.stderr)
             err_set.add(red)
 
         def pretty(name, v, err_set):

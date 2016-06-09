@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from .descriptor import Descriptor, MissingValueException
 from ..error import Missing, Error, MultipleFragments
 from types import ModuleType
@@ -8,10 +10,6 @@ from .._util import Capture, DummyBar, NotebookWrapper
 from itertools import chain
 from contextlib import contextmanager
 from tqdm import tqdm
-from logging import getLogger
-
-
-logger = getLogger('mordred')
 
 
 class Calculator(object):
@@ -219,13 +217,13 @@ class Calculator(object):
             if hasattr(self, '_progress_bar'):
                 del self._progress_bar
 
-    def logging(self, s):
+    def echo(self, s, file=sys.stdout, end='\n'):
         p = getattr(self, '_progress_bar', None)
         if p is not None:
-            p.write(s, file=sys.stderr)
+            p.write(s, file=file, end='\n')
             return
 
-        logger.warn(s)
+        print(s, file=sys.stdout, end='\n')
 
     def map(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""calculate descriptors over mols.

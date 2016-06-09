@@ -15,7 +15,7 @@ Nd3D = len(Calculator(all_descriptors(), exclude3D=False).descriptors)
 
 
 def in_(a, s):
-    assert a in s, '{} not in {}'.format(a, s)
+    assert a in s, '{!r} not in {!r}'.format(a, s)
 
 
 @contextmanager
@@ -33,6 +33,9 @@ def isolate():
 class Result(object):
     def __iter__(self):
         return iter([self.stdout, self.stderr, self.exitcode])
+
+    def __repr__(self):
+        return '{!r} {!r} {!r}'.format(self.stdout, self.stderr, self.exitcode)
 
 
 def command(cmd, *args, **kwargs):
@@ -169,4 +172,4 @@ def test_verbose():
         eq_(r.exitcode, 0)
         eq_(number_of_field(r.stdout), Nd2D)
         eq_(r.stdout.split('\n')[1].split(',')[0], 'Benzene')
-        # in_('[Missing]', str(r.log)) # TODO
+        in_('[Missing]', r.stderr)
