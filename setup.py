@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import sys
+import os
 
 
 install_requires = [
@@ -22,14 +23,22 @@ def get_version():
     return sandbox['__version__']
 
 
+def get_test_data():
+    for p, _, fs in os.walk('mordred/tests/references'):
+        p = p.split(os.sep)[3:]
+
+        for f in fs:
+            yield os.path.join(*(p + [f]))
+
+
 setup(
     name='mordred',
     version=get_version(),
     packages=find_packages(),
 
     package_data={
-        'mordred': ['data/*'],
-        'mordred.tests': ['references/*', 'references/**/*'],
+        'mordred': ['data/*.txt'],
+        'mordred.tests': get_test_data(),
     },
 
     install_requires=install_requires,
