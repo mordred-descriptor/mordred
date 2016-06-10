@@ -26,8 +26,8 @@ def isolate():
         os.chdir(work)
         yield
     finally:
-        shutil.rmtree(work)
         os.chdir(cwd)
+        shutil.rmtree(work)
 
 
 class Result(object):
@@ -43,11 +43,11 @@ def command(cmd, *args, **kwargs):
 
     orig = sys.stdout, sys.stderr
 
-    _, opath = tempfile.mkstemp()
-    _, epath = tempfile.mkstemp()
+    ofd, opath = tempfile.mkstemp()
+    efd, epath = tempfile.mkstemp()
 
     try:
-        with open(opath, 'w') as stdout, open(epath, 'w') as stderr:
+        with os.fdopen(ofd, 'w') as stdout, os.fdopen(efd, 'w') as stderr:
             sys.stdout = stdout
             sys.stderr = stderr
 
@@ -59,8 +59,10 @@ def command(cmd, *args, **kwargs):
     finally:
         sys.stdout, sys.stderr = orig
 
-        r.stdout = open(opath).read()
-        r.stderr = open(epath).read()
+        with open(opath) as stdout, open(epath) as stderr:
+            r.stdout = stdout.read()
+            r.stderr = stderr.read()
+
         os.remove(opath)
         os.remove(epath)
 
