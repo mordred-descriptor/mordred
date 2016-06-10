@@ -16,7 +16,8 @@ except ImportError:
 
 
 data_dir = os.path.join(
-    'mordred', 'tests', 'references'
+    os.path.dirname(__file__),
+    'references'
 )
 
 
