@@ -28,14 +28,17 @@ class SurfaceArea(object):
         self.rads = radiuses
         self.xyzs = xyzs
         self._gen_neighbor_list()
-        self.sphere = SphereMesh(level).vertices
+        self.sphere = SphereMesh(level).vertices.T
 
     def _gen_neighbor_list(self):
         r = self.rads[:, np.newaxis] + self.rads
 
-        d = np.sqrt(np.sum(
-            (self.xyzs[:, np.newaxis] - self.xyzs) ** 2,
-            axis=2))
+        d = np.sqrt(
+            np.sum(
+                (self.xyzs[:, np.newaxis] - self.xyzs) ** 2,
+                axis=2
+            )
+        )
 
         ns = defaultdict(list)
         for i, j in np.transpose(np.nonzero(d <= r)):
@@ -66,17 +69,20 @@ class SurfaceArea(object):
         if neighbors is None:
             return sa
 
-        XYZi = self.xyzs[i]
+        XYZi = self.xyzs[i, np.newaxis].T
 
         sphere = self.sphere * Ri + XYZi
-        N = len(sphere)
+        N = sphere.shape[1]
 
         for j, _ in neighbors:
             Rj = self.rads[j]
-            XYZj = self.xyzs[j]
-            sphere = sphere[np.sqrt(np.sum((sphere - XYZj) ** 2, axis=1)) > Rj]
+            XYZj = self.xyzs[j, np.newaxis].T
 
-        return sa * float(len(sphere)) / N
+            d2 = (sphere - XYZj) ** 2
+            mask = np.sqrt(d2[0] + d2[1] + d2[2]) > Rj
+            sphere = np.compress(mask, sphere, axis=1)
+
+        return sa * float(sphere.shape[1]) / N
 
     def surface_area(self):
         r"""calculate all atomic surface area.

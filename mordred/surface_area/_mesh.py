@@ -50,14 +50,13 @@ class SphereMesh(object):
             (9, 8, 1),
         ], dtype='int')
 
-        self.normalize(self.vertices)
+        self.normalize(0)
 
         self.level = 1
         self.subdivide(level)
 
-    @staticmethod
-    def normalize(vs):
-        vs /= np.sqrt((vs ** 2).sum(axis=1))[:, np.newaxis]
+    def normalize(self, begin):
+        self.vertices[begin:] /= np.sqrt((self.vertices[begin:] ** 2).sum(axis=1))[:, np.newaxis]
 
     def _subdivide(self):
         self.level += 1
@@ -73,24 +72,23 @@ class SphereMesh(object):
         Bv = self.vertices[B]
         Cv = self.vertices[C]
 
-        newVs = np.r_[
+        self.vertices = np.r_[
+            self.vertices,
             Av + Bv,
             Bv + Cv,
             Av + Cv
         ]
-        self.normalize(newVs)
-        self.vertices = np.r_[self.vertices, newVs]
+        self.normalize(Nv)
 
         AB = np.arange(len(self.faces)) + Nv
         BC = AB + Nf
         AC = AB + 2 * Nf
 
-        self.faces = np.r_[
-            np.c_[A, AB, AC],
-            np.c_[B, AB, BC],
-            np.c_[C, AC, BC],
-            np.c_[AB, AC, BC],
-        ]
+        self.faces = np.concatenate([
+            A, B, C, AB,
+            AB, AB, AC, AC,
+            AC, BC, BC, BC
+        ]).reshape(3, -1).T
 
     def subdivide(self, level):
         for _ in range(level - self.level):
