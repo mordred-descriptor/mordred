@@ -33,9 +33,7 @@ Histidine            335.672
 
 
 sdf_file = os.path.join(
-    os.path.dirname(__file__),
-    'references',
-    'structures.sdf',
+    'mordred', 'tests', 'references', 'structures.sdf',
 )
 
 
