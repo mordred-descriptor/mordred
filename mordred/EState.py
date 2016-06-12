@@ -53,6 +53,7 @@ class AggrType(IntEnum):
     max = 3
     min = 4
 
+    @property
     def as_argument(self):
         return self.name
 

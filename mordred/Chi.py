@@ -21,6 +21,7 @@ class ChiType(IntEnum):
     path_cluster = 3
     chain = 4
 
+    @property
     def as_argument(self):
         return self.name
 
