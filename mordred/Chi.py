@@ -26,30 +26,40 @@ class ChiType(IntEnum):
 
 
 class DFS(object):
-    __slots__ = ('mol', 'visited', 'vis_edges', 'is_chain', 'degrees', 'neighbors',)
+    __slots__ = ('mol', 'visited', 'vis_edges', 'is_chain', 'degrees', 'bonds', 'neighbors',)
 
-    def __init__(self, mol, use_bonds):
+    def __init__(self, mol):
         self.mol = mol
         self.visited = set()
         self.vis_edges = set()
-        self.is_chain = False
         self.degrees = set()
-
         self.neighbors = defaultdict(set)
-        for i in use_bonds:
-            bond = mol.GetBondWithIdx(i)
-            a = bond.GetBeginAtomIdx()
-            b = bond.GetEndAtomIdx()
-            self.neighbors[a].add(b)
-            self.neighbors[b].add(a)
+
+        self.bonds = [
+            (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
+            for b in self.mol.GetBonds()
+        ]
+
+    def reset(self, use_bonds):
+        ns = self.neighbors
+        bs = self.bonds
+
+        self.is_chain = False
+        self.visited.clear()
+        self.vis_edges.clear()
+        self.degrees.clear()
+        ns.clear()
+
+        for i in range(len(use_bonds)):
+            a, b = bs[use_bonds[i]]
+            ns[a].add(b)
+            ns[b].add(a)
+
+        self.neighbors = ns
 
     @property
     def nodes(self):
         return list(self.neighbors.keys())
-
-    @classmethod
-    def _edge_key(cls, u, v):
-        return min(u, v), max(u, v)
 
     def _dfs(self, u):
         neighbors = self.neighbors[u]
@@ -57,10 +67,12 @@ class DFS(object):
         self.degrees.add(len(neighbors))
 
         for v in neighbors:
-            ek = self._edge_key(u, v)
+            ek = (v, u) if u > v else (u, v)
+
             if v not in self.visited:
                 self.vis_edges.add(ek)
                 self._dfs(v)
+
             elif ek not in self.vis_edges:
                 self.vis_edges.add(ek)
                 self.is_chain = True
@@ -102,9 +114,10 @@ class ChiCache(ChiBase):
         path = []
         path_cluster = []
         cluster = []
-        for bonds in Chem.FindAllSubgraphsOfLengthN(self.mol, self._order):
 
-            dfs = DFS(self.mol, bonds)
+        dfs = DFS(self.mol)
+        for bonds in Chem.FindAllSubgraphsOfLengthN(self.mol, self._order):
+            dfs.reset(bonds)
             typ = dfs()
             nodes = dfs.nodes
 

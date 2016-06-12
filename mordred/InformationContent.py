@@ -4,6 +4,7 @@ import numpy as np
 
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
+from itertools import chain
 
 
 __all__ = (
@@ -14,17 +15,32 @@ __all__ = (
 
 
 class BFSTree(object):
-    __slots__ = ('mol', 'tree', 'order', 'visited',)
+    __slots__ = ('tree', 'visited', 'bonds', 'atoms')
 
-    def __init__(self, mol, i):
-        self.mol = mol
-        self.tree = {i: ()}
-        self.order = 0
-        self.visited = set([i])
+    def __init__(self, mol):
+        self.tree = {}
+        self.visited = set()
+
+        self.bonds = {}
+        for b in mol.GetBonds():
+            s = b.GetBeginAtomIdx()
+            d = b.GetEndAtomIdx()
+            t = b.GetBondType()
+
+            self.bonds[s, d] = t
+            self.bonds[d, s] = t
+
+        self.atoms = [(a.GetAtomicNum(), a.GetDegree(), a.GetNeighbors()) for a in mol.GetAtoms()]
+
+    def reset(self, i):
+        self.tree.clear()
+        self.visited.clear()
+
+        self.tree[i] = ()
+        self.visited.add(i)
 
     def expand(self):
         self._expand(self.tree)
-        self.order += 1
 
     def _expand(self, tree):
         for src, dst in list(tree.items()):
@@ -33,16 +49,12 @@ class BFSTree(object):
             if dst is ():
                 tree[src] = {
                     n.GetIdx(): ()
-                    for n in self.mol.GetAtomWithIdx(src).GetNeighbors()
+                    for n in self.atoms[src][2]
                     if n.GetIdx() not in self.visited
                 }
 
             else:
                 self._expand(dst)
-
-    @property
-    def code(self):
-        return tuple(sorted(self._code(self.tree, None, ())))
 
     def _code(self, tree, before, trail):
         if len(tree) == 0:
@@ -53,25 +65,22 @@ class BFSTree(object):
 
                 code = []
                 if before is not None:
-                    code.append(self.mol.GetBondBetweenAtoms(before, src).GetBondType())
+                    bt = self.bonds[before, src]
+                    code.append(bt)
 
-                a = self.mol.GetAtomWithIdx(src)
-                code.append(a.GetAtomicNum())
-                code.append(a.GetDegree())
+                code.append(self.atoms[src][:2])
 
-                nxt = tuple(list(trail) + code)
+                nxt = tuple(chain(trail, code))
                 for t in self._code(dst, src, nxt):
                     yield t
 
+    def get_code(self, i, order):
+        self.reset(i)
 
-def neighborhood_code(mol, i, order):
-    if order == 0:
-        return mol.GetAtomWithIdx(i).GetAtomicNum()
+        for _ in range(order):
+            self.expand()
 
-    tree = BFSTree(mol, i)
-    for _ in range(order):
-        tree.expand()
-    return tree.code
+        return tuple(sorted(self._code(self.tree, None, ())))
 
 
 class InformationContentBase(Descriptor):
@@ -107,10 +116,14 @@ class Ag(InformationContentBase):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, D):
-        atoms = [
-            neighborhood_code(self.mol, i, self._order)
-            for i in range(self.mol.GetNumAtoms())
-        ]
+        if self._order == 0:
+            atoms = [a.GetAtomicNum() for a in self.mol.GetAtoms()]
+        else:
+            tree = BFSTree(self.mol)
+            atoms = [
+                tree.get_code(i, self._order)
+                for i in range(self.mol.GetNumAtoms())
+            ]
 
         ad = {a: i for i, a in enumerate(atoms)}
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]

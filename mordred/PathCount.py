@@ -17,7 +17,7 @@ class PathCountBase(Descriptor):
 
 
 class PathCountCache(PathCountBase):
-    __slots__ = ('_order',)
+    __slots__ = ('_order', '_bonds')
 
     def as_key(self):
         return self.__class__, (self._order,)
@@ -25,21 +25,24 @@ class PathCountCache(PathCountBase):
     def __init__(self, order):
         self._order = order
 
+    def _gen_bonds(self):
+        self._bonds = [
+            (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
+            for b in self.mol.GetBonds()
+        ]
+
     def _bond_ids_to_atom_ids(self, p):
         it = iter(p)
 
         try:
-            b0 = self.mol.GetBondWithIdx(next(it))
+            a0f, a0t = self._bonds[next(it)]
         except StopIteration:
             return []
 
         try:
-            b1 = self.mol.GetBondWithIdx(next(it))
+            a1f, a1t = self._bonds[next(it)]
         except StopIteration:
-            return [b0.GetBeginAtomIdx(), b0.GetEndAtomIdx()]
-
-        a0f, a0t = b0.GetBeginAtomIdx(), b0.GetEndAtomIdx()
-        a1f, a1t = b1.GetBeginAtomIdx(), b1.GetEndAtomIdx()
+            return a0f, a0t
 
         if a0f in [a1f, a1t]:
             path = [a0t, a0f]
@@ -49,9 +52,7 @@ class PathCountCache(PathCountBase):
             current = a1f if a0t == a1t else a1t
 
         for i in it:
-            bn = self.mol.GetBondWithIdx(i)
-
-            anf, ant = bn.GetBeginAtomIdx(), bn.GetEndAtomIdx()
+            anf, ant = self._bonds[i]
 
             path.append(current)
 
@@ -66,6 +67,8 @@ class PathCountCache(PathCountBase):
     def calculate(self):
         l = 0
         pi = 0
+
+        self._gen_bonds()
 
         for path in Chem.FindAllPathsOfLengthN(self.mol, self._order):
             aids = set()

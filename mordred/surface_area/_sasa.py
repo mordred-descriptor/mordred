@@ -26,6 +26,7 @@ class SurfaceArea(object):
 
     def __init__(self, radiuses, xyzs, level=4):
         self.rads = radiuses
+        self.rads2 = radiuses ** 2
         self.xyzs = xyzs
         self._gen_neighbor_list()
         self.sphere = SphereMesh(level).vertices.T
@@ -61,8 +62,7 @@ class SurfaceArea(object):
         :rtype: float
         """
 
-        Ri = self.rads[i]
-        sa = 4.0 * np.pi * Ri ** 2
+        sa = 4.0 * np.pi * self.rads2[i]
 
         neighbors = self.neighbors.get(i)
 
@@ -71,15 +71,14 @@ class SurfaceArea(object):
 
         XYZi = self.xyzs[i, np.newaxis].T
 
-        sphere = self.sphere * Ri + XYZi
+        sphere = self.sphere * self.rads[i] + XYZi
         N = sphere.shape[1]
 
         for j, _ in neighbors:
-            Rj = self.rads[j]
             XYZj = self.xyzs[j, np.newaxis].T
 
             d2 = (sphere - XYZj) ** 2
-            mask = np.sqrt(d2[0] + d2[1] + d2[2]) > Rj
+            mask = (d2[0] + d2[1] + d2[2]) > self.rads2[j]
             sphere = np.compress(mask, sphere, axis=1)
 
         return sa * float(sphere.shape[1]) / N
