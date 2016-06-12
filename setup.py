@@ -16,7 +16,7 @@ if sys.version_info < (3, 4, 0):
 
 
 def get_version():
-    version_file = 'mordred/_version.py'
+    version_file = os.path.join('mordred', '_version.py')
 
     sandbox = {}
     exec(open(version_file).read(), sandbox, sandbox)
@@ -24,7 +24,7 @@ def get_version():
 
 
 def get_test_data():
-    for p, _, fs in os.walk('mordred/tests/references'):
+    for p, _, fs in os.walk(os.path.join('mordred', 'tests', 'references')):
         p = p.split(os.sep)[2:]
 
         for f in fs:
@@ -37,7 +37,7 @@ setup(
 
     package_data={
         'mordred': ['data/*.txt'],
-        'mordred.tests': get_test_data(),
+        'mordred.tests': list(get_test_data()),
     },
 
     install_requires=install_requires,

@@ -30,13 +30,13 @@ def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
             return r.get(1e9)
 
     # without with-statement for compat. python2
+    pool = Pool(nproc, initializer=initializer, initargs=(self,))
+
+    def do_task(mol):
+        args = Context.from_calculator(self, mol, id)
+        return pool.apply_async(worker, (args,))
+
     try:
-        pool = Pool(nproc, initializer=initializer, initargs=(self,))
-
-        def do_task(mol):
-            args = Context.from_calculator(self, mol, id)
-            return pool.apply_async(worker, (args,))
-
         with self._progress(quiet, nmols, ipynb) as bar:
             for m, result in [(m, do_task(m)) for m in mols]:
                 r, err = get_result(result)
