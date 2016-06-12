@@ -16,6 +16,17 @@ script:
   - rm -rf .git
   - conda build .
 
+after_success:
+  - if [[ ! -d "$CONDA_BUILD_DIR" ]]; then
+      CONDA_BUILD_DIR=/opt/miniconda/conda-bld/linux-64;
+    fi
+  - conda convert $CONDA_BUILD_DIR/*.tar.bz2 -p osx-64 -p win-64
+
+build_targets:
+  - conda
+  - ./osx-64/*.tar.bz2
+  - ./win-64/*.tar.bz2
+
 ---
 
 platform:
@@ -32,6 +43,3 @@ script:
   - conda config --add channels mordred-descriptor
   - rd /q /s .git
   - conda build .
-
-build_targets:
-  - conda
