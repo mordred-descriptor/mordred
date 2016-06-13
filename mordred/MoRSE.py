@@ -1,0 +1,67 @@
+from __future__ import division
+from ._base.descriptor import Descriptor
+from ._atomic_property import AtomicProperty
+from ._graph_matrix import DistanceMatrix3D
+import numpy as np
+from itertools import chain
+from math import factorial
+
+
+__all__ = 'MoRSE',
+
+
+class MoRSE(Descriptor):
+    __slots__ = ('_prop', '_distance')
+
+    require_3D = True
+
+    @classmethod
+    def preset(cls):
+        return chain(
+            cls(None, i) for i in range(1, 33),
+        )
+
+    def as_key(self):
+        p = None if self._prop is None else self._prop.as_argument
+        return self.__class__, (p, self._distance)
+
+    def __init__(self, prop=None, distance=2):
+        if prop is None:
+            self._prop = None
+        else:
+            self._prop = AtomicProperty(self.explicit_hydrogens, prop)
+
+        self._distance = distance
+
+    def dependencies(self):
+        d = {'D': DistanceMatrix3D(self.explicit_hydrogens)}
+
+        if self._prop is not None:
+            d['A'] = self._prop
+
+        return d
+
+    def calculate(self, D, A=None):
+        if D.shape[0] <= 1:
+            self.fail(ValueError('require 2 or more atoms'))
+
+        N = D.shape[0]
+
+        if self._distance == 1:
+            return factorial(N) / (2 * factorial(N - 2))
+
+        sr = (self._distance - 1) * D
+        np.fill_diagonal(sr, 1)
+
+        if A is None:
+            A = np.ones(N)
+
+        A = A.reshape(1, -1)
+
+        with self.rethrow_zerodiv():
+            n = np.sin(sr) / sr
+        np.fill_diagonal(n, 0)
+
+        return np.float(0.5 * A.dot(n).dot(A.T))
+
+    rtype = float
