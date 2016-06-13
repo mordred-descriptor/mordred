@@ -22,7 +22,7 @@ class LabuteASA(Descriptor):
         yield cls()
 
     def __str__(self):
-        return 'LabuteASA'
+        return self.__class__.__name__
 
     def as_key(self):
         return self.__class__, ()

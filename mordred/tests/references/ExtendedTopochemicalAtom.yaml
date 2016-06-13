@@ -1,4 +1,4 @@
-- names: [ETA_alpha, ETA_alpha']
+- names: [ETA_alpha, AETA_alpha]
   digit: 4
   results:
     Hexane: [3, 0.5]
@@ -48,7 +48,7 @@
     MethylCyclopropane: [0.25, 0.25, 0]
     Acetonitrile: [0.64286, 0, 0]
 
-- names: [ETA_beta, ETA_beta', ETA_beta_s, ETA_beta_s', ETA_beta_ns, ETA_beta_ns', ETA_beta_ns_d, ETA_beta_ns_d']
+- names: [ETA_beta, AETA_beta, ETA_beta_s, AETA_beta_s, ETA_beta_ns, AETA_beta_ns, ETA_beta_ns_d, AETA_beta_ns_d]
   digit: 4
   results:
     Hexane: [2.5, 0.41667, 2.5, 0.41667, 0, 0, 0, 0]
@@ -73,7 +73,7 @@
     MethylCyclopropane: [2, 0.5, 2, 0.5, 0, 0, 0, 0]
     Acetonitrile: [4.25, 1.41667, 1.25, 0.41667, 3, 1, 0, 0]
 
-- names: [ETA_eta, ETA_eta', ETA_eta_R, ETA_eta_F, ETA_eta_F', ETA_eta_L, ETA_eta_L', ETA_eta_RL, ETA_eta_FL, ETA_eta_FL']
+- names: [ETA_eta, AETA_eta, ETA_eta_R, ETA_eta_F, AETA_eta_F, ETA_eta_L, AETA_eta_L, ETA_eta_RL, ETA_eta_FL, AETA_eta_FL]
   digit: 3
   results:
     Hexane: [5.31294, 0.88549, 5.31294, 0, 0, 2.91421, 0.4857, 2.91421, 0, 0]
@@ -98,7 +98,7 @@
     MethylCyclopropane: [2.60095, 0.65024, 2.60095, 0, 0, 1.89384, 0.47346, 1.89384, 0, 0]
     Acetonitrile: [0.61833, 0.20611, 1.91421, 1.29588, 0.43196, 0.45503, 0.15168, 1.41421, 0.95919, 0.31973]
 
-- names: [ETA_eta_B, ETA_eta_B', ETA_eta_BR, ETA_eta_BR']
+- names: [ETA_eta_B, AETA_eta_B, ETA_eta_BR, AETA_eta_BR]
   digit: 3
   results:
     Hexane: [-2.10E-04, -4.00E-05, -2.10E-04, -4.00E-05]
@@ -198,7 +198,7 @@
     MethylCyclopropane: [0, 0, 0, 0]
     Acetonitrile: [0.15758, 0, -0.15758, 0]
 
-- names: [ETA_dBeta, ETA_dBeta']
+- names: [ETA_dBeta, AETA_dBeta]
   digit: 3
   results:
     Hexane: [-2.5, -0.41667]

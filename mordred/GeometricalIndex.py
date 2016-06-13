@@ -1,3 +1,4 @@
+from __future__ import division
 from ._base import Descriptor
 from ._graph_matrix import Diameter3D as CDiameter3D
 from ._graph_matrix import Radius3D as CRadius3D
@@ -75,7 +76,7 @@ class GeometricalShapeIndex(GeometricalIndexBase):
 
     def calculate(self, R, D):
         with self.rethrow_zerodiv():
-            return float(D - R) / float(R)
+            return (D - R) / (R)
 
 
 class PetitjeanIndex3D(GeometricalShapeIndex):
@@ -98,4 +99,4 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
 
     def calculate(self, R, D):
         with self.rethrow_zerodiv():
-            return float(D - R) / float(D)
+            return (D - R) / (D)

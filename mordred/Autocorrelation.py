@@ -160,7 +160,7 @@ class ATS(AutocorrelationBase):
     def preset(cls):
         return (
             cls(d, a)
-            for a in get_properties(istate=True)
+            for a in get_properties(valence=True)
             for d in range(MAX_DISTANCE + 1)
         )
 
@@ -221,7 +221,7 @@ class ATSC(AutocorrelationBase):
     def preset(cls):
         return (
             cls(d, a)
-            for a in get_properties(charge=True, istate=True)
+            for a in get_properties(charge=True, valence=True)
             for d in range(MAX_DISTANCE + 1)
         )
 
@@ -288,7 +288,7 @@ class MATS(AutocorrelationBase):
     def preset(cls):
         return (
             cls(d, a)
-            for a in get_properties(charge=True, istate=True)
+            for a in get_properties(charge=True, valence=True)
             for d in range(1, MAX_DISTANCE + 1)
         )
 

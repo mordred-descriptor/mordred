@@ -4,6 +4,7 @@ References
     * :cite:`10.1021/ci0342066`
     * :cite:`10.1016/j.jhazmat.2013.03.023`
 """
+from __future__ import division
 import numpy as np
 
 from rdkit import Chem
@@ -129,12 +130,10 @@ class EtaCoreCount(EtaBase):
         return map(cls, [False, True])
 
     def __str__(self):
-        name = 'ETA_alpha'
+        suffix = '_R' if self._reference else ''
+        ave = "A" if self._averaged else ''
 
-        if self._reference:
-            name += '_R'
-
-        return name + ("'" if self._averaged else '')
+        return '{}ETA_alpha{}'.format(ave, suffix)
 
     def as_key(self):
         return self.__class__, (self._averaged, self._reference)
@@ -258,15 +257,10 @@ class EtaVEMCount(EtaBase):
         )
 
     def __str__(self):
-        name = 'ETA_beta'
+        typ = '_{}'.format(self._type) if self._type else ''
+        ave = 'A' if self._averaged else ''
 
-        if self._type:
-            name += '_' + self._type
-
-        if self._averaged:
-            name += "'"
-
-        return name
+        return '{}ETA_beta{}'.format(ave, typ)
 
     beta_types = ('', 's', 'ns', 'ns_d')
 
@@ -338,22 +332,22 @@ class EtaCompositeIndex(EtaBase):
         return (cls(r, l, a) for r in ft for l in ft for a in ft)
 
     def __str__(self):
-        name = 'ETA_eta'
-        suffix = ''
+        suffixes = []
 
         if self._reference:
-            suffix += 'R'
+            suffixes.append('R')
 
         if self._local:
-            suffix += 'L'
+            suffixes.append('L')
 
-        if len(suffix) > 0:
-            name += '_' + suffix
+        if len(suffixes) > 0:
+            suffix = '_' + ''.join(suffixes)
+        else:
+            suffix = ''
 
-        if self._averaged:
-            name += "'"
+        ave = 'A' if self._averaged else ''
 
-        return name
+        return '{}ETA_eta{}'.format(ave, suffix)
 
     def as_key(self):
         return self.__class__, (self._reference, self._local, self._averaged)
@@ -383,13 +377,13 @@ class EtaCompositeIndex(EtaBase):
 
         gamma = atoms_to_numpy(ap.get_eta_gamma, mol)
 
-        v = float(sum(
+        v = sum(
             sum(
                 np.sqrt(gamma[i] * gamma[j] / r ** 2)
                 for j, r in enumerate(row)
                 if i < j and checker(r)
             ) for i, row in enumerate(D)
-        ))
+        )
 
         if self._averaged:
             v /= mol.GetNumAtoms()
@@ -422,15 +416,10 @@ class EtaFunctionalityIndex(EtaBase):
         )
 
     def __str__(self):
-        name = 'ETA_eta_F'
+        loc = 'L' if self._local else ''
+        ave = 'A' if self._averaged else ''
 
-        if self._local:
-            name += 'L'
-
-        if self._averaged:
-            name += "'"
-
-        return name
+        return '{}ETA_eta_F{}'.format(ave, loc)
 
     def as_key(self):
         return self.__class__, (self._local, self._averaged)
@@ -481,15 +470,10 @@ class EtaBranchingIndex(EtaBase):
         )
 
     def __str__(self):
-        name = 'ETA_eta_B'
+        ring = 'R' if self._ring else ''
+        ave = 'A' if self._averaged else ''
 
-        if self._ring:
-            name += 'R'
-
-        if self._averaged:
-            name += "'"
-
-        return name
+        return '{}ETA_eta_B{}'.format(ave, ring)
 
     def as_key(self):
         return self.__class__, (self._ring, self._averaged)
@@ -698,12 +682,9 @@ class EtaDeltaBeta(EtaBase):
         return (cls(a) for a in [False, True])
 
     def __str__(self):
-        name = 'ETA_dBeta'
+        ave = 'A' if self._averaged else ''
 
-        if self._averaged:
-            name += "'"
-
-        return name
+        return '{}ETA_dBeta'.format(ave)
 
     def as_key(self):
         return self.__class__, (self._averaged,)

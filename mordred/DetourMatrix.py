@@ -208,7 +208,7 @@ class DetourIndex(DetourMatrixBase):
     explicit_hydrogens = False
 
     def __str__(self):
-        return 'DetourIndex'
+        return self.__class__.__name__
 
     def dependencies(self):
         return {'D': DetourMatrixCache()}

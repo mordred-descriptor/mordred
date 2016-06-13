@@ -1,3 +1,4 @@
+from __future__ import division
 from ._base import Descriptor
 
 
@@ -36,6 +37,6 @@ class FragmentComplexity(Descriptor):
         A = self.mol.GetNumAtoms()
         B = self.mol.GetNumBonds()
         H = sum(1 for a in self.mol.GetAtoms() if a.GetAtomicNum() != 6)
-        return abs(B ** 2 - A ** 2 + A) + float(H) / 100
+        return abs(B ** 2 - A ** 2 + A) + H / 100
 
     rtype = float

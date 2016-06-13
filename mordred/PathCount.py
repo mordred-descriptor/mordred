@@ -120,17 +120,10 @@ class PathCount(PathCountBase):
         )
 
     def __str__(self):
-        if self._total:
-            base = 'T'
-        else:
-            base = ''
+        base = 'T' if self._total else ''
+        pi = 'piPC' if self._pi else 'MPC'
 
-        if self._pi:
-            base += 'piPC'
-        else:
-            base += 'MPC'
-
-        return base + str(self._order)
+        return '{}{}{}'.format(base, pi, self._order)
 
     __slots__ = ('_order', '_pi', '_total', '_log',)
 

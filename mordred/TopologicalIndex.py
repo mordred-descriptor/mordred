@@ -1,3 +1,4 @@
+from __future__ import division
 from ._base import Descriptor
 from ._graph_matrix import Diameter as CDiameter
 from ._graph_matrix import Radius as CRadius
@@ -74,7 +75,7 @@ class TopologicalShapeIndex(TopologicalIndexBase):
 
     def calculate(self, R, D):
         with self.rethrow_zerodiv():
-            return float(D - R) / float(R)
+            return (D - R) / R
 
     rtype = float
 
@@ -99,4 +100,4 @@ class PetitjeanIndex(TopologicalShapeIndex):
 
     def calculate(self, R, D):
         with self.rethrow_zerodiv():
-            return float(D - R) / float(D)
+            return (D - R) / D

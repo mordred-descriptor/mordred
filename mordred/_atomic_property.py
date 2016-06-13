@@ -1,3 +1,5 @@
+from __future__ import division
+
 import os
 import numpy as np
 
@@ -11,17 +13,26 @@ from ._util import atoms_to_numpy
 halogen = set([9, 17, 35, 53, 85, 117])
 
 
-def attr(**attrs):
+getters = {}
+
+
+def getter(short, **attrs):
     def proc(f):
+        f.short = short
+
         for a, v in attrs.items():
             setattr(f, a, v)
 
+        getters[short] = f
         return f
+
+    if short in getters:
+        raise ValueError('duplicated short name of atomic property')
 
     return proc
 
 
-@attr(short='c', long='gasteiger charge', gasteiger_charges=True)
+@getter(short='c', long='gasteiger charge', gasteiger_charges=True)
 def get_gasteiger_charge(atom):
     return (
         atom.GetDoubleProp('_GasteigerCharge') +
@@ -98,7 +109,7 @@ table = Chem.GetPeriodicTable()
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
-@attr(short='delta_v', long='valence electrons')
+@getter(short='dv', long='valence electrons', valence=True)
 def get_valence_electrons(atom):
     N = atom.GetAtomicNum()
     if N == 1:
@@ -109,10 +120,10 @@ def get_valence_electrons(atom):
     hi = atom.GetTotalNumHs()
     he = sum(1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1)
     h = hi + he
-    return float(Zv - h) / float(Z - Zv - 1)
+    return (Zv - h) / (Z - Zv - 1)
 
 
-@attr(short='delta', long='sigma electrons')
+@getter(short='d', long='sigma electrons', valence=True)
 def get_sigma_electrons(atom):
     return sum(1 for a in atom.GetNeighbors()
                if a.GetAtomicNum() != 1)
@@ -120,7 +131,7 @@ def get_sigma_electrons(atom):
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
 # p. 283
-@attr(short='s', long='intrinsic state', require_connected=True)
+@getter(short='s', long='intrinsic state', require_connected=True, valence=True)
 def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)
@@ -140,7 +151,7 @@ def get_core_count(atom):
     Zv = table.GetNOuterElecs(Z)
     PN = period[Z]
 
-    return float(Z - Zv) / (Zv * (PN - 1))
+    return (Z - Zv) / (Zv * (PN - 1))
 
 
 def get_eta_epsilon(atom):
@@ -217,42 +228,42 @@ def get_eta_gamma(atom):
     return get_core_count(atom) / beta
 
 
-@attr(short='Z', long='atomic number')
+@getter(short='Z', long='atomic number')
 def get_atomic_number(a):
     return a.GetAtomicNum()
 
 
-@attr(short='m', long='mass')
+@getter(short='m', long='mass')
 def get_mass(a):
     return mass[a.GetAtomicNum()]
 
 
-@attr(short='v', long='vdw volume')
+@getter(short='v', long='vdw volume')
 def get_vdw_volume(a):
     return vdw_volume[a.GetAtomicNum()]
 
 
-@attr(short='e', long='sanderson EN')
+@getter(short='se', long='sanderson EN')
 def get_sanderson_en(a):
     return sanderson[a.GetAtomicNum()]
 
 
-@attr(short='pe', long='pauling EN')
+@getter(short='pe', long='pauling EN')
 def get_pauling_en(a):
     return pauling[a.GetAtomicNum()]
 
 
-@attr(short='are', long='allred-rocow EN')
+@getter(short='are', long='allred-rocow EN')
 def get_allred_rocow_en(a):
     return allred_rocow[a.GetAtomicNum()]
 
 
-@attr(short='p', long='polarizability')
+@getter(short='p', long='polarizability')
 def get_polarizability(a):
     return polarizability94[a.GetAtomicNum()]
 
 
-@attr(short='i', long='ionization potential')
+@getter(short='i', long='ionization potential')
 def get_ionization_potential(a):
     return ionization_potentials[a.GetAtomicNum()]
 
@@ -261,32 +272,15 @@ def get_mc_gowan_volume(a):
     return mc_gowan_volume[a.GetAtomicNum()]
 
 
-getters = {
-    'Z': get_atomic_number,
-    'm': get_mass,
-    'v': get_vdw_volume,
-    'e': get_sanderson_en,
-    'se': get_sanderson_en,
-    'pe': get_pauling_en,
-    'are': get_allred_rocow_en,
-    'p': get_polarizability,
-    'i': get_ionization_potential,
-    's': get_intrinsic_state,
-    'c': get_gasteiger_charge,
-    'delta': get_sigma_electrons,
-    'delta_v': get_valence_electrons,
-}
+def get_properties(charge=False, valence=False):
+    for f in getters.values():
+        if not charge and getattr(f, 'gasteiger_charges', False):
+            continue
 
+        if not valence and getattr(f, 'valence', False):
+            continue
 
-def get_properties(charge=False, istate=False):
-    if charge:
-        yield 'c'
-
-    for p in ['Z', 'm', 'v', 'e', 'pe', 'are', 'p', 'i']:
-        yield p
-
-    if istate:
-        yield 's'
+        yield f.short
 
 
 class AtomicProperty(Descriptor):

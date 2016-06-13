@@ -1,3 +1,4 @@
+from __future__ import division
 from collections import defaultdict
 
 import numpy as np
@@ -81,7 +82,7 @@ class SurfaceArea(object):
             mask = (d2[0] + d2[1] + d2[2]) > self.rads2[j]
             sphere = np.compress(mask, sphere, axis=1)
 
-        return sa * float(sphere.shape[1]) / N
+        return sa * sphere.shape[1] / N
 
     def surface_area(self):
         r"""calculate all atomic surface area.

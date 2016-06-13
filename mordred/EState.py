@@ -123,7 +123,7 @@ class AtomTypeEState(EStateBase):
         )
 
         with self.rethrow_na(ValueError):
-            return float(getattr(builtins, self._type.name)(indices))
+            return getattr(builtins, self._type.name)(indices)
 
     @property
     def rtype(self):
