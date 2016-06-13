@@ -1,3 +1,4 @@
+from __future__ import division
 from ._base import Descriptor
 from .Chi import ChiCache
 
@@ -45,7 +46,7 @@ class KappaShapeIndex1(KappaShapeIndexBase):
 
     def calculate(self, Chi):
         P, A, Pmin = self._common(Chi)
-        Pmax = float(A * (A - 1)) / 2.0
+        Pmax = 0.5 * A * (A - 1)
 
         with self.rethrow_zerodiv():
             return 2 * Pmax * Pmin / (P * P)
@@ -61,7 +62,7 @@ class KappaShapeIndex2(KappaShapeIndexBase):
 
     def calculate(self, Chi):
         P, A, Pmin = self._common(Chi)
-        Pmax = float((A - 1) * (A - 2)) / 2.0
+        Pmax = 0.5 * (A - 1) * (A - 2)
 
         with self.rethrow_zerodiv():
             return 2 * Pmax * Pmin / (P * P)
@@ -79,9 +80,9 @@ class KappaShapeIndex3(KappaShapeIndexBase):
         P, A, Pmin = self._common(Chi)
 
         if A % 2 == 0:
-            Pmax = float((A - 2) ** 2) / 4.0
+            Pmax = 0.25 * (A - 2) ** 2
         else:
-            Pmax = float((A - 1) * (A - 3)) / 4.0
+            Pmax = 0.25 * (A - 1) * (A - 3)
 
         with self.rethrow_zerodiv():
             return 4 * Pmax * Pmin / (P * P)

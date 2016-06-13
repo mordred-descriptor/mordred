@@ -4,6 +4,7 @@ References
     * :cite:`10.1021/ci0342066`
     * :cite:`10.1016/j.jhazmat.2013.03.023`
 """
+from __future__ import division
 import numpy as np
 
 from rdkit import Chem
@@ -383,13 +384,13 @@ class EtaCompositeIndex(EtaBase):
 
         gamma = atoms_to_numpy(ap.get_eta_gamma, mol)
 
-        v = float(sum(
+        v = sum(
             sum(
                 np.sqrt(gamma[i] * gamma[j] / r ** 2)
                 for j, r in enumerate(row)
                 if i < j and checker(r)
             ) for i, row in enumerate(D)
-        ))
+        )
 
         if self._averaged:
             v /= mol.GetNumAtoms()

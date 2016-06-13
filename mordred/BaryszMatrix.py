@@ -1,3 +1,5 @@
+from __future__ import division
+
 import numpy as np
 
 from rdkit import Chem
@@ -44,12 +46,12 @@ class Barysz(BaryszMatrixBase):
 
             pi = bond.GetBondTypeAsDouble()
 
-            w = float(C * C) / float(P[i] * P[j] * pi)
+            w = (C * C) / (P[i] * P[j] * pi)
 
             G.add_edge(i, j, weight=w)
 
         sp = floyd_warshall_numpy(G)
-        np.fill_diagonal(sp, [1. - float(C) / P[a.GetIdx()] for a in self.mol.GetAtoms()])
+        np.fill_diagonal(sp, [1. - C / P[a.GetIdx()] for a in self.mol.GetAtoms()])
         return sp
 
 

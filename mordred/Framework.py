@@ -1,3 +1,4 @@
+from __future__ import division
 import networkx as nx
 
 from ._base import Descriptor
@@ -76,6 +77,6 @@ class Framework(Descriptor):
         Nmf = len(linkers) + len({i for ring in rings for i in ring})
         N = self.mol.GetNumAtoms()
 
-        return float(Nmf) / float(N)
+        return Nmf / N
 
     rtype = float

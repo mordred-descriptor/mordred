@@ -1,3 +1,4 @@
+from __future__ import division
 from collections import defaultdict
 
 from rdkit.Chem import HybridizationType
@@ -113,8 +114,8 @@ class HybridizationRatio(CarbonTypesBase):
         return {'CT': CarbonTypesCache()}
 
     def calculate(self, CT):
-        Nsp3 = float(sum(CT[3].values()))
-        Nsp2 = float(sum(CT[2].values()))
+        Nsp3 = sum(CT[3].values())
+        Nsp2 = sum(CT[2].values())
 
         if Nsp3 == Nsp2 == 0:
             self.fail(ValueError('there are no sp3 and sp2 carbons'))

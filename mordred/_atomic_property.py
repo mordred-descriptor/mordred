@@ -1,3 +1,5 @@
+from __future__ import division
+
 import os
 import numpy as np
 
@@ -109,7 +111,7 @@ def get_valence_electrons(atom):
     hi = atom.GetTotalNumHs()
     he = sum(1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1)
     h = hi + he
-    return float(Zv - h) / float(Z - Zv - 1)
+    return (Zv - h) / (Z - Zv - 1)
 
 
 @attr(short='delta', long='sigma electrons')
@@ -140,7 +142,7 @@ def get_core_count(atom):
     Zv = table.GetNOuterElecs(Z)
     PN = period[Z]
 
-    return float(Z - Zv) / (Zv * (PN - 1))
+    return (Z - Zv) / (Zv * (PN - 1))
 
 
 def get_eta_epsilon(atom):
