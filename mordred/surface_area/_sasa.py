@@ -1,11 +1,12 @@
 from __future__ import division
+
 from collections import defaultdict
 
 import numpy as np
 
 from ._mesh import SphereMesh
-from .._atomic_property import table, vdw_radii
 from .._util import atoms_to_numpy
+from .._atomic_property import table, vdw_radii
 
 
 class SurfaceArea(object):

@@ -1,11 +1,9 @@
-from itertools import groupby
+from itertools import chain, groupby
 
 import numpy as np
 
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
-from itertools import chain
-
 
 __all__ = (
     'InformationContent',

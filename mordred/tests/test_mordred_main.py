@@ -1,14 +1,14 @@
-from .. import __version__
-from .. import all_descriptors, Calculator
-from ..__main__ import main as mordred
+import os
+import sys
+import shutil
+import tempfile
+from contextlib import contextmanager
+
 from nose.tools import eq_
 from rdkit.Chem import AllChem as Chem
-from contextlib import contextmanager
-import sys
-import os
-import tempfile
-import shutil
 
+from .. import Calculator, __version__, all_descriptors
+from ..__main__ import main as mordred
 
 Nd2D = len(Calculator(all_descriptors(), exclude3D=True).descriptors)
 Nd3D = len(Calculator(all_descriptors(), exclude3D=False).descriptors)

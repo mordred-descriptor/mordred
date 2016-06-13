@@ -2,14 +2,15 @@ from __future__ import print_function
 
 import os
 import sys
-import click
-from importlib import import_module
-from . import __version__, all_descriptors, Calculator
-from .error import MissingValueBase, Missing
-from ._base import get_descriptors_from_module
-from rdkit import Chem
 import logging
+from importlib import import_module
 
+import click
+from rdkit import Chem
+
+from . import Calculator, __version__, all_descriptors
+from ._base import get_descriptors_from_module
+from .error import Missing, MissingValueBase
 
 all_descs = [
     '.'.join(m.__name__.split('.')[1:])

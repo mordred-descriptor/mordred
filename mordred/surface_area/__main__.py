@@ -1,9 +1,9 @@
 from __future__ import print_function
 
-import sys
 import os
-import click
+import sys
 
+import click
 from rdkit import Chem
 
 from . import SurfaceArea

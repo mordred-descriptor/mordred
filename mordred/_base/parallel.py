@@ -1,7 +1,9 @@
-import six
 from multiprocessing import Pool
-from .context import Context
+
+import six
+
 from .._util import Capture
+from .context import Context
 
 calculator = None
 

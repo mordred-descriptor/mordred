@@ -1,9 +1,7 @@
 from rdkit.Chem import MolSurf
-
 from rdkit.Chem.EState import EState_VSA as RDKit_EState_VSA
 
 from ._base import Descriptor
-
 
 __all__ = (
     'LabuteASA',

@@ -2,7 +2,6 @@ import numpy as np
 
 from ._base import Descriptor
 
-
 __all__ = ('VertexAdjacencyInformation',)
 
 

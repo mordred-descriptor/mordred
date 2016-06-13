@@ -1,12 +1,10 @@
 from itertools import chain
 
 import numpy as np
-
 from six import integer_types
 
 from ._base import Descriptor
-from ._graph_matrix import AdjacencyMatrix, DistanceMatrix
-
+from ._graph_matrix import DistanceMatrix, AdjacencyMatrix
 
 __all__ = ('TopologicalCharge',)
 

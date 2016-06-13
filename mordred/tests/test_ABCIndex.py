@@ -1,7 +1,7 @@
-from numpy.testing import assert_almost_equal
-
-from mordred.ABCIndex import ABCIndex, ABCGGIndex
 from rdkit import Chem
+from numpy.testing import assert_almost_equal
+from mordred.ABCIndex import ABCIndex, ABCGGIndex
+
 
 # doi:10.2298/JSC150901093F
 data = """

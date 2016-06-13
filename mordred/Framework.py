@@ -1,9 +1,9 @@
 from __future__ import division
+
 import networkx as nx
 
 from ._base import Descriptor
 from .RingCount import Rings
-
 
 __all__ = ('Framework',)
 

@@ -1,15 +1,17 @@
 from __future__ import print_function
 
-from .descriptor import Descriptor, MissingValueException
-from ..error import Missing, Error, MultipleFragments
-from types import ModuleType
-from .context import Context
-from inspect import getsourcelines
 import sys
-from .._util import Capture, DummyBar, NotebookWrapper
+from types import ModuleType
+from inspect import getsourcelines
 from itertools import chain
 from contextlib import contextmanager
+
 from tqdm import tqdm
+
+from .._util import Capture, DummyBar, NotebookWrapper
+from ..error import Error, Missing, MultipleFragments
+from .context import Context
+from .descriptor import Descriptor, MissingValueException
 
 
 class Calculator(object):

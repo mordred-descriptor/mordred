@@ -1,9 +1,7 @@
 import networkx
-
 from rdkit import Chem
 
 from ._base import Descriptor
-
 
 __all__ = ('RingCount',)
 

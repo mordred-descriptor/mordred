@@ -1,9 +1,8 @@
 import numpy as np
 
-from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
-
+from ._atomic_property import AtomicProperty, get_properties
 
 __all__ = ('ATS', 'AATS', 'ATSC', 'AATSC', 'MATS', 'GATS',)
 

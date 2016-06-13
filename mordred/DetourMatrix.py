@@ -1,10 +1,8 @@
-import networkx
-
 import numpy as np
+import networkx
 
 from . import _matrix_attributes as ma
 from ._base import Descriptor
-
 
 __all__ = ('DetourMatrix', 'DetourIndex',)
 

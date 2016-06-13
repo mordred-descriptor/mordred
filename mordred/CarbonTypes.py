@@ -1,10 +1,10 @@
 from __future__ import division
+
 from collections import defaultdict
 
 from rdkit.Chem import HybridizationType
 
 from ._base import Descriptor
-
 
 __all__ = (
     'CarbonTypes', 'HybridizationRatio',

@@ -3,7 +3,6 @@ from rdkit.Chem import rdMolDescriptors
 from ._base import Descriptor
 from ._atomic_property import halogen
 
-
 __all__ = (
     'AtomCount',
 )

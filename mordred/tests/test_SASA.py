@@ -1,9 +1,9 @@
 import os
-from rdkit import Chem
-from mordred.surface_area import SurfaceArea
-from mordred.CPSA import TotalSurfaceArea
-from nose.tools import ok_
 
+from rdkit import Chem
+from nose.tools import ok_
+from mordred.CPSA import TotalSurfaceArea
+from mordred.surface_area import SurfaceArea
 
 # calculated by pymol
 txt_data = '''

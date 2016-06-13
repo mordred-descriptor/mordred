@@ -1,7 +1,6 @@
 from collections import namedtuple
 
 import numpy as np
-
 from six import string_types
 
 from ._base import Descriptor

@@ -5,16 +5,15 @@ References
     * :cite:`10.1016/j.jhazmat.2013.03.023`
 """
 from __future__ import division
-import numpy as np
 
+import numpy as np
 from rdkit import Chem
 
 from . import _atomic_property as ap
 from ._base import Descriptor
-from ._graph_matrix import DistanceMatrix
-from .RingCount import RingCount
 from ._util import atoms_to_numpy
-
+from .RingCount import RingCount
+from ._graph_matrix import DistanceMatrix
 
 __all__ = (
     'EtaCoreCount', 'EtaShapeIndex',

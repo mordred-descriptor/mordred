@@ -1,6 +1,5 @@
 from rdkit import Chem
 from mordred import _atomic_property
-
 from numpy.testing import assert_almost_equal
 
 _data = {

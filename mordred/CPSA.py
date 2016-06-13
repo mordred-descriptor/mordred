@@ -6,10 +6,9 @@ References
 import numpy as np
 
 from ._base import Descriptor
-from ._atomic_property import AtomicProperty, vdw_radii
-from .surface_area import SurfaceArea
 from ._util import atoms_to_numpy
-
+from .surface_area import SurfaceArea
+from ._atomic_property import AtomicProperty, vdw_radii
 
 __all__ = (
     'PNSA', 'PPSA',

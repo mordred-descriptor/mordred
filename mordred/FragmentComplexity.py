@@ -1,6 +1,6 @@
 from __future__ import division
-from ._base import Descriptor
 
+from ._base import Descriptor
 
 __all__ = ('FragmentComplexity',)
 

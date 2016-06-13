@@ -1,5 +1,5 @@
-from mordred import Calculator, ExtendedTopochemicalAtom
 from rdkit import Chem
+from mordred import Calculator, ExtendedTopochemicalAtom
 from numpy.testing import assert_almost_equal
 
 references = {

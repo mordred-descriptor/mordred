@@ -1,4 +1,5 @@
 from rdkit import Chem
+
 from .._util import conformer_to_numpy
 
 

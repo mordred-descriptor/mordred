@@ -1,11 +1,9 @@
 import math
-
 from itertools import chain
 
 from rdkit import Chem
 
 from ._base import Descriptor
-
 
 __all__ = (
     'PathCount',

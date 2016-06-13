@@ -1,5 +1,5 @@
 from rdkit import Chem
-from mordred import AdjacencyMatrix, DistanceMatrix, Calculator
+from mordred import Calculator, DistanceMatrix, AdjacencyMatrix
 from numpy.testing import assert_almost_equal
 
 # Balaban, A. T.; Ciubotariu, D.; Medeleanu, M.

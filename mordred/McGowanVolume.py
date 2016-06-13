@@ -1,6 +1,5 @@
-from ._atomic_property import get_mc_gowan_volume
 from ._base import Descriptor
-
+from ._atomic_property import get_mc_gowan_volume
 
 __all__ = (
     'McGowanVolume',

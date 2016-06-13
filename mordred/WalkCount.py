@@ -3,7 +3,6 @@ import numpy as np
 from ._base import Descriptor
 from ._graph_matrix import AdjacencyMatrix
 
-
 __all__ = ('WalkCount',)
 
 

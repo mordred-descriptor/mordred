@@ -1,15 +1,12 @@
 from __future__ import division
 
 import numpy as np
-
 from rdkit import Chem
-
 from networkx import Graph, floyd_warshall_numpy
 
-from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
-from ._matrix_attributes import get_method, methods
-
+from ._atomic_property import AtomicProperty, get_properties
+from ._matrix_attributes import methods, get_method
 
 __all__ = ('BaryszMatrix',)
 

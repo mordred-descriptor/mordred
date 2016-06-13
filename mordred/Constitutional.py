@@ -1,10 +1,8 @@
 import numpy as np
-
 from rdkit import Chem
 
-from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
-
+from ._atomic_property import AtomicProperty, get_properties
 
 __all__ = ('ConstitutionalSum', 'ConstitutionalMean',)
 

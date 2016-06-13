@@ -3,7 +3,6 @@ import numpy as np
 from ._base import Descriptor
 from ._util import atoms_to_numpy
 
-
 __all__ = ('MomentOfInertia',)
 
 

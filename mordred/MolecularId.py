@@ -3,8 +3,7 @@ import math
 from networkx import Graph
 
 from ._base import Descriptor
-from ._atomic_property import halogen, table
-
+from ._atomic_property import table, halogen
 
 __all__ = ('MolecularId',)
 

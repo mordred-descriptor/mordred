@@ -2,7 +2,6 @@ from rdkit.Chem.Descriptors import ExactMolWt
 
 from ._base import Descriptor
 
-
 __all__ = (
     'Weight',
 )

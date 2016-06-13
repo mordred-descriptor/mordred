@@ -1,6 +1,5 @@
 from ._base import Descriptor
-from ._graph_matrix import Eccentricity, Valence
-
+from ._graph_matrix import Valence, Eccentricity
 
 __all__ = ('EccentricConnectivityIndex',)
 

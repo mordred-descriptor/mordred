@@ -4,7 +4,6 @@ from rdkit.Chem import BondType, rdMolDescriptors
 
 from ._base import Descriptor
 
-
 __all__ = ('TopoPSA',)
 
 

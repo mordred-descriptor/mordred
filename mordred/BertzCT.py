@@ -3,7 +3,6 @@ import rdkit.Chem.GraphDescriptors as RDKit
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
-
 __all__ = ('BertzCT',)
 
 

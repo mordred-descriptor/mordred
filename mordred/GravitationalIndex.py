@@ -1,9 +1,8 @@
 import numpy as np
 
 from ._base import Descriptor
-from ._graph_matrix import DistanceMatrix3D, AdjacencyMatrix
 from ._util import atoms_to_numpy
-
+from ._graph_matrix import AdjacencyMatrix, DistanceMatrix3D
 
 __all__ = ('GravitationalIndex',)
 

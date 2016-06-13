@@ -1,8 +1,7 @@
 import numpy as np
 
-from ._atomic_property import AtomicProperty, get_properties
 from ._base import Descriptor
-
+from ._atomic_property import AtomicProperty, get_properties
 
 __all__ = ('BCUT',)
 

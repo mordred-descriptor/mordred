@@ -1,4 +1,5 @@
 import os
+
 import nose
 
 if __name__ == '__main__':

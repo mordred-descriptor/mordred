@@ -1,8 +1,9 @@
-import numpy as np
-import six
 from abc import ABCMeta, abstractmethod
 from inspect import isabstract
 from contextlib import contextmanager
+
+import six
+import numpy as np
 
 
 class MissingValueException(Exception):

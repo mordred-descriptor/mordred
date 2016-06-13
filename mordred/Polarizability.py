@@ -1,6 +1,5 @@
-from ._atomic_property import polarizability78, polarizability94
 from ._base import Descriptor
-
+from ._atomic_property import polarizability78, polarizability94
 
 __all__ = ('APol', 'BPol',)
 

@@ -1,9 +1,7 @@
 from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 
-from .BondCount import BondCount
-
 from ._base import Descriptor
-
+from .BondCount import BondCount
 
 __all__ = (
     'RotatableBondsBase', 'RotatableBondsCount', 'RotatableBondsRatio',

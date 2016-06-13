@@ -1,7 +1,7 @@
 from __future__ import division
-from ._base import Descriptor
-from .Chi import ChiCache
 
+from .Chi import ChiCache
+from ._base import Descriptor
 
 __all__ = ('KappaShapeIndex1', 'KappaShapeIndex2', 'KappaShapeIndex3',)
 

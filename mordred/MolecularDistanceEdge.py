@@ -1,11 +1,9 @@
+from six import string_types, integer_types
 from numpy import product
 
-from six import integer_types, string_types
-
 from ._base import Descriptor
-from ._graph_matrix import DistanceMatrix, Valence
+from ._graph_matrix import Valence, DistanceMatrix
 from ._atomic_property import table
-
 
 __all__ = ('MolecularDistanceEdge',)
 

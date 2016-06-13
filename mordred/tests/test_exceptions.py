@@ -1,8 +1,7 @@
 from rdkit import Chem
-from mordred import Descriptor, Calculator
-from mordred.error import Error
-
+from mordred import Calculator, Descriptor
 from nose.tools import eq_
+from mordred.error import Error
 
 
 class RaiseDescriptor(Descriptor):

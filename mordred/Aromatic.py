@@ -1,6 +1,5 @@
 from ._base import Descriptor
 
-
 __all__ = (
     'AromaticAtomsCount', 'AromaticBondsCount',
 )

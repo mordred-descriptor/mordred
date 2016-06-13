@@ -1,8 +1,8 @@
 from __future__ import division
-from ._base import Descriptor
-from ._graph_matrix import Diameter as CDiameter
-from ._graph_matrix import Radius as CRadius
 
+from ._base import Descriptor
+from ._graph_matrix import Radius as CRadius
+from ._graph_matrix import Diameter as CDiameter
 
 __all__ = ('Diameter', 'Radius', 'TopologicalShapeIndex', 'PetitjeanIndex',)
 

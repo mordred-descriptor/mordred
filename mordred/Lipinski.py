@@ -1,9 +1,7 @@
-from .HydrogenBond import HBondAcceptor, HBondDonor
-from .SLogP import SLogP, SMR
-from .Weight import Weight
-
 from ._base import Descriptor
-
+from .SLogP import SMR, SLogP
+from .Weight import Weight
+from .HydrogenBond import HBondDonor, HBondAcceptor
 
 __all__ = ('Lipinski', 'GhoseFilter')
 

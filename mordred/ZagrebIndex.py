@@ -1,7 +1,6 @@
 from ._base import Descriptor
 from ._graph_matrix import Valence
 
-
 __all__ = ('ZagrebIndex',)
 
 

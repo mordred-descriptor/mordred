@@ -6,7 +6,6 @@ from rdkit import Chem
 from ._base import Descriptor
 from ._util import parse_enum
 
-
 __all__ = ('BondCount',)
 
 

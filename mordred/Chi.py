@@ -1,14 +1,12 @@
-from collections import defaultdict
-from collections import namedtuple
 from enum import IntEnum
 from itertools import chain
+from collections import namedtuple, defaultdict
 
 from rdkit import Chem
 
-from ._atomic_property import AtomicProperty
 from ._base import Descriptor
 from ._util import parse_enum
-
+from ._atomic_property import AtomicProperty
 
 __all__ = ('Chi',)
 

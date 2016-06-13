@@ -1,11 +1,9 @@
 from math import pi
 
+from ._base import Descriptor
 from .BondCount import BondCount
 from .RingCount import RingCount
-
-from ._base import Descriptor
 from ._atomic_property import table
-
 
 __all__ = (
     'VdwVolumeABC',

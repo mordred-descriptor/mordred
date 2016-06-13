@@ -1,7 +1,6 @@
 from ._base import Descriptor
 from ._graph_matrix import AdjacencyMatrix as A
-from ._matrix_attributes import get_method, methods
-
+from ._matrix_attributes import methods, get_method
 
 __all__ = ('AdjacencyMatrix',)
 

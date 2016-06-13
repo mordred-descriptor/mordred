@@ -1,14 +1,13 @@
 from __future__ import division
 
 import os
-import numpy as np
 
+import numpy as np
 from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 
 from ._base import Descriptor
 from ._util import atoms_to_numpy
-
 
 halogen = set([9, 17, 35, 53, 85, 117])
 
