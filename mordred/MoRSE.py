@@ -18,8 +18,16 @@ class MoRSE(Descriptor):
     @classmethod
     def preset(cls):
         return chain(
-            cls(None, i) for i in range(1, 33),
+            (cls(None, i) for i in range(1, 33)),
+            (cls('m', i) for i in range(1, 33)),
+            (cls('v', i) for i in range(1, 33)),
+            (cls('se', i) for i in range(1, 33)),
+            (cls('p', i) for i in range(1, 33)),
         )
+
+    def __str__(self):
+        p = '' if self._prop is None else self._prop.as_argument
+        return 'MOR{:02d}{}'.format(self._distance, p)
 
     def as_key(self):
         p = None if self._prop is None else self._prop.as_argument
