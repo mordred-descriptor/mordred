@@ -28,10 +28,10 @@ class ChiType(IntEnum):
     @property
     def short(self):
         _chi_type_dict = {
-            self.path: 'p',
-            self.chain: 'ch',
-            self.path_cluster: 'pc',
-            self.cluster: 'c'
+            self.__class__.path: 'p',
+            self.__class__.chain: 'ch',
+            self.__class__.path_cluster: 'pc',
+            self.__class__.cluster: 'c'
         }
 
         return _chi_type_dict[self]
