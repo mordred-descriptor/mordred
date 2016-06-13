@@ -17,7 +17,7 @@ class BertzCT(Descriptor):
         yield cls()
 
     def __str__(self):
-        return 'BertzCT'
+        return self.__class__.__name__
 
     def as_key(self):
         return self.__class__, ()

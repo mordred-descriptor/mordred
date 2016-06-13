@@ -21,7 +21,7 @@ class BalabanJ(Descriptor):
         return self.__class__, ()
 
     def __str__(self):
-        return 'BalabanJ'
+        return self.__class__.__name__
 
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}

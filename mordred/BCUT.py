@@ -91,7 +91,7 @@ class BCUT(BCUTBase):
     def preset(cls):
         return (
             cls(a, n)
-            for a in get_properties(istate=True, charge=True)
+            for a in get_properties(valence=True, charge=True)
             for n in [0, -1]
         )
 

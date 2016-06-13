@@ -25,6 +25,17 @@ class ChiType(IntEnum):
     def as_argument(self):
         return self.name
 
+    @property
+    def short(self):
+        _chi_type_dict = {
+            self.path: 'p',
+            self.chain: 'ch',
+            self.path_cluster: 'pc',
+            self.cluster: 'c'
+        }
+
+        return _chi_type_dict[self]
+
 
 class DFS(object):
     __slots__ = ('mol', 'visited', 'vis_edges', 'is_chain', 'degrees', 'bonds', 'neighbors',)
@@ -133,18 +144,6 @@ class ChiCache(ChiBase):
 
         return ChiBonds(chain, path, path_cluster, cluster)
 
-_chi_type_dict = {
-    ChiType.path: 'P',
-    ChiType.chain: 'CH',
-    ChiType.path_cluster: 'PC',
-    ChiType.cluster: 'C'
-}
-
-_prop_dict = dict(delta='S', delta_v='V')
-
-
-_deltas = ['delta', 'delta_v']
-
 
 class Chi(ChiBase):
     r"""chi descriptor.
@@ -167,26 +166,29 @@ class Chi(ChiBase):
 
     chi_types = tuple(t.name for t in ChiType)
 
+    _deltas = ['d', 'dv']
+
     @classmethod
     def preset(cls):
         return chain(
-            (cls(ChiType.chain, l, a) for a in _deltas for l in range(3, 8)),
-            (cls(ChiType.cluster, l, a) for a in _deltas for l in range(3, 7)),
-            (cls(ChiType.path_cluster, l, a) for a in _deltas for l in range(4, 7)),
-            (cls(ChiType.path, l, a, m) for a in _deltas for m in [False, True] for l in range(8)),
+            (cls(ChiType.chain, l, a) for a in cls._deltas for l in range(3, 8)),
+            (cls(ChiType.cluster, l, a) for a in cls._deltas for l in range(3, 7)),
+            (cls(ChiType.path_cluster, l, a) for a in cls._deltas for l in range(4, 7)),
+            (cls(ChiType.path, l, a, m)
+             for a in cls._deltas for m in [False, True] for l in range(8)),
         )
 
     def __str__(self):
-        prop = _prop_dict.get(str(self._prop.as_argument), self._prop)
-        ct = _chi_type_dict[self._type]
-        p = 'A' if self._averaged else ''
+        prop = self._prop.as_argument
+        ct = self._type.short
+        averaged = 'A' if self._averaged else ''
 
-        return '{}{}{}-{}'.format(p, prop, ct, self._order)
+        return '{}X{}-{}{}'.format(averaged, ct, self._order, prop)
 
     def as_key(self):
         return self.__class__, (self._type, self._order, self._prop, self._averaged)
 
-    def __init__(self, type='path', order=0, prop='delta', averaged=False):
+    def __init__(self, type='path', order=0, prop='d', averaged=False):
         self._type = parse_enum(ChiType, type)
         self._order = order
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)
