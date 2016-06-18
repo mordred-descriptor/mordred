@@ -333,3 +333,9 @@ class AtomicProperty(Descriptor):
             self.fail(ValueError('missing {} for {}'.format(self.get_long(), list(atms))))
 
         return r
+
+    _carbon = Chem.Atom(6)
+
+    @property
+    def carbon(self):
+        return self.prop(self._carbon)

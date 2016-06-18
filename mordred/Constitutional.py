@@ -1,5 +1,4 @@
 import numpy as np
-from rdkit import Chem
 
 from ._base import Descriptor
 from ._atomic_property import AtomicProperty, get_properties
@@ -26,8 +25,6 @@ class ConstitutionalSum(Descriptor):
     def preset(cls):
         return map(cls, get_properties())
 
-    _carbon = Chem.Atom(6)
-
     def as_key(self):
         return self.__class__, (self._prop,)
 
@@ -43,8 +40,7 @@ class ConstitutionalSum(Descriptor):
         return {'P': self._prop}
 
     def calculate(self, P):
-        C = self._prop.prop(self._carbon)
-        return np.sum(P / C)
+        return np.sum(P / self._prop.carbon)
 
     rtype = float
 
