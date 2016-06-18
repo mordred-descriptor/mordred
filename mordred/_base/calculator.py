@@ -224,7 +224,7 @@ class Calculator(object):
             p.write(s, file=file, end='\n')
             return
 
-        print(s, file=sys.stdout, end='\n')
+        print(s, file=file, end='\n')
 
     def map(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""calculate descriptors over mols.
