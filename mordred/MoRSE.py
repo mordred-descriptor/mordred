@@ -1,10 +1,12 @@
 from __future__ import division
-from ._base.descriptor import Descriptor
-from ._atomic_property import AtomicProperty
-from ._graph_matrix import DistanceMatrix3D
-import numpy as np
+
 from itertools import chain
 
+import numpy as np
+
+from ._graph_matrix import DistanceMatrix3D
+from ._atomic_property import AtomicProperty
+from ._base.descriptor import Descriptor
 
 __all__ = 'MoRSE',
 
