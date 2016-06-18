@@ -4,7 +4,6 @@ from ._atomic_property import AtomicProperty
 from ._graph_matrix import DistanceMatrix3D
 import numpy as np
 from itertools import chain
-from math import factorial
 
 
 __all__ = 'MoRSE',
@@ -27,7 +26,7 @@ class MoRSE(Descriptor):
 
     def __str__(self):
         p = '' if self._prop is None else self._prop.as_argument
-        return 'MOR{:02d}{}'.format(self._distance, p)
+        return 'Mor{:02d}{}'.format(self._distance, p)
 
     def as_key(self):
         p = None if self._prop is None else self._prop.as_argument
@@ -55,19 +54,22 @@ class MoRSE(Descriptor):
 
         N = D.shape[0]
 
-        if self._distance == 1:
-            return factorial(N) / (2 * factorial(N - 2))
-
-        sr = (self._distance - 1) * D
-        np.fill_diagonal(sr, 1)
-
         if A is None:
             A = np.ones(N)
+        else:
+            A = A / self._prop.carbon
 
         A = A.reshape(1, -1)
 
-        with self.rethrow_zerodiv():
-            n = np.sin(sr) / sr
+        if self._distance == 1:
+            n = np.ones((N, N), dtype='float')
+
+        else:
+            with self.rethrow_zerodiv():
+                sr = (self._distance - 1) * D
+                np.fill_diagonal(sr, 1)
+                n = np.sin(sr) / sr
+
         np.fill_diagonal(n, 0)
 
         return np.float(0.5 * A.dot(n).dot(A.T))
