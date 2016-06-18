@@ -1,7 +1,6 @@
 from __future__ import division
 
 import numpy as np
-from rdkit import Chem
 from networkx import Graph, floyd_warshall_numpy
 
 from ._base import Descriptor
@@ -19,8 +18,6 @@ class BaryszMatrixBase(Descriptor):
 class Barysz(BaryszMatrixBase):
     __slots__ = ('_prop',)
 
-    _carbon = Chem.Atom(6)
-
     def as_key(self):
         return self.__class__, (self._prop,)
 
@@ -31,7 +28,7 @@ class Barysz(BaryszMatrixBase):
         return {'P': self._prop}
 
     def calculate(self, P):
-        C = self._prop.prop(self._carbon)
+        C = self._prop.carbon
 
         G = Graph()
 
