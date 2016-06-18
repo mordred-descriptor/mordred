@@ -40,7 +40,7 @@ def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
 
     try:
         with self._progress(quiet, nmols, ipynb) as bar:
-            for m, result in [(m, do_task(m)) for m in mols]:
+            for result in [do_task(m) for m in mols]:
                 r, err = get_result(result)
 
                 for e in err:
@@ -50,7 +50,7 @@ def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
 
                     bar.write(e)
 
-                yield m, r
+                yield r
                 bar.update()
 
     finally:

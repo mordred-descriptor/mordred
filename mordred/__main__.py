@@ -195,7 +195,7 @@ def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbos
 
             return str(v)
 
-        for mol, val in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
+        for mol, val in zip(mols, calc.map(mols, nproc=nproc, nmols=N, quiet=quiet)):
             err_set = set()
 
             if mol.HasProp('_Name'):

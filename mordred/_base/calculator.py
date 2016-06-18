@@ -3,7 +3,6 @@ from __future__ import print_function
 import sys
 from types import ModuleType
 from inspect import getsourcelines
-from itertools import chain
 from contextlib import contextmanager
 
 from tqdm import tqdm
@@ -194,7 +193,7 @@ class Calculator(object):
 
                     bar.write(e, file=capture.orig)
 
-                yield m, r
+                yield r
                 bar.update()
 
     @contextmanager
@@ -248,7 +247,7 @@ class Calculator(object):
         :type id: :py:class:`int`
         :param id: conformer id
 
-        :rtype: :py:class:`Iterator` ((:py:class:`Mol`, [scalar]]))
+        :rtype: :py:class:`Iterator` [scalar]
         """
 
         if hasattr(mols, '__len__'):
@@ -259,8 +258,7 @@ class Calculator(object):
         else:
             return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
 
-    def pandas(self, mols, mol_name='mol',
-               nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
+    def pandas(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""calculate descriptors over mols.
 
         :type mol_name: str
@@ -271,8 +269,8 @@ class Calculator(object):
         import pandas
 
         return pandas.DataFrame(
-            (chain([m], d) for m, d in self.map(mols, nproc, nmols, quiet, ipynb, id)),
-            columns=list(chain([mol_name], (str(d) for d in self.descriptors)))
+            self.map(mols, nproc, nmols, quiet, ipynb, id),
+            columns=[str(d) for d in self.descriptors]
         )
 
 

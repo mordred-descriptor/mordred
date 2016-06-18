@@ -18,8 +18,8 @@ def test_parallel():
     for mol in mols:
         Chem.EmbedMolecule(mol)
 
-    for (_, serial), (_, parallel) in zip(calc.map(mols, nproc=1, quiet=True),
-                                          calc.map(mols, quiet=True)):
+    for serial, parallel in zip(calc.map(mols, nproc=1, quiet=True),
+                                calc.map(mols, quiet=True)):
         for d, s, p in zip(calc.descriptors, serial, parallel):
             if isinstance(s, MissingValueBase):
                 yield eq_, pickle.dumps(s), pickle.dumps(p), str(d)
