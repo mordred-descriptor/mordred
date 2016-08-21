@@ -38,7 +38,7 @@ class Result(object):
         return '{!r} {!r} {!r}'.format(self.stdout, self.stderr, self.exitcode)
 
 
-def command(cmd, *args, **kwargs):
+def command(cmd, *args):
     r = Result()
 
     orig = sys.stdout, sys.stderr
@@ -52,7 +52,8 @@ def command(cmd, *args, **kwargs):
             sys.stderr = stderr
 
             try:
-                cmd.main(args=args, **kwargs)
+                cmd(args=args)
+                r.exitcode = 0
             except SystemExit as e:
                 r.exitcode = e.args[0]
 
@@ -73,23 +74,23 @@ def test_no_args():
     stdout, stderr, exitcode = command(mordred)
     eq_(exitcode, 2)
     eq_(stdout, '')
-    in_('Usage:', stderr)
-    in_('Error: INPUT file required', stderr)
+    in_('usage:', stderr)
+    in_('the following arguments are required: INPUT', stderr)
 
 
 def test_help():
     stdout, stderr, exitcode = command(mordred, '-h')
     eq_(exitcode, 0)
     eq_(stderr, '')
-    in_('Usage:', stdout)
-    in_('===== descriptors =====', stdout)
+    in_('usage:', stdout)
+    in_('descriptors:', stdout)
 
 
 def test_version():
     stdout, stderr, exitcode = command(mordred, '--version')
     eq_(exitcode, 0)
     eq_(stderr, '')
-    eq_(stdout, 'mordred, version {}\n'.format(__version__))
+    eq_(stdout, 'mordred-{}\n'.format(__version__))
 
 
 def test_missing_file():
@@ -97,8 +98,8 @@ def test_missing_file():
         stdout, stderr, exitcode = command(mordred, 'missing.smi')
         eq_(exitcode, 2)
         eq_(stdout, '')
-        in_('Usage:', stderr)
-        in_('Path "missing.smi" does not exist.', stderr)
+        in_('usage:', stderr)
+        in_('invalid PathType value', stderr)
 
 
 def number_of_field(output):

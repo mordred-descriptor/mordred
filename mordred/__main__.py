@@ -68,7 +68,7 @@ def auto_parser(path):
 class ParserAction(argparse.Action):
     def __init__(self, option_strings, dest, **kwargs):
         super(ParserAction, self).__init__(option_strings, dest, **kwargs)
-        self.default = 'auto'
+        self.default = self.to_parser('auto')
         self.choices = ['auto', 'sdf', 'mol', 'smi']
 
     def to_parser(self, value):
@@ -99,7 +99,7 @@ def make_parser():
                         version='{}-{}'.format(__package__, __version__))
     parser.add_argument('input', type=PathType, nargs='+', metavar='INPUT')
     parser.add_argument('-t', '--type', action=ParserAction,
-                        help='input filetype (default: %(default)s)')
+                        help='input filetype (default: auto)')
     parser.add_argument('-o', '--output', default='-', type=argparse.FileType('w'),
                         help='output file path (default: stdout)')
     parser.add_argument('-p', '--processes', default=None, type=int,
@@ -190,9 +190,9 @@ def write_row(file, data):
     file.write('\n')
 
 
-def main():
+def main(args=None):
     parser = make_parser()
-    p = parser.parse_args()
+    p = parser.parse_args(args)
     return main_process(
         input=p.input, parser=p.type, output=p.output,
         nproc=p.processes, quiet=p.quiet, stream=p.stream,
