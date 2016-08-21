@@ -1,5 +1,6 @@
-from mordred import Calculator, Descriptor
 from nose.tools import eq_, ok_, raises
+
+from mordred import Calculator, Descriptor
 
 from . import Dummy
 

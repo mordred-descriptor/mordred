@@ -1,6 +1,7 @@
 from rdkit import Chem
-from mordred import _atomic_property
 from numpy.testing import assert_almost_equal
+
+from mordred import _atomic_property
 
 _data = {
     '>C<': 'CC(C)(C)C',

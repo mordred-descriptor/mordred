@@ -4,10 +4,11 @@ from glob import glob
 import yaml
 import numpy as np
 from rdkit import Chem
-from mordred import Calculator, Polarizability, all_descriptors
 from nose.tools import eq_
-from mordred.error import MissingValueBase
 from numpy.testing import assert_almost_equal
+
+from mordred import Calculator, Polarizability, all_descriptors
+from mordred.error import MissingValueBase
 
 try:
     from yaml import CLoader as Loader

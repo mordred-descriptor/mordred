@@ -1,6 +1,7 @@
 from rdkit import Chem
-from mordred import Calculator, ExtendedTopochemicalAtom
 from numpy.testing import assert_almost_equal
+
+from mordred import Calculator, ExtendedTopochemicalAtom
 
 references = {
     # Roy et. al. Quantitative Structure-Activity Relationships in Drug Design, Predictive Toxicology, and Risk Assessment. p. 65

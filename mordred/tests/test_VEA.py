@@ -1,6 +1,7 @@
 from rdkit import Chem
-from mordred import Calculator, DistanceMatrix, AdjacencyMatrix
 from numpy.testing import assert_almost_equal
+
+from mordred import Calculator, DistanceMatrix, AdjacencyMatrix
 
 # Balaban, A. T.; Ciubotariu, D.; Medeleanu, M.
 # Topological indices and real number vertex invariants based on graph eigenvalues or eigenvectors.

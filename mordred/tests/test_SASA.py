@@ -2,6 +2,7 @@ import os
 
 from rdkit import Chem
 from nose.tools import ok_
+
 from mordred.CPSA import TotalSurfaceArea
 from mordred.surface_area import SurfaceArea
 

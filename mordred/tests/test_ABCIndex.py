@@ -1,5 +1,6 @@
 from rdkit import Chem
 from numpy.testing import assert_almost_equal
+
 from mordred.ABCIndex import ABCIndex, ABCGGIndex
 
 

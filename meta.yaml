@@ -19,7 +19,6 @@ requirements:
     - rdkit
     - enum34 [py27]
     - tqdm
-    - click
 
     - setuptools
     - pyyaml
@@ -32,7 +31,6 @@ requirements:
     - rdkit
     - enum34 [py27]
     - tqdm
-    - click
 
 test:
   imports:
