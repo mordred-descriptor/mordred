@@ -1,10 +1,11 @@
 import pickle
 
-from mordred import Calculator, all_descriptors
 from nose.tools import eq_
 from rdkit.Chem import AllChem as Chem
-from mordred.error import MissingValueBase
 from numpy.testing import assert_almost_equal
+
+from mordred import Calculator, all_descriptors
+from mordred.error import MissingValueBase
 
 
 def test_parallel():

@@ -1,10 +1,11 @@
 from __future__ import print_function
 
 import argparse
-from .._util import PathType, module_prog
+
 from rdkit import Chem
 
 from . import SurfaceArea
+from .._util import PathType, module_prog
 
 
 def main():

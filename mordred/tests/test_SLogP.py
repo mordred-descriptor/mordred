@@ -1,6 +1,7 @@
 from rdkit import Chem
-from mordred.SLogP import SMR, SLogP
 from numpy.testing import assert_almost_equal
+
+from mordred.SLogP import SMR, SLogP
 
 
 def test_WildmanCrippen1():

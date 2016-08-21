@@ -1,6 +1,7 @@
 from rdkit import Chem
-from mordred import Calculator, Descriptor
 from nose.tools import eq_
+
+from mordred import Calculator, Descriptor
 from mordred.error import Error
 
 
