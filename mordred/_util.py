@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import os
 import sys
 
 import numpy as np
@@ -79,3 +80,14 @@ class NotebookWrapper(object):
 
     def write(self, *args, **kwargs):
         self.bar.update(*args, **kwargs)
+
+
+def PathType(string):
+    if not os.path.isfile(string):
+        raise ValueError('file not exists: {}'.format(string))
+
+    return string
+
+
+def module_prog(pkg):
+    return '{} -m {}'.format(os.path.basename(sys.executable), pkg)

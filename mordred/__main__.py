@@ -3,19 +3,15 @@ from __future__ import print_function
 import os
 import sys
 import logging
+import argparse
 from importlib import import_module
 
-import click
 from rdkit import Chem
 
 from . import Calculator, __version__, all_descriptors
 from ._base import get_descriptors_from_module
+from ._util import PathType, module_prog
 from .error import Missing, MissingValueBase
-
-all_descs = [
-    '.'.join(m.__name__.split('.')[1:])
-    for m in all_descriptors()
-]
 
 
 def smiles_parser(path):
@@ -69,79 +65,57 @@ def auto_parser(path):
         yield m
 
 
-def callback_input(cxt, param, value):
-    if len(value) == 0:
-        cxt.fail('INPUT file required')
+class ParserAction(argparse.Action):
+    def __init__(self, option_strings, dest, **kwargs):
+        super(ParserAction, self).__init__(option_strings, dest, **kwargs)
+        self.default = 'auto'
+        self.choices = ['auto', 'sdf', 'mol', 'smi']
 
-    return value
+    def to_parser(self, value):
+        if value == 'auto':
+            return auto_parser
+        elif value == 'smi':
+            return smiles_parser
+        elif value in ['sdf', 'mol']:
+            return sdf_parser
+
+        raise ValueError('invalid parser: {}'.format(value))
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, self.to_parser(values))
 
 
-def callback_filetype(cxt, param, value):
-    if value == 'auto':
-        return auto_parser
-    elif value == 'smi':
-        return smiles_parser
+def make_parser():
+    all_descs = [
+        '.'.join(m.__name__.split('.')[1:])
+        for m in all_descriptors()
+    ]
 
-    return sdf_parser
+    parser = argparse.ArgumentParser(
+        prog=module_prog(__package__),
+        epilog='descriptors: {}'.format(' '.join(all_descs))
+    )
+    parser.add_argument('--version', action='version', help='input molecular file',
+                        version='{}-{}'.format(__package__, __version__))
+    parser.add_argument('input', type=PathType, nargs='+', metavar='INPUT')
+    parser.add_argument('-t', '--type', action=ParserAction,
+                        help='input filetype (default: %(default)s)')
+    parser.add_argument('-o', '--output', default='-', type=argparse.FileType('w'),
+                        help='output file path (default: stdout)')
+    parser.add_argument('-p', '--processes', default=None, type=int,
+                        help='number of processes (default: number of logical processors)')
+    parser.add_argument('-q', '--quiet', action='store_true', help='hide progress bar')
+    parser.add_argument('-s', '--stream', action='store_true', help='stream read')
+    parser.add_argument('-d', '--descriptor', default=[], choices=all_descs, action='append',
+                        help='descriptors to calculate (default: all)', metavar='DESC')
+    parser.add_argument('-3', '--3D', action='store_true', dest='with3D',
+                        help='use 3D descriptors (require sdf or mol file)')
+    parser.add_argument('-v', '--verbosity', action='count', default=0, help='verbosity')
+
+    return parser
 
 
-@click.command(
-    epilog='===== descriptors =====\n\n{}'.format(' '.join(all_descs)),
-    context_settings={
-        'help_option_names': ['-h', '--help']
-    }
-)
-@click.version_option(
-    __version__, '--version',
-    prog_name='mordred'
-)
-@click.argument(
-    'INPUT', nargs=-1,
-    type=click.Path(exists=True),
-    callback=callback_input
-)
-@click.option(
-    'parser', '-t', '--type', default='auto',
-    type=click.Choice(['auto', 'smi', 'mol', 'sdf']),
-    help='input filetype',
-    callback=callback_filetype
-)
-@click.option(
-    '-o', '--output',
-    default=sys.stdout, type=click.File('w'),
-    help='output csv file'
-)
-@click.option(
-    'nproc', '-p', '--processes',
-    default=None, type=click.INT,
-    help='number of processes'
-)
-@click.option(
-    '-q', '--quiet',
-    default=False, flag_value=True,
-    help='hide progress bar'
-)
-@click.option(
-    '-s', '--stream',
-    default=False, flag_value=True,
-    help='stream read'
-)
-@click.option(
-    '-d', '--descriptor', multiple=True,
-    type=click.Choice(all_descs),
-    help='descriptors', metavar='DESC'
-)
-@click.option(
-    'with3D', '-3', '--3D',
-    default=False, flag_value=True,
-    help='use 3D descriptors (require sdf or mol file)'
-)
-@click.option(
-    '-v', '--verbosity',
-    type=click.IntRange(0, 2), count=True,
-    help='verbosity (0-2)'
-)
-def main(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity):
+def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity):
     mols = (m for i in input for m in parser(i))
 
     if output.isatty():
@@ -216,5 +190,15 @@ def write_row(file, data):
     file.write('\n')
 
 
+def main():
+    parser = make_parser()
+    p = parser.parse_args()
+    return main_process(
+        input=p.input, parser=p.type, output=p.output,
+        nproc=p.processes, quiet=p.quiet, stream=p.stream,
+        descriptor=p.descriptor, with3D=p.with3D, verbosity=p.verbosity
+    )
+
+
 if __name__ == '__main__':
-    main(prog_name='{} -m {}'.format(os.path.basename(sys.executable), __package__))
+    main()
