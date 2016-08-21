@@ -75,7 +75,8 @@ def test_no_args():
     eq_(exitcode, 2)
     eq_(stdout, '')
     in_('usage:', stderr)
-    in_('the following arguments are required: INPUT', stderr)
+    # python3 or python2
+    assert 'the following arguments are required: INPUT' in stderr or 'too few arguments' in stderr
 
 
 def test_help():
@@ -89,8 +90,10 @@ def test_help():
 def test_version():
     stdout, stderr, exitcode = command(mordred, '--version')
     eq_(exitcode, 0)
-    eq_(stderr, '')
-    eq_(stdout, 'mordred-{}\n'.format(__version__))
+
+    vstr = 'mordred-{}\n'.format(__version__)
+    # python3 or python2
+    assert (stderr == '' and stdout == vstr) or (stdout == '' and stderr == vstr)
 
 
 def test_missing_file():
