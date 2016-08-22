@@ -1,6 +1,6 @@
 package:
   name: mordred
-  version: 0
+  version: {{load_setup_py_data().version}}
 
 source:
   path: .
@@ -42,4 +42,5 @@ test:
 
   commands:
     - python -c "from mordred import all_descriptors; all_descriptors()"
-    - python -m "mordred.tests"
+    - pip install coveralls
+    - nosetests mordred --with-coverage --cover-package=mordred

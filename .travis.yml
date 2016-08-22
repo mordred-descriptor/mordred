@@ -1,13 +1,21 @@
-language: python
+language: bash
 
 env:
   global:
     - DOC_REMOTE=git@github.com:mordred-descriptor/documentation.git
+    - secure: "OAYVTLgh4wDBD10+32iWqulE4gK9x938xuKmClZ6eLU/S3tpFsWbcrrxno3yjJ6h5kcIM/ss+4OYu9ciuhvhAEusOPJmyFXd/nXVXkPlu6mcdNLmO/ADuvIQyB66DYU+1dumjOyDPe+qme/p/XJtANFQsqMc32yj4U4TN64YV+CWgFfwDdI9bU6AQnVdO+dCRYRdJ5q6UjkEgp0PMqBlsqtyDIFZK/7Hc4Oc7ZvthtHJ8nm3lGY7Pqk+Z7VBz801uri7UudYNdHkP1FyN3ZDeZXe5LjCuYMP+zAMeIkvNRq32Eus6qQhSc85vXYxjYJcWMUWL4wlOZaMpwVHp4uN1rEadzwhDBcaxDx87AWzm2iCRcqGUHjtGFuY9iJS485R/IhChYU/wKr1ETtlZgM/y/cpsiFk7eAMNUwQkUtRTdkwzTrGu2vLmTrGHxsCg+KnfgDuIaHYTYe5cO5YAtMRThWUzemxiIsHY9RsbuVOYqiNkpdkKXeySGlW8O3y5e/7aJdxjfnRM9QeGTeWGMcgBAMHHyAhkztDxK4MEwezb00jG/+AIVWxgAd35wffK2/B0AeOiti0TtujM/TTcwGpqaCH9bI7xY3hqd3xT83lgw4FE2lL7gAQZX6w6J/AcaQM9C246/eGSg6HiNKl7VZctHWRd1uF1m9MD4pxRXBoWiU="
 
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
+  matrix:
+    - PYTHON_VERSION=2.7
+      CONDA_NAME=Miniconda
+    - PYTHON_VERSION=3.4
+      CONDA_NAME=Miniconda3
+    - PYTHON_VERSION=3.5
+      CONDA_NAME=Miniconda3
+
+os:
+  - linux
+  - osx
 
 sudo: false
 
@@ -17,35 +25,36 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_8d665ddaa7bd_key -iv $encrypted_8d665ddaa7bd_iv -in .id_rsa.enc -out ~/.ssh/.id_rsa -d
   - chmod 600 ~/.ssh/.id_rsa
   - ssh-add ~/.ssh/.id_rsa
+  - echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
   - git config --global user.email "philopon.dependence@gmail.com"
   - git config --global user.name "philopon"
 
 install:
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
+  - if [[ "$TRAVIS_OS_NAME" == osx ]]; then export CONDA_OS=MacOSX; else export CONDA_OS=Linux; fi
+  - wget https://repo.continuum.io/miniconda/${CONDA_NAME}-latest-${CONDA_OS}-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels rdkit --add channels mordred-descriptor
+  - conda install python=$PYTHON_VERSION
   - conda update -q conda
   - conda info -a
 
-  - conda create -c rdkit -c mordred-descriptor -q -n test-environment python=$TRAVIS_PYTHON_VERSION rdkit
-  - source activate test-environment
-  - pip install '.[test]'
+  - conda install --file requirements.txt
   - pip install coveralls
 
 script:
-  - nosetests mordred --with-coverage --cover-package=mordred
+  - python setup.py nosetests --with-coverage --cover-package=mordred
 
 after_success:
   - set -e
   - coveralls
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
+  - conda build . --no-test
+  - anaconda -t $ANACONDA_CLOUD_TOKEN upload --force `conda build . --output --python $PYTHON_VERSION`
+
+  - if [[ "$PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
       pip install sphinx sphinxcontrib-bibtex sphinx_rtd_theme;
 
       cd docs;

@@ -5,6 +5,7 @@ import sys
 import logging
 import argparse
 from importlib import import_module
+from multiprocessing import freeze_support
 
 from rdkit import Chem
 
@@ -15,23 +16,24 @@ from .error import Missing, MissingValueBase
 
 
 def smiles_parser(path):
-    for line in open(path):
-        line = line.strip().split()
-        if len(line) == 1:
-            smi = line[0]
-            name = smi
-        else:
-            smi = line[0]
-            name = ' '.join(line[1:])
+    with open(path) as file:
+        for line in file:
+            line = line.strip().split()
+            if len(line) == 1:
+                smi = line[0]
+                name = smi
+            else:
+                smi = line[0]
+                name = ' '.join(line[1:])
 
-        mol = Chem.MolFromSmiles(smi)
+            mol = Chem.MolFromSmiles(smi)
 
-        if mol is None:
-            logging.warning('smiles read failure: %s', name)
-            continue
+            if mol is None:
+                logging.warning('smiles read failure: %s', name)
+                continue
 
-        mol.SetProp('_Name', name)
-        yield mol
+            mol.SetProp('_Name', name)
+            yield mol
 
 
 def sdf_parser(path):
@@ -201,4 +203,5 @@ def main(args=None):
 
 
 if __name__ == '__main__':
+    freeze_support()
     main()

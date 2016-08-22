@@ -41,12 +41,10 @@ setup(
 
     install_requires=install_requires,
 
-    extras_require=dict(
-        test=[
-            'nose>=1.3',
-            'PyYaml>=3.11',
-        ]
-    ),
+    tests_require=[
+        'nose>=1.3',
+        'PyYaml>=3.11',
+    ],
 
     test_suite='nose.collector',
 
