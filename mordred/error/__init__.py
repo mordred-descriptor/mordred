@@ -31,11 +31,13 @@ class MissingValueBase(six.with_metaclass(ABCMeta, object)):
 
 
 class Missing(MissingValueBase):
+    '''known errored value'''
     __slots__ = ()
     header = 'Missing'
 
 
 class Error(MissingValueBase):
+    '''unknown errored value'''
     __slots__ = ()
     header = 'ERROR'
 

@@ -219,6 +219,7 @@ class Calculator(object):
                 del self._progress_bar
 
     def echo(self, s, file=sys.stdout, end='\n'):
+        '''output message'''
         p = getattr(self, '_progress_bar', None)
         if p is not None:
             p.write(s, file=file, end='\n')

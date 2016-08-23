@@ -30,10 +30,15 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     @abstractmethod
     def parameters(self):
+        '''get __init__ arguments of this descriptor instance.
+
+        (abstract method)
+        '''
         raise NotImplementedError('not implemented Descriptor.parameters method')
 
     @property
     def as_argument(self):
+        '''argument representation of descriptor'''
         return self
 
     @staticmethod
@@ -105,10 +110,12 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     @property
     def mol(self):
+        '''get molecule'''
         return self._context.get_mol(self)
 
     @property
     def coord(self):
+        '''get 3D coordinate'''
         if not self.require_3D:
             self.fail(AttributeError('use 3D coordinate in 2D descriptor'))
 
@@ -116,6 +123,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     @contextmanager
     def rethrow_zerodiv(self):
+        '''treat zero div as known exception'''
         with np.errstate(divide='raise', invalid='raise'):
             try:
                 yield
@@ -123,10 +131,12 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
                 self.fail(ZeroDivisionError(*e.args))
 
     def fail(self, exception):
+        '''raise known exception and return missing value'''
         raise MissingValueException(exception)
 
     @contextmanager
     def rethrow_na(self, exception):
+        '''treat any exceptions as known exception'''
         try:
             yield
         except exception as e:
