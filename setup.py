@@ -15,11 +15,8 @@ if sys.version_info < (3, 4, 0):
 
 
 def get_version():
-    version_file = os.path.join('mordred', '_version.py')
-
-    sandbox = {}
-    exec(open(version_file).read(), sandbox, sandbox)
-    return sandbox['__version__']
+    with open(os.path.join('mordred', '_version.txt')) as f:
+        return f.read().strip()
 
 
 def get_test_data():
@@ -35,7 +32,7 @@ setup(
     packages=find_packages(),
 
     package_data={
-        'mordred': ['data/*.txt'],
+        'mordred': ['data/*.txt', '_version.txt'],
         'mordred.tests': list(get_test_data()),
     },
 

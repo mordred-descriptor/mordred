@@ -23,6 +23,8 @@ install:
       conda install --file requirements.txt
     )
 
+  - "if %APPVEYOR_REPO_TAG% == true if %APPVEYOR_REPO_TAG_NAME:~0,1% == v (echo %APPVEYOR_REPO_TAG_NAME:~1% > mordred\\_version.txt)"
+
 test_script:
   - nosetests mordred -q
 

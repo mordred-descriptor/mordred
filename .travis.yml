@@ -44,6 +44,7 @@ install:
 
   - conda install --file requirements.txt
   - pip install coveralls
+  - [[ -n "$TRAVIS_TAG" && "${TRAVIS_TAG:0:1}" == v ]] && echo ${TRAVIS_TAG:1} > mordred/_version.txt
 
 script:
   - python setup.py nosetests --with-coverage --cover-package=mordred
