@@ -40,7 +40,8 @@ class Barysz(BaryszMatrixBase):
 
             pi = bond.GetBondTypeAsDouble()
 
-            w = (C * C) / (P[i] * P[j] * pi)
+            with self.rethrow_zerodiv():
+                w = (C * C) / (P[i] * P[j] * pi)
 
             G.add_edge(i, j, weight=w)
 
