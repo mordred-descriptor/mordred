@@ -33,8 +33,8 @@ class AlterMolecule(Descriptor):
     kekulize = True
     require_connected = True
 
-    def as_key(self):
-        return self.__class__, (self.explicit_hydrogens, self._saturated)
+    def parameters(self):
+        return self.explicit_hydrogens, self._saturated
 
     def __init__(self, explicit_hydrogens, saturated=False):
         self._saturated = saturated
@@ -134,8 +134,8 @@ class EtaCoreCount(EtaBase):
 
         return '{}ETA_alpha{}'.format(ave, suffix)
 
-    def as_key(self):
-        return self.__class__, (self._averaged, self._reference)
+    def parameters(self):
+        return self._averaged, self._reference
 
     def __init__(self, averaged=False, reference=False):
         self._averaged = averaged
@@ -179,8 +179,8 @@ class EtaShapeIndex(EtaBase):
     def __str__(self):
         return 'ETA_shape_{}'.format(self._type)
 
-    def as_key(self):
-        return self.__class__, (self._type,)
+    def parameters(self):
+        return self._type,
 
     def __init__(self, type='p'):
         assert type in self.shape_types
@@ -263,8 +263,8 @@ class EtaVEMCount(EtaBase):
 
     beta_types = ('', 's', 'ns', 'ns_d')
 
-    def as_key(self):
-        return self.__class__, (self._type, self._averaged)
+    def parameters(self):
+        return self._type, self._averaged
 
     def __init__(self, type='', averaged=False):
         assert type in self.beta_types
@@ -348,8 +348,8 @@ class EtaCompositeIndex(EtaBase):
 
         return '{}ETA_eta{}'.format(ave, suffix)
 
-    def as_key(self):
-        return self.__class__, (self._reference, self._local, self._averaged)
+    def parameters(self):
+        return self._reference, self._local, self._averaged
 
     def __init__(self, reference=False, local=False, averaged=False):
         self._reference = reference
@@ -420,8 +420,8 @@ class EtaFunctionalityIndex(EtaBase):
 
         return '{}ETA_eta_F{}'.format(ave, loc)
 
-    def as_key(self):
-        return self.__class__, (self._local, self._averaged)
+    def parameters(self):
+        return self._local, self._averaged
 
     def __init__(self, local=False, averaged=False):
         self._local = local
@@ -474,8 +474,8 @@ class EtaBranchingIndex(EtaBase):
 
         return '{}ETA_eta_B{}'.format(ave, ring)
 
-    def as_key(self):
-        return self.__class__, (self._ring, self._averaged)
+    def parameters(self):
+        return self._ring, self._averaged
 
     def __init__(self, ring=True, averaged=False):
         self._ring = ring
@@ -527,8 +527,8 @@ class EtaDeltaAlpha(EtaBase):
     def __str__(self):
         return 'ETA_dAlpha_{}'.format(self._type)
 
-    def as_key(self):
-        return self.__class__, (self._type,)
+    def parameters(self):
+        return self._type,
 
     def __init__(self, type='A'):
         assert type in self.delta_types
@@ -589,8 +589,8 @@ class EtaEpsilon(EtaBase):
 
     epsilon_types = tuple(range(1, 6))
 
-    def as_key(self):
-        return self.__class__, (self._type,)
+    def parameters(self):
+        return self._type,
 
     def __init__(self, type=1):
         self._type = type
@@ -641,8 +641,8 @@ class EtaDeltaEpsilon(EtaBase):
 
     delta_epsilon_types = tuple('ABCD')
 
-    def as_key(self):
-        return self.__class__, (self._type,)
+    def parameters(self):
+        return self._type,
 
     def __init__(self, type='A'):
         self._type = type
@@ -685,8 +685,8 @@ class EtaDeltaBeta(EtaBase):
 
         return '{}ETA_dBeta'.format(ave)
 
-    def as_key(self):
-        return self.__class__, (self._averaged,)
+    def parameters(self):
+        return self._averaged,
 
     def __init__(self, averaged=False):
         self._averaged = averaged
@@ -720,8 +720,8 @@ class EtaPsi(EtaBase):
     def __str__(self):
         return 'ETA_psi_1'
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def dependencies(self):
         return {
@@ -755,8 +755,8 @@ class EtaDeltaPsi(EtaBase):
 
     delta_psi_types = ('A', 'B',)
 
-    def as_key(self):
-        return self.__class__, (self._type,)
+    def parameters(self):
+        return self._type,
 
     def __init__(self, type='A'):
         assert type in self.delta_psi_types

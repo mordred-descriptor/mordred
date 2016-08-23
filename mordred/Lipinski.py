@@ -13,8 +13,8 @@ class LipinskiLike(Descriptor):
     def preset(cls):
         yield cls()
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def __str__(self):
         return self.__class__.__name__

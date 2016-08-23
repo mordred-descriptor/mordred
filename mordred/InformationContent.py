@@ -92,8 +92,8 @@ class InformationContentBase(Descriptor):
     def preset(cls):
         return (cls(o) for o in range(6))
 
-    def as_key(self):
-        return self.__class__, (self._order,)
+    def parameters(self):
+        return self._order,
 
     def __init__(self, order=0):
         self._order = order

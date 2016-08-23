@@ -38,7 +38,7 @@ class Calculator(object):
             '_require_3D': self._require_3D,
         }
 
-    def __init__(self, descs=[], exclude3D=False):
+    def __init__(self, descs=[], ignore_3D=False):
         self._descriptors = []
 
         self._explicit_hydrogens = set()
@@ -46,7 +46,7 @@ class Calculator(object):
         self._require_3D = False
         self._debug = False
 
-        self.register(descs, exclude3D=exclude3D)
+        self.register(descs, ignore_3D=ignore_3D)
 
     @property
     def descriptors(self):
@@ -71,11 +71,11 @@ class Calculator(object):
     def __len__(self):
         return len(self._descriptors)
 
-    def _register_one(self, desc, check_only=False, exclude3D=False):
+    def _register_one(self, desc, check_only=False, ignore_3D=False):
         if not isinstance(desc, Descriptor):
             raise ValueError('{!r} is not descriptor'.format(desc))
 
-        if exclude3D and desc.require_3D:
+        if ignore_3D and desc.require_3D:
             return
 
         self._explicit_hydrogens.add(bool(desc.explicit_hydrogens))
@@ -89,7 +89,7 @@ class Calculator(object):
         if not check_only:
             self._descriptors.append(desc)
 
-    def register(self, desc, exclude3D=False):
+    def register(self, desc, ignore_3D=False):
         r"""register descriptors.
 
         :type desc: :py:class:`module`,
@@ -104,17 +104,17 @@ class Calculator(object):
         if not hasattr(desc, '__iter__'):
             if Descriptor.is_descriptor_class(desc):
                 for d in desc.preset():
-                    self._register_one(d, exclude3D=exclude3D)
+                    self._register_one(d, ignore_3D=ignore_3D)
 
             elif isinstance(desc, ModuleType):
-                self.register(get_descriptors_from_module(desc), exclude3D=exclude3D)
+                self.register(get_descriptors_from_module(desc), ignore_3D=ignore_3D)
 
             else:
-                self._register_one(desc, exclude3D=exclude3D)
+                self._register_one(desc, ignore_3D=ignore_3D)
 
         else:
             for d in desc:
-                self.register(d, exclude3D=exclude3D)
+                self.register(d, ignore_3D=ignore_3D)
 
     def _calculate_one(self, cxt, desc, reset):
         if desc in self._cache:
@@ -219,6 +219,7 @@ class Calculator(object):
                 del self._progress_bar
 
     def echo(self, s, file=sys.stdout, end='\n'):
+        '''output message'''
         p = getattr(self, '_progress_bar', None)
         if p is not None:
             p.write(s, file=file, end='\n')

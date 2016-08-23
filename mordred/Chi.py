@@ -113,8 +113,8 @@ ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
 class ChiCache(ChiBase):
     __slots__ = ('_order',)
 
-    def as_key(self):
-        return self.__class__, self._order
+    def parameters(self):
+        return self._order,
 
     def __init__(self, order):
         self._order = order
@@ -183,8 +183,8 @@ class Chi(ChiBase):
 
         return '{}X{}-{}{}'.format(averaged, ct, self._order, prop)
 
-    def as_key(self):
-        return self.__class__, (self._type, self._order, self._prop, self._averaged)
+    def parameters(self):
+        return self._type, self._order, self._prop, self._averaged
 
     def __init__(self, type='path', order=0, prop='d', averaged=False):
         self._type = parse_enum(ChiType, type)

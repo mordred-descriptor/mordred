@@ -18,8 +18,8 @@ class BaryszMatrixBase(Descriptor):
 class Barysz(BaryszMatrixBase):
     __slots__ = ('_prop',)
 
-    def as_key(self):
-        return self.__class__, (self._prop,)
+    def parameters(self):
+        return self._prop,
 
     def __init__(self, prop):
         self._prop = prop
@@ -69,8 +69,8 @@ class BaryszMatrix(BaryszMatrixBase):
     def __str__(self):
         return '{}_Dz{}'.format(self._type.__name__, self._prop.as_argument)
 
-    def as_key(self):
-        return self.__class__, (self._prop, self._type)
+    def parameters(self):
+        return self._prop, self._type
 
     def __init__(self, prop='Z', type='SpMax'):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)

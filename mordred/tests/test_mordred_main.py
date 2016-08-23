@@ -10,8 +10,8 @@ from rdkit.Chem import AllChem as Chem
 from .. import Calculator, __version__, all_descriptors
 from ..__main__ import main as mordred
 
-Nd2D = len(Calculator(all_descriptors(), exclude3D=True).descriptors)
-Nd3D = len(Calculator(all_descriptors(), exclude3D=False).descriptors)
+Nd2D = len(Calculator(all_descriptors(), ignore_3D=True).descriptors)
+Nd3D = len(Calculator(all_descriptors(), ignore_3D=False).descriptors)
 
 
 def in_(a, s):
@@ -92,8 +92,11 @@ def test_version():
     eq_(exitcode, 0)
 
     vstr = 'mordred-{}\n'.format(__version__)
-    # python3 or python2
-    assert (stderr == '' and stdout == vstr) or (stdout == '' and stderr == vstr)
+
+    if stderr == '':  # python 3
+        eq_(stdout, vstr)
+    else:  # python2
+        eq_(stderr, vstr)
 
 
 def test_missing_file():

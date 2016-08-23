@@ -30,8 +30,8 @@ class GravitationalIndex(Descriptor):
             'p' if self._pair else '',
         )
 
-    def as_key(self):
-        return self.__class__, (self._heavy, self._pair)
+    def parameters(self):
+        return self._heavy, self._pair
 
     def __init__(self, heavy=True, pair=False):
         self._heavy = heavy

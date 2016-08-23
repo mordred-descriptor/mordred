@@ -26,8 +26,8 @@ class SmartsCountBase(Descriptor):
     def __str__(self):
         return self._name
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def calculate(self):
         pat = getattr(self, '_mol', None) or self._create_smarts()

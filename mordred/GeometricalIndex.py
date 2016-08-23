@@ -16,8 +16,8 @@ class GeometricalIndexBase(Descriptor):
     def preset(cls):
         yield cls()
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     rtype = float
 

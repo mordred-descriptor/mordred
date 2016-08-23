@@ -20,8 +20,8 @@ class ABCIndexBase(Descriptor):
 
     explicit_hydrogens = False
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def __str__(self):
         return self.__class__.__name__[:-5]

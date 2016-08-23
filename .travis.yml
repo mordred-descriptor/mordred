@@ -44,6 +44,7 @@ install:
 
   - conda install --file requirements.txt
   - pip install coveralls
+  - if [[ -n "$TRAVIS_TAG" && "${TRAVIS_TAG:0:1}" == v ]]; then echo ${TRAVIS_TAG:1} > mordred/_version.txt; fi
 
 script:
   - python setup.py nosetests --with-coverage --cover-package=mordred
@@ -54,7 +55,7 @@ after_success:
   - conda build . --no-test
   - anaconda -t $ANACONDA_CLOUD_TOKEN upload --force `conda build . --output --python $PYTHON_VERSION`
 
-  - if [[ "$PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
+  - if [[ "$PYTHON_VERSION" == "3.5" && "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_OS_NAME" == linux ]]; then
       pip install sphinx sphinxcontrib-bibtex sphinx_rtd_theme;
 
       cd docs;

@@ -18,8 +18,8 @@ class BertzCT(Descriptor):
     def __str__(self):
         return self.__class__.__name__
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def dependencies(self):
         return {'D': DistanceMatrix(self.explicit_hydrogens)}

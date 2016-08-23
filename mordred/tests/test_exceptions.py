@@ -6,8 +6,8 @@ from mordred.error import Error
 
 
 class RaiseDescriptor(Descriptor):
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def __init__(self, e, critical):
         self.e = e

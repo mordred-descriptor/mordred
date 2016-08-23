@@ -38,8 +38,8 @@ class AtomCount(Descriptor):
     def __str__(self):
         return 'n' + self._type
 
-    def as_key(self):
-        return self.__class__, (self._type,)
+    def parameters(self):
+        return self._type,
 
     def __init__(self, type='Atom'):
         self._type = type

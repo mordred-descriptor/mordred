@@ -23,6 +23,11 @@ install:
       conda install --file requirements.txt
     )
 
+  - ps:
+      if ($env:APPVEYOR_REPO_TAG -eq "true" -and $env:APPVEYOR_REPO_TAG_NAME[0] -eq "v") {
+        [System.IO.File]::WriteAllLines("$env:APPVEYOR_BUILD_FOLDER\mordred\_version.txt", $env:APPVEYOR_REPO_TAG_NAME.Substring(1))
+      }
+
 test_script:
   - nosetests mordred -q
 

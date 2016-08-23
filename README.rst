@@ -30,17 +30,9 @@ conda(recommended)
 
 #. install mordred
 
-       stable
-
        .. code:: console
 
            $ conda install -c rdkit -c mordred-descriptor mordred
-
-       beta
-
-       .. code:: console
-
-           $ conda install -c rdkit -c mordred-descriptor/channel/dev mordred
 
 pip
 ~~~
@@ -60,51 +52,68 @@ as command
 
 .. code:: console
 
-    usage: python -m mordred [-h] [-f TYPE] [-o PATH] [-p N] [-q] [-s] [-3] INPUT
+    usage: python -m mordred [-h] [--version] [-t {auto,sdf,mol,smi}] [-o OUTPUT]
+                             [-p PROCESSES] [-q] [-s] [-d DESC] [-3] [-v]
+                             INPUT [INPUT ...]
 
     positional arguments:
-      INPUT                 input file or directory(default: stdin)
+      INPUT
 
     optional arguments:
       -h, --help            show this help message and exit
-      -f TYPE, --from TYPE  input filetype(one of auto, smi, sdf, mol, default:
-                            auto)
-      -o PATH, --output PATH
-                            output csv file(default: stdout)
-      -p N, --processes N   number of processes to use(default: number of threads)
+      --version             input molecular file
+      -t {auto,sdf,mol,smi}, --type {auto,sdf,mol,smi}
+                            input filetype (default: auto)
+      -o OUTPUT, --output OUTPUT
+                            output file path (default: stdout)
+      -p PROCESSES, --processes PROCESSES
+                            number of processes (default: number of logical
+                            processors)
       -q, --quiet           hide progress bar
       -s, --stream          stream read
-      -3, --with-3D         calculate 3D descriptor(require sdf or mol file)
+      -d DESC, --descriptor DESC
+                            descriptors to calculate (default: all)
+      -3, --3D              use 3D descriptors (require sdf or mol file)
+      -v, --verbosity       verbosity
+
+    descriptors: ABCIndex AcidBase AdjacencyMatrix Aromatic AtomCount
+    Autocorrelation Autocorrelation3D BalabanJ BaryszMatrix BCUT BertzCT BondCount
+    CarbonTypes Chi Constitutional CPSA DetourMatrix DistanceMatrix
+    EccentricConnectivityIndex EState ExtendedTopochemicalAtom FragmentComplexity
+    Framework GeometricalIndex GravitationalIndex HydrogenBond InformationContent
+    KappaShapeIndex Lipinski McGowanVolume MoeType MolecularDistanceEdge
+    MolecularId MomentOfInertia MoRSE PathCount Polarizability RingCount
+    RotatableBond SLogP TopologicalCharge TopologicalIndex TopoPSA VdwVolumeABC
 
 as library
 ^^^^^^^^^^
 
 .. code:: python
 
-    from rdkit import Chem
-
-    from mordred import Calculator, all_descriptors
+    >>> from rdkit import Chem
+    >>> from mordred import Calculator, all_descriptors
 
     # create descriptor calculator with all descriptors
-    calc = Calculator(all_descriptors(), exclude3D=True)
+    >>> calc = Calculator(all_descriptors(), exclude3D=True)
 
-    mol = Chem.MolFromSmiles('c1ccccc1')
-
-    mols = map(Chem.MolFromSmiles, [
-        'c1ccccc1Cl',
-        'c1ccccc1O',
-        'c1ccccc1N'
-    ])
+    >>> len(calc.descriptors)
+    1824
 
     # calculate single molecule
-    for desc, value in zip(calc.descriptors, calc(mol)):
-        print('{}\t{}'.format(desc, value))
+    >>> mol = Chem.MolFromSmiles('c1ccccc1')
+    >>> calc(mol)[:3]
+    [4.242640687119286, 3.9999999999999996, 0]
 
     # calculate multiple molecule
-    for mol, values in calc.map(mols, processes=1):
-        print(Chem.MolToSmiles(mol))
-        for desc, value in zip(calc.descriptors, values):
-            print('{}\t{}'.format(desc, value))
+    >>> mols = [Chem.MolFromSmiles(smi) for smi in ['c1ccccc1Cl', 'c1ccccc1O', 'c1ccccc1N']]
+
+    # as pandas
+    >>> df = calc.pandas(mols)
+    >>> df['SLogP']
+    0    2.3400
+    1    1.3922
+    2    1.2688
+    Name: SLogP, dtype: float64
 
 Documentation
 -------------

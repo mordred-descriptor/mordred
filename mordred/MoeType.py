@@ -22,8 +22,8 @@ class LabuteASA(Descriptor):
     def __str__(self):
         return self.__class__.__name__
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def calculate(self):
         return MolSurf.LabuteASA(self.mol)
@@ -43,8 +43,8 @@ class MoeTypeBase(Descriptor):
     def __str__(self):
         return self.__class__.__name__ + str(self._k)
 
-    def as_key(self):
-        return self.__class__, (self._k,)
+    def parameters(self):
+        return self._k,
 
     def __init__(self, k=1):
         assert 1 <= k <= self.k_max
