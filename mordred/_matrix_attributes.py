@@ -20,12 +20,8 @@ class Common(Descriptor):
     __slots__ = 'matrix', 'explicit_hydrogens', 'kekulize'
     require_connected = True
 
-    def as_key(self):
-        return self.__class__, (
-            self.matrix,
-            self.explicit_hydrogens,
-            self.kekulize,
-        )
+    def parameters(self):
+        return self.matrix, self.explicit_hydrogens, self.kekulize
 
     def __init__(self, matrix, explicit_hydrogens, kekulize):
         self.matrix = matrix

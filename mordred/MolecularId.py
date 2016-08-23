@@ -65,8 +65,8 @@ class MolecularIdBase(Descriptor):
     explicit_hydrogens = False
     require_connected = True
 
-    def as_key(self):
-        return self.__class__, (self._eps,)
+    def parameters(self):
+        return self._eps,
 
 
 class AtomicIds(MolecularIdBase):
@@ -117,8 +117,8 @@ class MolecularId(MolecularIdBase):
 
         return n
 
-    def as_key(self):
-        return self.__class__, (self._orig_type, self._averaged, self._eps)
+    def parameters(self):
+        return self._orig_type, self._averaged, self._eps
 
     def __init__(self, type='any', averaged=False, _eps=1e-10):
         self._orig_type = self._type = type

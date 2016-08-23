@@ -24,11 +24,11 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     require_3D = False
 
     def __reduce_ex__(self, version):
-        return self.as_key()
+        return self.__class__, self.parameters()
 
     @abstractmethod
-    def as_key(self):
-        raise NotImplementedError('not implemented Descriptor.as_key method')
+    def parameters(self):
+        raise NotImplementedError('not implemented Descriptor.parameters method')
 
     @property
     def as_argument(self):
@@ -40,19 +40,22 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         return repr(v)
 
     def __repr__(self):
-        cls, args = self.as_key()
-        return '{}({})'.format(cls.__name__, ', '.join(self._pretty(a) for a in args))
+        return '{}({})'.format(
+            self.__class__,
+            ', '.join(self._pretty(a) for a in self.parameters())
+        )
 
     def __hash__(self):
-        return hash(self.as_key())
+        return hash((self.__class__, self.parameters()))
 
     def __compare_by_reduce(meth):
         def compare(self, other):
             if isinstance(other, self.__class__):
-                l = self.as_key()
-                r = other.as_key()
+                l = self.parameters()
+                r = other.parameters()
                 return getattr(l, meth)(r)
 
+            # TODO: add comment
             elif isinstance(other, str):
                 return getattr(str(l), meth)(str(r))
 

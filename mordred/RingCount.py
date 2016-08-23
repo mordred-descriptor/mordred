@@ -10,8 +10,8 @@ class RingCountBase(Descriptor):
     __slots__ = ()
     explicit_hydrogens = False
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
 
 class Rings(RingCountBase):
@@ -105,11 +105,8 @@ class RingCount(RingCountBase):
 
         return 'n{}Ring'.format(''.join(attrs))
 
-    def as_key(self):
-        return (
-            self.__class__,
-            (self._order, self._greater, self._fused, self._aromatic, self._hetero)
-        )
+    def parameters(self):
+        return self._order, self._greater, self._fused, self._aromatic, self._hetero
 
     def __init__(self, order=None, greater=False, fused=False, aromatic=None, hetero=None):
         self._order = order

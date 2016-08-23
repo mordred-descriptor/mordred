@@ -20,8 +20,8 @@ class WildmanCrippenBase(Descriptor):
     def __str__(self):
         return self.__class__.__name__
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     explicit_hydrogens = False
 

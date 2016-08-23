@@ -24,8 +24,8 @@ class Weight(Descriptor):
     def __str__(self):
         return 'AMW' if self._averaged else 'MW'
 
-    def as_key(self):
-        return self.__class__, (self._averaged,)
+    def parameters(self):
+        return self._averaged,
 
     def __init__(self, averaged=False):
         self._averaged = averaged

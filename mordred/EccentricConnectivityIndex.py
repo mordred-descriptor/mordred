@@ -24,8 +24,8 @@ class EccentricConnectivityIndex(Descriptor):
     def __str__(self):
         return 'ECIndex'
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def dependencies(self):
         return {

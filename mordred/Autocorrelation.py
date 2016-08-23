@@ -18,8 +18,8 @@ class AutocorrelationBase(Descriptor):
             self._avec.as_argument
         )
 
-    def as_key(self):
-        return self.__class__, (self._order, self._prop)
+    def parameters(self):
+        return self._order, self._prop
 
     def __init__(self, order=0, prop='m'):
         self._prop = prop
@@ -59,8 +59,8 @@ class AutocorrelationBase(Descriptor):
 class AutocorrelationProp(AutocorrelationBase):
     __slots__ = ()
 
-    def as_key(self):
-        return self.__class__, (self._prop,)
+    def parameters(self):
+        return self._prop,
 
     def __init__(self, prop):
         self._prop = prop
@@ -74,8 +74,8 @@ class AutocorrelationOrder(AutocorrelationBase):
     def _prop(self):
         pass
 
-    def as_key(self):
-        return self.__class__, (self._order,)
+    def parameters(self):
+        return self._order,
 
     def __init__(self, order):
         self._order = order

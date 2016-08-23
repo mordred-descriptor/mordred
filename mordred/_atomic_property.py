@@ -295,8 +295,8 @@ class AtomicProperty(Descriptor):
     def as_argument(self):
         return getattr(self.prop, 'short', self.prop.__name__)
 
-    def as_key(self):
-        return self.__class__, (self.explicit_hydrogens, self.prop)
+    def parameters(self):
+        return self.explicit_hydrogens, self.prop
 
     def __new__(cls, explicit_hydrogens, prop):
         if isinstance(prop, cls):

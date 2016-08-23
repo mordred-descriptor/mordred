@@ -26,8 +26,8 @@ class VertexAdjacencyInformation(Descriptor):
     def __str__(self):
         return 'VAdjMat'
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def calculate(self):
         m = sum(

@@ -30,9 +30,9 @@ class MoRSE(Descriptor):
         p = '' if self._prop is None else self._prop.as_argument
         return 'Mor{:02d}{}'.format(self._distance, p)
 
-    def as_key(self):
+    def parameters(self):
         p = None if self._prop is None else self._prop.as_argument
-        return self.__class__, (p, self._distance)
+        return p, self._distance
 
     def __init__(self, prop=None, distance=2):
         if prop is None:

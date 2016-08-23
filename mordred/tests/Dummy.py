@@ -6,8 +6,8 @@ class Dummy1(Descriptor):
 
 
 class Dummy2(Dummy1):
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def calculate(self, mol):
         return 0.0

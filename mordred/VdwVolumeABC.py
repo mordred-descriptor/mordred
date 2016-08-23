@@ -52,8 +52,8 @@ class VdwVolumeABC(Descriptor):
     def __str__(self):
         return 'Vabc'
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def dependencies(self):
         return {

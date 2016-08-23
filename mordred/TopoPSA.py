@@ -28,8 +28,8 @@ class TopoPSA(Descriptor):
     def __str__(self):
         return 'TopoPSA(NO)' if self._no_only else 'TopoPSA'
 
-    def as_key(self):
-        return self.__class__, (self._no_only,)
+    def parameters(self):
+        return self._no_only,
 
     def __init__(self, no_only=True):
         self._no_only = no_only

@@ -15,8 +15,8 @@ class BCUTBase(Descriptor):
 class Burden(BCUTBase):
     __slots__ = ()
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def calculate(self):
         N = self.mol.GetNumAtoms()
@@ -46,8 +46,8 @@ class Burden(BCUTBase):
 class BurdenEigenValues(BCUTBase):
     __slots__ = ('_prop',)
 
-    def as_key(self):
-        return self.__class__, (self._prop,)
+    def parameters(self):
+        return self._prop,
 
     def __init__(self, prop):
         self._prop = prop
@@ -100,8 +100,8 @@ class BCUT(BCUTBase):
         else:
             return 'BCUT{}-{}h'.format(self._prop.as_argument, self._nth + 1)
 
-    def as_key(self):
-        return self.__class__, (self._prop, self._nth)
+    def parameters(self):
+        return self._prop, self._nth
 
     def __init__(self, prop='m', nth=0):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)

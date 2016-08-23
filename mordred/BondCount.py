@@ -74,8 +74,8 @@ class BondCount(Descriptor):
     def explicit_hydrogens(self):
         return self._type in (BondType.any, BondType.single)
 
-    def as_key(self):
-        return self.__class__, (self._type, self.kekulize)
+    def parameters(self):
+        return self._type, self.kekulize
 
     def __init__(self, type='any', kekulize=False):
         self._type = parse_enum(BondType, type)

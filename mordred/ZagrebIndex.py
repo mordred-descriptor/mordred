@@ -38,8 +38,8 @@ class ZagrebIndex(Descriptor):
 
         return 'Zagreb{}_{}'.format(self._version, self._variable)
 
-    def as_key(self):
-        return self.__class__, (self._version, self._variable)
+    def parameters(self):
+        return self._version, self._variable
 
     def __init__(self, version=1, variable=1):
         assert version in [1, 2]

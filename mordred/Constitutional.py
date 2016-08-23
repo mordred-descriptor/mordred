@@ -25,8 +25,8 @@ class ConstitutionalSum(Descriptor):
     def preset(cls):
         return map(cls, get_properties())
 
-    def as_key(self):
-        return self.__class__, (self._prop,)
+    def parameters(self):
+        return self._prop,
 
     def __init__(self, prop='v'):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)

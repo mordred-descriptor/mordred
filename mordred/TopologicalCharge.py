@@ -13,8 +13,8 @@ class ChargeTermMatrix(Descriptor):
     __slots__ = ()
     explicit_hydrogens = False
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def dependencies(self):
         return {
@@ -67,8 +67,8 @@ class TopologicalCharge(Descriptor):
         else:
             return 'GGI{}'.format(self._order)
 
-    def as_key(self):
-        return self.__class__, (self._type, self._order)
+    def parameters(self):
+        return self._type, self._order
 
     def __init__(self, type='global', order=10):
         assert type in self.tc_types

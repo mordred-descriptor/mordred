@@ -21,8 +21,8 @@ class DistanceMatrix(Descriptor):
     def __str__(self):
         return '{}_D'.format(self._type.__name__)
 
-    def as_key(self):
-        return self.__class__, (self._type,)
+    def parameters(self):
+        return self._type,
 
     def __init__(self, type='SpMax'):
         self._type = get_method(type)

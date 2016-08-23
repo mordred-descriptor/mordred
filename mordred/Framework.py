@@ -11,8 +11,8 @@ __all__ = ('Framework',)
 class FrameworkCache(Descriptor):
     __slots__ = ()
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def dependencies(self):
         return {'Rs': Rings()}
@@ -66,8 +66,8 @@ class Framework(Descriptor):
     def __str__(self):
         return 'fMF'
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def dependencies(self):
         return {'F': FrameworkCache()}

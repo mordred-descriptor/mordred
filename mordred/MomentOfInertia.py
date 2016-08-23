@@ -20,8 +20,8 @@ class MomentOfInertiaBase(Descriptor):
 class PrincipalAxis(MomentOfInertiaBase):
     __slots__ = ()
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def calculate(self):
         ws, ps = self._numpy()
@@ -52,8 +52,8 @@ class MomentOfInertia(MomentOfInertiaBase):
     def __str__(self):
         return 'MOMI-{}'.format(self._axis)
 
-    def as_key(self):
-        return self.__class__, (self._axis,)
+    def parameters(self):
+        return self._axis,
 
     axes = ('X', 'Y', 'Z')
     _axis_to_index = {a: i for i, a in enumerate(axes)}

@@ -30,8 +30,8 @@ class CPSABase(Descriptor):
     def preset(cls):
         yield cls()
 
-    def as_key(self):
-        return self.__class__, ()
+    def parameters(self):
+        return ()
 
     def __str__(self):
         return self.__class__.__name__
@@ -46,8 +46,8 @@ class VersionCPSABase(CPSABase):
     def preset(cls):
         return map(cls, cls.versions)
 
-    def as_key(self):
-        return self.__class__, (self._version,)
+    def parameters(self):
+        return self._version,
 
     versions = [1, 2, 3, 4, 5]
 
@@ -61,8 +61,8 @@ class VersionCPSABase(CPSABase):
 class AtomicSurfaceArea(CPSABase):
     __slots__ = '_solvent_radius', '_level'
 
-    def as_key(self):
-        return self.__class__, (self._solvent_radius, self._level)
+    def parameters(self):
+        return self._solvent_radius, self._level
 
     def __init__(self, solvent_radius=1.4, level=5):
         self._solvent_radius = solvent_radius
