@@ -7,6 +7,8 @@ import numpy as np
 
 
 class MissingValueException(Exception):
+    "internally used exception"
+
     __slots__ = ('error',)
 
     def __init__(self, error):

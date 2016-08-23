@@ -136,14 +136,14 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
         calc._debug = True
 
     if len(descriptor) == 0:
-        calc.register(all_descriptors(), exclude3D=not with3D)
+        calc.register(all_descriptors(), ignore_3D=not with3D)
     else:
         calc.register(
             (d
              for m in descriptor
              for d in get_descriptors_from_module(import_module('.' + m, __package__))
              ),
-            exclude3D=not with3D
+            ignore_3D=not with3D
         )
 
     with output:
