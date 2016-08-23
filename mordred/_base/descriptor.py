@@ -50,14 +50,9 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     def __compare_by_reduce(meth):
         def compare(self, other):
-            if isinstance(other, self.__class__):
-                l = self.parameters()
-                r = other.parameters()
-                return getattr(l, meth)(r)
-
-            # TODO: add comment
-            elif isinstance(other, str):
-                return getattr(str(l), meth)(str(r))
+            l = self.__class__, self.parameters()
+            r = other.__class__, other.parameters()
+            return getattr(l, meth)(r)
 
         return compare
 
