@@ -109,6 +109,9 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     @property
     def coord(self):
+        if not self.require_3D:
+            self.fail(AttributeError('use 3D coordinate in 2D descriptor'))
+
         return self._context.get_coord(self)
 
     @contextmanager

@@ -1,6 +1,7 @@
 from rdkit import Chem
 
 from .._util import conformer_to_numpy
+from ..error import Missing3DCoordinate
 
 
 class Context(object):
@@ -56,7 +57,7 @@ class Context(object):
         try:
             return self._coords[desc.explicit_hydrogens, desc.kekulize]
         except KeyError:
-            desc.fail(ValueError('missing 3D coordinate'))
+            desc.fail(Missing3DCoordinate())
 
     def get_mol(self, desc):
         return self._mols[desc.explicit_hydrogens, desc.kekulize]

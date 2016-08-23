@@ -47,8 +47,12 @@ class MordredException(Exception):
 class MultipleFragments(MordredException):
     __slots__ = ()
 
-    def __init__(self):
-        pass
-
     def __str__(self):
         return 'multiple fragments'
+
+
+class Missing3DCoordinate(MordredException):
+    __slots__ = ()
+
+    def __str__(self):
+        return 'missing 3D coordinate'
