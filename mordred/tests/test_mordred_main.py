@@ -10,8 +10,8 @@ from rdkit.Chem import AllChem as Chem
 from .. import Calculator, __version__, all_descriptors
 from ..__main__ import main as mordred
 
-Nd2D = len(Calculator(all_descriptors(), exclude3D=True).descriptors)
-Nd3D = len(Calculator(all_descriptors(), exclude3D=False).descriptors)
+Nd2D = len(Calculator(all_descriptors(), ignore_3D=True).descriptors)
+Nd3D = len(Calculator(all_descriptors(), ignore_3D=False).descriptors)
 
 
 def in_(a, s):
