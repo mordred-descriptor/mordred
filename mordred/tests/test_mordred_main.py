@@ -92,8 +92,11 @@ def test_version():
     eq_(exitcode, 0)
 
     vstr = 'mordred-{}\n'.format(__version__)
-    # python3 or python2
-    assert (stderr == '' and stdout == vstr) or (stdout == '' and stderr == vstr)
+
+    if stderr == '':  # python 3
+        eq_(stdout, vstr)
+    else:  # python2
+        eq_(stderr, vstr)
 
 
 def test_missing_file():
