@@ -40,7 +40,9 @@ class Context(object):
 
             if require_3D:
                 try:
-                    coords[eh, ke] = conformer_to_numpy(m.GetConformer(id))
+                    conf = m.GetConformer(id)
+                    if conf.Is3D():
+                        coords[eh, ke] = conformer_to_numpy(conf)
                 except ValueError:
                     pass
 
