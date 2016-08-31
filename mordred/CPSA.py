@@ -71,7 +71,8 @@ class AtomicSurfaceArea(CPSABase):
     def calculate(self):
         rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, self.mol)
 
-        sa = SurfaceArea(rs, self.coord, self._level)
+        with self.rethrow_zerodiv():
+            sa = SurfaceArea(rs, self.coord, self._level)
         return np.array(sa.surface_area())
 
     rtype = None
