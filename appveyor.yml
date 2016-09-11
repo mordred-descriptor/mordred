@@ -1,6 +1,9 @@
 build: off
 
 environment:
+  global:
+    CYG_ROOT: C:/cygwin
+
   ANACONDA_CLOUD_TOKEN:
     secure: pc8oWoWVOIURoks1Ha7wHJ0QpWUcjQORf7N3zGa+mSLlXu2uCkL9fEU5w3bvVQGl
 
@@ -12,26 +15,6 @@ environment:
     - PYTHON_VERSION: 2.7
       MINICONDA: C:\Miniconda
 
-install:
-  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
-  - conda config --set always_yes yes --set changeps1 no
-  - conda config --add channels rdkit --add channels mordred-descriptor
-  - conda install python=%PYTHON_VERSION%
-  - if %PYTHON_VERSION% == 2.7 (
-      conda install --file requirements.txt enum34
-    ) else (
-      conda install --file requirements.txt
-    )
-
-  - ps:
-      if ($env:APPVEYOR_REPO_TAG -eq "true" -and $env:APPVEYOR_REPO_TAG_NAME[0] -eq "v") {
-        [System.IO.File]::WriteAllLines("$env:APPVEYOR_BUILD_FOLDER\mordred\_version.txt", $env:APPVEYOR_REPO_TAG_NAME.Substring(1))
-      }
-
-test_script:
-  - nosetests mordred -q
-
-on_success:
-  - conda build . --no-test
-  - for /f "usebackq delims=" %%v in (`conda build . --output --python %PYTHON_VERSION%`) do set out=%%v
-  - anaconda -t %ANACONDA_CLOUD_TOKEN% upload --force %out%
+install: '%CYG_ROOT%/bin/bash ./scripts/install.sh'
+test_script: '%CYG_ROOT%/bin/bash ./scripts/test_script.sh'
+on_success: '%CYG_ROOT%/bin/bash ./scripts/after_success.sh'
