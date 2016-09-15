@@ -19,7 +19,7 @@ else
 fi
 
 # documentation
-if [[ "$TRAVIS_PULL_REQUEST" == "false" && -n "$DOCUMENTATION" ]]; then
+if [[ "$TRAVIS_PULL_REQUEST" == "false" && -n "$DOCUMENTATION" && ( -n "$TRAVIS_TAG" || "$TRAVIS_BRANCH" == master) ]]; then
     cd docs
     make html
 
