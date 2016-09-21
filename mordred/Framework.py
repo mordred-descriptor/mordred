@@ -55,7 +55,7 @@ class Framework(Descriptor):
     :math:`N` is number of all atoms.
 
     References
-        * :cite:`10.1021/jm9602928`
+        * :doi:`10.1021/jm9602928`
     """
     __slots__ = ()
 

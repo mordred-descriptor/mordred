@@ -1,8 +1,8 @@
 r"""Extended Topochemical Atom(ETA) descriptor.
 
 References
-    * :cite:`10.1021/ci0342066`
-    * :cite:`10.1016/j.jhazmat.2013.03.023`
+    * :doi:`10.1021/ci0342066`
+    * :doi:`10.1016/j.jhazmat.2013.03.023`
 """
 from __future__ import division
 

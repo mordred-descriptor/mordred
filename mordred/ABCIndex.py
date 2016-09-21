@@ -1,6 +1,6 @@
 r"""
 References
-    * :cite:`furtula_atom-bond_2016`
+    * http://match.pmf.kg.ac.rs/electronic_versions/Match75/n1/match75n1_233-242.pdf
 """
 
 import numpy as np

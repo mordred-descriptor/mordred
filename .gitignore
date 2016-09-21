@@ -13,4 +13,5 @@ __pycache__
 /docs/_build
 /docs/api
 /docs/descriptors.rst
+/docs/atomic_prop.rst
 build/
