@@ -4,6 +4,12 @@ from abc import ABCMeta, abstractproperty
 
 
 class MissingValueBase(six.with_metaclass(ABCMeta, object)):
+    '''Base class of missing values.
+
+    Args:
+        error (Exception): error object
+        stack (callstack)
+    '''
     __slots__ = 'error', 'stack'
 
     def __reduce_ex__(self, version):
@@ -27,6 +33,11 @@ class MissingValueBase(six.with_metaclass(ABCMeta, object)):
 
     @abstractproperty
     def header(self):
+        '''header of warning message
+
+        Returns:
+            str
+        '''
         raise NotImplementedError('require header')
 
 
@@ -47,6 +58,7 @@ class MordredException(Exception):
 
 
 class MultipleFragments(MordredException):
+    '''multiple fragments detected on require_connected Descriptor.'''
     __slots__ = ()
 
     def __str__(self):
@@ -54,6 +66,7 @@ class MultipleFragments(MordredException):
 
 
 class Missing3DCoordinate(MordredException):
+    '''missing 3D coordinate on require_3D Descriptor.'''
     __slots__ = ()
 
     def __str__(self):

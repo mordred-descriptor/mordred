@@ -1,7 +1,7 @@
 r"""charged partial surface area descriptor.
 
 References
-    * :cite:`10.1021/ac00220a013`
+    * :doi:`10.1021/ac00220a013`
 """
 import numpy as np
 

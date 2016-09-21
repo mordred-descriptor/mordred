@@ -10,7 +10,7 @@ class McGowanVolume(Descriptor):
     r"""McGowan volume descriptor.
 
     References
-        * :cite:`10.1007/BF02311772`
+        * :doi:`10.1007/BF02311772`
     """
     __slots__ = ()
 

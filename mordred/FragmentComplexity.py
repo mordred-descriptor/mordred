@@ -17,7 +17,7 @@ class FragmentComplexity(Descriptor):
     :math:`H` is number of hetero atoms
 
     References
-        * :cite:`10.1021/ci050521b`
+        * :doi:`10.1021/ci050521b`
     """
     __slots__ = ()
 

@@ -80,7 +80,7 @@ class AtomTypeEState(EStateBase):
     :returns: NaN when type in ['min', 'max'] and :math:`N_{\rm X} = 0`
 
     References
-        * :cite:`10.1021/ci00028a014`
+        * :doi:`10.1021/ci00028a014`
     """
     __slots__ = ('_type', '_estate',)
 

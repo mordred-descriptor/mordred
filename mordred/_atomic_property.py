@@ -12,6 +12,7 @@ from ._util import atoms_to_numpy
 halogen = set([9, 17, 35, 53, 85, 117])
 
 
+getter_list = []
 getters = {}
 
 
@@ -23,6 +24,7 @@ def getter(short, **attrs):
             setattr(f, a, v)
 
         getters[short] = f
+        getter_list.append(f)
         return f
 
     if short in getters:

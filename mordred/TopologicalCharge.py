@@ -44,7 +44,7 @@ class TopologicalCharge(Descriptor):
     :param order: int
 
     References
-        * :cite:`10.1021/ci00019a008`
+        * :doi:`10.1021/ci00019a008`
     """
     __slots__ = ('_type', '_order',)
 

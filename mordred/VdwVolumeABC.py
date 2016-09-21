@@ -39,7 +39,7 @@ class VdwVolumeABC(Descriptor):
     :returns: NaN when any atoms are non-compat_atoms
 
     References
-        * :cite:`10.1021/jo034808o`
+        * :doi:`10.1021/jo034808o`
     """
     __slots__ = ()
 

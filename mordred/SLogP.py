@@ -1,7 +1,7 @@
 r"""Wildman-Crippen LogP/MR descriptor.
 
 References
-    * :cite:`10.1021/ci990307l`
+    * :doi:`10.1021/ci990307l`
 """
 from rdkit.Chem import Crippen
 

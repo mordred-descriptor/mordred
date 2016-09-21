@@ -16,7 +16,7 @@ class TopoPSA(Descriptor):
         * False: all(N,O,S,P) TPSA
 
     References
-        * :cite:`10.1021/jm000942e`
+        * :doi:`10.1021/jm000942e`
     """
     __slots__ = ('_no_only',)
 

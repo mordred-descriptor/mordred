@@ -2,13 +2,8 @@
 
 set -e
 
-eval "$(ssh-agent -s)"
-ssh-add -D
-
-openssl aes-256-cbc -K $encrypted_8d665ddaa7bd_key -iv $encrypted_8d665ddaa7bd_iv -in ./scripts/id_rsa.enc -out ~/.ssh/.id_rsa -d
-chmod 600 ~/.ssh/.id_rsa
-ssh-add ~/.ssh/.id_rsa
-
+openssl aes-256-cbc -K $encrypted_9f3357583363_key -iv $encrypted_9f3357583363_iv -in ./scripts/id_rsa.enc -out ~/.ssh/id_rsa -d
+chmod 600 ~/.ssh/id_rsa
 
 echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
