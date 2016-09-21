@@ -19,7 +19,12 @@ else
 fi
 
 # documentation
-if [[ "$TRAVIS_PULL_REQUEST" == "false" && -n "$DOCUMENTATION" && ( -n "$TRAVIS_TAG" || "$TRAVIS_BRANCH" == master) ]]; then
+if [[ "$TRAVIS_PULL_REQUEST" == false && -n "$DOCUMENTATION" && "$TRAVIS_OS_NAME" == linux ]]; then
+    eval $(ssh-agent -s)
+    ssh-add
+    ssh-add -l
+    echo "$SSH_AGENT_PID"
+
     cd docs
     make html
 

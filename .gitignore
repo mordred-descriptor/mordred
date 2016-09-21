@@ -8,8 +8,8 @@ __pycache__
 .eggs/
 /.coverage
 /htmlcov
-/.id_rsa
-/.id_rsa.pub
+/scripts/id_rsa
+/scripts/id_rsa.pub
 /docs/_build
 /docs/api
 /docs/descriptors.rst
