@@ -1,13 +1,13 @@
+import math
 import pickle
-import six
 
+import six
+from rdkit import Chem
 from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 
-from rdkit import Chem
 from mordred import Calculator, all_descriptors
 from mordred.error import MissingValueBase
-import math
 
 
 def test_pickle_calculator():

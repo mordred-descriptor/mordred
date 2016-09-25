@@ -1,11 +1,10 @@
+import operator
 from abc import ABCMeta, abstractmethod
 from inspect import isabstract
 from contextlib import contextmanager
 
 import six
 import numpy as np
-
-import operator
 
 
 class MissingValueException(Exception):

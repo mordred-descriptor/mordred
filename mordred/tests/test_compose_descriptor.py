@@ -1,11 +1,11 @@
-from .. import ABCIndex
-from nose.tools import eq_
-from rdkit import Chem
+import math
+import operator
 
 import six
-import operator
-import math
+from rdkit import Chem
+from nose.tools import eq_
 
+from .. import ABCIndex
 
 binary = [
     operator.add,
