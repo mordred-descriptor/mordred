@@ -171,8 +171,8 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     __pos__ = _unary_common('+{}', operator.pos)
     __abs__ = _unary_common('|{}|', operator.abs)
 
-    __ceil__ = _unary_common('⌈{}⌉', np.ceil)
-    __floor__ = _unary_common('⌊{}⌋', np.floor)
+    __ceil__ = _unary_common('ceil({})', np.ceil)
+    __floor__ = _unary_common('floor({})', np.floor)
     __trunc__ = _unary_common('trunc({})', np.trunc)
 
 
