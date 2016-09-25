@@ -2,6 +2,7 @@ from .. import ABCIndex
 from nose.tools import eq_
 from rdkit import Chem
 
+import six
 import operator
 import math
 
@@ -21,10 +22,15 @@ unary = [
     operator.pos,
     operator.abs,
 
-    math.ceil,
-    math.floor,
     math.trunc,
 ]
+
+
+if six.PY3:
+    unary.extend([
+        math.ceil,
+        math.floor,
+    ])
 
 
 def test_compose_descriptor():

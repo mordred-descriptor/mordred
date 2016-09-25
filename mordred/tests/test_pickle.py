@@ -1,4 +1,5 @@
 import pickle
+import six
 
 from nose.tools import eq_
 from numpy.testing import assert_almost_equal
@@ -15,8 +16,11 @@ def test_pickle_calculator():
     d1 = orig.descriptors[1]
     orig.register([
         d0 + d1, d0 - d1, d0 * d1, d0 // d1, d0 % d1, d0 ** d1,
-        -d0, +d1, abs(d0), math.ceil(d0), math.floor(d1), math.trunc(d0),
+        -d0, +d1, abs(d0), math.trunc(d0),
     ])
+
+    if six.PY3:
+        orig.register([math.ceil(d0), math.floor(d1)])
 
     pickled = pickle.loads(pickle.dumps(orig))
 
