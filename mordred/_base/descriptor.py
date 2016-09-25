@@ -5,6 +5,8 @@ from contextlib import contextmanager
 import six
 import numpy as np
 
+import operator
+
 
 class MissingValueException(Exception):
     "internally used exception"
@@ -89,7 +91,7 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         pass
 
     @abstractmethod
-    def calculate(self, mol):
+    def calculate(self):
         r"""calculate descriptor value.
 
         (abstract method)
@@ -141,3 +143,105 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
             yield
         except exception as e:
             self.fail(e)
+
+    def _unary_common(name, operator):
+        def unary(self):
+            return UnaryOperatingDescriptor(name.format(self), operator, self)
+
+        return unary
+
+    def _binary_common(name, operator):
+        def binary(self, other):
+            if not isinstance(other, Descriptor):
+                other = ConstDescriptor(str(other), other)
+
+            return BinaryOperatingDescriptor(name.format(self, other), operator, self, other)
+
+        return binary
+
+    __add__ = _binary_common('({}+{})', operator.add)
+    __sub__ = _binary_common('({}-{})', operator.sub)
+    __mul__ = _binary_common('({}*{})', operator.mul)
+    __truediv__ = _binary_common('({}/{})', operator.truediv)
+    __floordiv__ = _binary_common('({}//{})', operator.floordiv)
+    __mod__ = _binary_common('({}%{})', operator.mod)
+    __pow__ = _binary_common('({}**{})', operator.pow)
+
+    __neg__ = _unary_common('-{}', operator.neg)
+    __pos__ = _unary_common('+{}', operator.pos)
+    __abs__ = _unary_common('|{}|', operator.abs)
+
+    __ceil__ = _unary_common('⌈{}⌉', np.ceil)
+    __floor__ = _unary_common('⌊{}⌋', np.floor)
+    __trunc__ = _unary_common('trunc({})', np.trunc)
+
+
+class UnaryOperatingDescriptor(Descriptor):
+    @classmethod
+    def preset(cls):
+        return cls()
+
+    def parameters(self):
+        return self.name, self.operator, self.value
+
+    def __init__(self, name, operator, value):
+        self.name = name
+        self.operator = operator
+        self.value = value
+
+    def __str__(self):
+        return self.name
+
+    def dependencies(self):
+        return {
+            'value': self.value,
+        }
+
+    def calculate(self, value):
+        return self.operator(value)
+
+
+class ConstDescriptor(Descriptor):
+    @classmethod
+    def preset(cls):
+        return cls()
+
+    def parameters(self):
+        return self.name, self.value
+
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def __str__(self):
+        return self.name
+
+    def calculate(self):
+        return self.value
+
+
+class BinaryOperatingDescriptor(Descriptor):
+    @classmethod
+    def preset(cls):
+        return cls()
+
+    def parameters(self):
+        return self.name, self.operator, self.left, self.right
+
+    def __init__(self, name, operator, left, right):
+        self.name = name
+        self.operator = operator
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return self.name
+
+    def dependencies(self):
+        return {
+            'left': self.left,
+            'right': self.right,
+        }
+
+    def calculate(self, left, right):
+        return self.operator(left, right)
