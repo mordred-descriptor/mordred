@@ -1,5 +1,6 @@
 import os
 from importlib import import_module
+from ..error import MissingValueBase
 
 from .descriptor import Descriptor
 from .calculator import Calculator, get_descriptors_from_module
@@ -38,7 +39,11 @@ def Descriptor__call__(self, mol, id=-1):
     :returns: descriptor result
     :rtype: scalar
     """
-    return Calculator(self)(mol, id)[0]
+    v = Calculator(self)(mol, id)[0]
+    if isinstance(v, MissingValueBase):
+        raise v.error
+
+    return v
 
 
 Descriptor.__call__ = Descriptor__call__
