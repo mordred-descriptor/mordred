@@ -1,5 +1,4 @@
-import conf
-from mordred import all_descriptors, get_descriptors_from_module
+from mordred import Descriptor, all_descriptors, get_descriptors_from_module
 
 prelude = '''
 Descriptor List
@@ -19,31 +18,32 @@ preset descriptors
 
 def main(out):
     out.write(prelude)
-    
+
     i = 0
 
     for mdl in all_descriptors():
+        mdl_name = '.'.join(mdl.__name__.split('.'))
+        mdl_ppr = ':py:mod:`~{}`'.format(mdl_name)
+        first = True
+
         for Desc in get_descriptors_from_module(mdl):
+
             for desc in Desc.preset():
                 i += 1
 
-                if mdl:
-                    mdl_name = '.'.join(mdl.__name__.split('.')[1:])
-                    mdl_ppr = ':py:mod:`~mordred.{}`'.format(mdl_name)
-                    mdl = None
-                else:
+                if not first:
                     mdl_ppr = ''
 
-                try:
-                    cnst, args = repr(desc).split('(')
-                except ValueError:
-                    raise ValueError(repr(desc))
+                cnst = desc.__class__.__name__
+                args = ', '.join(Descriptor._pretty(p) for p in desc.parameters())
 
-                cnst = ':py:class:`~mordred.{}.{}` ({}'.format(mdl_name, cnst, args)
+                cnst = ':py:class:`~{}.{}` ({})'.format(mdl_name, cnst, args)
 
                 dim = '3D' if desc.require_3D else '2D'
 
                 out.write('    {}, {}, {}, "{}", {}\n'.format(i, mdl_ppr, desc, cnst, dim))
+
+                first = False
 
 
 if __name__ == '__main__':
