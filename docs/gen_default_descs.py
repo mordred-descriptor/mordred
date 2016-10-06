@@ -1,3 +1,4 @@
+import conf
 from mordred import Descriptor, all_descriptors, get_descriptors_from_module
 
 prelude = '''
