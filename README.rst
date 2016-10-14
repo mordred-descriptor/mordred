@@ -121,6 +121,9 @@ as library
 Documentation
 -------------
 
+-  `master <http://mordred-descriptor.github.io/documentation/master>`__
+
+-  `v0.2.1 <http://mordred-descriptor.github.io/documentation/v0.2.1>`__
 -  `v0.2.0 <http://mordred-descriptor.github.io/documentation/v0.2.0>`__
 -  `v0.1.0 <http://mordred-descriptor.github.io/documentation/v0.1.0>`__
 
