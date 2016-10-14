@@ -42,6 +42,8 @@ class SmartsCountBase(Descriptor):
 
     rtype = int
 
+    _extra_docs = 'SMARTS',
+
 
 class AcidicGroupCount(SmartsCountBase):
     r"""acidic group count descriptor."""

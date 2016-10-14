@@ -10,13 +10,15 @@ from tqdm import tqdm
 from .._util import Capture, DummyBar, NotebookWrapper
 from ..error import Error, Missing, MultipleFragments
 from .context import Context
-from .descriptor import Descriptor, MissingValueException
+from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
 
 class Calculator(object):
     r"""descriptor calculator.
 
-    :param descs: see :py:meth:`register` method
+    Parameters:
+        descs: see Calculator.register() method
+        ignore_3D: see Calculator.register() method
     """
 
     __slots__ = (
@@ -53,6 +55,9 @@ class Calculator(object):
         r'''all descriptors.
 
         you can get/set/delete descriptor.
+
+        Returns:
+            tuple[Descriptor]: registered descriptors
         '''
         return tuple(self._descriptors)
 
@@ -92,17 +97,18 @@ class Calculator(object):
     def register(self, desc, ignore_3D=False):
         r"""register descriptors.
 
-        :type desc: :py:class:`module`,
-            :py:class:`Descriptor` class/instance or
-            :py:class:`Iterable`
+        Descriptor-like:
+            * Descriptor instance: self
+            * Descriptor class: use Descriptor.preset() method
+            * module: use Descriptor-likes in module
+            * Iterable: use Descriptor-likes in Iterable
 
-        :param desc: descriptors to register
-
-            * :py:class:`module`: Descriptors in module
-            * :py:class:`Descriptor` class: use :py:meth:`Descriptor.preset`
+        Parameters:
+            desc(Descriptor-like): descriptors to register
+            ignore_3D(bool): ignore 3D descriptors
         """
         if not hasattr(desc, '__iter__'):
-            if Descriptor.is_descriptor_class(desc):
+            if is_descriptor_class(desc):
                 for d in desc.preset():
                     self._register_one(d, ignore_3D=ignore_3D)
 
@@ -219,7 +225,16 @@ class Calculator(object):
                 del self._progress_bar
 
     def echo(self, s, file=sys.stdout, end='\n'):
-        '''output message'''
+        '''output message
+
+        Parameters:
+            s(str): message to output
+            file(file-like): output to
+            end(str): end mark of message
+
+        Return:
+            None
+        '''
         p = getattr(self, '_progress_bar', None)
         if p is not None:
             p.write(s, file=file, end='\n')
@@ -230,25 +245,21 @@ class Calculator(object):
     def map(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""calculate descriptors over mols.
 
-        :type mols: :py:class:`Iterable` (:py:class:`Mol`)
-        :param mols: moleculars
+        Parameters:
+            mols(Iterable[rdkit.Mol]): moleculars
 
-        :type nproc: :py:class:`int` or :py:class:`None`
-        :param nproc: number of process. None is :py:func:`multiprocessing.cpu_count`
+            nproc(int): number of process to use. default: multiprocessing.cpu_count()
 
-        :type nmols: :py:class:`None` or :py:class:`int`
-        :param nmols: number of all mols for display progress bar
+            nmols(int): number of all mols to use in progress-bar. default: mols.__len__()
 
-        :type quiet: :py:class:`bool`
-        :param quiet: suppress progress bar
+            quiet(bool): don't show progress bar. default: False
 
-        :type ipynb: :py:class:`bool`
-        :param ipynb: use ipython notebook progress bar
+            ipynb(bool): use ipython notebook progress bar. default: False
 
-        :type id: :py:class:`int`
-        :param id: conformer id
+            id(int): conformer id to use. default: -1.
 
-        :rtype: :py:class:`Iterator` [scalar]
+        Returns:
+            Iterator[scalar]
         """
 
         if hasattr(mols, '__len__'):
@@ -262,10 +273,8 @@ class Calculator(object):
     def pandas(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""calculate descriptors over mols.
 
-        :type mol_name: str
-        :param mol_name: molecular column name
-
-        :rtype: :py:class:`pandas.DataFrame`
+        Returns:
+            pandas.DataFrame
         """
         import pandas
 
@@ -278,10 +287,11 @@ class Calculator(object):
 def get_descriptors_from_module(mdl):
     r"""get descriptors from module.
 
-    :type mdl: module
-    :param mdl: module to search
+    Parameters:
+        mdl(module): module to search
 
-    :rtype: [:py:class:`Descriptor`]
+    Returns:
+        [Descriptor]
     """
 
     __all__ = getattr(mdl, '__all__', None)
@@ -291,7 +301,7 @@ def get_descriptors_from_module(mdl):
     descs = [
         fn
         for fn in (getattr(mdl, name) for name in __all__ if name[:1] != '_')
-        if Descriptor.is_descriptor_class(fn)
+        if is_descriptor_class(fn)
     ]
 
     def key_by_def(d):

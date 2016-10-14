@@ -54,11 +54,18 @@ clean:
 	rm -rf api
 	rm -rf $(BUILDDIR)/*
 
+descriptors.rst: ../mordred/*.py ./scripts/gen_default_descs.py
+	$(PYTHON) ./scripts/gen_default_descs.py > descriptors.rst
+
+atomic_prop.rst: ../mordred/_atomic_property.py ./scripts/gen_atomic_props.py
+	$(PYTHON) ./scripts/gen_atomic_props.py > atomic_prop.rst
+
+api: ../mordred/*.py
+	mkdir api || true
+	$(PYTHON) ./scripts/gen_descriptor_doc.py > api/modules.rst
+
 .PHONY: preprocess
-preprocess: ../mordred/*.py
-	$(PYTHON) gen_default_descs.py > descriptors.rst
-	$(PYTHON) gen_atomic_props.py > atomic_prop.rst
-	$(SPHINXAPIDOC) -o api --separate --module-first ../mordred
+preprocess: descriptors.rst atomic_prop.rst api
 
 .PHONY: html
 html: preprocess

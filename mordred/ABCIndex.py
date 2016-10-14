@@ -30,7 +30,10 @@ class ABCIndexBase(Descriptor):
 
 
 class ABCIndex(ABCIndexBase):
-    r"""atom-bond connectivity indez descriptor.
+    r"""atom-bond connectivity index descriptor.
+
+    References:
+        * :doi:`10.2298/FIL1204733D`
     """
     __slots__ = ()
 
@@ -52,6 +55,9 @@ class ABCIndex(ABCIndexBase):
 
 class ABCGGIndex(ABCIndexBase):
     r"""Graovac-Ghorbani atom-bond connectivity index descriptor.
+
+    References:
+        * Furtula, B. Atom-bond connectivity index versus Graovac-Ghorbani analog. MATCH Commun. Math. Comput. Chem 75, 233-242 (2016).
     """
     __slots__ = ()
 
