@@ -222,3 +222,5 @@ class Chi(ChiBase):
         return x
 
     rtype = float
+
+    _extra_docs = 'chi_types',

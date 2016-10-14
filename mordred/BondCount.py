@@ -86,3 +86,5 @@ class BondCount(Descriptor):
         return sum(1 for b in self.mol.GetBonds() if self._check_bond(b))
 
     rtype = int
+
+    _extra_docs = 'bond_types',

@@ -4,7 +4,7 @@ from ._base import Descriptor
 from .BondCount import BondCount
 
 __all__ = (
-    'RotatableBondsBase', 'RotatableBondsCount', 'RotatableBondsRatio',
+    'RotatableBondsCount', 'RotatableBondsRatio',
 )
 
 

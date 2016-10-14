@@ -133,3 +133,5 @@ class AtomTypeEState(EStateBase):
         """
 
         return int if self._type == AggrType.count else float
+
+    _extra_docs = 'aggr_types', 'es_types'

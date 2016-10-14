@@ -13,7 +13,7 @@ Contents:
 
     introduction.rst
 
-    api/mordred.rst
+    mordred.rst
 
     atomic_prop.rst
     matrix.rst
@@ -25,4 +25,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

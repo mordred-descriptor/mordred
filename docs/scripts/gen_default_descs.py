@@ -1,5 +1,7 @@
-import conf
+import load_path
 from mordred import Descriptor, all_descriptors, get_descriptors_from_module
+
+load_path.nop()
 
 prelude = '''
 Descriptor List

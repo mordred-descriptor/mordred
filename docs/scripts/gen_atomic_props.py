@@ -1,5 +1,7 @@
-import conf
+import load_path
 from mordred import _atomic_property as prop
+
+load_path.nop()
 
 
 print('''

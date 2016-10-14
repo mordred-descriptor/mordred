@@ -18,8 +18,10 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import re
 import sys
 sys.path.insert(0, os.path.abspath('..'))
+
 
 # -- General configuration ------------------------------------------------
 
@@ -40,6 +42,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -354,6 +357,8 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 autodoc_member_order = 'bysource'
 
+napoleon_numpy_docstring = False
+
 
 def doi_role(name, rawtext, text, lineno, inliner, options={}, context=[]):
     from docutils import nodes
@@ -363,5 +368,16 @@ def doi_role(name, rawtext, text, lineno, inliner, options={}, context=[]):
     return [ref], []
 
 
+def autodoc_process_docstring(app, what, name, obj, options, lines):
+    if len(lines) == 0:
+        return
+
+    match = re.match(r'\[(.*)\]', lines[0])
+    if match:
+        _, b = match.span()
+        lines[0] = '**[{}]**{}'.format(match.group(1), lines[0][b:])
+
+
 def setup(app):
     app.add_role('doi', doi_role)
+    app.connect('autodoc-process-docstring', autodoc_process_docstring)

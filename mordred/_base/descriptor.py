@@ -1,6 +1,6 @@
 import operator
+import inspect
 from abc import ABCMeta, abstractmethod
-from inspect import isabstract
 from contextlib import contextmanager
 
 import six
@@ -17,7 +17,11 @@ class MissingValueException(Exception):
 
 
 class Descriptor(six.with_metaclass(ABCMeta, object)):
-    r"""abstract base class of descriptors."""
+    r"""abstract base class of descriptors.
+
+    Attributes:
+        mol(rdkit.Mol): target molecule
+    """
 
     __slots__ = '_context',
 
@@ -29,17 +33,50 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def __reduce_ex__(self, version):
         return self.__class__, self.parameters()
 
+    @classmethod
+    def preset(cls):
+        r"""generate preset descriptor instances.
+
+        Returns:
+            Iterable[Descriptor]: preset descriptors
+        """
+        return ()
+
     @abstractmethod
     def parameters(self):
-        '''get __init__ arguments of this descriptor instance.
+        '''[abstractmethod] get __init__ arguments of this descriptor instance.
 
-        (abstract method)
+        this method used in pickling and identifying descriptor instance.
+
+        Returns:
+            tuple: tuple of __init__ arguments
         '''
         raise NotImplementedError('not implemented Descriptor.parameters method')
 
+    @abstractmethod
+    def calculate(self):
+        r"""[abstractmethod] calculate descriptor value.
+
+        Returns:
+            rtype
+        """
+        raise NotImplementedError('not implemented Descriptor.calculate method')
+
+    def dependencies(self):
+        r"""descriptor dependencies.
+
+        Returns:
+            dict[str, Descriptor or None] or None
+        """
+        pass
+
     @property
     def as_argument(self):
-        '''argument representation of descriptor'''
+        '''argument representation of descriptor
+
+        Returns:
+            any
+        '''
         return self
 
     @staticmethod
@@ -74,70 +111,51 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
 
     rtype = None
 
-    @classmethod
-    def preset(cls):
-        r"""generate preset descriptor instances.
-
-        :rtype: iterable
-        """
-        return ()
-
-    def dependencies(self):
-        r"""descriptor dependencies.
-
-        :rtype: {:py:class:`str`: (:py:class:`Descriptor` or :py:class:`None`)} or :py:class:`None`
-        """
-        pass
-
-    @abstractmethod
-    def calculate(self):
-        r"""calculate descriptor value.
-
-        (abstract method)
-        """
-        raise NotImplementedError('not implemented Descriptor.calculate method')
-
-    @classmethod
-    def is_descriptor_class(cls, desc):
-        r"""check calculatable descriptor class or not.
-
-        :rtype: :py:class:`bool`
-        """
-        return (
-            isinstance(desc, type) and
-            issubclass(desc, cls) and
-            not isabstract(desc)
-        )
-
     @property
     def mol(self):
-        '''get molecule'''
+        '''get molecule
+
+        Returns:
+            rdkit.Mol
+        '''
         return self._context.get_mol(self)
 
     @property
     def coord(self):
-        '''get 3D coordinate'''
+        '''get 3D coordinate
+
+        Returns:
+            numpy.array[3, N]: coordinate matrix
+        '''
         if not self.require_3D:
             self.fail(AttributeError('use 3D coordinate in 2D descriptor'))
 
         return self._context.get_coord(self)
 
+    def fail(self, exception):
+        '''raise known exception and return missing value
+
+        Raises:
+            MissingValueException
+        '''
+        raise MissingValueException(exception)
+
     @contextmanager
     def rethrow_zerodiv(self):
-        '''treat zero div as known exception'''
+        '''[contextmanager] treat zero div as known exception
+        '''
+
         with np.errstate(divide='raise', invalid='raise'):
             try:
                 yield
             except (FloatingPointError, ZeroDivisionError) as e:
                 self.fail(ZeroDivisionError(*e.args))
 
-    def fail(self, exception):
-        '''raise known exception and return missing value'''
-        raise MissingValueException(exception)
-
     @contextmanager
     def rethrow_na(self, exception):
-        '''treat any exceptions as known exception'''
+        '''[contextmanager] treat any exceptions as known exception
+        '''
+
         try:
             yield
         except exception as e:
@@ -175,6 +193,19 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         __floor__ = _unary_common('floor({})', np.floor)
 
     __trunc__ = _unary_common('trunc({})', np.trunc)
+
+
+def is_descriptor_class(desc):
+    r"""check calculatable descriptor class or not.
+
+    Returns:
+        bool
+    """
+    return (
+        isinstance(desc, type) and
+        issubclass(desc, Descriptor) and
+        not inspect.isabstract(desc)
+    )
 
 
 class UnaryOperatingDescriptor(Descriptor):
