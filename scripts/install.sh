@@ -13,7 +13,7 @@ elif [[ -n "$APPVEYOR" ]]; then
 fi
 
 if [[ -n "$TRAVIS_OS_NAME" ]]; then
-    wget https://repo.continuum.io/miniconda/Miniconda-latest-${OS_NAME}-x86_64.sh -O miniconda.sh
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-${OS_NAME}-x86_64.sh -O miniconda.sh
     bash miniconda.sh -b -p $HOME/miniconda
 fi
 
