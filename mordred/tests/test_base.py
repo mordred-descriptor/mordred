@@ -34,15 +34,17 @@ def test_Calculator_descriptors():
     for c in check(4):
         yield c
 
-    # register module
-    calc.register(Dummy)
-    for c in check(7):
-        yield c
-
     # delete
     del calc.descriptors
     for c in check(0):
         yield c
+
+    # register module
+    calc.register(Dummy)
+    for c in check(3):
+        yield c
+
+    eq_(calc['Dummy4_1'], Dummy.Dummy4(1))
 
     # set instance
     calc.descriptors = Dummy.Dummy2()

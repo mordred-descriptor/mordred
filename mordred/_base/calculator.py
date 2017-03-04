@@ -8,7 +8,7 @@ from contextlib import contextmanager
 from tqdm import tqdm
 
 from .._util import Capture, DummyBar, NotebookWrapper
-from ..error import Error, Missing, MultipleFragments
+from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
 from .context import Context
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
@@ -22,12 +22,13 @@ class Calculator(object):
     """
 
     __slots__ = (
-        '_descriptors', '_explicit_hydrogens', '_kekulizes', '_require_3D',
+        '_descriptors', '_name_dict', '_explicit_hydrogens', '_kekulizes', '_require_3D',
         '_cache', '_debug', '_progress_bar'
     )
 
     def __setstate__(self, dict):
-        self._descriptors = dict.get('_descriptors', [])
+        ds = self._descriptors = dict.get('_descriptors', [])
+        self._name_dict = {str(d): d for d in ds}
         self._explicit_hydrogens = dict.get('_explicit_hydrogens', set([True, False]))
         self._kekulizes = dict.get('_kekulizes', set([True, False]))
         self._require_3D = dict.get('_require_3D', False)
@@ -40,8 +41,12 @@ class Calculator(object):
             '_require_3D': self._require_3D,
         }
 
+    def __getitem__(self, key):
+        return self._name_dict[key]
+
     def __init__(self, descs=[], ignore_3D=False):
         self._descriptors = []
+        self._name_dict = {}
 
         self._explicit_hydrogens = set()
         self._kekulizes = set()
@@ -69,6 +74,7 @@ class Calculator(object):
     @descriptors.deleter
     def descriptors(self):
         self._descriptors = []
+        self._name_dict = {}
         self._explicit_hydrogens.clear()
         self._kekulizes.clear()
         self._require_3D = False
@@ -92,6 +98,12 @@ class Calculator(object):
                 self._register_one(dep, check_only=True)
 
         if not check_only:
+            sdesc = str(desc)
+            old = self._name_dict.get(sdesc)
+            if old is not None:
+                raise DuplicatedDescriptorName(desc, old)
+
+            self._name_dict[sdesc] = desc
             self._descriptors.append(desc)
 
     def register(self, desc, ignore_3D=False):

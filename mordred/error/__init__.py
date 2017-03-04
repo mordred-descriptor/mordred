@@ -71,3 +71,16 @@ class Missing3DCoordinate(MordredException):
 
     def __str__(self):
         return 'missing 3D coordinate'
+
+
+class DuplicatedDescriptorName(MordredException):
+    '''duplicated string replisantation of descriptor'''
+
+    __slots__ = ()
+
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+    def __str__(self):
+        return 'duplicated descriptor name: {!r} and {!r}'.format(self.a, self.b)
