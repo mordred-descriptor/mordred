@@ -80,13 +80,14 @@ as command
       -v, --verbosity       verbosity
 
     descriptors: ABCIndex AcidBase AdjacencyMatrix Aromatic AtomCount
-    Autocorrelation Autocorrelation3D BalabanJ BaryszMatrix BCUT BertzCT BondCount
-    CarbonTypes Chi Constitutional CPSA DetourMatrix DistanceMatrix
-    EccentricConnectivityIndex EState ExtendedTopochemicalAtom FragmentComplexity
-    Framework GeometricalIndex GravitationalIndex HydrogenBond InformationContent
-    KappaShapeIndex Lipinski McGowanVolume MoeType MolecularDistanceEdge
-    MolecularId MomentOfInertia MoRSE PathCount Polarizability RingCount
-    RotatableBond SLogP TopologicalCharge TopologicalIndex TopoPSA VdwVolumeABC
+    Autocorrelation BalabanJ BaryszMatrix BCUT BertzCT BondCount CarbonTypes Chi
+    Constitutional CPSA DetourMatrix DistanceMatrix EccentricConnectivityIndex
+    EState ExtendedTopochemicalAtom FragmentComplexity Framework GeometricalIndex
+    GravitationalIndex HydrogenBond InformationContent KappaShapeIndex Lipinski
+    McGowanVolume MoeType MolecularDistanceEdge MolecularId MomentOfInertia MoRSE
+    PathCount Polarizability RingCount RotatableBond SLogP TopologicalCharge
+    TopologicalIndex TopoPSA VdwVolumeABC VertexAdjacencyInformation WalkCount
+    Weight WienerIndex ZagrebIndex
 
 as library
 ^^^^^^^^^^
@@ -97,10 +98,10 @@ as library
     >>> from mordred import Calculator, descriptors
 
     # create descriptor calculator with all descriptors
-    >>> calc = Calculator(descriptors, exclude3D=True)
+    >>> calc = Calculator(descriptors, ignore_3D=True)
 
     >>> len(calc.descriptors)
-    1824
+    1612
 
     # calculate single molecule
     >>> mol = Chem.MolFromSmiles('c1ccccc1')
@@ -123,6 +124,7 @@ Documentation
 
 -  `master <http://mordred-descriptor.github.io/documentation/master>`__
 
+-  `v0.3.0 <http://mordred-descriptor.github.io/documentation/v0.3.0>`__
 -  `v0.2.1 <http://mordred-descriptor.github.io/documentation/v0.2.1>`__
 -  `v0.2.0 <http://mordred-descriptor.github.io/documentation/v0.2.0>`__
 -  `v0.1.0 <http://mordred-descriptor.github.io/documentation/v0.1.0>`__
