@@ -1,5 +1,5 @@
 import load_path
-from mordred import Descriptor, all_descriptors, get_descriptors_from_module
+from mordred import Descriptor, descriptors, get_descriptors_from_module
 
 load_path.nop()
 
@@ -10,7 +10,7 @@ preset descriptors
 
 .. code:: python
 
-    calc = Calculator(all_descriptors())
+    calc = Calculator(descriptors)
 
 .. csv-table:: Descriptor list
     :header: "#", "module", "name", "constructor", "dim"
@@ -24,7 +24,7 @@ def main(out):
 
     i = 0
 
-    for mdl in all_descriptors():
+    for mdl in descriptors.all:
         mdl_name = '.'.join(mdl.__name__.split('.'))
         mdl_ppr = ':py:mod:`~{}`'.format(mdl_name)
         first = True

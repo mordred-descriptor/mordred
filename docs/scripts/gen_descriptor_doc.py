@@ -1,5 +1,5 @@
 import load_path
-from mordred import all_descriptors
+from mordred import descriptors
 from mordred._base.descriptor import is_descriptor_class
 from itertools import chain
 import sys
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     print('')
     print('.. toctree::')
 
-    for mdl in all_descriptors():
+    for mdl in descriptors.all:
         print('    ' + mdl.__name__)
         with open('api/{}.rst'.format(mdl.__name__), 'w') as f:
             Generator(mdl).print(file=f)

@@ -85,8 +85,9 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
         return repr(v)
 
     def __repr__(self):
-        return '{}({})'.format(
-            self.__class__,
+        return '{}.{}({})'.format(
+            self.__class__.__module__,
+            self.__class__.__name__,
             ', '.join(self._pretty(a) for a in self.parameters())
         )
 

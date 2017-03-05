@@ -4,12 +4,12 @@ from nose.tools import eq_
 from rdkit.Chem import AllChem as Chem
 from numpy.testing import assert_almost_equal
 
-from mordred import Calculator, all_descriptors
+from mordred import Calculator, descriptors
 from mordred.error import MissingValueBase
 
 
 def test_parallel():
-    calc = Calculator(all_descriptors())
+    calc = Calculator(descriptors)
     mols = list(map(Chem.AddHs, [
         Chem.MolFromSmiles('c1ccccc1'),
         Chem.MolFromSmiles('C1=CC(=C(C=C1C2=C(C=C3C(=CC(=CC3=[O+]2)O)O)O)O)O'),

@@ -94,10 +94,10 @@ as library
 .. code:: python
 
     >>> from rdkit import Chem
-    >>> from mordred import Calculator, all_descriptors
+    >>> from mordred import Calculator, descriptors
 
     # create descriptor calculator with all descriptors
-    >>> calc = Calculator(all_descriptors(), exclude3D=True)
+    >>> calc = Calculator(descriptors, exclude3D=True)
 
     >>> len(calc.descriptors)
     1824
