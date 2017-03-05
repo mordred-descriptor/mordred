@@ -1,5 +1,5 @@
-import operator
 import inspect
+import operator
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
 
