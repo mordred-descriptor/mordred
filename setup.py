@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 import os
+import io
 
 
 install_requires = [
@@ -26,9 +27,23 @@ def get_test_data():
         for f in fs:
             yield os.path.join(*(p + [f]))
 
+README_rst = ''
+fndoc = os.path.join(os.path.dirname(__file__), 'README.rst')
+with io.open(fndoc, mode='r', encoding='utf-8') as fd:
+    README_rst = fd.read()
+
 setup(
     name='mordred',
     version=get_version(),
+    description='molecular descriptor calculator',
+    long_description=README_rst,
+    license='BSD3',
+    author='Hirotomo Moriwaki',
+    author_email='philopon.dependence@gmail.com',
+    url='https://github.com/mordred-descriptor/mordred',
+    platforms=['any'],
+    keywords='QSAR chemoinformatics',
+
     packages=find_packages(),
 
     package_data={
@@ -44,8 +59,4 @@ setup(
     ],
 
     test_suite='nose.collector',
-
-    author='Hirotomo Moriwaki',
-    author_email='philopon.dependence@gmail.com',
-    license='BSD3',
 )

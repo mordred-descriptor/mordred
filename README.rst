@@ -45,7 +45,7 @@ pip
 
        .. code:: console
 
-           $ pip install git+https://github.com/mordred-descriptor/mordred
+           $ pip install mordred
 
 examples
 --------
