@@ -6,12 +6,12 @@ from rdkit import Chem
 from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 
-from mordred import Calculator, all_descriptors
+from mordred import Calculator, descriptors
 from mordred.error import MissingValueBase
 
 
 def test_pickle_calculator():
-    orig = Calculator(all_descriptors())
+    orig = Calculator(descriptors)
     d0 = orig.descriptors[0]
     d1 = orig.descriptors[1]
     orig.register([

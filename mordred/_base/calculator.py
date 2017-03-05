@@ -125,7 +125,7 @@ class Calculator(object):
                     self._register_one(d, ignore_3D=ignore_3D)
 
             elif isinstance(desc, ModuleType):
-                self.register(get_descriptors_from_module(desc), ignore_3D=ignore_3D)
+                self.register(get_descriptors_from_module(desc, True), ignore_3D=ignore_3D)
 
             else:
                 self._register_one(desc, ignore_3D=ignore_3D)
@@ -296,7 +296,7 @@ class Calculator(object):
         )
 
 
-def get_descriptors_from_module(mdl):
+def get_descriptors_from_module(mdl, submodule=False):
     r"""get descriptors from module.
 
     Parameters:
@@ -310,10 +310,17 @@ def get_descriptors_from_module(mdl):
     if __all__ is None:
         __all__ = dir(mdl)
 
+    if submodule:
+        def check(fn):
+            return is_descriptor_class(fn) or isinstance(fn, ModuleType)
+    else:
+        def check(fn):
+            return is_descriptor_class(fn)
+
     descs = [
         fn
         for fn in (getattr(mdl, name) for name in __all__ if name[:1] != '_')
-        if is_descriptor_class(fn)
+        if check(fn)
     ]
 
     def key_by_def(d):

@@ -7,7 +7,7 @@ from rdkit import Chem
 from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 
-from mordred import Calculator, Polarizability, all_descriptors
+from mordred import Calculator, Polarizability, descriptors
 from mordred.error import MissingValueBase
 
 try:
@@ -25,7 +25,7 @@ data_dir = os.path.join(
 def test_by_references():
     calc = Calculator(
         d
-        for d in all_descriptors()
+        for d in descriptors.all
         if d.__class__ not in [Polarizability.APol, Polarizability.BPol]
     )
 

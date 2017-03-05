@@ -9,7 +9,7 @@ from multiprocessing import freeze_support
 
 from rdkit import Chem
 
-from . import Calculator, __version__, all_descriptors
+from . import Calculator, __version__, descriptors
 from ._base import get_descriptors_from_module
 from ._util import PathType, module_prog
 from .error import Missing, MissingValueBase
@@ -88,14 +88,9 @@ class ParserAction(argparse.Action):
 
 
 def make_parser():
-    all_descs = [
-        '.'.join(m.__name__.split('.')[1:])
-        for m in all_descriptors()
-    ]
-
     parser = argparse.ArgumentParser(
         prog=module_prog(__package__),
-        epilog='descriptors: {}'.format(' '.join(all_descs))
+        epilog='descriptors: {}'.format(' '.join(descriptors.__all__))
     )
     parser.add_argument('--version', action='version', help='input molecular file',
                         version='{}-{}'.format(__package__, __version__))
@@ -108,7 +103,7 @@ def make_parser():
                         help='number of processes (default: number of logical processors)')
     parser.add_argument('-q', '--quiet', action='store_true', help='hide progress bar')
     parser.add_argument('-s', '--stream', action='store_true', help='stream read')
-    parser.add_argument('-d', '--descriptor', default=[], choices=all_descs, action='append',
+    parser.add_argument('-d', '--descriptor', default=[], choices=descriptors.__all__, action='append',
                         help='descriptors to calculate (default: all)', metavar='DESC')
     parser.add_argument('-3', '--3D', action='store_true', dest='with3D',
                         help='use 3D descriptors (require sdf or mol file)')
@@ -136,7 +131,7 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
         calc._debug = True
 
     if len(descriptor) == 0:
-        calc.register(all_descriptors(), ignore_3D=not with3D)
+        calc.register(descriptors, ignore_3D=not with3D)
     else:
         calc.register(
             (d
