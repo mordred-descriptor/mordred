@@ -310,18 +310,21 @@ def get_descriptors_from_module(mdl, submodule=False):
     if __all__ is None:
         __all__ = dir(mdl)
 
-    if submodule:
-        def check(fn):
-            return is_descriptor_class(fn) or isinstance(fn, ModuleType)
-    else:
-        def check(fn):
-            return is_descriptor_class(fn)
+    all_functions = (getattr(mdl, name) for name in __all__ if name[:1] != '_')
 
-    descs = [
-        fn
-        for fn in (getattr(mdl, name) for name in __all__ if name[:1] != '_')
-        if check(fn)
-    ]
+    if submodule:
+        descs = [
+            d
+            for fn in all_functions
+            if is_descriptor_class(fn) or isinstance(fn, ModuleType)
+            for d in ([fn] if is_descriptor_class(fn) else get_descriptors_from_module(fn, submodule=True))
+        ]
+    else:
+        descs = [
+            fn
+            for fn in all_functions
+            if is_descriptor_class(fn)
+        ]
 
     def key_by_def(d):
         try:
