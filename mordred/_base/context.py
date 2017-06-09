@@ -23,6 +23,9 @@ class Context(object):
 
     @classmethod
     def from_query(cls, mol, require_3D, explicit_hydrogens, kekulizes, id):
+        if not isinstance(mol, Chem.Mol):
+            raise TypeError('{!r} is not rdkit.Chem.Mol instance'.format(mol))
+
         n_frags = len(Chem.GetMolFrags(mol))
 
         if mol.HasProp('_Name'):
