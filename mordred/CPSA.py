@@ -208,12 +208,7 @@ class FPSA(FNSA):
         return PPSA(self._version)
 
 
-class WxSAMixin(object):
-    def calculate(self, SA, ASA):
-        return SA * np.sum(ASA) / 1000.0
-
-
-class WNSA(WxSAMixin, FNSA):
+class WNSA(FNSA):
     r"""surface weighted charged partial negative surface area descriptor.
 
     :type version: int
@@ -221,14 +216,20 @@ class WNSA(WxSAMixin, FNSA):
     """
     __slots__ = ()
 
+    def calculate(self, SA, ASA):
+        return SA * np.sum(ASA) / 1000.0
 
-class WPSA(WxSAMixin, FPSA):
+
+class WPSA(FPSA):
     r"""surface weighted charged partial positive surface area descriptor.
 
     :type version: int
     :param version: one of :py:attr:`versions`
     """
     __slots__ = ()
+
+    def calculate(self, SA, ASA):
+        return SA * np.sum(ASA) / 1000.0
 
 
 class RNCG(CPSABase):

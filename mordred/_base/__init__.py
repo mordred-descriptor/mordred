@@ -4,7 +4,7 @@ import warnings
 from importlib import import_module
 from ..error import MissingValueBase
 
-from .descriptor import Descriptor
+from .descriptor import Descriptor, UnaryOperatingDescriptor, ConstDescriptor, BinaryOperatingDescriptor
 from .calculator import Calculator, get_descriptors_from_module
 from .parallel import parallel
 
@@ -50,6 +50,58 @@ def _Descriptor__call__(self, mol, id=-1):
 
     return v
 
+def _from_json(obj, descs):
+    name = obj.get('name')
+    args = obj.get('args') or {}
+    if name is None:
+        raise ValueError('invalid json: {}'.format(obj))
+
+    if name == UnaryOperatingDescriptor.__name__:
+        return UnaryOperatingDescriptor(
+            args['name'],
+            args['operator'],
+            _from_json(args['value'])
+        )
+
+    elif name == BinaryOperatingDescriptor.__name__:
+        return BinaryOperatingDescriptor(
+            args['name'],
+            args['operator'],
+            _from_json(args['left']),
+            _from_json(args['right'])
+        )
+
+    cls = descs.get(name)
+    if cls is None:
+        raise ValueError('unknown class: {}'.format(name))
+
+    instance = cls(**(obj.get('args') or {}))
+    return instance
+
+
+@classmethod
+def _Descriptor_from_json(self, obj):
+    '''create Descriptor instance from json dict.
+
+    Parameters:
+        obj(dict): descriptor dict
+
+    Returns:
+        Descriptor: descriptor
+    '''
+    descs = getattr(self, '_all_descriptors', None)
+
+    if descs is None:
+        from mordred import descriptors
+        descs = {
+            cls.__name__: cls
+            for cls in get_descriptors_from_module(descriptors, submodule=True)
+        }
+        descs[ConstDescriptor.__name__] = ConstDescriptor
+        self._all_descriptors = descs
+
+    return _from_json(obj, descs)
 
 Descriptor.__call__ = _Descriptor__call__
+Descriptor.from_json = _Descriptor_from_json
 Calculator._parallel = parallel

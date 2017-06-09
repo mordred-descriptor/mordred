@@ -16,7 +16,21 @@ class MissingValueException(Exception):
         self.error = error
 
 
-class Descriptor(six.with_metaclass(ABCMeta, object)):
+class DescriptorMeta(ABCMeta):
+    def __new__(cls, classname, bases, dict):
+        __init__ = dict.get('__init__')
+        if __init__ is None:
+            for base in bases:
+                __init__ = getattr(base, '__init__', None)
+                if __init__ is not None:
+                    break
+
+        dict['parameter_names'] = tuple(inspect.getfullargspec(__init__).args[1:])
+
+        return ABCMeta.__new__(cls, classname, bases, dict)
+
+
+class Descriptor(six.with_metaclass(DescriptorMeta, object)):
     r"""abstract base class of descriptors.
 
     Attributes:
@@ -52,6 +66,27 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
             tuple: tuple of __init__ arguments
         '''
         raise NotImplementedError('not implemented Descriptor.parameters method')
+
+    def get_parameter_dict(self):
+        return dict(zip(self.parameter_names, self.parameters()))
+
+    def to_json(self):
+        '''convert to json serializable dictionary.
+
+        Returns:
+            dict: dictionary of descriptor
+        '''
+        d, ps = self._to_json()
+        if len(ps) == 0:
+            return {'name': d}
+        else:
+            return {'name': d, 'args': ps}
+
+    def _to_json(self):
+        d = self.__class__.__name__
+        ps = self.get_parameter_dict()
+
+        return d, {k: getattr(v, 'as_argument', v) for k, v in ps.items()}
 
     @abstractmethod
     def calculate(self):
@@ -171,29 +206,29 @@ class Descriptor(six.with_metaclass(ABCMeta, object)):
     def _binary_common(name, operator):
         def binary(self, other):
             if not isinstance(other, Descriptor):
-                other = ConstDescriptor(str(other), other)
+                other = ConstDescriptor(other)
 
             return BinaryOperatingDescriptor(name.format(self, other), operator, self, other)
 
         return binary
 
-    __add__ = _binary_common('({}+{})', operator.add)
-    __sub__ = _binary_common('({}-{})', operator.sub)
-    __mul__ = _binary_common('({}*{})', operator.mul)
-    __truediv__ = _binary_common('({}/{})', operator.truediv)
-    __floordiv__ = _binary_common('({}//{})', operator.floordiv)
-    __mod__ = _binary_common('({}%{})', operator.mod)
-    __pow__ = _binary_common('({}**{})', operator.pow)
+    __add__ = _binary_common('({}+{})', '+')
+    __sub__ = _binary_common('({}-{})', '-')
+    __mul__ = _binary_common('({}*{})', '*')
+    __truediv__ = _binary_common('({}/{})', '/')
+    __floordiv__ = _binary_common('({}//{})', '//')
+    __mod__ = _binary_common('({}%{})', '%')
+    __pow__ = _binary_common('({}**{})', '**')
 
-    __neg__ = _unary_common('-{}', operator.neg)
-    __pos__ = _unary_common('+{}', operator.pos)
-    __abs__ = _unary_common('|{}|', operator.abs)
+    __neg__ = _unary_common('-{}', '-')
+    __pos__ = _unary_common('+{}', '+')
+    __abs__ = _unary_common('|{}|', 'abs')
+    __trunc__ = _unary_common('trunc({})', 'trunc')
 
     if six.PY3:
-        __ceil__ = _unary_common('ceil({})', np.ceil)
-        __floor__ = _unary_common('floor({})', np.floor)
+        __ceil__ = _unary_common('ceil({})', 'ceil')
+        __floor__ = _unary_common('floor({})', 'floor')
 
-    __trunc__ = _unary_common('trunc({})', np.trunc)
 
 
 def is_descriptor_class(desc):
@@ -214,24 +249,41 @@ class UnaryOperatingDescriptor(Descriptor):
     def preset(cls):
         return cls()
 
+    operators = {
+        '-': operator.neg,
+        '+': operator.pos,
+        'abs': operator.abs,
+        'trunc': np.trunc,
+        'ceil': np.ceil,
+        'floor': np.floor,
+    }
+
     def parameters(self):
-        return self.name, self.operator, self.value
+        return self._name, self._operator, self._value
 
     def __init__(self, name, operator, value):
-        self.name = name
-        self.operator = operator
-        self.value = value
+        self._name = name
+        self._operator = operator
+        self._fn = self.operators[operator]
+        self._value = value
+
+    def _to_json(self):
+        return self.__class__.__name__, {
+            'name': self._name,
+            'operator': self._operator,
+            'value': self._value.to_json(),
+         }
 
     def __str__(self):
-        return self.name
+        return self._name
 
     def dependencies(self):
         return {
-            'value': self.value,
+            'value': self._value,
         }
 
     def calculate(self, value):
-        return self.operator(value)
+        return self._fn(value)
 
 
 class ConstDescriptor(Descriptor):
@@ -240,17 +292,16 @@ class ConstDescriptor(Descriptor):
         return cls()
 
     def parameters(self):
-        return self.name, self.value
+        return self._value,
 
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
+    def __init__(self, value):
+        self._value = value
 
     def __str__(self):
-        return self.name
+        return str(self._value)
 
     def calculate(self):
-        return self.value
+        return self._value
 
 
 class BinaryOperatingDescriptor(Descriptor):
@@ -258,23 +309,42 @@ class BinaryOperatingDescriptor(Descriptor):
     def preset(cls):
         return cls()
 
+    operators = {
+        '+': operator.add,
+        '-': operator.sub,
+        '*': operator.mul,
+        '/': operator.truediv,
+        '//': operator.floordiv,
+        '%': operator.mod,
+        '**': operator.pow,
+    }
+
+    def _to_json(self):
+        return self.__class__.__name__, {
+            'name': self._name,
+            'operator': self._operator,
+            'left': self._left.to_json(),
+            'right': self._right.to_json(),
+         }
+
     def parameters(self):
-        return self.name, self.operator, self.left, self.right
+        return self._name, self._operator, self._left, self._right
 
     def __init__(self, name, operator, left, right):
-        self.name = name
-        self.operator = operator
-        self.left = left
-        self.right = right
+        self._name = name
+        self._operator = operator
+        self._fn = self.operators[operator]
+        self._left = left
+        self._right = right
 
     def __str__(self):
-        return self.name
+        return self._name
 
     def dependencies(self):
         return {
-            'left': self.left,
-            'right': self.right,
+            'left': self._left,
+            'right': self._right,
         }
 
     def calculate(self, left, right):
-        return self.operator(left, right)
+        return self._fn(left, right)

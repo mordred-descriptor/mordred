@@ -33,6 +33,39 @@ class Calculator(object):
         self._kekulizes = dict.get('_kekulizes', set([True, False]))
         self._require_3D = dict.get('_require_3D', False)
 
+    @classmethod
+    def from_json(cls, obj):
+        '''create Calculator from json descriptor objects
+
+        Parameters:
+            obj(list or dict): descriptors to register
+
+        Returns:
+            Calculator: calculator
+        '''
+        calc = cls()
+        calc.register_json(obj)
+        return calc
+
+    def register_json(self, obj):
+        '''register Descriptors from json descriptor objects
+
+        Parameters:
+            obj(list or dict): descriptors to register
+        '''
+        if not isinstance(obj, list):
+            obj = [obj]
+
+        self.register(Descriptor.from_json(j) for j in obj)
+
+    def to_json(self):
+        '''convert descriptors to json serializable data
+
+        Returns:
+            list: descriptors
+        '''
+        return [d.to_json() for d in self.descriptors]
+
     def __reduce_ex__(self, version):
         return self.__class__, (), {
             '_descriptors': self._descriptors,
