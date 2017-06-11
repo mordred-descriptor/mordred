@@ -7,6 +7,7 @@ from ._base import (
     Calculator,
     Descriptor,
     get_descriptors_from_module,
+    is_missing,
 )
 
 __all__ = (
@@ -15,4 +16,5 @@ __all__ = (
     'Calculator',
     'all_descriptors',
     'get_descriptors_from_module',
+    'is_missing',
 )

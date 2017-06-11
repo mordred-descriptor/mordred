@@ -1,5 +1,6 @@
 import os
 import warnings
+import numpy as np
 
 from importlib import import_module
 from ..error import MissingValueBase
@@ -14,6 +15,7 @@ __all__ = (
     'Descriptor',
     'Calculator',
     'get_descriptors_from_module',
+    'is_missing',
 )
 
 
@@ -49,6 +51,7 @@ def _Descriptor__call__(self, mol, id=-1):
         raise v.error
 
     return v
+
 
 def _from_json(obj, descs):
     name = obj.get('name')
@@ -101,6 +104,19 @@ def _Descriptor_from_json(self, obj):
         self._all_descriptors = descs
 
     return _from_json(obj, descs)
+
+
+def is_missing(v):
+    '''check argument is either MissingValue or not
+
+    Parameters:
+        v(any): value
+
+    Returns:
+        bool
+    '''
+    return isinstance(v, MissingValueBase)
+
 
 Descriptor.__call__ = _Descriptor__call__
 Descriptor.from_json = _Descriptor_from_json
