@@ -6,6 +6,17 @@ from contextlib import contextmanager
 import six
 import numpy as np
 
+if hasattr(inspect, 'getfullargspec'):
+    def getargs(func):
+        return tuple(inspect.getfullargspec(func).args[1:])
+
+else:
+    def getargs(func):
+        try:
+            return tuple(inspect.getargspec(func).args[1:])
+        except TypeError:
+            return ()
+
 
 class MissingValueException(Exception):
     "internally used exception"
@@ -25,7 +36,7 @@ class DescriptorMeta(ABCMeta):
                 if __init__ is not None:
                     break
 
-        dict['parameter_names'] = tuple(inspect.getfullargspec(__init__).args[1:])
+        dict['parameter_names'] = getargs(__init__)
 
         return ABCMeta.__new__(cls, classname, bases, dict)
 
