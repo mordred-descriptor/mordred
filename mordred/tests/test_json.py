@@ -1,5 +1,7 @@
-from nose.tools import eq_
 import json
+
+from nose.tools import eq_
+
 from mordred import Calculator, descriptors
 
 

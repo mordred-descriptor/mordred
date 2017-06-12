@@ -1,8 +1,11 @@
+'''mesh generation
+
+References:
+    * http://prideout.net/blog/?p=44
+    * http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
+'''
+
 import numpy as np
-
-
-# http://prideout.net/blog/?p=44
-# http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 
 
 class SphereMesh(object):
