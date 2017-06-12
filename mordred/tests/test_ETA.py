@@ -4,7 +4,8 @@ from numpy.testing import assert_almost_equal
 from mordred import Calculator, ExtendedTopochemicalAtom
 
 references = {
-    # Roy et. al. Quantitative Structure-Activity Relationships in Drug Design, Predictive Toxicology, and Risk Assessment. p. 65
+    # Roy et. al. Quantitative Structure-Activity Relationships in Drug Design,
+    #     Predictive Toxicology, and Risk Assessment. p. 65
     'O=Cc1c(Cl)cccc1': {
         "ETA_alpha": 4.547,
         "AETA_alpha": 0.505,
@@ -71,7 +72,8 @@ references = {
         "ETA_dPsi_A": 0.181,
         "ETA_dPsi_B": 0.000,
     },
-# Roy, et. al. Understanding the Basics of QSAR for Applications in Pharmaceutical Sciences and Risk Assessment. p.145
+    # Roy, et. al. Understanding the Basics of QSAR for Applications
+    #     in Pharmaceutical Sciences and Risk Assessment. p.145
     'O=Cc1ccccc1': {
         "AETA_alpha": 0.479,
         "ETA_shape_p": 0.087,
@@ -103,6 +105,7 @@ references = {
         "ETA_dPsi_B": 0.000,
     },
 }
+
 
 def test_ETA():
     calc = Calculator(ExtendedTopochemicalAtom)

@@ -350,7 +350,10 @@ def get_descriptors_from_module(mdl, submodule=False):
             d
             for fn in all_functions
             if is_descriptor_class(fn) or isinstance(fn, ModuleType)
-            for d in ([fn] if is_descriptor_class(fn) else get_descriptors_from_module(fn, submodule=True))
+            for d in (
+                [fn] if is_descriptor_class(fn)
+                else get_descriptors_from_module(fn, submodule=True)
+            )
         ]
     else:
         descs = [

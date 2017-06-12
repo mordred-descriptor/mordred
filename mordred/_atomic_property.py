@@ -88,6 +88,7 @@ class PeriodicTable(object):
         new.data = [f(d) for d in self.data]
         return new
 
+
 mass = PeriodicTable.load('mass.txt')
 vdw_radii = PeriodicTable.load('van_der_waals_radii.txt')
 vdw_volume = vdw_radii.map(lambda r: 4. / 3. * np.pi * r ** 3)

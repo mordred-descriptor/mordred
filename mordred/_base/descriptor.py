@@ -241,7 +241,6 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
         __floor__ = _unary_common('floor({})', 'floor')
 
 
-
 def is_descriptor_class(desc):
     r"""check calculatable descriptor class or not.
 
@@ -283,7 +282,7 @@ class UnaryOperatingDescriptor(Descriptor):
             'name': self._name,
             'operator': self._operator,
             'value': self._value.to_json(),
-         }
+        }
 
     def __str__(self):
         return self._name
@@ -336,7 +335,7 @@ class BinaryOperatingDescriptor(Descriptor):
             'operator': self._operator,
             'left': self._left.to_json(),
             'right': self._right.to_json(),
-         }
+        }
 
     def parameters(self):
         return self._name, self._operator, self._left, self._right

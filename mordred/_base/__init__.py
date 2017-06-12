@@ -1,11 +1,13 @@
 import os
 import warnings
-import numpy as np
 
 from importlib import import_module
 from ..error import MissingValueBase
 
-from .descriptor import Descriptor, UnaryOperatingDescriptor, ConstDescriptor, BinaryOperatingDescriptor
+from .descriptor import (
+    Descriptor, UnaryOperatingDescriptor,
+    ConstDescriptor, BinaryOperatingDescriptor,
+)
 from .calculator import Calculator, get_descriptors_from_module
 from .parallel import parallel
 
@@ -27,7 +29,11 @@ def all_descriptors():
     :returns: all modules
     :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
     """
-    warnings.warn('all_descriptors() is deprecated, use mordred.descriptors module instead', DeprecationWarning, stacklevel=2)
+    warnings.warn(
+        'all_descriptors() is deprecated, use mordred.descriptors module instead',
+        DeprecationWarning,
+        stacklevel=2,
+    )
     base_dir = os.path.dirname(os.path.dirname(__file__))
 
     for name in os.listdir(base_dir):

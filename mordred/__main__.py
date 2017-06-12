@@ -103,7 +103,8 @@ def make_parser():
                         help='number of processes (default: number of logical processors)')
     parser.add_argument('-q', '--quiet', action='store_true', help='hide progress bar')
     parser.add_argument('-s', '--stream', action='store_true', help='stream read')
-    parser.add_argument('-d', '--descriptor', default=[], choices=descriptors.__all__, action='append',
+    parser.add_argument('-d', '--descriptor',
+                        default=[], choices=descriptors.__all__, action='append',
                         help='descriptors to calculate (default: all)', metavar='DESC')
     parser.add_argument('-3', '--3D', action='store_true', dest='with3D',
                         help='use 3D descriptors (require sdf or mol file)')

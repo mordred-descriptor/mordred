@@ -58,7 +58,7 @@ class ABCGGIndex(ABCIndexBase):
 
     References:
         * Furtula, B. Atom-bond connectivity index versus Graovac-Ghorbani analog. MATCH Commun. Math. Comput. Chem 75, 233-242 (2016).
-    """
+    """ # noqa
     __slots__ = ()
 
     def dependencies(self):

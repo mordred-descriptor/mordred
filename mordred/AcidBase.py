@@ -3,7 +3,7 @@ References:
 
     * http://cdk.github.io/cdk/1.5/docs/api/org/openscience/cdk/qsar/descriptors/molecular/AcidicGroupCountDescriptor.html
     * http://cdk.github.io/cdk/1.5/docs/api/org/openscience/cdk/qsar/descriptors/molecular/BasicGroupCountDescriptor.html
-'''
+''' # noqa
 
 from abc import abstractproperty
 
