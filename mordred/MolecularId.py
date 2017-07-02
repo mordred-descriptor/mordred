@@ -5,11 +5,11 @@ from networkx import Graph
 from ._base import Descriptor
 from ._atomic_property import table, halogen
 
-__all__ = ('MolecularId',)
+__all__ = ("MolecularId",)
 
 
 class AtomicId(object):
-    __slots__ = ('G', 'lim', 'start', 'id', 'visited', 'weights')
+    __slots__ = ("G", "lim", "start", "id", "visited", "weights")
 
     def __init__(self, mol, eps):
         G = Graph()
@@ -43,7 +43,7 @@ class AtomicId(object):
                 continue
 
             self.visited.add(v)
-            w = d['weight'] * self.weights[-1]
+            w = d["weight"] * self.weights[-1]
             self.weights.append(w)
 
             self.id += 1.0 / math.sqrt(w)
@@ -70,7 +70,7 @@ class MolecularIdBase(Descriptor):
 
 
 class AtomicIds(MolecularIdBase):
-    __slots__ = ('_eps',)
+    __slots__ = ("_eps",)
 
     def __init__(self, eps=1e-10):
         self._eps = eps
@@ -89,8 +89,8 @@ class MolecularId(MolecularIdBase):
     :type type: :py:class:`str` or :py:class:`int`
     :param type: target of atomic id source
 
-        * 'any': normal molecular id(sum of all atomic id)
-        * 'X': sum of halogen atomic id
+        * "any": normal molecular id(sum of all atomic id)
+        * "X": sum of halogen atomic id
         * str: atomic symbol
         * int: atomic number
 
@@ -100,46 +100,47 @@ class MolecularId(MolecularIdBase):
     :type _eps: float
     :param _eps: internally used
     """
-    __slots__ = ('_orig_type', '_averaged', '_eps', '_type', '_check')
+
+    __slots__ = ("_orig_type", "_averaged", "_eps", "_type", "_check")
 
     @classmethod
     def preset(cls):
         return (
             cls(s, a)
-            for s in ['any', 'hetero', 'C', 'N', 'O', 'X']
+            for s in ["any", "hetero", "C", "N", "O", "X"]
             for a in [False, True]
         )
 
     def __str__(self):
-        n = 'AMID' if self._averaged else 'MID'
-        if self._type != 'any':
-            n = '{}_{}'.format(n, self._type)
+        n = "AMID" if self._averaged else "MID"
+        if self._type != "any":
+            n = "{}_{}".format(n, self._type)
 
         return n
 
     def parameters(self):
         return self._orig_type, self._averaged, self._eps
 
-    def __init__(self, type='any', averaged=False, _eps=1e-10):
+    def __init__(self, type="any", averaged=False, _eps=1e-10):
         self._orig_type = self._type = type
         self._averaged = averaged
         self._eps = _eps
 
-        if isinstance(type, str) and type not in ['any', 'hetero', 'X']:
+        if isinstance(type, str) and type not in ["any", "hetero", "X"]:
             type = table.GetAtomicNumber(type)
 
-        if type == 'any':
+        if type == "any":
             self._check = lambda _: True
-        elif type == 'hetero':
-            self._type = 'h'
-            self._check = lambda a: a not in set([1, 6])
-        elif self._type == 'X':
+        elif type == "hetero":
+            self._type = "h"
+            self._check = lambda a: a not in {1, 6}
+        elif self._type == "X":
             self._check = lambda a: a in halogen
         else:
             self._check = lambda a: a == type
 
     def dependencies(self):
-        return {'aids': AtomicIds(self._eps)}
+        return {"aids": AtomicIds(self._eps)}
 
     def calculate(self, aids):
         v = float(
@@ -147,7 +148,7 @@ class MolecularId(MolecularIdBase):
                 aid
                 for aid, atom in zip(aids, self.mol.GetAtoms())
                 if self._check(atom.GetAtomicNum())
-            )
+            ),
         )
 
         if self._averaged:

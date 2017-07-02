@@ -6,14 +6,14 @@ from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
 __all__ = (
-    'InformationContent',
-    'TotalIC', 'StructuralIC', 'BondingIC', 'ComplementaryIC',
-    'ModifiedIC', 'ZModifiedIC',
+    "InformationContent",
+    "TotalIC", "StructuralIC", "BondingIC", "ComplementaryIC",
+    "ModifiedIC", "ZModifiedIC",
 )
 
 
 class BFSTree(object):
-    __slots__ = ('tree', 'visited', 'bonds', 'atoms')
+    __slots__ = ("tree", "visited", "bonds", "atoms")
 
     def __init__(self, mol):
         self.tree = {}
@@ -82,7 +82,7 @@ class BFSTree(object):
 
 
 class InformationContentBase(Descriptor):
-    __slots__ = ('_order',)
+    __slots__ = ("_order",)
     kekulize = True
 
     def __str__(self):
@@ -102,16 +102,16 @@ class InformationContentBase(Descriptor):
 
 
 class Ag(InformationContentBase):
-    __slots__ = ('_order',)
+    __slots__ = ("_order",)
 
     @classmethod
     def preset(cls):
         return ()
 
-    _name = 'Ag'
+    _name = "Ag"
 
     def dependencies(self):
-        return {'D': DistanceMatrix(self.explicit_hydrogens)}
+        return {"D": DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, D):
         if self._order == 0:
@@ -127,8 +127,8 @@ class Ag(InformationContentBase):
         Ags = [(k, sum(1 for _ in g)) for k, g in groupby(sorted(atoms))]
         Nags = len(Ags)
         return (
-            np.fromiter((ad[k] for k, _ in Ags), 'int', Nags),
-            np.fromiter((ag for _, ag in Ags), 'float', Nags),
+            np.fromiter((ad[k] for k, _ in Ags), "int", Nags),
+            np.fromiter((ag for _, ag in Ags), "float", Nags),
         )
 
     rtype = None
@@ -152,12 +152,13 @@ class InformationContent(InformationContentBase):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+
     __slots__ = ()
 
-    _name = 'IC'
+    _name = "IC"
 
     def dependencies(self):
-        return {'iAgs': Ag(self._order)}
+        return {"iAgs": Ag(self._order)}
 
     def calculate(self, iAgs):
         _, Ags = iAgs
@@ -173,12 +174,13 @@ class TotalIC(InformationContentBase):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+
     __slots__ = ()
 
-    _name = 'TIC'
+    _name = "TIC"
 
     def dependencies(self):
-        return {'ICm': InformationContent(self._order)}
+        return {"ICm": InformationContent(self._order)}
 
     def calculate(self, ICm):
         A = self.mol.GetNumAtoms()
@@ -195,9 +197,10 @@ class StructuralIC(TotalIC):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+
     __slots__ = ()
 
-    _name = 'SIC'
+    _name = "SIC"
 
     def calculate(self, ICm):
         d = np.log2(self.mol.GetNumAtoms())
@@ -217,9 +220,10 @@ class BondingIC(TotalIC):
 
     :returns: NaN when :math:`\sum^B_{b=1} \pi^{*}_b <= 0`
     """
+
     __slots__ = ()
 
-    _name = 'BIC'
+    _name = "BIC"
 
     def calculate(self, ICm):
         B = sum(b.GetBondTypeAsDouble() for b in self.mol.GetBonds())
@@ -238,9 +242,10 @@ class ComplementaryIC(TotalIC):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+
     __slots__ = ()
 
-    _name = 'CIC'
+    _name = "CIC"
 
     def calculate(self, ICm):
         A = self.mol.GetNumAtoms()
@@ -254,9 +259,10 @@ class ModifiedIC(InformationContent):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+
     __slots__ = ()
 
-    _name = 'MIC'
+    _name = "MIC"
 
     def calculate(self, iAgs):
         ids, Ags = iAgs
@@ -270,9 +276,10 @@ class ZModifiedIC(InformationContent):
     :type order: int
     :param order: order(number of edge) of subgraph
     """
+
     __slots__ = ()
 
-    _name = 'ZMIC'
+    _name = "ZMIC"
 
     def calculate(self, iAgs):
         ids, Ags = iAgs

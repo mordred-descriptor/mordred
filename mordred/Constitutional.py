@@ -3,7 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._atomic_property import AtomicProperty, get_properties
 
-__all__ = ('ConstitutionalSum', 'ConstitutionalMean',)
+__all__ = ("ConstitutionalSum", "ConstitutionalMean",)
 
 
 class ConstitutionalSum(Descriptor):
@@ -19,7 +19,8 @@ class ConstitutionalSum(Descriptor):
     :type prop: :py:class:`str` or :py:class:`function`
     :param prop: :ref:`atomic_properties`
     """
-    __slots__ = ('_prop',)
+
+    __slots__ = ("_prop",)
 
     @classmethod
     def preset(cls):
@@ -28,16 +29,16 @@ class ConstitutionalSum(Descriptor):
     def parameters(self):
         return self._prop,
 
-    def __init__(self, prop='v'):
+    def __init__(self, prop="v"):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)
 
-    _prefix = 'S'
+    _prefix = "S"
 
     def __str__(self):
-        return '{}{}'.format(self._prefix, self._prop.as_argument)
+        return "{}{}".format(self._prefix, self._prop.as_argument)
 
     def dependencies(self):
-        return {'P': self._prop}
+        return {"P": self._prop}
 
     def calculate(self, P):
         return np.sum(P / self._prop.carbon)
@@ -56,15 +57,16 @@ class ConstitutionalMean(ConstitutionalSum):
 
     :rtype: float
     """
-    __slots__ = ('_prop',)
-    _prefix = 'M'
+
+    __slots__ = ("_prop",)
+    _prefix = "M"
 
     @classmethod
     def preset(cls):
         return map(cls, get_properties())
 
     def dependencies(self):
-        return {'S': ConstitutionalSum(self._prop)}
+        return {"S": ConstitutionalSum(self._prop)}
 
     def calculate(self, S):
         return S / self.mol.GetNumAtoms()

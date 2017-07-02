@@ -4,11 +4,11 @@ from ._base import Descriptor
 from ._util import atoms_to_numpy
 from ._graph_matrix import AdjacencyMatrix, DistanceMatrix3D
 
-__all__ = ('GravitationalIndex',)
+__all__ = ("GravitationalIndex",)
 
 
 class GravitationalIndex(Descriptor):
-    __slots__ = '_heavy', '_pair'
+    __slots__ = "_heavy", "_pair"
 
     @classmethod
     def preset(cls):
@@ -25,9 +25,9 @@ class GravitationalIndex(Descriptor):
         return not self._heavy
 
     def __str__(self):
-        return 'GRAV{}{}'.format(
-            '' if self._heavy else 'H',
-            'p' if self._pair else '',
+        return "GRAV{}{}".format(
+            "" if self._heavy else "H",
+            "p" if self._pair else "",
         )
 
     def parameters(self):
@@ -38,10 +38,10 @@ class GravitationalIndex(Descriptor):
         self._pair = pair
 
     def dependencies(self):
-        d = {'D': DistanceMatrix3D(self.explicit_hydrogens)}
+        d = {"D": DistanceMatrix3D(self.explicit_hydrogens)}
 
         if self._pair:
-            d['A'] = AdjacencyMatrix(self.explicit_hydrogens)
+            d["A"] = AdjacencyMatrix(self.explicit_hydrogens)
 
         return d
 

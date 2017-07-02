@@ -4,7 +4,7 @@ from rdkit.Chem import BondType, rdMolDescriptors
 
 from ._base import Descriptor
 
-__all__ = ('TopoPSA',)
+__all__ = ("TopoPSA",)
 
 
 class TopoPSA(Descriptor):
@@ -17,8 +17,10 @@ class TopoPSA(Descriptor):
 
     References
         * :doi:`10.1021/jm000942e`
+
     """
-    __slots__ = ('_no_only',)
+
+    __slots__ = ("_no_only",)
 
     @classmethod
     def preset(cls):
@@ -26,7 +28,7 @@ class TopoPSA(Descriptor):
         yield cls(False)
 
     def __str__(self):
-        return 'TopoPSA(NO)' if self._no_only else 'TopoPSA'
+        return "TopoPSA(NO)" if self._no_only else "TopoPSA"
 
     def parameters(self):
         return self._no_only,

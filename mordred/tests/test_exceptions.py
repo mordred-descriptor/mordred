@@ -17,12 +17,12 @@ class RaiseDescriptor(Descriptor):
         raise self.e
 
 
-mol = Chem.MolFromSmiles('c1ccccc1')
+mol = Chem.MolFromSmiles("c1ccccc1")
 
 
 def test_catch_non_critical_error():
-    calc = Calculator(RaiseDescriptor(ValueError('test exception'), False))
+    calc = Calculator(RaiseDescriptor(ValueError("test exception"), False))
 
     result = calc(mol)[0]
     assert isinstance(result, Error)
-    eq_(result.error.args, ('test exception',))
+    eq_(result.error.args, ("test exception",))

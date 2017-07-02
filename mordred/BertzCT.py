@@ -3,11 +3,12 @@ import rdkit.Chem.GraphDescriptors as RDKit
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
-__all__ = ('BertzCT',)
+__all__ = ("BertzCT",)
 
 
 class BertzCT(Descriptor):
     r"""Bertz CT descriptor(rdkit wrapper)."""
+
     __slots__ = ()
     explicit_hydrogens = False
 
@@ -22,7 +23,7 @@ class BertzCT(Descriptor):
         return ()
 
     def dependencies(self):
-        return {'D': DistanceMatrix(self.explicit_hydrogens)}
+        return {"D": DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, D):
         return float(RDKit.BertzCT(self.mol, dMat=D))

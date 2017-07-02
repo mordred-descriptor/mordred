@@ -3,7 +3,7 @@ from __future__ import division
 from .Chi import ChiCache
 from ._base import Descriptor
 
-__all__ = ('KappaShapeIndex1', 'KappaShapeIndex2', 'KappaShapeIndex3',)
+__all__ = ("KappaShapeIndex1", "KappaShapeIndex2", "KappaShapeIndex3",)
 
 
 class KappaShapeIndexBase(Descriptor):
@@ -14,7 +14,7 @@ class KappaShapeIndexBase(Descriptor):
         yield cls()
 
     def __str__(self):
-        return 'Kier{}'.format(self._order)
+        return "Kier{}".format(self._order)
 
     def parameters(self):
         return ()
@@ -23,7 +23,7 @@ class KappaShapeIndexBase(Descriptor):
         self._order = int(self.__class__.__name__[-1])
 
     def dependencies(self):
-        return {'Chi': ChiCache(self._order)}
+        return {"Chi": ChiCache(self._order)}
 
     def _common(self, Chi):
         P = len(Chi.path)

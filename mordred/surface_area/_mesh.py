@@ -1,9 +1,10 @@
-'''mesh generation
+"""Mesh generation.
 
 References:
     * http://prideout.net/blog/?p=44
     * http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
-'''
+
+"""
 
 import numpy as np
 
@@ -26,7 +27,7 @@ class SphereMesh(object):
             (t, 0, 1),
             (-t, 0, -1),
             (-t, 0, 1),
-        ], dtype='float')
+        ], dtype="float")
 
         self.faces = np.array([
             (0, 11, 5),
@@ -52,7 +53,7 @@ class SphereMesh(object):
             (6, 2, 10),
             (8, 6, 7),
             (9, 8, 1),
-        ], dtype='int')
+        ], dtype="int")
 
         self.normalize(0)
 
@@ -80,7 +81,7 @@ class SphereMesh(object):
             self.vertices,
             Av + Bv,
             Bv + Cv,
-            Av + Cv
+            Av + Cv,
         ]
         self.normalize(Nv)
 
@@ -91,7 +92,7 @@ class SphereMesh(object):
         self.faces = np.concatenate([
             A, B, C, AB,
             AB, AB, AC, AC,
-            AC, BC, BC, BC
+            AC, BC, BC, BC,
         ]).reshape(3, -1).T
 
     def subdivide(self, level):

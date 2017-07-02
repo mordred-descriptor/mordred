@@ -6,7 +6,7 @@ from contextlib import contextmanager
 import six
 import numpy as np
 
-if hasattr(inspect, 'getfullargspec'):
+if hasattr(inspect, "getfullargspec"):
     def getargs(func):
         return tuple(inspect.getfullargspec(func).args[1:])
 
@@ -19,9 +19,9 @@ else:
 
 
 class MissingValueException(Exception):
-    "internally used exception"
+    """Internally used exception."""
 
-    __slots__ = ('error',)
+    __slots__ = ("error",)
 
     def __init__(self, error):
         self.error = error
@@ -29,26 +29,27 @@ class MissingValueException(Exception):
 
 class DescriptorMeta(ABCMeta):
     def __new__(cls, classname, bases, dict):
-        __init__ = dict.get('__init__')
+        __init__ = dict.get("__init__")
         if __init__ is None:
             for base in bases:
-                __init__ = getattr(base, '__init__', None)
+                __init__ = getattr(base, "__init__", None)
                 if __init__ is not None:
                     break
 
-        dict['parameter_names'] = getargs(__init__)
+        dict["parameter_names"] = getargs(__init__)
 
         return ABCMeta.__new__(cls, classname, bases, dict)
 
 
 class Descriptor(six.with_metaclass(DescriptorMeta, object)):
-    r"""abstract base class of descriptors.
+    r"""Abstract base class of descriptors.
 
     Attributes:
         mol(rdkit.Mol): target molecule
+
     """
 
-    __slots__ = '_context',
+    __slots__ = "_context",
 
     explicit_hydrogens = True
     kekulize = False
@@ -60,44 +61,47 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
     @classmethod
     def preset(cls):
-        r"""generate preset descriptor instances.
+        r"""Generate preset descriptor instances.
 
         Returns:
             Iterable[Descriptor]: preset descriptors
+
         """
         return ()
 
     @abstractmethod
     def parameters(self):
-        '''[abstractmethod] get __init__ arguments of this descriptor instance.
+        """[abstractmethod] get __init__ arguments of this descriptor instance.
 
         this method used in pickling and identifying descriptor instance.
 
         Returns:
             tuple: tuple of __init__ arguments
-        '''
-        raise NotImplementedError('not implemented Descriptor.parameters method')
+
+        """
+        raise NotImplementedError("not implemented Descriptor.parameters method")
 
     def get_parameter_dict(self):
         return dict(zip(self.parameter_names, self.parameters()))
 
     def to_json(self):
-        '''convert to json serializable dictionary.
+        """Convert to json serializable dictionary.
 
         Returns:
             dict: dictionary of descriptor
-        '''
+
+        """
         d, ps = self._to_json()
         if len(ps) == 0:
-            return {'name': d}
+            return {"name": d}
         else:
-            return {'name': d, 'args': ps}
+            return {"name": d, "args": ps}
 
     def _to_json(self):
         d = self.__class__.__name__
         ps = self.get_parameter_dict()
 
-        return d, {k: getattr(v, 'as_argument', v) for k, v in ps.items()}
+        return d, {k: getattr(v, "as_argument", v) for k, v in ps.items()}
 
     @abstractmethod
     def calculate(self):
@@ -105,36 +109,39 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
         Returns:
             rtype
+
         """
-        raise NotImplementedError('not implemented Descriptor.calculate method')
+        raise NotImplementedError("not implemented Descriptor.calculate method")
 
     def dependencies(self):
-        r"""descriptor dependencies.
+        r"""Descriptor dependencies.
 
         Returns:
             dict[str, Descriptor or None] or None
+
         """
         pass
 
     @property
     def as_argument(self):
-        '''argument representation of descriptor
+        """Argument representation of descriptor.
 
         Returns:
             any
-        '''
+
+        """
         return self
 
     @staticmethod
     def _pretty(v):
-        v = getattr(v, 'as_argument', v)
+        v = getattr(v, "as_argument", v)
         return repr(v)
 
     def __repr__(self):
-        return '{}.{}({})'.format(
+        return "{}.{}({})".format(
             self.__class__.__module__,
             self.__class__.__name__,
-            ', '.join(self._pretty(a) for a in self.parameters())
+            ", ".join(self._pretty(a) for a in self.parameters()),
         )
 
     def __hash__(self):
@@ -148,51 +155,52 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
         return compare
 
-    __eq__ = __compare_by_reduce('__eq__')
-    __ne__ = __compare_by_reduce('__ne__')
+    __eq__ = __compare_by_reduce("__eq__")
+    __ne__ = __compare_by_reduce("__ne__")
 
-    __lt__ = __compare_by_reduce('__lt__')
-    __gt__ = __compare_by_reduce('__gt__')
-    __le__ = __compare_by_reduce('__le__')
-    __ge__ = __compare_by_reduce('__ge__')
+    __lt__ = __compare_by_reduce("__lt__")
+    __gt__ = __compare_by_reduce("__gt__")
+    __le__ = __compare_by_reduce("__le__")
+    __ge__ = __compare_by_reduce("__ge__")
 
     rtype = None
 
     @property
     def mol(self):
-        '''get molecule
+        """Get molecule.
 
         Returns:
             rdkit.Mol
-        '''
+
+        """
         return self._context.get_mol(self)
 
     @property
     def coord(self):
-        '''get 3D coordinate
+        """Get 3D coordinate.
 
         Returns:
             numpy.array[3, N]: coordinate matrix
-        '''
+
+        """
         if not self.require_3D:
-            self.fail(AttributeError('use 3D coordinate in 2D descriptor'))
+            self.fail(AttributeError("use 3D coordinate in 2D descriptor"))
 
         return self._context.get_coord(self)
 
     def fail(self, exception):
-        '''raise known exception and return missing value
+        """Raise known exception and return missing value.
 
         Raises:
             MissingValueException
-        '''
+
+        """
         raise MissingValueException(exception)
 
     @contextmanager
     def rethrow_zerodiv(self):
-        '''[contextmanager] treat zero div as known exception
-        '''
-
-        with np.errstate(divide='raise', invalid='raise'):
+        """[contextmanager] treat zero div as known exception."""
+        with np.errstate(divide="raise", invalid="raise"):
             try:
                 yield
             except (FloatingPointError, ZeroDivisionError) as e:
@@ -200,9 +208,7 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
     @contextmanager
     def rethrow_na(self, exception):
-        '''[contextmanager] treat any exceptions as known exception
-        '''
-
+        """[contextmanager] treat any exceptions as known exception."""
         try:
             yield
         except exception as e:
@@ -223,29 +229,30 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
         return binary
 
-    __add__ = _binary_common('({}+{})', '+')
-    __sub__ = _binary_common('({}-{})', '-')
-    __mul__ = _binary_common('({}*{})', '*')
-    __truediv__ = _binary_common('({}/{})', '/')
-    __floordiv__ = _binary_common('({}//{})', '//')
-    __mod__ = _binary_common('({}%{})', '%')
-    __pow__ = _binary_common('({}**{})', '**')
+    __add__ = _binary_common("({}+{})", "+")
+    __sub__ = _binary_common("({}-{})", "-")
+    __mul__ = _binary_common("({}*{})", "*")
+    __truediv__ = _binary_common("({}/{})", "/")
+    __floordiv__ = _binary_common("({}//{})", "//")
+    __mod__ = _binary_common("({}%{})", "%")
+    __pow__ = _binary_common("({}**{})", "**")
 
-    __neg__ = _unary_common('-{}', '-')
-    __pos__ = _unary_common('+{}', '+')
-    __abs__ = _unary_common('|{}|', 'abs')
-    __trunc__ = _unary_common('trunc({})', 'trunc')
+    __neg__ = _unary_common("-{}", "-")
+    __pos__ = _unary_common("+{}", "+")
+    __abs__ = _unary_common("|{}|", "abs")
+    __trunc__ = _unary_common("trunc({})", "trunc")
 
     if six.PY3:
-        __ceil__ = _unary_common('ceil({})', 'ceil')
-        __floor__ = _unary_common('floor({})', 'floor')
+        __ceil__ = _unary_common("ceil({})", "ceil")
+        __floor__ = _unary_common("floor({})", "floor")
 
 
 def is_descriptor_class(desc):
-    r"""check calculatable descriptor class or not.
+    r"""Check calculatable descriptor class or not.
 
     Returns:
         bool
+
     """
     return (
         isinstance(desc, type) and
@@ -260,12 +267,12 @@ class UnaryOperatingDescriptor(Descriptor):
         return cls()
 
     operators = {
-        '-': operator.neg,
-        '+': operator.pos,
-        'abs': operator.abs,
-        'trunc': np.trunc,
-        'ceil': np.ceil,
-        'floor': np.floor,
+        "+": operator.pos,
+        "-": operator.neg,
+        "abs": operator.abs,
+        "trunc": np.trunc,
+        "ceil": np.ceil,  # noqa: S001
+        "floor": np.floor,
     }
 
     def parameters(self):
@@ -279,9 +286,9 @@ class UnaryOperatingDescriptor(Descriptor):
 
     def _to_json(self):
         return self.__class__.__name__, {
-            'name': self._name,
-            'operator': self._operator,
-            'value': self._value.to_json(),
+            "name": self._name,
+            "operator": self._operator,
+            "value": self._value.to_json(),
         }
 
     def __str__(self):
@@ -289,7 +296,7 @@ class UnaryOperatingDescriptor(Descriptor):
 
     def dependencies(self):
         return {
-            'value': self._value,
+            "value": self._value,
         }
 
     def calculate(self, value):
@@ -320,21 +327,21 @@ class BinaryOperatingDescriptor(Descriptor):
         return cls()
 
     operators = {
-        '+': operator.add,
-        '-': operator.sub,
-        '*': operator.mul,
-        '/': operator.truediv,
-        '//': operator.floordiv,
-        '%': operator.mod,
-        '**': operator.pow,
+        "+": operator.add,
+        "-": operator.sub,
+        "*": operator.mul,  # noqa: S001
+        "/": operator.truediv,
+        "//": operator.floordiv,
+        "%": operator.mod,  # noqa: S001
+        "**": operator.pow,
     }
 
     def _to_json(self):
         return self.__class__.__name__, {
-            'name': self._name,
-            'operator': self._operator,
-            'left': self._left.to_json(),
-            'right': self._right.to_json(),
+            "name": self._name,
+            "operator": self._operator,
+            "left": self._left.to_json(),  # noqa: S001
+            "right": self._right.to_json(),
         }
 
     def parameters(self):
@@ -352,8 +359,8 @@ class BinaryOperatingDescriptor(Descriptor):
 
     def dependencies(self):
         return {
-            'left': self._left,
-            'right': self._right,
+            "left": self._left,
+            "right": self._right,
         }
 
     def calculate(self, left, right):

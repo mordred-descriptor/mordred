@@ -19,65 +19,72 @@ class Calculator(object):
     Parameters:
         descs: see Calculator.register() method
         ignore_3D: see Calculator.register() method
+
     """
 
     __slots__ = (
-        '_descriptors', '_name_dict', '_explicit_hydrogens', '_kekulizes', '_require_3D',
-        '_cache', '_debug', '_progress_bar'
+        "_descriptors", "_name_dict", "_explicit_hydrogens", "_kekulizes", "_require_3D",
+        "_cache", "_debug", "_progress_bar",
     )
 
     def __setstate__(self, dict):
-        ds = self._descriptors = dict.get('_descriptors', [])
+        ds = self._descriptors = dict.get("_descriptors", [])
         self._name_dict = {str(d): d for d in ds}
-        self._explicit_hydrogens = dict.get('_explicit_hydrogens', set([True, False]))
-        self._kekulizes = dict.get('_kekulizes', set([True, False]))
-        self._require_3D = dict.get('_require_3D', False)
+        self._explicit_hydrogens = dict.get("_explicit_hydrogens", {True, False})
+        self._kekulizes = dict.get("_kekulizes", {True, False})
+        self._require_3D = dict.get("_require_3D", False)
 
     @classmethod
     def from_json(cls, obj):
-        '''create Calculator from json descriptor objects
+        """Create Calculator from json descriptor objects.
 
         Parameters:
             obj(list or dict): descriptors to register
 
         Returns:
             Calculator: calculator
-        '''
+
+        """
         calc = cls()
         calc.register_json(obj)
         return calc
 
     def register_json(self, obj):
-        '''register Descriptors from json descriptor objects
+        """Register Descriptors from json descriptor objects.
 
         Parameters:
             obj(list or dict): descriptors to register
-        '''
+
+        """
         if not isinstance(obj, list):
             obj = [obj]
 
         self.register(Descriptor.from_json(j) for j in obj)
 
     def to_json(self):
-        '''convert descriptors to json serializable data
+        """Convert descriptors to json serializable data.
 
         Returns:
             list: descriptors
-        '''
+
+        """
         return [d.to_json() for d in self.descriptors]
 
     def __reduce_ex__(self, version):
         return self.__class__, (), {
-            '_descriptors': self._descriptors,
-            '_explicit_hydrogens': self._explicit_hydrogens,
-            '_kekulizes': self._kekulizes,
-            '_require_3D': self._require_3D,
+            "_descriptors": self._descriptors,
+            "_explicit_hydrogens": self._explicit_hydrogens,
+            "_kekulizes": self._kekulizes,
+            "_require_3D": self._require_3D,
         }
 
     def __getitem__(self, key):
         return self._name_dict[key]
 
-    def __init__(self, descs=[], ignore_3D=False):
+    def __init__(self, descs=None, ignore_3D=False):
+        if descs is None:
+            descs = []
+
         self._descriptors = []
         self._name_dict = {}
 
@@ -90,13 +97,14 @@ class Calculator(object):
 
     @property
     def descriptors(self):
-        r'''all descriptors.
+        r"""All descriptors.
 
         you can get/set/delete descriptor.
 
         Returns:
             tuple[Descriptor]: registered descriptors
-        '''
+
+        """
         return tuple(self._descriptors)
 
     @descriptors.setter
@@ -117,7 +125,7 @@ class Calculator(object):
 
     def _register_one(self, desc, check_only=False, ignore_3D=False):
         if not isinstance(desc, Descriptor):
-            raise ValueError('{!r} is not descriptor'.format(desc))
+            raise ValueError("{!r} is not descriptor".format(desc))
 
         if ignore_3D and desc.require_3D:
             return
@@ -140,7 +148,7 @@ class Calculator(object):
             self._descriptors.append(desc)
 
     def register(self, desc, ignore_3D=False):
-        r"""register descriptors.
+        r"""Register descriptors.
 
         Descriptor-like:
             * Descriptor instance: self
@@ -151,8 +159,9 @@ class Calculator(object):
         Parameters:
             desc(Descriptor-like): descriptors to register
             ignore_3D(bool): ignore 3D descriptors
+
         """
-        if not hasattr(desc, '__iter__'):
+        if not hasattr(desc, "__iter__"):
             if is_descriptor_class(desc):
                 for d in desc.preset():
                     self._register_one(d, ignore_3D=ignore_3D)
@@ -202,7 +211,7 @@ class Calculator(object):
             return
 
         if not isinstance(result, desc.rtype):
-            raise TypeError('{} not match {}'.format(result, desc.rtype))
+            raise TypeError("{} not match {}".format(result, desc.rtype))
 
     def _calculate(self, cxt):
         self._cache = {}
@@ -214,11 +223,11 @@ class Calculator(object):
             except Exception as e:
                 yield Error(e, desc._context.get_stack())
             finally:
-                if hasattr(desc, '_context'):
+                if hasattr(desc, "_context"):
                     del desc._context
 
     def __call__(self, mol, id=-1):
-        r"""calculate descriptors.
+        r"""Calculate descriptors.
 
         :type mol: rdkit.Chem.Mol
         :param mol: molecular
@@ -250,9 +259,9 @@ class Calculator(object):
     @contextmanager
     def _progress(self, quiet, total, ipynb):
         args = {
-            'dynamic_ncols': True,
-            'leave': True,
-            'total': total
+            "dynamic_ncols": True,
+            "leave": True,
+            "total": total,
         }
 
         if quiet:
@@ -266,11 +275,11 @@ class Calculator(object):
             with Bar(**args) as self._progress_bar:
                 yield self._progress_bar
         finally:
-            if hasattr(self, '_progress_bar'):
+            if hasattr(self, "_progress_bar"):
                 del self._progress_bar
 
-    def echo(self, s, file=sys.stdout, end='\n'):
-        '''output message
+    def echo(self, s, file=sys.stdout, end="\n"):
+        """Output message.
 
         Parameters:
             s(str): message to output
@@ -279,16 +288,17 @@ class Calculator(object):
 
         Return:
             None
-        '''
-        p = getattr(self, '_progress_bar', None)
+
+        """
+        p = getattr(self, "_progress_bar", None)
         if p is not None:
-            p.write(s, file=file, end='\n')
+            p.write(s, file=file, end="\n")
             return
 
-        print(s, file=file, end='\n')
+        print(s, file=file, end="\n")  # noqa: T003
 
     def map(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
-        r"""calculate descriptors over mols.
+        r"""Calculate descriptors over mols.
 
         Parameters:
             mols(Iterable[rdkit.Mol]): moleculars
@@ -305,9 +315,9 @@ class Calculator(object):
 
         Returns:
             Iterator[scalar]
-        """
 
-        if hasattr(mols, '__len__'):
+        """
+        if hasattr(mols, "__len__"):
             nmols = len(mols)
 
         if nproc == 1:
@@ -316,34 +326,35 @@ class Calculator(object):
             return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
 
     def pandas(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
-        r"""calculate descriptors over mols.
+        r"""Calculate descriptors over mols.
 
         Returns:
             pandas.DataFrame
+
         """
         import pandas
 
         return pandas.DataFrame(
             self.map(mols, nproc, nmols, quiet, ipynb, id),
-            columns=[str(d) for d in self.descriptors]
+            columns=[str(d) for d in self.descriptors],
         )
 
 
 def get_descriptors_from_module(mdl, submodule=False):
-    r"""get descriptors from module.
+    r"""Get descriptors from module.
 
     Parameters:
         mdl(module): module to search
 
     Returns:
         [Descriptor]
-    """
 
-    __all__ = getattr(mdl, '__all__', None)
+    """
+    __all__ = getattr(mdl, "__all__", None)
     if __all__ is None:
         __all__ = dir(mdl)
 
-    all_functions = (getattr(mdl, name) for name in __all__ if name[:1] != '_')
+    all_functions = (getattr(mdl, name) for name in __all__ if name[:1] != "_")
 
     if submodule:
         descs = [

@@ -2,7 +2,7 @@ from __future__ import division
 
 from ._base import Descriptor
 
-__all__ = ('FragmentComplexity',)
+__all__ = ("FragmentComplexity",)
 
 
 class FragmentComplexity(Descriptor):
@@ -18,7 +18,9 @@ class FragmentComplexity(Descriptor):
 
     References
         * :doi:`10.1021/ci050521b`
+
     """
+
     __slots__ = ()
 
     @classmethod
@@ -31,7 +33,7 @@ class FragmentComplexity(Descriptor):
         return ()
 
     def __str__(self):
-        return 'fragCpx'
+        return "fragCpx"
 
     def calculate(self):
         A = self.mol.GetNumAtoms()

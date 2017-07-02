@@ -3,7 +3,7 @@ from .SLogP import SMR, SLogP
 from .Weight import Weight
 from .HydrogenBond import HBondDonor, HBondAcceptor
 
-__all__ = ('Lipinski', 'GhoseFilter')
+__all__ = ("Lipinski", "GhoseFilter")
 
 
 class LipinskiLike(Descriptor):
@@ -27,14 +27,15 @@ class Lipinski(LipinskiLike):
 
     LogP: SLogP
     """
+
     __slots__ = ()
 
     def dependencies(self):
         return {
-            'LogP': SLogP(),
-            'MW': Weight(),
-            'HBDon': HBondDonor(),
-            'HBAcc': HBondAcceptor(),
+            "HBAcc": HBondAcceptor(),
+            "HBDon": HBondDonor(),
+            "LogP": SLogP(),
+            "MW": Weight(),
         }
 
     def calculate(self, LogP, MW, HBDon, HBAcc):
@@ -50,13 +51,14 @@ class GhoseFilter(LipinskiLike):
 
     LogP, MR: SLogP, SMR
     """
+
     __slots__ = ()
 
     def dependencies(self):
         return {
-            'LogP': SLogP(),
-            'MR': SMR(),
-            'MW': Weight(),
+            "LogP": SLogP(),
+            "MR": SMR(),
+            "MW": Weight(),
         }
 
     def calculate(self, MW, LogP, MR):

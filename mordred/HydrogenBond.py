@@ -3,7 +3,7 @@ from rdkit.Chem import rdMolDescriptors
 from ._base import Descriptor
 
 __all__ = (
-    'HBondAcceptor', 'HBondDonor',
+    "HBondAcceptor", "HBondDonor",
 )
 
 
@@ -20,10 +20,11 @@ class HBondBase(Descriptor):
 
 class HBondAcceptor(HBondBase):
     r"""hydrogen bond acceptor descriptor(rdkit wrapper)."""
+
     __slots__ = ()
 
     def __str__(self):
-        return 'nHBAcc'
+        return "nHBAcc"
 
     def parameters(self):
         return ()
@@ -34,10 +35,11 @@ class HBondAcceptor(HBondBase):
 
 class HBondDonor(HBondBase):
     r"""hydrogen bond donor descriptor(rdkit wrapper)."""
+
     __slots__ = ()
 
     def __str__(self):
-        return 'nHBDon'
+        return "nHBDon"
 
     def parameters(self):
         return ()

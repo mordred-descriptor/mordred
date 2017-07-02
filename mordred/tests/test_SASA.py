@@ -7,7 +7,7 @@ from mordred.CPSA import TotalSurfaceArea
 from mordred.surface_area import SurfaceArea
 
 # calculated by pymol
-txt_data = '''
+txt_data = """
 Hexane               296.910
 Benzene              243.552
 Caffeine             369.973
@@ -30,26 +30,26 @@ MethylphosphonicAcid 235.685
 MethylCyclopropane   229.071
 Acetonitrile         182.197
 Histidine            335.672
-'''[1:-1]
+"""[1:-1]
 
 
 sdf_file = os.path.join(
     os.path.dirname(__file__),
-    'references',
-    'structures.sdf',
+    "references",
+    "structures.sdf",
 )
 
 
 def test_SASA():
     data = {}
-    for line in txt_data.split('\n'):
+    for line in txt_data.split("\n"):
         n, v = line.strip().split()
         data[n] = float(v)
 
     tsa = TotalSurfaceArea()
 
     for mol in Chem.SDMolSupplier(sdf_file, removeHs=False):
-        name = mol.GetProp('_Name')
+        name = mol.GetProp("_Name")
         actual = sum(SurfaceArea.from_mol(mol).surface_area())
 
         if name not in data:
@@ -60,8 +60,8 @@ def test_SASA():
         e = actual / desired
         p = 0.05
 
-        yield ok_, 1 - p < e < 1 + p, 'large SASA error in {}: {}'.format(name, e)
+        yield ok_, 1 - p < e < 1 + p, "large SASA error in {}: {}".format(name, e)
 
         e = tsa(mol) / desired
 
-        yield ok_, 1 - p < e < 1 + p, 'large SASA error in {}: {}'.format(name, e)
+        yield ok_, 1 - p < e < 1 + p, "large SASA error in {}: {}".format(name, e)

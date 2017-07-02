@@ -4,7 +4,7 @@ from ._base import Descriptor
 from .BondCount import BondCount
 
 __all__ = (
-    'RotatableBondsCount', 'RotatableBondsRatio',
+    "RotatableBondsCount", "RotatableBondsRatio",
 )
 
 
@@ -22,10 +22,11 @@ class RotatableBondsBase(Descriptor):
 
 class RotatableBondsCount(RotatableBondsBase):
     r"""ratatable bonds count descriptor(rdkit wrapper)."""
+
     __slots__ = ()
 
     def __str__(self):
-        return 'nRot'
+        return "nRot"
 
     def calculate(self):
         return CalcNumRotatableBonds(self.mol)
@@ -41,15 +42,16 @@ class RotatableBondsRatio(RotatableBondsBase):
 
     :returns: NaN when :math:`N_{\rm bonds} = 0`
     """
+
     __slots__ = ()
 
     def __str__(self):
-        return 'RotRatio'
+        return "RotRatio"
 
     def dependencies(self):
         return {
-            'nRot': RotatableBondsCount(),
-            'nB': BondCount('heavy'),
+            "nB": BondCount("heavy"),
+            "nRot": RotatableBondsCount(),
         }
 
     def calculate(self, nRot, nB):

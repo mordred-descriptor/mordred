@@ -2,7 +2,7 @@ from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix as D
 from ._matrix_attributes import methods, get_method
 
-__all__ = ('DistanceMatrix',)
+__all__ = ("DistanceMatrix",)
 
 
 class DistanceMatrix(Descriptor):
@@ -11,7 +11,8 @@ class DistanceMatrix(Descriptor):
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
     """
-    __slots__ = ('_type',)
+
+    __slots__ = ("_type",)
     explicit_hydrogens = False
 
     @classmethod
@@ -19,21 +20,21 @@ class DistanceMatrix(Descriptor):
         return map(cls, methods)
 
     def __str__(self):
-        return '{}_D'.format(self._type.__name__)
+        return "{}_D".format(self._type.__name__)
 
     def parameters(self):
         return self._type,
 
-    def __init__(self, type='SpMax'):
+    def __init__(self, type="SpMax"):
         self._type = get_method(type)
 
     def dependencies(self):
         return {
-            'result': self._type(
+            "result": self._type(
                 D(self.explicit_hydrogens),
                 self.explicit_hydrogens,
                 self.kekulize,
-            )
+            ),
         }
 
     def calculate(self, result):

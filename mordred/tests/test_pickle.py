@@ -24,7 +24,7 @@ def test_pickle_calculator():
 
     pickled = pickle.loads(pickle.dumps(orig))
 
-    mol = Chem.MolFromSmiles('c1ccccc1C(O)O')
+    mol = Chem.MolFromSmiles("c1ccccc1C(O)O")
 
     for a, b in zip(orig.descriptors, pickled.descriptors):
         yield eq_, a, b

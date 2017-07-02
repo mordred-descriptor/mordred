@@ -1,7 +1,5 @@
 r"""modred descriptor calculator."""
 
-from ._version import __version__
-
 from ._base import (
     all_descriptors,
     Calculator,
@@ -10,11 +8,13 @@ from ._base import (
     is_missing,
 )
 
+from ._version import __version__
+
 __all__ = (
-    '__version__',
-    'Descriptor',
-    'Calculator',
-    'all_descriptors',
-    'get_descriptors_from_module',
-    'is_missing',
+    "__version__",
+    "Descriptor",
+    "Calculator",
+    "all_descriptors",
+    "get_descriptors_from_module",
+    "is_missing",
 )

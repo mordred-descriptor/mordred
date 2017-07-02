@@ -11,9 +11,9 @@ from mordred.error import MissingValueBase
 def test_parallel():
     calc = Calculator(descriptors)
     mols = list(map(Chem.AddHs, [
-        Chem.MolFromSmiles('c1ccccc1'),
-        Chem.MolFromSmiles('C1=CC(=C(C=C1C2=C(C=C3C(=CC(=CC3=[O+]2)O)O)O)O)O'),
-        Chem.MolFromSmiles('CCCCCC'),
+        Chem.MolFromSmiles("c1ccccc1"),
+        Chem.MolFromSmiles("C1=CC(=C(C=C1C2=C(C=C3C(=CC(=CC3=[O+]2)O)O)O)O)O"),
+        Chem.MolFromSmiles("CCCCCC"),
     ]))
 
     for mol in mols:

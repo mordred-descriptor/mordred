@@ -5,7 +5,7 @@ from ._base import Descriptor
 from ._graph_matrix import Valence, DistanceMatrix
 from ._atomic_property import table
 
-__all__ = ('MolecularDistanceEdge',)
+__all__ = ("MolecularDistanceEdge",)
 
 
 class MolecularDistanceEdge(Descriptor):
@@ -22,7 +22,8 @@ class MolecularDistanceEdge(Descriptor):
 
     :returns: NaN when :math:`N_{\rm MDE} = 0`
     """
-    __slots__ = ('_valence1', '_valence2', '_atomic_num',)
+
+    __slots__ = ("_valence1", "_valence2", "_atomic_num",)
     explicit_hydrogens = False
 
     @classmethod
@@ -35,7 +36,7 @@ class MolecularDistanceEdge(Descriptor):
         )
 
     def __str__(self):
-        return 'MDE{}-{}{}'.format(
+        return "MDE{}-{}{}".format(
             table.GetElementSymbol(self._atomic_num),
             self._valence1,
             self._valence2,
@@ -44,7 +45,7 @@ class MolecularDistanceEdge(Descriptor):
     def parameters(self):
         return self._valence1, self._valence2, self._atomic_num
 
-    def __init__(self, valence1=1, valence2=1, element='C'):
+    def __init__(self, valence1=1, valence2=1, element="C"):
         self._valence1 = min(valence1, valence2)
         self._valence2 = max(valence1, valence2)
         if isinstance(element, integer_types):
@@ -52,12 +53,12 @@ class MolecularDistanceEdge(Descriptor):
         elif isinstance(element, string_types):
             self._atomic_num = table.GetAtomicNumber(element)
         else:
-            raise ValueError('element must be atomic number or atomic symbol')
+            raise ValueError("element must be atomic number or atomic symbol")
 
     def dependencies(self):
         return {
-            'D': DistanceMatrix(self.explicit_hydrogens),
-            'V': Valence(self.explicit_hydrogens),
+            "D": DistanceMatrix(self.explicit_hydrogens),
+            "V": Valence(self.explicit_hydrogens),
         }
 
     def calculate(self, D, V):

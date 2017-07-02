@@ -14,21 +14,21 @@ def parse_enum(enum, v):
         return enum[v]
 
 
-def atoms_to_numpy(f, mol, dtype='float'):
+def atoms_to_numpy(f, mol, dtype="float"):
     return np.fromiter(
         (f(a) for a in mol.GetAtoms()),
-        dtype, mol.GetNumAtoms()
+        dtype, mol.GetNumAtoms(),
     )
 
 
 def conformer_to_numpy(conf):
     return np.array(
-        [list(conf.GetAtomPosition(i)) for i in range(conf.GetNumAtoms())]
+        [list(conf.GetAtomPosition(i)) for i in range(conf.GetNumAtoms())],
     )
 
 
 class Capture(object):
-    def __init__(self, target='stderr'):
+    def __init__(self, target="stderr"):
         self.target = target
         self.orig = getattr(sys, target)
         self.result = []
@@ -61,8 +61,8 @@ class DummyBar(object):
         pass
 
     @classmethod
-    def write(cls, s, file=sys.stdout, end='\n'):
-        print(s, file=file, end=end)
+    def write(cls, s, file=sys.stdout, end="\n"):
+        print(s, file=file, end=end)  # noqa: T003
 
 
 class NotebookWrapper(object):
@@ -84,10 +84,10 @@ class NotebookWrapper(object):
 
 def PathType(string):
     if not os.path.isfile(string):
-        raise ValueError('file not exists: {}'.format(string))
+        raise ValueError("file not exists: {}".format(string))
 
     return string
 
 
 def module_prog(pkg):
-    return '{} -m {}'.format(os.path.basename(sys.executable), pkg)
+    return "{} -m {}".format(os.path.basename(sys.executable), pkg)

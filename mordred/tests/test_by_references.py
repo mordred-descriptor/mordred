@@ -18,7 +18,7 @@ except ImportError:
 
 data_dir = os.path.join(
     os.path.dirname(__file__),
-    'references'
+    "references",
 )
 
 
@@ -34,22 +34,22 @@ def test_by_references():
         Polarizability.BPol(True),
     ])
 
-    actuals = dict()
-    for mol in Chem.SDMolSupplier(os.path.join(data_dir, 'structures.sdf'), removeHs=False):
-        actuals[mol.GetProp('_Name')] = {str(d): v for d, v in zip(calc.descriptors, calc(mol))}
+    actuals = {}
+    for mol in Chem.SDMolSupplier(os.path.join(data_dir, "structures.sdf"), removeHs=False):
+        actuals[mol.GetProp("_Name")] = {str(d): v for d, v in zip(calc.descriptors, calc(mol))}
 
-    for path in glob(os.path.join(data_dir, '*.yaml')) + glob(os.path.join(data_dir, '**/*.yaml')):
+    for path in glob(os.path.join(data_dir, "*.yaml")) + glob(os.path.join(data_dir, "**/*.yaml")):
         for test in yaml.load(open(path), Loader=Loader):
-            dnames = test['names']
+            dnames = test["names"]
             if not isinstance(dnames, list):
                 dnames = [dnames]
 
             desireds = (
                 (mname, zip(dnames, values if isinstance(values, list) else [values]))
-                for mname, values in test['results'].items()
+                for mname, values in test["results"].items()
             )
 
-            digit = test.get('digit')
+            digit = test.get("digit")
             if digit is None:
                 assert_f = eq_
             else:
@@ -62,10 +62,10 @@ def test_by_references():
 
             for mname, descs in desireds:
                 for dname, desired in descs:
-                    if not desired == 'skip':
+                    if not desired == "skip":
                         yield (
                             assert_f,
                             actuals[mname][dname],
                             desired,
-                            '{} of {}'.format(dname, mname)
+                            "{} of {}".format(dname, mname),
                         )

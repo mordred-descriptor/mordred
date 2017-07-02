@@ -4,7 +4,7 @@ from ._base import Descriptor
 from ._graph_matrix import Radius as CRadius
 from ._graph_matrix import Diameter as CDiameter
 
-__all__ = ('Diameter', 'Radius', 'TopologicalShapeIndex', 'PetitjeanIndex',)
+__all__ = ("Diameter", "Radius", "TopologicalShapeIndex", "PetitjeanIndex",)
 
 
 class TopologicalIndexBase(Descriptor):
@@ -23,13 +23,14 @@ class TopologicalIndexBase(Descriptor):
 
 class Radius(TopologicalIndexBase):
     r"""radius descriptor."""
+
     __slots__ = ()
 
     def __str__(self):
-        return 'Radius'
+        return "Radius"
 
     def dependencies(self):
-        return {'R': CRadius(self.explicit_hydrogens)}
+        return {"R": CRadius(self.explicit_hydrogens)}
 
     def calculate(self, R):
         return int(R)
@@ -37,13 +38,14 @@ class Radius(TopologicalIndexBase):
 
 class Diameter(TopologicalIndexBase):
     r"""diameter descriptor."""
+
     __slots__ = ()
 
     def __str__(self):
-        return 'Diameter'
+        return "Diameter"
 
     def dependencies(self):
-        return {'D': CDiameter(self.explicit_hydrogens)}
+        return {"D": CDiameter(self.explicit_hydrogens)}
 
     def calculate(self, D):
         return int(D)
@@ -62,15 +64,16 @@ class TopologicalShapeIndex(TopologicalIndexBase):
 
     :returns: NaN when :math:`R = 0`
     """
+
     __slots__ = ()
 
     def __str__(self):
-        return 'TopoShapeIndex'
+        return "TopoShapeIndex"
 
     def dependencies(self):
         return {
-            'R': CRadius(self.explicit_hydrogens),
-            'D': CDiameter(self.explicit_hydrogens),
+            "D": CDiameter(self.explicit_hydrogens),
+            "R": CRadius(self.explicit_hydrogens),
         }
 
     def calculate(self, R, D):
@@ -93,10 +96,11 @@ class PetitjeanIndex(TopologicalShapeIndex):
 
     :returns: NaN when :math:`D = 0`
     """
+
     __slots__ = ()
 
     def __str__(self):
-        return 'PetitjeanIndex'
+        return "PetitjeanIndex"
 
     def calculate(self, R, D):
         with self.rethrow_zerodiv():

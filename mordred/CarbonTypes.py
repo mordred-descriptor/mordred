@@ -7,7 +7,7 @@ from rdkit.Chem import HybridizationType
 from ._base import Descriptor
 
 __all__ = (
-    'CarbonTypes', 'HybridizationRatio',
+    "CarbonTypes", "HybridizationRatio",
 )
 
 
@@ -58,7 +58,8 @@ class CarbonTypes(CarbonTypesBase):
     :type SP: int
     :param SP: count :math:`{\rm SP}n` carbon
     """
-    __slots__ = ('_nCarbon', '_SP',)
+
+    __slots__ = ("_nCarbon", "_SP",)
 
     @classmethod
     def preset(cls):
@@ -69,7 +70,7 @@ class CarbonTypes(CarbonTypesBase):
         ])
 
     def __str__(self):
-        return 'C{}SP{}'.format(self._nCarbon, self._SP)
+        return "C{}SP{}".format(self._nCarbon, self._SP)
 
     def parameters(self):
         return self._nCarbon, self._SP
@@ -81,7 +82,7 @@ class CarbonTypes(CarbonTypesBase):
         self._SP = SP
 
     def dependencies(self):
-        return {'CT': CarbonTypesCache()}
+        return {"CT": CarbonTypesCache()}
 
     def calculate(self, CT):
         return CT[self._SP][self._nCarbon]
@@ -98,6 +99,7 @@ class HybridizationRatio(CarbonTypesBase):
 
     :returns: NaN when :math:`N_{\rm SP2} + N_{\rm SP3} = 0`.
     """
+
     __slots__ = ()
 
     @classmethod
@@ -105,20 +107,20 @@ class HybridizationRatio(CarbonTypesBase):
         yield cls()
 
     def __str__(self):
-        return 'HybRatio'
+        return "HybRatio"
 
     def parameters(self):
         return ()
 
     def dependencies(self):
-        return {'CT': CarbonTypesCache()}
+        return {"CT": CarbonTypesCache()}
 
     def calculate(self, CT):
         Nsp3 = sum(CT[3].values())
         Nsp2 = sum(CT[2].values())
 
         if Nsp3 == Nsp2 == 0:
-            self.fail(ValueError('there are no sp3 and sp2 carbons'))
+            self.fail(ValueError("there are no sp3 and sp2 carbons"))
 
         return Nsp3 / (Nsp2 + Nsp3)
 

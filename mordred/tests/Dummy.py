@@ -29,7 +29,7 @@ class Dummy4(Dummy3):
         return isinstance(other, Dummy4) and self.i == other.i
 
     def __str__(self):
-        return 'Dummy4_{}'.format(self.i)
+        return "Dummy4_{}".format(self.i)
 
     @classmethod
     def preset(cls):

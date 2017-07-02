@@ -4,14 +4,15 @@ from rdkit.Chem.EState import EState_VSA as RDKit_EState_VSA
 from ._base import Descriptor
 
 __all__ = (
-    'LabuteASA',
-    'PEOE_VSA', 'SMR_VSA', 'SlogP_VSA',
-    'EState_VSA', 'VSA_EState',
+    "LabuteASA",
+    "PEOE_VSA", "SMR_VSA", "SlogP_VSA",
+    "EState_VSA", "VSA_EState",
 )
 
 
 class LabuteASA(Descriptor):
     r"""Labute's Approximate Surface Area descriptor(rdkit wrapper)."""
+
     __slots__ = ()
     explicit_hydrogens = False
 
@@ -32,7 +33,7 @@ class LabuteASA(Descriptor):
 
 
 class MoeTypeBase(Descriptor):
-    __slots__ = ('_k',)
+    __slots__ = ("_k",)
     explicit_hydrogens = False
     _module = MolSurf
 
@@ -63,6 +64,7 @@ class PEOE_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
+
     __slots__ = ()
     k_max = 14
 
@@ -73,6 +75,7 @@ class SMR_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
+
     __slots__ = ()
     k_max = 10
 
@@ -83,6 +86,7 @@ class SlogP_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
+
     __slots__ = ()
     k_max = 12
 
@@ -93,6 +97,7 @@ class EState_VSA(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
+
     __slots__ = ()
     _module = RDKit_EState_VSA
     k_max = 11
@@ -104,6 +109,7 @@ class VSA_EState(MoeTypeBase):
     :type k: int
     :param k: (:math:`1 <= k <= k_{\rm max}`)
     """
+
     __slots__ = ()
     _module = RDKit_EState_VSA
     k_max = 10

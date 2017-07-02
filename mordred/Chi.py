@@ -8,7 +8,7 @@ from ._base import Descriptor
 from ._util import parse_enum
 from ._atomic_property import AtomicProperty
 
-__all__ = ('Chi',)
+__all__ = ("Chi",)
 
 
 class ChiType(IntEnum):
@@ -26,17 +26,17 @@ class ChiType(IntEnum):
     @property
     def short(self):
         _chi_type_dict = {
-            self.__class__.path: 'p',
-            self.__class__.chain: 'ch',
-            self.__class__.path_cluster: 'pc',
-            self.__class__.cluster: 'c'
+            self.__class__.path: "p",
+            self.__class__.chain: "ch",
+            self.__class__.path_cluster: "pc",
+            self.__class__.cluster: "c",
         }
 
         return _chi_type_dict[self]
 
 
 class DFS(object):
-    __slots__ = ('mol', 'visited', 'vis_edges', 'is_chain', 'degrees', 'bonds', 'neighbors',)
+    __slots__ = ("mol", "visited", "vis_edges", "is_chain", "degrees", "bonds", "neighbors",)
 
     def __init__(self, mol):
         self.mol = mol
@@ -92,7 +92,7 @@ class DFS(object):
 
         if self.is_chain:
             t = ChiType.chain
-        elif not self.degrees - set([1, 2]):
+        elif not self.degrees - {1, 2}:
             t = ChiType.path
         elif 2 in self.degrees:
             t = ChiType.path_cluster
@@ -107,11 +107,11 @@ class ChiBase(Descriptor):
     explicit_hydrogens = False
 
 
-ChiBonds = namedtuple('ChiBonds', 'chain path path_cluster cluster')
+ChiBonds = namedtuple("ChiBonds", "chain path path_cluster cluster")
 
 
 class ChiCache(ChiBase):
-    __slots__ = ('_order',)
+    __slots__ = ("_order",)
 
     def parameters(self):
         return self._order,
@@ -160,11 +160,12 @@ class Chi(ChiBase):
         * any atomic properties <= 0
         * averaged and :math:`N_{\chi} = 0`
     """
-    __slots__ = ('_type', '_order', '_prop', '_averaged',)
+
+    __slots__ = ("_type", "_order", "_prop", "_averaged",)
 
     chi_types = tuple(t.name for t in ChiType)
 
-    _deltas = ['d', 'dv']
+    _deltas = ["d", "dv"]
 
     @classmethod
     def preset(cls):
@@ -179,23 +180,23 @@ class Chi(ChiBase):
     def __str__(self):
         prop = self._prop.as_argument
         ct = self._type.short
-        averaged = 'A' if self._averaged else ''
+        averaged = "A" if self._averaged else ""
 
-        return '{}X{}-{}{}'.format(averaged, ct, self._order, prop)
+        return "{}X{}-{}{}".format(averaged, ct, self._order, prop)
 
     def parameters(self):
         return self._type, self._order, self._prop, self._averaged
 
-    def __init__(self, type='path', order=0, prop='d', averaged=False):
+    def __init__(self, type="path", order=0, prop="d", averaged=False):
         self._type = parse_enum(ChiType, type)
         self._order = order
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)
         self._averaged = averaged
 
     def dependencies(self):
-        d = {'P': self._prop}
+        d = {"P": self._prop}
         if self._order > 0:
-            d['chi'] = ChiCache(self._order)
+            d["chi"] = ChiCache(self._order)
 
         return d
 
@@ -211,7 +212,7 @@ class Chi(ChiBase):
                 c *= P[node]
 
             if c <= 0:
-                self.fail(ValueError('some properties less then or equal to 0'))
+                self.fail(ValueError("some properties less then or equal to 0"))
 
             x += c ** -0.5
 
@@ -223,4 +224,4 @@ class Chi(ChiBase):
 
     rtype = float
 
-    _extra_docs = 'chi_types',
+    _extra_docs = "chi_types",

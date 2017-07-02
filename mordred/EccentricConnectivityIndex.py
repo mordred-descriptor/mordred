@@ -1,7 +1,7 @@
 from ._base import Descriptor
 from ._graph_matrix import Valence, Eccentricity
 
-__all__ = ('EccentricConnectivityIndex',)
+__all__ = ("EccentricConnectivityIndex",)
 
 
 class EccentricConnectivityIndex(Descriptor):
@@ -14,6 +14,7 @@ class EccentricConnectivityIndex(Descriptor):
     :math:`E` is eccentricity of atoms,
     :math:`V` is valences of atoms.
     """
+
     __slots__ = ()
     explicit_hydrogens = False
 
@@ -22,18 +23,18 @@ class EccentricConnectivityIndex(Descriptor):
         yield cls()
 
     def __str__(self):
-        return 'ECIndex'
+        return "ECIndex"
 
     def parameters(self):
         return ()
 
     def dependencies(self):
         return {
-            'E': Eccentricity(self.explicit_hydrogens),
-            'V': Valence(self.explicit_hydrogens),
+            "E": Eccentricity(self.explicit_hydrogens),
+            "V": Valence(self.explicit_hydrogens),
         }
 
     def calculate(self, E, V):
-        return int((E.astype('int') * V).sum())
+        return int((E.astype("int") * V).sum())
 
     rtype = int

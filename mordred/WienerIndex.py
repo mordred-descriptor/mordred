@@ -1,7 +1,7 @@
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
-__all__ = ('WienerIndex',)
+__all__ = ("WienerIndex",)
 
 
 class WienerIndex(Descriptor):
@@ -10,7 +10,8 @@ class WienerIndex(Descriptor):
     :type polarity: bool
     :param polarity: use polarity Wiener index
     """
-    __slots__ = ('_polarity',)
+
+    __slots__ = ("_polarity",)
     explicit_hydrogens = False
 
     @classmethod
@@ -19,7 +20,7 @@ class WienerIndex(Descriptor):
         yield cls(True)
 
     def __str__(self):
-        return 'WPol' if self._polarity else 'WPath'
+        return "WPol" if self._polarity else "WPath"
 
     def parameters(self):
         return self._polarity,
@@ -28,7 +29,7 @@ class WienerIndex(Descriptor):
         self._polarity = polarity
 
     def dependencies(self):
-        return {'D': DistanceMatrix(self.explicit_hydrogens)}
+        return {"D": DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, D):
         if self._polarity:

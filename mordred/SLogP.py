@@ -2,12 +2,13 @@ r"""Wildman-Crippen LogP/MR descriptor.
 
 References
     * :doi:`10.1021/ci990307l`
+
 """
 from rdkit.Chem import Crippen
 
 from ._base import Descriptor
 
-__all__ = ('SLogP', 'SMR',)
+__all__ = ("SLogP", "SMR",)
 
 
 class WildmanCrippenBase(Descriptor):
@@ -30,6 +31,7 @@ class WildmanCrippenBase(Descriptor):
 
 class SLogP(WildmanCrippenBase):
     r"""Wildman-Crippen LogP descriptor(rdkit wrapper)."""
+
     __slots__ = ()
 
     def calculate(self):
@@ -38,6 +40,7 @@ class SLogP(WildmanCrippenBase):
 
 class SMR(WildmanCrippenBase):
     r"""Wildman-Crippen MR descriptor(rdkit wrapper)."""
+
     __slots__ = ()
 
     def calculate(self):

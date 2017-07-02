@@ -3,7 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._util import atoms_to_numpy
 
-__all__ = ('MomentOfInertia',)
+__all__ = ("MomentOfInertia",)
 
 
 class MomentOfInertiaBase(Descriptor):
@@ -29,13 +29,13 @@ class PrincipalAxis(MomentOfInertiaBase):
         I = np.sum(
             -ws[:, np.newaxis, np.newaxis] *
             (ps[:, np.newaxis] * ps[:, :, np.newaxis]),
-            axis=0
+            axis=0,
         )
 
         diag = np.sum(
             ws[:, np.newaxis] *
             (np.sum(ps ** 2, axis=1)[:, np.newaxis] - ps ** 2),
-            axis=0
+            axis=0,
         )
 
         np.fill_diagonal(I, diag)
@@ -43,27 +43,27 @@ class PrincipalAxis(MomentOfInertiaBase):
 
 
 class MomentOfInertia(MomentOfInertiaBase):
-    __slots__ = '_axis',
+    __slots__ = "_axis",
 
     @classmethod
     def preset(cls):
         return map(cls, cls.axes)
 
     def __str__(self):
-        return 'MOMI-{}'.format(self._axis)
+        return "MOMI-{}".format(self._axis)
 
     def parameters(self):
         return self._axis,
 
-    axes = ('X', 'Y', 'Z')
+    axes = ("X", "Y", "Z")
     _axis_to_index = {a: i for i, a in enumerate(axes)}
 
-    def __init__(self, axis='X'):
+    def __init__(self, axis="X"):
         assert axis in self.axes
         self._axis = axis
 
     def dependencies(self):
-        return {'I': PrincipalAxis()}
+        return {"I": PrincipalAxis()}
 
     def calculate(self, I):
         return I[self._axis_to_index[self._axis]]

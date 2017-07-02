@@ -2,7 +2,7 @@ from ._base import Descriptor
 from ._atomic_property import get_mc_gowan_volume
 
 __all__ = (
-    'McGowanVolume',
+    "McGowanVolume",
 )
 
 
@@ -11,7 +11,9 @@ class McGowanVolume(Descriptor):
 
     References
         * :doi:`10.1007/BF02311772`
+
     """
+
     __slots__ = ()
 
     @classmethod
@@ -19,7 +21,7 @@ class McGowanVolume(Descriptor):
         yield cls()
 
     def __str__(self):
-        return 'VMcGowan'
+        return "VMcGowan"
 
     def parameters(self):
         return ()

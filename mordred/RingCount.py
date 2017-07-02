@@ -3,7 +3,7 @@ from rdkit import Chem
 
 from ._base import Descriptor
 
-__all__ = ('RingCount',)
+__all__ = ("RingCount",)
 
 
 class RingCountBase(Descriptor):
@@ -25,7 +25,7 @@ class FusedRings(RingCountBase):
     __slots__ = ()
 
     def dependencies(self):
-        return {'Rings': Rings()}
+        return {"Rings": Rings()}
 
     def calculate(self, Rings):
         if len(Rings) < 2:
@@ -68,7 +68,8 @@ class RingCount(RingCountBase):
         * False: count carbon rings
         * None: count any rings
     """
-    __slots__ = ('_order', '_greater', '_fused', '_aromatic', '_hetero',)
+
+    __slots__ = ("_order", "_greater", "_fused", "_aromatic", "_hetero",)
 
     @classmethod
     def preset(cls):
@@ -85,25 +86,25 @@ class RingCount(RingCountBase):
         attrs = []
 
         if self._greater:
-            attrs.append('G')
+            attrs.append("G")
 
         if self._order is not None:
             attrs.append(str(self._order))
 
         if self._fused:
-            attrs.append('F')
+            attrs.append("F")
 
         if self._aromatic is True:
-            attrs.append('a')
+            attrs.append("a")
         elif self._aromatic is False:
-            attrs.append('A')
+            attrs.append("A")
 
         if self._hetero is True:
-            attrs.append('H')
+            attrs.append("H")
         elif self._hetero is False:
-            attrs.append('C')
+            attrs.append("C")
 
-        return 'n{}Ring'.format(''.join(attrs))
+        return "n{}Ring".format("".join(attrs))
 
     def parameters(self):
         return self._order, self._greater, self._fused, self._aromatic, self._hetero
@@ -117,7 +118,7 @@ class RingCount(RingCountBase):
 
     def dependencies(self):
         return {
-            'Rs': (FusedRings if self._fused else Rings)()
+            "Rs": (FusedRings if self._fused else Rings)(),
         }
 
     def _check_order(self, R):

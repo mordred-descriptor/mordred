@@ -5,7 +5,7 @@ from six import string_types
 
 from ._base import Descriptor
 
-Eig = namedtuple('eigen', 'val vec min max')
+Eig = namedtuple("eigen", "val vec min max")
 
 methods = []
 
@@ -17,7 +17,7 @@ def method(cls):
 
 
 class Common(Descriptor):
-    __slots__ = 'matrix', 'explicit_hydrogens', 'kekulize'
+    __slots__ = "matrix", "explicit_hydrogens", "kekulize"
     require_connected = True
 
     def parameters(self):
@@ -33,11 +33,11 @@ class Common(Descriptor):
         return (
             self.matrix,
             self.explicit_hydrogens,
-            self.kekulize
+            self.kekulize,
         )
 
     def dependencies(self):
-        return {'eig': Eigen(*self._key_args)}
+        return {"eig": Eigen(*self._key_args)}
 
     @property
     def _eig(self):
@@ -67,10 +67,10 @@ class Common(Descriptor):
         n = self.__class__.__name__
 
         if self.kekulize:
-            n += 'K'
+            n += "K"
 
         if self.explicit_hydrogens:
-            n += 'H'
+            n += "H"
 
         return n
 
@@ -79,11 +79,11 @@ class Eigen(Common):
     __slots__ = ()
 
     def dependencies(self):
-        return {'matrix': self.matrix}
+        return {"matrix": self.matrix}
 
     def calculate(self, matrix):
         if matrix is None:
-            raise ValueError('matrix is None')
+            raise ValueError("matrix is None")
 
         w, v = np.linalg.eig(matrix)
 
@@ -121,8 +121,8 @@ class SpDiam(Common):
 
     def dependencies(self):
         return {
-            'eig': self._eig,
-            'SpMax': self._SpMax,
+            "SpMax": self._SpMax,
+            "eig": self._eig,
         }
 
     def calculate(self, SpMax, eig):
@@ -142,8 +142,8 @@ class SpAD(Common):
 
     def dependencies(self):
         return {
-            'eig': self._eig,
-            'SpMean': self._SpMean,
+            "SpMean": self._SpMean,
+            "eig": self._eig,
         }
 
     def calculate(self, eig, SpMean):
@@ -155,7 +155,7 @@ class SpMAD(Common):
     __slots__ = ()
 
     def dependencies(self):
-        return {'SpAD': self._SpAD}
+        return {"SpAD": self._SpAD}
 
     def calculate(self, SpAD):
         return SpAD / self.mol.GetNumAtoms()
@@ -193,7 +193,7 @@ class VE2(Common):
     __slots__ = ()
 
     def dependencies(self):
-        return {'VE1': self._VE1}
+        return {"VE1": self._VE1}
 
     def calculate(self, VE1):
         return VE1 / self.mol.GetNumAtoms()
@@ -204,7 +204,7 @@ class VE3(Common):
     __slots__ = ()
 
     def dependencies(self):
-        return {'VE1': self._VE1}
+        return {"VE1": self._VE1}
 
     def calculate(self, VE1):
         with self.rethrow_zerodiv():
@@ -232,7 +232,7 @@ class VR2(Common):
     __slots__ = ()
 
     def dependencies(self):
-        return {'VR1': self._VR1}
+        return {"VR1": self._VR1}
 
     def calculate(self, VR1):
         return VR1 / self.mol.GetNumAtoms()
@@ -243,7 +243,7 @@ class VR3(Common):
     __slots__ = ()
 
     def dependencies(self):
-        return {'VR1': self._VR1}
+        return {"VR1": self._VR1}
 
     def calculate(self, VR1):
         with self.rethrow_zerodiv():

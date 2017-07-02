@@ -14,7 +14,7 @@ def test_Calculator_descriptors():
 
     # register instance
     calc.register(Dummy.Dummy2())
-    for c in check(1, 'instance register failed'):
+    for c in check(1, "instance register failed"):
         yield c
 
     # register class
@@ -44,7 +44,7 @@ def test_Calculator_descriptors():
     for c in check(3):
         yield c
 
-    eq_(calc['Dummy4_1'], Dummy.Dummy4(1))
+    eq_(calc["Dummy4_1"], Dummy.Dummy4(1))
 
     # set instance
     calc.descriptors = Dummy.Dummy2()

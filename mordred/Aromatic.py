@@ -1,7 +1,7 @@
 from ._base import Descriptor
 
 __all__ = (
-    'AromaticAtomsCount', 'AromaticBondsCount',
+    "AromaticAtomsCount", "AromaticBondsCount",
 )
 
 
@@ -23,8 +23,9 @@ class AromaticBase(Descriptor):
 
 class AromaticAtomsCount(AromaticBase):
     r"""aromatic atoms count descriptor."""
+
     __slots__ = ()
-    _name = 'nAromAtom'
+    _name = "nAromAtom"
 
     def calculate(self):
         return sum(
@@ -36,8 +37,9 @@ class AromaticAtomsCount(AromaticBase):
 
 class AromaticBondsCount(AromaticBase):
     r"""aromatic bonds count descriptor."""
+
     __slots__ = ()
-    _name = 'nAromBond'
+    _name = "nAromBond"
 
     def calculate(self):
         return sum(

@@ -4,7 +4,7 @@ from ._base import Descriptor
 from ._graph_matrix import Radius3D as CRadius3D
 from ._graph_matrix import Diameter3D as CDiameter3D
 
-__all__ = ('Diameter3D', 'Radius3D', 'GeometricalShapeIndex', 'PetitjeanIndex3D',)
+__all__ = ("Diameter3D", "Radius3D", "GeometricalShapeIndex", "PetitjeanIndex3D",)
 
 
 class GeometricalIndexBase(Descriptor):
@@ -24,13 +24,14 @@ class GeometricalIndexBase(Descriptor):
 
 class Radius3D(GeometricalIndexBase):
     r"""geometric radius descriptor."""
+
     __slots__ = ()
 
     def __str__(self):
-        return 'GeomRadius'
+        return "GeomRadius"
 
     def dependencies(self):
-        return {'R': CRadius3D(self.explicit_hydrogens)}
+        return {"R": CRadius3D(self.explicit_hydrogens)}
 
     def calculate(self, R):
         return R
@@ -38,13 +39,14 @@ class Radius3D(GeometricalIndexBase):
 
 class Diameter3D(GeometricalIndexBase):
     r"""geometric diameter descriptor."""
+
     __slots__ = ()
 
     def __str__(self):
-        return 'GeomDiameter'
+        return "GeomDiameter"
 
     def dependencies(self):
-        return {'D': CDiameter3D(self.explicit_hydrogens)}
+        return {"D": CDiameter3D(self.explicit_hydrogens)}
 
     def calculate(self, D):
         return D
@@ -63,15 +65,16 @@ class GeometricalShapeIndex(GeometricalIndexBase):
 
     :returns: NaN when :math:`R = 0`
     """
+
     __slots__ = ()
 
     def __str__(self):
-        return 'GeomShapeIndex'
+        return "GeomShapeIndex"
 
     def dependencies(self):
         return {
-            'R': CRadius3D(self.explicit_hydrogens),
-            'D': CDiameter3D(self.explicit_hydrogens),
+            "D": CDiameter3D(self.explicit_hydrogens),
+            "R": CRadius3D(self.explicit_hydrogens),
         }
 
     def calculate(self, R, D):
@@ -92,10 +95,11 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
 
     :returns: NaN when :math:`D = 0`
     """
+
     __slots__ = ()
 
     def __str__(self):
-        return 'GeomPetitjeanIndex'
+        return "GeomPetitjeanIndex"
 
     def calculate(self, R, D):
         with self.rethrow_zerodiv():

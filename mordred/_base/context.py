@@ -5,7 +5,7 @@ from ..error import Missing3DCoordinate
 
 
 class Context(object):
-    __slots__ = '_mols', '_coords', 'n_frags', 'name', '_stack'
+    __slots__ = "_mols", "_coords", "n_frags", "name", "_stack"
 
     def __init__(self, mols, coords, n_frags, name):
         self._mols = mols
@@ -19,17 +19,17 @@ class Context(object):
     def __str__(self):
         return self.name
 
-    __tf = set([True, False])
+    __tf = {True, False}
 
     @classmethod
     def from_query(cls, mol, require_3D, explicit_hydrogens, kekulizes, id):
         if not isinstance(mol, Chem.Mol):
-            raise TypeError('{!r} is not rdkit.Chem.Mol instance'.format(mol))
+            raise TypeError("{!r} is not rdkit.Chem.Mol instance".format(mol))
 
         n_frags = len(Chem.GetMolFrags(mol))
 
-        if mol.HasProp('_Name'):
-            name = mol.GetProp('_Name')
+        if mol.HasProp("_Name"):
+            name = mol.GetProp("_Name")
         else:
             name = Chem.MolToSmiles(Chem.RemoveHs(mol))
 

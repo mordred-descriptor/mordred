@@ -2,6 +2,7 @@ r"""charged partial surface area descriptor.
 
 References
     * :doi:`10.1021/ac00220a013`
+
 """
 import numpy as np
 
@@ -11,14 +12,14 @@ from .surface_area import SurfaceArea
 from ._atomic_property import AtomicProperty, vdw_radii
 
 __all__ = (
-    'PNSA', 'PPSA',
-    'DPSA',
-    'FNSA', 'FPSA',
-    'WNSA', 'WPSA',
-    'RNCG', 'RPCG',
-    'RNCS', 'RPCS',
-    'TASA', 'TPSA',
-    'RASA', 'RPSA',
+    "PNSA", "PPSA",
+    "DPSA",
+    "FNSA", "FPSA",
+    "WNSA", "WPSA",
+    "RNCG", "RPCG",
+    "RNCS", "RPCS",
+    "TASA", "TPSA",
+    "RASA", "RPSA",
 )
 
 
@@ -40,7 +41,7 @@ class CPSABase(Descriptor):
 
 
 class VersionCPSABase(CPSABase):
-    __slots__ = '_version',
+    __slots__ = "_version",
 
     @classmethod
     def preset(cls):
@@ -55,11 +56,11 @@ class VersionCPSABase(CPSABase):
         self._version = version
 
     def __str__(self):
-        return '{}{}'.format(self.__class__.__name__, self._version)
+        return "{}{}".format(self.__class__.__name__, self._version)
 
 
 class AtomicSurfaceArea(CPSABase):
-    __slots__ = '_solvent_radius', '_level'
+    __slots__ = "_solvent_radius", "_level"
 
     def parameters(self):
         return self._solvent_radius, self._level
@@ -82,7 +83,7 @@ class TotalSurfaceArea(CPSABase):
     __slots__ = ()
 
     def dependencies(self):
-        return {'ASA': AtomicSurfaceArea()}
+        return {"ASA": AtomicSurfaceArea()}
 
     def calculate(self, ASA):
         return np.sum(ASA)
@@ -93,7 +94,7 @@ class AtomicCharge(CPSABase):
     require_3D = False
 
     def dependencies(self):
-        return {'charges': AtomicProperty(self.explicit_hydrogens, 'c')}
+        return {"charges": AtomicProperty(self.explicit_hydrogens, "c")}
 
     def calculate(self, charges):
         return charges
@@ -114,12 +115,13 @@ class PNSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+
     __slots__ = ()
 
     def dependencies(self):
         return {
-            'SA': AtomicSurfaceArea(),
-            'charges': AtomicCharge(),
+            "SA": AtomicSurfaceArea(),
+            "charges": AtomicCharge(),
         }
 
     @staticmethod
@@ -150,6 +152,7 @@ class PPSA(PNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+
     __slots__ = ()
 
     @staticmethod
@@ -163,12 +166,13 @@ class DPSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+
     __slots__ = ()
 
     def dependencies(self):
         return {
-            'PPSA': PPSA(self._version),
-            'PNSA': PNSA(self._version),
+            "PNSA": PNSA(self._version),
+            "PPSA": PPSA(self._version),
         }
 
     def calculate(self, PPSA, PNSA):
@@ -181,6 +185,7 @@ class FNSA(VersionCPSABase):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+
     __slots__ = ()
 
     def _SA(self):
@@ -188,8 +193,8 @@ class FNSA(VersionCPSABase):
 
     def dependencies(self):
         return {
-            'ASA': AtomicSurfaceArea(),
-            'SA': self._SA(),
+            "ASA": AtomicSurfaceArea(),
+            "SA": self._SA(),
         }
 
     def calculate(self, SA, ASA):
@@ -202,6 +207,7 @@ class FPSA(FNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+
     __slots__ = ()
 
     def _SA(self):
@@ -214,6 +220,7 @@ class WNSA(FNSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+
     __slots__ = ()
 
     def calculate(self, SA, ASA):
@@ -226,6 +233,7 @@ class WPSA(FPSA):
     :type version: int
     :param version: one of :py:attr:`versions`
     """
+
     __slots__ = ()
 
     def calculate(self, SA, ASA):
@@ -234,6 +242,7 @@ class WPSA(FPSA):
 
 class RNCG(CPSABase):
     r"""relative negative charge descriptor."""
+
     __slots__ = ()
     require_3D = False
 
@@ -242,7 +251,7 @@ class RNCG(CPSABase):
         return charges < 0.0
 
     def dependencies(self):
-        return {'charges': AtomicCharge()}
+        return {"charges": AtomicCharge()}
 
     def calculate(self, charges):
         charges = charges[self._mask(charges)]
@@ -256,6 +265,7 @@ class RNCG(CPSABase):
 
 class RPCG(RNCG):
     r"""relative positive charge descriptor."""
+
     __slots__ = ()
 
     @staticmethod
@@ -265,14 +275,15 @@ class RPCG(RNCG):
 
 class RNCS(CPSABase):
     r"""relative negative charge surface area descriptor."""
+
     __slots__ = ()
     _RCG = RNCG()
 
     def dependencies(self):
         return {
-            'RCG': self._RCG,
-            'SA': AtomicSurfaceArea(),
-            'charges': AtomicCharge(),
+            "RCG": self._RCG,
+            "SA": AtomicSurfaceArea(),
+            "charges": AtomicCharge(),
         }
 
     @staticmethod
@@ -294,6 +305,7 @@ class RNCS(CPSABase):
 
 class RPCS(RNCS):
     r"""relative positive charge surface area descriptor."""
+
     __slots__ = ()
 
     @staticmethod
@@ -305,6 +317,7 @@ class RPCS(RNCS):
 
 class TASA(CPSABase):
     r"""total hydrophobic surface area descriptor."""
+
     __slots__ = ()
 
     @staticmethod
@@ -313,8 +326,8 @@ class TASA(CPSABase):
 
     def dependencies(self):
         return {
-            'SA': AtomicSurfaceArea(),
-            'charges': AtomicCharge(),
+            "SA": AtomicSurfaceArea(),
+            "charges": AtomicCharge(),
         }
 
     def calculate(self, SA, charges):
@@ -323,6 +336,7 @@ class TASA(CPSABase):
 
 class TPSA(TASA):
     r"""total polar surface area descriptor."""
+
     __slots__ = ()
 
     @staticmethod
@@ -332,13 +346,14 @@ class TPSA(TASA):
 
 class RASA(CPSABase):
     r"""relative hydrophobic surface area descriptor."""
+
     __slots__ = ()
     _TxSA = TASA()
 
     def dependencies(self):
         return {
-            'TxSA': self._TxSA,
-            'SASA': AtomicSurfaceArea(),
+            "SASA": AtomicSurfaceArea(),
+            "TxSA": self._TxSA,
         }
 
     def calculate(self, TxSA, SASA):
@@ -347,5 +362,6 @@ class RASA(CPSABase):
 
 class RPSA(RASA):
     r"""relative polar surface area descriptor."""
+
     __slots__ = ()
     _TxSA = TPSA()

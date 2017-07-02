@@ -17,7 +17,7 @@ def test_ABC():
     abc = ABCIndex()
     abcgg = ABCGGIndex()
 
-    for line in data.split('\n'):
+    for line in data.split("\n"):
         smi, dABC, dABCGG = line.strip().split()
 
         mol = Chem.MolFromSmiles(smi)

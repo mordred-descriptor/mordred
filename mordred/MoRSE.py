@@ -8,11 +8,11 @@ from ._graph_matrix import DistanceMatrix3D
 from ._atomic_property import AtomicProperty
 from ._base.descriptor import Descriptor
 
-__all__ = 'MoRSE',
+__all__ = "MoRSE",
 
 
 class MoRSE(Descriptor):
-    __slots__ = ('_prop', '_distance')
+    __slots__ = ("_prop", "_distance")
 
     require_3D = True
 
@@ -20,15 +20,15 @@ class MoRSE(Descriptor):
     def preset(cls):
         return chain(
             (cls(None, i) for i in range(1, 33)),
-            (cls('m', i) for i in range(1, 33)),
-            (cls('v', i) for i in range(1, 33)),
-            (cls('se', i) for i in range(1, 33)),
-            (cls('p', i) for i in range(1, 33)),
+            (cls("m", i) for i in range(1, 33)),
+            (cls("v", i) for i in range(1, 33)),
+            (cls("se", i) for i in range(1, 33)),
+            (cls("p", i) for i in range(1, 33)),
         )
 
     def __str__(self):
-        p = '' if self._prop is None else self._prop.as_argument
-        return 'Mor{:02d}{}'.format(self._distance, p)
+        p = "" if self._prop is None else self._prop.as_argument
+        return "Mor{:02d}{}".format(self._distance, p)
 
     def parameters(self):
         p = None if self._prop is None else self._prop.as_argument
@@ -43,16 +43,16 @@ class MoRSE(Descriptor):
         self._distance = distance
 
     def dependencies(self):
-        d = {'D': DistanceMatrix3D(self.explicit_hydrogens)}
+        d = {"D": DistanceMatrix3D(self.explicit_hydrogens)}
 
         if self._prop is not None:
-            d['A'] = self._prop
+            d["A"] = self._prop
 
         return d
 
     def calculate(self, D, A=None):
         if D.shape[0] <= 1:
-            self.fail(ValueError('require 2 or more atoms'))
+            self.fail(ValueError("require 2 or more atoms"))
 
         N = D.shape[0]
 
@@ -64,7 +64,7 @@ class MoRSE(Descriptor):
         A = A.reshape(1, -1)
 
         if self._distance == 1:
-            n = np.ones((N, N), dtype='float')
+            n = np.ones((N, N), dtype="float")
 
         else:
             with self.rethrow_zerodiv():

@@ -12,19 +12,19 @@ except ImportError:
     import __builtin__ as builtins
 
 
-__all__ = ('AtomTypeEState',)
+__all__ = ("AtomTypeEState",)
 
 
 es_types = (
-    'sLi', 'ssBe', 'ssssBe', 'ssBH', 'sssB', 'ssssB', 'sCH3', 'dCH2', 'ssCH2',
-    'tCH', 'dsCH', 'aaCH', 'sssCH', 'ddC', 'tsC', 'dssC', 'aasC', 'aaaC',
-    'ssssC', 'sNH3', 'sNH2', 'ssNH2', 'dNH', 'ssNH', 'aaNH', 'tN', 'sssNH',
-    'dsN', 'aaN', 'sssN', 'ddsN', 'aasN', 'ssssN', 'sOH', 'dO', 'ssO', 'aaO',
-    'sF', 'sSiH3', 'ssSiH2', 'sssSiH', 'ssssSi', 'sPH2', 'ssPH', 'sssP',
-    'dsssP', 'sssssP', 'sSH', 'dS', 'ssS', 'aaS', 'dssS', 'ddssS', 'sCl',
-    'sGeH3', 'ssGeH2', 'sssGeH', 'ssssGe', 'sAsH2', 'ssAsH', 'sssAs', 'sssdAs',
-    'sssssAs', 'sSeH', 'dSe', 'ssSe', 'aaSe', 'dssSe', 'ddssSe', 'sBr', 'sSnH3',
-    'ssSnH2', 'sssSnH', 'ssssSn', 'sI', 'sPbH3', 'ssPbH2', 'sssPbH', 'ssssPb'
+    "sLi", "ssBe", "ssssBe", "ssBH", "sssB", "ssssB", "sCH3", "dCH2", "ssCH2",
+    "tCH", "dsCH", "aaCH", "sssCH", "ddC", "tsC", "dssC", "aasC", "aaaC",
+    "ssssC", "sNH3", "sNH2", "ssNH2", "dNH", "ssNH", "aaNH", "tN", "sssNH",
+    "dsN", "aaN", "sssN", "ddsN", "aasN", "ssssN", "sOH", "dO", "ssO", "aaO",
+    "sF", "sSiH3", "ssSiH2", "sssSiH", "ssssSi", "sPH2", "ssPH", "sssP",
+    "dsssP", "sssssP", "sSH", "dS", "ssS", "aaS", "dssS", "ddssS", "sCl",
+    "sGeH3", "ssGeH2", "sssGeH", "ssssGe", "sAsH2", "ssAsH", "sssAs", "sssdAs",
+    "sssssAs", "sSeH", "dSe", "ssSe", "aaSe", "dssSe", "ddssSe", "sBr", "sSnH3",
+    "ssSnH2", "sssSnH", "ssssSn", "sI", "sPbH3", "ssPbH2", "sssPbH", "ssssPb",
 )
 
 es_type_set = set(es_types)
@@ -59,10 +59,10 @@ class AggrType(IntEnum):
 
 
 aggr_names = (
-    (AggrType.count, 'N'),
-    (AggrType.sum, 'S'),
-    (AggrType.max, 'MAX'),
-    (AggrType.min, 'MIN'),
+    (AggrType.count, "N"),
+    (AggrType.sum, "S"),
+    (AggrType.max, "MAX"),
+    (AggrType.min, "MIN"),
 )
 
 
@@ -78,12 +78,14 @@ class AtomTypeEState(EStateBase):
     :type estate: str
     :param estate: one of es_types
 
-    :returns: NaN when type in ['min', 'max'] and :math:`N_{\rm X} = 0`
+    :returns: NaN when type in ["min", "max"] and :math:`N_{\rm X} = 0`
 
     References
         * :doi:`10.1021/ci00028a014`
+
     """
-    __slots__ = ('_type', '_estate',)
+
+    __slots__ = ("_type", "_estate",)
 
     aggr_types = tuple(a.name for a in AggrType)
 
@@ -105,14 +107,14 @@ class AtomTypeEState(EStateBase):
     def parameters(self):
         return self._type, self._estate
 
-    def __init__(self, type='count', estate='sLi'):
+    def __init__(self, type="count", estate="sLi"):
         assert estate in es_type_set
 
         self._type = parse_enum(AggrType, type)
         self._estate = estate
 
     def dependencies(self):
-        return {'E': EStateCache()}
+        return {"E": EStateCache()}
 
     def calculate(self, E):
         if self._type == AggrType.count:
@@ -120,7 +122,7 @@ class AtomTypeEState(EStateBase):
 
         indices = map(
             lambda e: e[1],
-            filter(lambda e: self._estate in e[0], zip(*E))
+            filter(lambda e: self._estate in e[0], zip(*E)),
         )
 
         with self.rethrow_na(ValueError):
@@ -128,11 +130,11 @@ class AtomTypeEState(EStateBase):
 
     @property
     def rtype(self):
-        r"""
-        * 'count': :py:class:`int`
-        * 'other': :py:class:`float`
-        """
+        r"""Return type.
 
+        * "count": :py:class:`int`
+        * "other": :py:class:`float`
+        """
         return int if self._type == AggrType.count else float
 
-    _extra_docs = 'aggr_types', 'es_types'
+    _extra_docs = "aggr_types", "es_types"

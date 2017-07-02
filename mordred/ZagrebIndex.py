@@ -1,7 +1,7 @@
 from ._base import Descriptor
 from ._graph_matrix import Valence
 
-__all__ = ('ZagrebIndex',)
+__all__ = ("ZagrebIndex",)
 
 
 class ZagrebIndex(Descriptor):
@@ -24,7 +24,8 @@ class ZagrebIndex(Descriptor):
 
     :returns: NaN when valence of any atoms are 0
     """
-    __slots__ = ('_version', '_variable',)
+
+    __slots__ = ("_version", "_variable",)
     explicit_hydrogens = False
 
     @classmethod
@@ -33,10 +34,10 @@ class ZagrebIndex(Descriptor):
 
     def __str__(self):
         if self._variable in [1, -1]:
-            m = '' if self._variable == 1 else 'm'
-            return '{}Zagreb{}'.format(m, self._version)
+            m = "" if self._variable == 1 else "m"
+            return "{}Zagreb{}".format(m, self._version)
 
-        return 'Zagreb{}_{}'.format(self._version, self._variable)
+        return "Zagreb{}_{}".format(self._version, self._variable)
 
     def parameters(self):
         return self._version, self._variable
@@ -47,10 +48,10 @@ class ZagrebIndex(Descriptor):
         self._variable = variable
 
     def dependencies(self):
-        return {'V': Valence(self.explicit_hydrogens)}
+        return {"V": Valence(self.explicit_hydrogens)}
 
     def calculate(self, V):
-        V = V.astype('float')
+        V = V.astype("float")
 
         if self._version == 1:
             with self.rethrow_zerodiv():
@@ -60,7 +61,7 @@ class ZagrebIndex(Descriptor):
                 sum(
                     (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
                     for b in self.mol.GetBonds()
-                )
+                ),
             )
 
     rtype = float

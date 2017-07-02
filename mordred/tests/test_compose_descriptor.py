@@ -36,7 +36,7 @@ if six.PY3:
 def test_compose_descriptor():
     l = ABCIndex.ABCIndex()
     r = ABCIndex.ABCGGIndex()
-    m = Chem.MolFromSmiles('c1ccccc1C')
+    m = Chem.MolFromSmiles("c1ccccc1C")
 
     for op in binary:
         yield eq_, op(l, r)(m), op(l(m), r(m))

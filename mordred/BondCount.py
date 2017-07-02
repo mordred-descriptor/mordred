@@ -6,7 +6,7 @@ from rdkit import Chem
 from ._base import Descriptor
 from ._util import parse_enum
 
-__all__ = ('BondCount',)
+__all__ = ("BondCount",)
 
 
 class BondType(IntEnum):
@@ -28,16 +28,16 @@ class BondType(IntEnum):
 
 
 bond_types = (
-    (BondType.any, ('', lambda _: True)),
-    (BondType.heavy, ('O', lambda _: True)),
+    (BondType.any, ("", lambda _: True)),
+    (BondType.heavy, ("O", lambda _: True)),
 
-    (BondType.single, ('S', lambda b: b.GetBondType() == Chem.BondType.SINGLE)),
-    (BondType.double, ('D', lambda b: b.GetBondType() == Chem.BondType.DOUBLE)),
-    (BondType.triple, ('T', lambda b: b.GetBondType() == Chem.BondType.TRIPLE)),
+    (BondType.single, ("S", lambda b: b.GetBondType() == Chem.BondType.SINGLE)),
+    (BondType.double, ("D", lambda b: b.GetBondType() == Chem.BondType.DOUBLE)),
+    (BondType.triple, ("T", lambda b: b.GetBondType() == Chem.BondType.TRIPLE)),
 
-    (BondType.aromatic, ('A', lambda b: b.GetIsAromatic() or
+    (BondType.aromatic, ("A", lambda b: b.GetIsAromatic() or
                          b.GetBondType() == Chem.BondType.AROMATIC)),
-    (BondType.multiple, ('M', lambda b: b.GetIsAromatic() or
+    (BondType.multiple, ("M", lambda b: b.GetIsAromatic() or
                          b.GetBondType() != Chem.BondType.SINGLE)),
 )
 
@@ -53,7 +53,8 @@ class BondCount(Descriptor):
     :type kekulize: bool
     :param kekulize: use kekulized structure
     """
-    __slots__ = ('_type', '_bond_name', '_check_bond', 'kekulize',)
+
+    __slots__ = ("_type", "_bond_name", "_check_bond", "kekulize",)
 
     bond_types = tuple(b.name for b in BondType)
 
@@ -63,12 +64,12 @@ class BondCount(Descriptor):
             map(lambda t: cls(t, False), BondType),
             map(lambda t: cls(t, True), [
                 BondType.single, BondType.double,
-            ])
+            ]),
         )
 
     def __str__(self):
-        K = 'K' if self.kekulize else ''
-        return 'nBonds{}{}'.format(K, self._bond_name)
+        K = "K" if self.kekulize else ""
+        return "nBonds{}{}".format(K, self._bond_name)
 
     @property
     def explicit_hydrogens(self):
@@ -77,7 +78,7 @@ class BondCount(Descriptor):
     def parameters(self):
         return self._type, self.kekulize
 
-    def __init__(self, type='any', kekulize=False):
+    def __init__(self, type="any", kekulize=False):
         self._type = parse_enum(BondType, type)
         self._bond_name, self._check_bond = bond_type_dict[self._type]
         self.kekulize = kekulize
@@ -87,4 +88,4 @@ class BondCount(Descriptor):
 
     rtype = int
 
-    _extra_docs = 'bond_types',
+    _extra_docs = "bond_types",

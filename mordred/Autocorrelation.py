@@ -4,24 +4,24 @@ from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 from ._atomic_property import AtomicProperty, get_properties
 
-__all__ = ('ATS', 'AATS', 'ATSC', 'AATSC', 'MATS', 'GATS',)
+__all__ = ("ATS", "AATS", "ATSC", "AATSC", "MATS", "GATS",)
 
 
 class AutocorrelationBase(Descriptor):
-    __slots__ = '_prop', '_order'
+    __slots__ = "_prop", "_order"
     explicit_hydrogens = True
 
     def __str__(self):
-        return '{}{}{}'.format(
+        return "{}{}{}".format(
             self.__class__.__name__,
             self._order,
-            self._avec.as_argument
+            self._avec.as_argument,
         )
 
     def parameters(self):
         return self._order, self._prop
 
-    def __init__(self, order=0, prop='m'):
+    def __init__(self, order=0, prop="m"):
         self._prop = prop
         self._order = order
 
@@ -88,7 +88,7 @@ class CAVec(AutocorrelationProp):
     _order = 0
 
     def dependencies(self):
-        return {'avec': self._avec}
+        return {"avec": self._avec}
 
     def calculate(self, avec):
         return avec - avec.mean()
@@ -98,7 +98,7 @@ class GMat(AutocorrelationOrder):
     __slots__ = ()
 
     def dependencies(self):
-        return {'dmat': DistanceMatrix(self.explicit_hydrogens)}
+        return {"dmat": DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, dmat):
         return dmat == self._order
@@ -108,7 +108,7 @@ class GSum(AutocorrelationOrder):
     __slots__ = ()
 
     def dependencies(self):
-        return {'gmat': GMat(self._order)}
+        return {"gmat": GMat(self._order)}
 
     def calculate(self, gmat):
         s = gmat.sum()
@@ -164,11 +164,11 @@ class ATS(AutocorrelationBase):
         )
 
     def dependencies(self):
-        return {'avec': self._avec, 'gmat': self._gmat}
+        return {"avec": self._avec, "gmat": self._gmat}
 
     def calculate(self, avec, gmat):
         if self._order == 0:
-            return (avec ** 2).sum().astype('float')
+            return (avec ** 2).sum().astype("float")
 
         return 0.5 * avec.dot(gmat).dot(avec)
 
@@ -194,7 +194,7 @@ class AATS(ATS):
     __slots__ = ()
 
     def dependencies(self):
-        return {'ATS': self._ATS, 'gsum': self._gsum}
+        return {"ATS": self._ATS, "gsum": self._gsum}
 
     def calculate(self, ATS, gsum):
         with self.rethrow_zerodiv():
@@ -225,11 +225,11 @@ class ATSC(AutocorrelationBase):
         )
 
     def dependencies(self):
-        return {'cavec': self._cavec, 'gmat': self._gmat}
+        return {"cavec": self._cavec, "gmat": self._gmat}
 
     def calculate(self, cavec, gmat):
         if self._order == 0:
-            return (cavec ** 2).sum().astype('float')
+            return (cavec ** 2).sum().astype("float")
 
         return 0.5 * cavec.dot(gmat).dot(cavec)
 
@@ -255,7 +255,7 @@ class AATSC(ATSC):
     __slots__ = ()
 
     def dependencies(self):
-        return {'ATSC': self._ATSC, 'gsum': self._gsum}
+        return {"ATSC": self._ATSC, "gsum": self._gsum}
 
     def calculate(self, ATSC, gsum):
         with self.rethrow_zerodiv():
@@ -293,9 +293,9 @@ class MATS(AutocorrelationBase):
 
     def dependencies(self):
         return {
-            'avec': self._avec,
-            'AATSC': self._AATSC,
-            'cavec': self._cavec,
+            "AATSC": self._AATSC,
+            "avec": self._avec,
+            "cavec": self._cavec,
         }
 
     def calculate(self, avec, AATSC, cavec):
@@ -319,15 +319,15 @@ class GATS(MATS):
 
     def dependencies(self):
         return {
-            'avec': self._avec,
-            'gmat': self._gmat,
-            'gsum': self._gsum,
-            'cavec': self._cavec,
+            "avec": self._avec,
+            "cavec": self._cavec,
+            "gmat": self._gmat,
+            "gsum": self._gsum,
         }
 
     def calculate(self, avec, gmat, gsum, cavec):
         if len(avec) <= 1:
-            self.fail(ValueError('no bond'))
+            self.fail(ValueError("no bond"))
 
         with self.rethrow_zerodiv():
             n = (gmat * (avec[:, np.newaxis] - avec) ** 2).sum() / (4 * gsum)

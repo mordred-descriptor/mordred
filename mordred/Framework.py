@@ -5,7 +5,7 @@ import networkx as nx
 from ._base import Descriptor
 from .RingCount import Rings
 
-__all__ = ('Framework',)
+__all__ = ("Framework",)
 
 
 class FrameworkCache(Descriptor):
@@ -15,11 +15,11 @@ class FrameworkCache(Descriptor):
         return ()
 
     def dependencies(self):
-        return {'Rs': Rings()}
+        return {"Rs": Rings()}
 
     def calculate(self, Rs):
         G = nx.Graph()
-        Rd = {i: ('R', Ri) for Ri, R in enumerate(Rs) for i in R}
+        Rd = {i: ("R", Ri) for Ri, R in enumerate(Rs) for i in R}
         R = list(set(Rd.values()))
         NR = len(R)
 
@@ -27,8 +27,8 @@ class FrameworkCache(Descriptor):
             a = bond.GetBeginAtomIdx()
             b = bond.GetEndAtomIdx()
 
-            a = Rd.get(a, ('A', a))
-            b = Rd.get(b, ('A', b))
+            a = Rd.get(a, ("A", a))
+            b = Rd.get(b, ("A", b))
 
             G.add_edge(a, b)
 
@@ -36,7 +36,7 @@ class FrameworkCache(Descriptor):
         for Ri, Rj in ((i, j) for i in range(NR) for j in range(i + 1, NR)):
             Ra, Rb = R[Ri], R[Rj]
             try:
-                linkers.update(i for t, i in nx.shortest_path(G, Ra, Rb) if t == 'A')
+                linkers.update(i for t, i in nx.shortest_path(G, Ra, Rb) if t == "A")
             except nx.NetworkXNoPath:
                 pass
 
@@ -56,7 +56,9 @@ class Framework(Descriptor):
 
     References
         * :doi:`10.1021/jm9602928`
+
     """
+
     __slots__ = ()
 
     @classmethod
@@ -64,13 +66,13 @@ class Framework(Descriptor):
         yield cls()
 
     def __str__(self):
-        return 'fMF'
+        return "fMF"
 
     def parameters(self):
         return ()
 
     def dependencies(self):
-        return {'F': FrameworkCache()}
+        return {"F": FrameworkCache()}
 
     def calculate(self, F):
         linkers, rings = F

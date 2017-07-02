@@ -3,6 +3,7 @@ r"""Extended Topochemical Atom(ETA) descriptor.
 References
     * :doi:`10.1021/ci0342066`
     * :doi:`10.1016/j.jhazmat.2013.03.023`
+
 """
 from __future__ import division
 
@@ -16,19 +17,19 @@ from .RingCount import RingCount
 from ._graph_matrix import DistanceMatrix
 
 __all__ = (
-    'EtaCoreCount', 'EtaShapeIndex',
-    'EtaVEMCount',
-    'EtaCompositeIndex', 'EtaFunctionalityIndex', 'EtaBranchingIndex',
+    "EtaCoreCount", "EtaShapeIndex",
+    "EtaVEMCount",
+    "EtaCompositeIndex", "EtaFunctionalityIndex", "EtaBranchingIndex",
 
-    'EtaDeltaAlpha',
-    'EtaEpsilon', 'EtaDeltaEpsilon',
-    'EtaDeltaBeta',
-    'EtaPsi', 'EtaDeltaPsi',
+    "EtaDeltaAlpha",
+    "EtaEpsilon", "EtaDeltaEpsilon",
+    "EtaDeltaBeta",
+    "EtaPsi", "EtaDeltaPsi",
 )
 
 
 class AlterMolecule(Descriptor):
-    __slots__ = ('explicit_hydrogens', '_saturated',)
+    __slots__ = ("explicit_hydrogens", "_saturated",)
 
     kekulize = True
     require_connected = True
@@ -41,10 +42,10 @@ class AlterMolecule(Descriptor):
         self.explicit_hydrogens = explicit_hydrogens
 
     def __str__(self):
-        b = 'Saturated' if self._saturated else 'Reference'
-        H = 'H' if self.explicit_hydrogens else ''
+        b = "Saturated" if self._saturated else "Reference"
+        H = "H" if self.explicit_hydrogens else ""
 
-        return '{}Mol{}'.format(b, H)
+        return "{}Mol{}".format(b, H)
 
     def calculate(self):
         new = Chem.RWMol(Chem.Mol())
@@ -67,7 +68,7 @@ class AlterMolecule(Descriptor):
             aj = bond.GetEndAtom()
 
             if not self._saturated and (ai.GetDegree() > 4 or aj.GetDegree() > 4):
-                self.fail(ValueError('bond degree greater then 4'))
+                self.fail(ValueError("bond degree greater then 4"))
 
             i = ids.get(ai.GetIdx())
             j = ids.get(aj.GetIdx())
@@ -82,8 +83,8 @@ class AlterMolecule(Descriptor):
 
         new = Chem.Mol(new)
         if Chem.SanitizeMol(new, catchErrors=True) != 0:
-            typ = 'saturated' if self._saturated else 'referense'
-            self.fail(ValueError('cannot sanitize {} mol'.format(typ)))
+            typ = "saturated" if self._saturated else "referense"
+            self.fail(ValueError("cannot sanitize {} mol".format(typ)))
 
         if self.explicit_hydrogens:
             new = Chem.AddHs(new)
@@ -122,17 +123,18 @@ class EtaCoreCount(EtaBase):
 
     :returns: reference and valence of any atoms > 4
     """
-    __slots__ = ('_averaged', '_reference',)
+
+    __slots__ = ("_averaged", "_reference",)
 
     @classmethod
     def preset(cls):
         return map(cls, [False, True])
 
     def __str__(self):
-        suffix = '_R' if self._reference else ''
-        ave = "A" if self._averaged else ''
+        suffix = "_R" if self._reference else ""
+        ave = "A" if self._averaged else ""
 
-        return '{}ETA_alpha{}'.format(ave, suffix)
+        return "{}ETA_alpha{}".format(ave, suffix)
 
     def parameters(self):
         return self._averaged, self._reference
@@ -143,7 +145,7 @@ class EtaCoreCount(EtaBase):
 
     def dependencies(self):
         if self._reference:
-            return {'rmol': AlterMolecule(self.explicit_hydrogens)}
+            return {"rmol": AlterMolecule(self.explicit_hydrogens)}
 
     def calculate(self, rmol=None):
         mol = rmol if self._reference else self.mol
@@ -167,28 +169,29 @@ class EtaShapeIndex(EtaBase):
     :type type: str
     :param type: one of shape_types
     """
-    __slots__ = ('_type',)
 
-    shape_types = ('p', 'y', 'x',)
-    _type_to_degree = dict(p=1, y=3, x=4)
+    __slots__ = ("_type",)
+
+    shape_types = ("p", "y", "x",)
+    _type_to_degree = {"p": 1, "y": 3, "x": 4}
 
     @classmethod
     def preset(cls):
         return (cls(t) for t in cls.shape_types)
 
     def __str__(self):
-        return 'ETA_shape_{}'.format(self._type)
+        return "ETA_shape_{}".format(self._type)
 
     def parameters(self):
         return self._type,
 
-    def __init__(self, type='p'):
+    def __init__(self, type="p"):
         assert type in self.shape_types
 
         self._type = type
 
     def dependencies(self):
-        return {'a': EtaCoreCount(False)}
+        return {"a": EtaCoreCount(False)}
 
     def calculate(self, a):
         d = self._type_to_degree[self._type]
@@ -245,7 +248,8 @@ class EtaVEMCount(EtaBase):
     :type averaged: bool
     :param averaged: averaged by heavy atom count
     """
-    __slots__ = ('_type', '_averaged',)
+
+    __slots__ = ("_type", "_averaged",)
 
     @classmethod
     def preset(cls):
@@ -256,17 +260,17 @@ class EtaVEMCount(EtaBase):
         )
 
     def __str__(self):
-        typ = '_{}'.format(self._type) if self._type else ''
-        ave = 'A' if self._averaged else ''
+        typ = "_{}".format(self._type) if self._type else ""
+        ave = "A" if self._averaged else ""
 
-        return '{}ETA_beta{}'.format(ave, typ)
+        return "{}ETA_beta{}".format(ave, typ)
 
-    beta_types = ('', 's', 'ns', 'ns_d')
+    beta_types = ("", "s", "ns", "ns_d")
 
     def parameters(self):
         return self._type, self._averaged
 
-    def __init__(self, type='', averaged=False):
+    def __init__(self, type="", averaged=False):
         assert type in self.beta_types
         self._type = type
         self._averaged = averaged
@@ -285,7 +289,7 @@ class EtaVEMCount(EtaBase):
         return self._get_beta_s(atom) + self._get_beta_ns(atom)
 
     def calculate(self):
-        getter = getattr(self, '_get_beta_' + self._type)
+        getter = getattr(self, "_get_beta_" + self._type)
 
         if getter:
             v = sum(
@@ -323,7 +327,8 @@ class EtaCompositeIndex(EtaBase):
 
     :returns: reference and valence of any atoms > 4
     """
-    __slots__ = ('_reference', '_local', '_averaged',)
+
+    __slots__ = ("_reference", "_local", "_averaged",)
 
     @classmethod
     def preset(cls):
@@ -334,19 +339,19 @@ class EtaCompositeIndex(EtaBase):
         suffixes = []
 
         if self._reference:
-            suffixes.append('R')
+            suffixes.append("R")
 
         if self._local:
-            suffixes.append('L')
+            suffixes.append("L")
 
         if len(suffixes) > 0:
-            suffix = '_' + ''.join(suffixes)
+            suffix = "_" + "".join(suffixes)
         else:
-            suffix = ''
+            suffix = ""
 
-        ave = 'A' if self._averaged else ''
+        ave = "A" if self._averaged else ""
 
-        return '{}ETA_eta{}'.format(ave, suffix)
+        return "{}ETA_eta{}".format(ave, suffix)
 
     def parameters(self):
         return self._reference, self._local, self._averaged
@@ -357,10 +362,10 @@ class EtaCompositeIndex(EtaBase):
         self._averaged = averaged
 
     def dependencies(self):
-        deps = {'D': DistanceMatrix(self.explicit_hydrogens)}
+        deps = {"D": DistanceMatrix(self.explicit_hydrogens)}
 
         if self._reference:
-            deps['rmol'] = AlterMolecule(self.explicit_hydrogens)
+            deps["rmol"] = AlterMolecule(self.explicit_hydrogens)
 
         return deps
 
@@ -404,7 +409,8 @@ class EtaFunctionalityIndex(EtaBase):
     :type averaged: bool
     :param averaged: averaged
     """
-    __slots__ = ('_local', '_averaged',)
+
+    __slots__ = ("_local", "_averaged",)
 
     @classmethod
     def preset(cls):
@@ -415,10 +421,10 @@ class EtaFunctionalityIndex(EtaBase):
         )
 
     def __str__(self):
-        loc = 'L' if self._local else ''
-        ave = 'A' if self._averaged else ''
+        loc = "L" if self._local else ""
+        ave = "A" if self._averaged else ""
 
-        return '{}ETA_eta_F{}'.format(ave, loc)
+        return "{}ETA_eta_F{}".format(ave, loc)
 
     def parameters(self):
         return self._local, self._averaged
@@ -429,8 +435,8 @@ class EtaFunctionalityIndex(EtaBase):
 
     def dependencies(self):
         return {
-            'eta': EtaCompositeIndex(local=self._local),
-            'eta_R': EtaCompositeIndex(local=self._local, reference=True),
+            "eta": EtaCompositeIndex(local=self._local),
+            "eta_R": EtaCompositeIndex(local=self._local, reference=True),
         }
 
     def calculate(self, eta, eta_R):
@@ -458,7 +464,8 @@ class EtaBranchingIndex(EtaBase):
 
     :returns: NaN when A < 2
     """
-    __slots__ = ('_ring', '_averaged',)
+
+    __slots__ = ("_ring", "_averaged",)
 
     @classmethod
     def preset(cls):
@@ -469,10 +476,10 @@ class EtaBranchingIndex(EtaBase):
         )
 
     def __str__(self):
-        ring = 'R' if self._ring else ''
-        ave = 'A' if self._averaged else ''
+        ring = "R" if self._ring else ""
+        ave = "A" if self._averaged else ""
 
-        return '{}ETA_eta_B{}'.format(ave, ring)
+        return "{}ETA_eta_B{}".format(ave, ring)
 
     def parameters(self):
         return self._ring, self._averaged
@@ -483,15 +490,15 @@ class EtaBranchingIndex(EtaBase):
 
     def dependencies(self):
         return {
-            'eta_RL': EtaCompositeIndex(reference=True, local=True),
-            'NR': RingCount() if self._ring else None,
+            "NR": RingCount() if self._ring else None,
+            "eta_RL": EtaCompositeIndex(reference=True, local=True),
         }
 
     def calculate(self, eta_RL, NR):
         N = self.mol.GetNumAtoms()
 
         if N <= 1:
-            self.fail(ValueError('single atom'))
+            self.fail(ValueError("single atom"))
         elif N == 2:
             eta_NL = 1.0
         else:
@@ -516,33 +523,34 @@ class EtaDeltaAlpha(EtaBase):
     :type type: str
     :param type: one of delta_types
     """
-    __slots__ = ('_type',)
 
-    delta_types = ('A', 'B',)
+    __slots__ = ("_type",)
+
+    delta_types = ("A", "B",)
 
     @classmethod
     def preset(cls):
         return (cls(t) for t in cls.delta_types)
 
     def __str__(self):
-        return 'ETA_dAlpha_{}'.format(self._type)
+        return "ETA_dAlpha_{}".format(self._type)
 
     def parameters(self):
         return self._type,
 
-    def __init__(self, type='A'):
+    def __init__(self, type="A"):
         assert type in self.delta_types
 
         self._type = type
 
     def dependencies(self):
         return {
-            'alpha': EtaCoreCount(),
-            'alpha_R': EtaCoreCount(reference=True),
+            "alpha": EtaCoreCount(),
+            "alpha_R": EtaCoreCount(reference=True),
         }
 
     def calculate(self, alpha, alpha_R):
-        if self._type == 'A':
+        if self._type == "A":
             d = alpha - alpha_R
         else:
             d = alpha_R - alpha
@@ -574,14 +582,15 @@ class EtaEpsilon(EtaBase):
 
     :returns: type = 3 and valence of any atoms > 4
     """
-    __slots__ = ('_type',)
+
+    __slots__ = ("_type",)
 
     @classmethod
     def preset(cls):
         return map(cls, cls.epsilon_types)
 
     def __str__(self):
-        return 'ETA_epsilon_{}'.format(self._type)
+        return "ETA_epsilon_{}".format(self._type)
 
     @property
     def explicit_hydrogens(self):
@@ -597,9 +606,9 @@ class EtaEpsilon(EtaBase):
 
     def dependencies(self):
         if self._type == 3:
-            return {'rmol': AlterMolecule(self.explicit_hydrogens)}
+            return {"rmol": AlterMolecule(self.explicit_hydrogens)}
         elif self._type == 4:
-            return {'rmol': AlterMolecule(self.explicit_hydrogens, True)}
+            return {"rmol": AlterMolecule(self.explicit_hydrogens, True)}
 
     def calculate(self, rmol=None):
         mol = rmol if self._type in [3, 4] else self.mol
@@ -630,35 +639,36 @@ class EtaDeltaEpsilon(EtaBase):
     :type type: str
     :param type: one of delta_epsilon_types
     """
-    __slots__ = ('_type',)
+
+    __slots__ = ("_type",)
 
     @classmethod
     def preset(cls):
         return map(cls, cls.delta_epsilon_types)
 
     def __str__(self):
-        return 'ETA_dEpsilon_{}'.format(self._type)
+        return "ETA_dEpsilon_{}".format(self._type)
 
-    delta_epsilon_types = tuple('ABCD')
+    delta_epsilon_types = tuple("ABCD")
 
     def parameters(self):
         return self._type,
 
-    def __init__(self, type='A'):
+    def __init__(self, type="A"):
         self._type = type
 
-    _deps = dict(
-        A=(1, 3),
-        B=(1, 4),
-        C=(3, 4),
-        D=(2, 5),
-    )
+    _deps = {
+        "A": (1, 3),
+        "B": (1, 4),
+        "C": (3, 4),
+        "D": (2, 5),
+    }
 
     def dependencies(self):
         L, R = self._deps[self._type]
         return {
-            'L': EtaEpsilon(L),
-            'R': EtaEpsilon(R),
+            "L": EtaEpsilon(L),
+            "R": EtaEpsilon(R),
         }
 
     def calculate(self, L, R):
@@ -674,16 +684,17 @@ class EtaDeltaBeta(EtaBase):
     :type averaged: bool
     :param averaged: averaged
     """
-    __slots__ = ('_averaged',)
+
+    __slots__ = ("_averaged",)
 
     @classmethod
     def preset(cls):
         return (cls(a) for a in [False, True])
 
     def __str__(self):
-        ave = 'A' if self._averaged else ''
+        ave = "A" if self._averaged else ""
 
-        return '{}ETA_dBeta'.format(ave)
+        return "{}ETA_dBeta".format(ave)
 
     def parameters(self):
         return self._averaged,
@@ -693,8 +704,8 @@ class EtaDeltaBeta(EtaBase):
 
     def dependencies(self):
         return {
-            'ns': EtaVEMCount('ns'),
-            's': EtaVEMCount('s'),
+            "ns": EtaVEMCount("ns"),
+            "s": EtaVEMCount("s"),
         }
 
     def calculate(self, ns, s):
@@ -718,15 +729,15 @@ class EtaPsi(EtaBase):
         yield cls()
 
     def __str__(self):
-        return 'ETA_psi_1'
+        return "ETA_psi_1"
 
     def parameters(self):
         return ()
 
     def dependencies(self):
         return {
-            'a': EtaCoreCount(),
-            'e': EtaEpsilon(2),
+            "a": EtaCoreCount(),
+            "e": EtaEpsilon(2),
         }
 
     def calculate(self, a, e):
@@ -744,33 +755,34 @@ class EtaDeltaPsi(EtaBase):
     :type type: str
     :param type: one of delta_psi_types
     """
-    __slots__ = ('_type',)
+
+    __slots__ = ("_type",)
 
     @classmethod
     def preset(cls):
         return map(cls, cls.delta_psi_types)
 
     def __str__(self):
-        return 'ETA_dPsi_{}'.format(self._type)
+        return "ETA_dPsi_{}".format(self._type)
 
-    delta_psi_types = ('A', 'B',)
+    delta_psi_types = ("A", "B",)
 
     def parameters(self):
         return self._type,
 
-    def __init__(self, type='A'):
+    def __init__(self, type="A"):
         assert type in self.delta_psi_types
 
         self._type = type
 
     def dependencies(self):
-        return {'psi': EtaPsi()}
+        return {"psi": EtaPsi()}
 
     def calculate(self, psi):
         L = 0.714
         R = psi
 
-        if self._type == 'B':
+        if self._type == "B":
             L, R = R, L
 
         return max(L - R, 0.0)

@@ -1,9 +1,10 @@
-'''
-References:
+"""Acid Base descriptor.
 
+References:
     * http://cdk.github.io/cdk/1.5/docs/api/org/openscience/cdk/qsar/descriptors/molecular/AcidicGroupCountDescriptor.html
     * http://cdk.github.io/cdk/1.5/docs/api/org/openscience/cdk/qsar/descriptors/molecular/BasicGroupCountDescriptor.html
-''' # noqa
+
+"""  # noqa: E501
 
 from abc import abstractproperty
 
@@ -11,19 +12,19 @@ from rdkit import Chem
 
 from ._base import Descriptor
 
-__all__ = ('AcidicGroupCount', 'BasicGroupCount',)
+__all__ = ("AcidicGroupCount", "BasicGroupCount",)
 
 
 class SmartsCountBase(Descriptor):
-    __slots__ = '_mol',
+    __slots__ = "_mol",
 
     @classmethod
     def preset(cls):
         yield cls()
 
     def _create_smarts(self):
-        s = ','.join('$(' + s + ')' for s in self.SMARTS)
-        self._mol = Chem.MolFromSmarts('[' + s + ']')
+        s = ",".join("$(" + s + ")" for s in self.SMARTS)
+        self._mol = Chem.MolFromSmarts("[" + s + "]")
         return self._mol
 
     @abstractproperty
@@ -37,12 +38,12 @@ class SmartsCountBase(Descriptor):
         return ()
 
     def calculate(self):
-        pat = getattr(self, '_mol', None) or self._create_smarts()
+        pat = getattr(self, "_mol", None) or self._create_smarts()
         return len(self.mol.GetSubstructMatches(pat))
 
     rtype = int
 
-    _extra_docs = 'SMARTS',
+    _extra_docs = "SMARTS",
 
 
 class AcidicGroupCount(SmartsCountBase):
@@ -50,13 +51,13 @@ class AcidicGroupCount(SmartsCountBase):
 
     __slots__ = ()
 
-    _name = 'nAcid'
+    _name = "nAcid"
 
     SMARTS = (
-        '[O;H1]-[C,S,P]=O',
-        '[*;-;!$(*~[*;+])]',
-        '[NH](S(=O)=O)C(F)(F)F',
-        'n1nnnc1',
+        "[O;H1]-[C,S,P]=O",
+        "[*;-;!$(*~[*;+])]",
+        "[NH](S(=O)=O)C(F)(F)F",
+        "n1nnnc1",
     )
 
 
@@ -65,13 +66,13 @@ class BasicGroupCount(SmartsCountBase):
 
     __slots__ = ()
 
-    _name = 'nBase'
+    _name = "nBase"
 
     SMARTS = (
-        '[NH2]-[CX4]',
-        '[NH](-[CX4])-[CX4]',
-        'N(-[CX4])(-[CX4])-[CX4]',
-        '[*;+;!$(*~[*;-])]',
-        'N=C-N',
-        'N-C=N',
+        "[NH2]-[CX4]",
+        "[NH](-[CX4])-[CX4]",
+        "N(-[CX4])(-[CX4])-[CX4]",
+        "[*;+;!$(*~[*;-])]",
+        "N=C-N",
+        "N-C=N",
     )

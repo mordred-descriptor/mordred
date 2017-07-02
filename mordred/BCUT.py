@@ -3,7 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._atomic_property import AtomicProperty, get_properties
 
-__all__ = ('BCUT',)
+__all__ = ("BCUT",)
 
 
 class BCUTBase(Descriptor):
@@ -32,7 +32,7 @@ class Burden(BCUTBase):
             try:
                 w = bond.GetBondTypeAsDouble() / 10.0
             except RuntimeError:
-                self.fail(ValueError('unknown bond type'))
+                self.fail(ValueError("unknown bond type"))
 
             if a.GetDegree() == 1 or b.GetDegree() == 1:
                 w += 0.01
@@ -44,7 +44,7 @@ class Burden(BCUTBase):
 
 
 class BurdenEigenValues(BCUTBase):
-    __slots__ = ('_prop',)
+    __slots__ = ("_prop",)
 
     def parameters(self):
         return self._prop,
@@ -54,8 +54,8 @@ class BurdenEigenValues(BCUTBase):
 
     def dependencies(self):
         return {
-            'ps': self._prop,
-            'burden': Burden(),
+            "burden": Burden(),
+            "ps": self._prop,
         }
 
     def calculate(self, burden, ps):
@@ -84,7 +84,8 @@ class BCUT(BCUTBase):
         * any atomic properties are NaN
         * :math:`\left| nth \right| > A`
     """
-    __slots__ = ('_prop', '_nth',)
+
+    __slots__ = ("_prop", "_nth",)
 
     @classmethod
     def preset(cls):
@@ -96,24 +97,24 @@ class BCUT(BCUTBase):
 
     def __str__(self):
         if self._nth < 0:
-            return 'BCUT{}-{}l'.format(self._prop.as_argument, np.abs(self._nth))
+            return "BCUT{}-{}l".format(self._prop.as_argument, np.abs(self._nth))
         else:
-            return 'BCUT{}-{}h'.format(self._prop.as_argument, self._nth + 1)
+            return "BCUT{}-{}h".format(self._prop.as_argument, self._nth + 1)
 
     def parameters(self):
         return self._prop, self._nth
 
-    def __init__(self, prop='m', nth=0):
+    def __init__(self, prop="m", nth=0):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)
         self._nth = nth
 
     def dependencies(self):
-        return {'bev': BurdenEigenValues(self._prop)}
+        return {"bev": BurdenEigenValues(self._prop)}
 
     def calculate(self, bev):
         try:
             return bev[self._nth]
         except IndexError:
-            self.fail(ValueError('nth greater then atom count'))
+            self.fail(ValueError("nth greater then atom count"))
 
     rtype = float

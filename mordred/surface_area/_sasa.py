@@ -39,8 +39,8 @@ class SurfaceArea(object):
         d = np.sqrt(
             np.sum(
                 (self.xyzs[:, np.newaxis] - self.xyzs) ** 2,
-                axis=2
-            )
+                axis=2,
+            ),
         )
 
         ns = defaultdict(list)
@@ -56,14 +56,13 @@ class SurfaceArea(object):
         self.neighbors = ns
 
     def atomic_sa(self, i):
-        r"""calculate atomic surface area.
+        r"""Calculate atomic surface area.
 
         :type i: int
         :param i: atom index
 
         :rtype: float
         """
-
         sa = 4.0 * np.pi * self.rads2[i]
 
         neighbors = self.neighbors.get(i)
@@ -86,16 +85,15 @@ class SurfaceArea(object):
         return sa * sphere.shape[1] / N
 
     def surface_area(self):
-        r"""calculate all atomic surface area.
+        r"""Calculate all atomic surface area.
 
         :rtype: [float]
         """
-
         return [self.atomic_sa(i) for i in range(len(self.rads))]
 
     @classmethod
     def from_mol(cls, mol, conformer=-1, solvent_radius=1.4, level=4):
-        r"""construct SurfaceArea from rdkit Mol type.
+        r"""Construct SurfaceArea from rdkit Mol type.
 
         :type mol: rdkit.Chem.Mol
         :param mol: input molecule
@@ -111,7 +109,6 @@ class SurfaceArea(object):
 
         :rtype: SurfaceArea
         """
-
         rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + solvent_radius, mol)
 
         conf = mol.GetConformer(conformer)
@@ -130,7 +127,7 @@ class SurfaceArea(object):
         rs = []
         coords = []
 
-        for atom in PDBParser().get_structure('', pdb).get_atoms():
+        for atom in PDBParser().get_structure("", pdb).get_atoms():
             rs.append(vdw_radii[table.GetAtomicNumber(atom.element)] + solvent_radius)
             coords.append(atom.coord)
 

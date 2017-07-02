@@ -1,3 +1,5 @@
+"""Mordred base package."""
+
 import os
 import warnings
 
@@ -13,11 +15,11 @@ from .parallel import parallel
 
 
 __all__ = (
-    'all_descriptors',
-    'Descriptor',
-    'Calculator',
-    'get_descriptors_from_module',
-    'is_missing',
+    "all_descriptors",
+    "Descriptor",
+    "Calculator",
+    "get_descriptors_from_module",
+    "is_missing",
 )
 
 
@@ -30,7 +32,7 @@ def all_descriptors():
     :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
     """
     warnings.warn(
-        'all_descriptors() is deprecated, use mordred.descriptors module instead',
+        "all_descriptors() is deprecated, use mordred.descriptors module instead",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -38,14 +40,15 @@ def all_descriptors():
 
     for name in os.listdir(base_dir):
         name, ext = os.path.splitext(name)
-        if name[:1] == '_' or ext != '.py' or name == 'descriptors':
+        if name[:1] == "_" or ext != ".py" or name == "descriptors":
             continue
 
-        yield import_module('..' + name, __package__)
+        yield import_module(".." + name, __package__)
 
 
 def _Descriptor__call__(self, mol, id=-1):
-    r"""calculate single descriptor value.
+    r"""Calculate single descriptor value.
+
     :type id: int
     :param id: conformer id
 
@@ -60,45 +63,46 @@ def _Descriptor__call__(self, mol, id=-1):
 
 
 def _from_json(obj, descs):
-    name = obj.get('name')
-    args = obj.get('args') or {}
+    name = obj.get("name")
+    args = obj.get("args") or {}
     if name is None:
-        raise ValueError('invalid json: {}'.format(obj))
+        raise ValueError("invalid json: {}".format(obj))
 
     if name == UnaryOperatingDescriptor.__name__:
         return UnaryOperatingDescriptor(
-            args['name'],
-            args['operator'],
-            _from_json(args['value'])
+            args["name"],
+            args["operator"],
+            _from_json(args["value"]),
         )
 
     elif name == BinaryOperatingDescriptor.__name__:
         return BinaryOperatingDescriptor(
-            args['name'],
-            args['operator'],
-            _from_json(args['left']),
-            _from_json(args['right'])
+            args["name"],
+            args["operator"],
+            _from_json(args["left"]),
+            _from_json(args["right"]),
         )
 
     cls = descs.get(name)
     if cls is None:
-        raise ValueError('unknown class: {}'.format(name))
+        raise ValueError("unknown class: {}".format(name))
 
-    instance = cls(**(obj.get('args') or {}))
+    instance = cls(**(obj.get("args") or {}))
     return instance
 
 
 @classmethod
 def _Descriptor_from_json(self, obj):
-    '''create Descriptor instance from json dict.
+    """Create Descriptor instance from json dict.
 
     Parameters:
         obj(dict): descriptor dict
 
     Returns:
         Descriptor: descriptor
-    '''
-    descs = getattr(self, '_all_descriptors', None)
+
+    """
+    descs = getattr(self, "_all_descriptors", None)
 
     if descs is None:
         from mordred import descriptors
@@ -113,14 +117,15 @@ def _Descriptor_from_json(self, obj):
 
 
 def is_missing(v):
-    '''check argument is either MissingValue or not
+    """Check argument is either MissingValue or not.
 
     Parameters:
         v(any): value
 
     Returns:
         bool
-    '''
+
+    """
     return isinstance(v, MissingValueBase)
 
 

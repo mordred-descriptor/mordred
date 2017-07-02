@@ -1,6 +1,8 @@
-r"""
+r"""ABC Index descriptor.
+
 References
     * http://match.pmf.kg.ac.rs/electronic_versions/Match75/n1/match75n1_233-242.pdf
+
 """
 
 import numpy as np
@@ -8,7 +10,7 @@ import numpy as np
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
-__all__ = ('ABCIndex', 'ABCGGIndex',)
+__all__ = ("ABCIndex", "ABCGGIndex",)
 
 
 class ABCIndexBase(Descriptor):
@@ -34,7 +36,9 @@ class ABCIndex(ABCIndexBase):
 
     References:
         * :doi:`10.2298/FIL1204733D`
+
     """
+
     __slots__ = ()
 
     @staticmethod
@@ -49,7 +53,7 @@ class ABCIndex(ABCIndexBase):
             np.sum(
                 self._each_bond(bond)
                 for bond in self.mol.GetBonds()
-            )
+            ),
         )
 
 
@@ -58,11 +62,13 @@ class ABCGGIndex(ABCIndexBase):
 
     References:
         * Furtula, B. Atom-bond connectivity index versus Graovac-Ghorbani analog. MATCH Commun. Math. Comput. Chem 75, 233-242 (2016).
-    """ # noqa
+
+    """  # noqa: E501
+
     __slots__ = ()
 
     def dependencies(self):
-        return {'D': DistanceMatrix(self.explicit_hydrogens)}
+        return {"D": DistanceMatrix(self.explicit_hydrogens)}
 
     @staticmethod
     def _each_bond(bond, D):
@@ -79,5 +85,5 @@ class ABCGGIndex(ABCIndexBase):
             np.sum(
                 self._each_bond(bond, D)
                 for bond in self.mol.GetBonds()
-            )
+            ),
         )

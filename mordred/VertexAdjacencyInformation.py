@@ -2,7 +2,7 @@ import numpy as np
 
 from ._base import Descriptor
 
-__all__ = ('VertexAdjacencyInformation',)
+__all__ = ("VertexAdjacencyInformation",)
 
 
 class VertexAdjacencyInformation(Descriptor):
@@ -15,6 +15,7 @@ class VertexAdjacencyInformation(Descriptor):
 
     :returns: :math:`m = 0`
     """
+
     __slots__ = ()
 
     @classmethod
@@ -24,7 +25,7 @@ class VertexAdjacencyInformation(Descriptor):
     explicit_hydrogens = False
 
     def __str__(self):
-        return 'VAdjMat'
+        return "VAdjMat"
 
     def parameters(self):
         return ()

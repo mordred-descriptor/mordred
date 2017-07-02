@@ -4,13 +4,13 @@ import networkx
 from . import _matrix_attributes as ma
 from ._base import Descriptor
 
-__all__ = ('DetourMatrix', 'DetourIndex',)
+__all__ = ("DetourMatrix", "DetourIndex",)
 
 
 class LongestSimplePath(object):
     __slots__ = (
-        'G', 'N', 'neighbors',
-        'start', 'result', 'visited', 'distance',
+        "G", "N", "neighbors",
+        "start", "result", "visited", "distance",
     )
 
     def __init__(self, G, weight=None):
@@ -55,9 +55,9 @@ class LongestSimplePath(object):
 
 
 class CalcDetour(object):
-    __slots__ = ('N', 'Q', 'nodes', 'C')
+    __slots__ = ("N", "Q", "nodes", "C")
 
-    def __init__(self, G, weight='weight'):
+    def __init__(self, G, weight="weight"):
         self.N = G.number_of_nodes()
         self.Q = []
         for bcc in networkx.biconnected_component_subgraphs(G, False):
@@ -75,7 +75,7 @@ class CalcDetour(object):
             if len(common) == 0:
                 continue
             elif len(common) > 1:
-                raise ValueError('bug: multiple common nodes.')
+                raise ValueError("bug: multiple common nodes.")
 
             common = common.pop()
             self.Q.pop(-i)
@@ -100,7 +100,7 @@ class CalcDetour(object):
             elif jc in self.C and ic in lsp:
                 return self.C[jc] + lsp[ic]
             else:
-                raise ValueError('bug: unknown weight')
+                raise ValueError("bug: unknown weight")
 
         self.C = {(i, j): calc_weight(i, j)
                   for i in self.nodes
@@ -153,28 +153,29 @@ class DetourMatrix(DetourMatrixBase):
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
     """
-    __slots__ = ('_type',)
+
+    __slots__ = ("_type",)
 
     @classmethod
     def preset(cls):
         return map(cls, ma.methods)
 
     def __str__(self):
-        return '{}_Dt'.format(self._type.__name__)
+        return "{}_Dt".format(self._type.__name__)
 
     def parameters(self):
         return self._type,
 
-    def __init__(self, type='SpMax'):
+    def __init__(self, type="SpMax"):
         self._type = ma.get_method(type)
 
     def dependencies(self):
         return {
-            'result': self._type(
+            "result": self._type(
                 DetourMatrixCache(),
                 self.explicit_hydrogens,
                 self.kekulize,
-            )
+            ),
         }
 
     def calculate(self, result):
@@ -194,6 +195,7 @@ class DetourIndex(DetourMatrixBase):
     :math:`D` is detour matrix,
     :math:`A` is number of atoms.
     """
+
     __slots__ = ()
 
     def parameters(self):
@@ -209,7 +211,7 @@ class DetourIndex(DetourMatrixBase):
         return self.__class__.__name__
 
     def dependencies(self):
-        return {'D': DetourMatrixCache()}
+        return {"D": DetourMatrixCache()}
 
     def calculate(self, D):
         return int(0.5 * D.sum())

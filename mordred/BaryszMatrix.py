@@ -7,7 +7,7 @@ from ._base import Descriptor
 from ._atomic_property import AtomicProperty, get_properties
 from ._matrix_attributes import methods, get_method
 
-__all__ = ('BaryszMatrix',)
+__all__ = ("BaryszMatrix",)
 
 
 class BaryszMatrixBase(Descriptor):
@@ -16,7 +16,7 @@ class BaryszMatrixBase(Descriptor):
 
 
 class Barysz(BaryszMatrixBase):
-    __slots__ = ('_prop',)
+    __slots__ = ("_prop",)
 
     def parameters(self):
         return self._prop,
@@ -25,7 +25,7 @@ class Barysz(BaryszMatrixBase):
         self._prop = prop
 
     def dependencies(self):
-        return {'P': self._prop}
+        return {"P": self._prop}
 
     def calculate(self, P):
         C = self._prop.carbon
@@ -61,30 +61,31 @@ class BaryszMatrix(BaryszMatrixBase):
 
     :returns: NaN when any properties are NaN
     """
-    __slots__ = ('_prop', '_type',)
+
+    __slots__ = ("_prop", "_type",)
 
     @classmethod
     def preset(cls):
         return (cls(p, m) for p in get_properties() for m in methods)
 
     def __str__(self):
-        return '{}_Dz{}'.format(self._type.__name__, self._prop.as_argument)
+        return "{}_Dz{}".format(self._type.__name__, self._prop.as_argument)
 
     def parameters(self):
         return self._prop, self._type
 
-    def __init__(self, prop='Z', type='SpMax'):
+    def __init__(self, prop="Z", type="SpMax"):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)
         self._type = get_method(type)
 
     def dependencies(self):
-        return dict(
-            result=self._type(
+        return {
+            "result": self._type(
                 Barysz(self._prop),
                 self.explicit_hydrogens,
                 self.kekulize,
-            )
-        )
+            ),
+        }
 
     def calculate(self, result):
         return result

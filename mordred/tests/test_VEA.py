@@ -7,8 +7,8 @@ from mordred import Calculator, DistanceMatrix, AdjacencyMatrix
 # Topological indices and real number vertex invariants based on graph eigenvalues or eigenvectors.
 # J. Chem. Inf. Comput. Sci. 1991, 31 (4), 517-523 DOI: 10.1021/ci00004a014.
 
-descs = '          VE1_A     VE3_A       VE1_D     VE3_D       VR1_A       VR1_D'.strip().split()
-data = '''
+descs = "          VE1_A     VE3_A       VE1_D     VE3_D       VR1_A       VR1_D".strip().split()
+data = """
 CC                 1.41421   -1.26286    1.41421   -1.26286     1.41421     1.41421
 CCC                1.70711   -0.66917    1.71563   -0.66419   4:3.36358   4:3.72243
 CCCC               1.9465    -0.25026    1.97417   -0.23614     5.89199   3:6.52546
@@ -48,13 +48,13 @@ CC(C)(C)CCCC       2.54201    0.70981    2.78428  0:0.88085  3:23.97131    22.25
 CC(C)(C)C(C)CC     2.58279    0.72573    2.7838     0.80067    19.83745  3:23.03447
 CC(C)(C)CC(C)C     2.61183    0.73691    2.78783    0.80212  4:19.55118  3:22.60561
 CC(C)(C)C(C)(C)C   2.6026     0.73337    2.7892     0.80261  4:17.88167  3:23.56702
-'''.strip().split('\n')
+""".strip().split("\n")
 
 
 def parse_reference(a):
-    if a[:2] == 'i:':
+    if a[:2] == "i:":
         return 0, None
-    elif a[1] == ':':
+    elif a[1] == ":":
         return int(a[0]), float(a[2:])
 
     return 5, float(a)
@@ -78,4 +78,4 @@ def test_VEA():
                 continue
 
             yield assert_almost_equal, actuals[desc], desired,\
-                decimal, '{} of {}'.format(desc, smi)
+                decimal, "{} of {}".format(desc, smi)

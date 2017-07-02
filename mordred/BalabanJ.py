@@ -3,11 +3,12 @@ import rdkit.Chem.GraphDescriptors as RDKit
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
-__all__ = ('BalabanJ',)
+__all__ = ("BalabanJ",)
 
 
 class BalabanJ(Descriptor):
     r"""Balaban's J index descriptor(rdkit wrapper)."""
+
     __slots__ = ()
 
     explicit_hydrogens = False
@@ -23,7 +24,7 @@ class BalabanJ(Descriptor):
         return self.__class__.__name__
 
     def dependencies(self):
-        return {'D': DistanceMatrix(self.explicit_hydrogens)}
+        return {"D": DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, D):
         return float(RDKit.BalabanJ(self.mol, dMat=D))

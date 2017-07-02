@@ -6,7 +6,7 @@ from rdkit import Chem
 from ._base import Descriptor
 
 __all__ = (
-    'PathCount',
+    "PathCount",
 )
 
 
@@ -15,7 +15,7 @@ class PathCountBase(Descriptor):
 
 
 class PathCountCache(PathCountBase):
-    __slots__ = ('_order', '_bonds')
+    __slots__ = ("_order", "_bonds")
 
     def parameters(self):
         return self._order,
@@ -118,12 +118,12 @@ class PathCount(PathCountBase):
         )
 
     def __str__(self):
-        base = 'T' if self._total else ''
-        pi = 'piPC' if self._pi else 'MPC'
+        base = "T" if self._total else ""
+        pi = "piPC" if self._pi else "MPC"
 
-        return '{}{}{}'.format(base, pi, self._order)
+        return "{}{}{}".format(base, pi, self._order)
 
-    __slots__ = ('_order', '_pi', '_total', '_log',)
+    __slots__ = ("_order", "_pi", "_total", "_log",)
 
     def parameters(self):
         return self._order, self._pi, self._total, self._log
@@ -137,9 +137,9 @@ class PathCount(PathCountBase):
         self._log = log
 
     def dependencies(self):
-        deps = {'PC': PathCountCache(self._order)}
+        deps = {"PC": PathCountCache(self._order)}
         if self._total and self._order > 0:
-            deps['acc'] = self.__class__(
+            deps["acc"] = self.__class__(
                 self._order - 1,
                 self._pi,
                 self._total,
@@ -163,7 +163,8 @@ class PathCount(PathCountBase):
 
     @property
     def rtype(self):
-        r"""
+        r"""Return type.
+
         * pi = True: :py:class:`float`
         * pi = False: :py:class:`int`
         """
