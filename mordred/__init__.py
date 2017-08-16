@@ -6,6 +6,7 @@ from ._base import (
     Descriptor,
     get_descriptors_from_module,
     is_missing,
+    Result,
 )
 
 from ._version import __version__
@@ -17,4 +18,5 @@ __all__ = (
     "all_descriptors",
     "get_descriptors_from_module",
     "is_missing",
+    "Result",
 )

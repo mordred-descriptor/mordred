@@ -2,13 +2,13 @@ from __future__ import print_function
 
 import sys
 from types import ModuleType
-from inspect import getsourcelines
 from contextlib import contextmanager
 
 from tqdm import tqdm
 
 from .._util import Capture, DummyBar, NotebookWrapper
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
+from .result import Result
 from .context import Context
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
@@ -235,16 +235,21 @@ class Calculator(object):
         :type id: int
         :param id: conformer id
 
-        :rtype: [scalar or Error]
+        :rtype: Result[scalar or Error]
         :returns: iterator of descriptor and value
         """
-        return list(self._calculate(Context.from_calculator(self, mol, id)))
+        return self._wrap_result(
+            self._calculate(Context.from_calculator(self, mol, id)),
+        )
+
+    def _wrap_result(self, r):
+        return Result(r, self._descriptors)
 
     def _serial(self, mols, nmols, quiet, ipynb, id):
         with self._progress(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
-                    r = list(self._calculate(Context.from_calculator(self, m, id)))
+                    r = self._wrap_result(self._calculate(Context.from_calculator(self, m, id)))
 
                 for e in capture.result:
                     e = e.rstrip()
@@ -314,7 +319,7 @@ class Calculator(object):
             id(int): conformer id to use. default: -1.
 
         Returns:
-            Iterator[scalar]
+            Iterator[Result[scalar]]
 
         """
         if hasattr(mols, "__len__"):
@@ -334,9 +339,15 @@ class Calculator(object):
         """
         import pandas
 
+        if isinstance(mols, pandas.Series):
+            index = mols.index
+        else:
+            index = None
+
         return pandas.DataFrame(
-            self.map(mols, nproc, nmols, quiet, ipynb, id),
+            (list(r) for r in self.map(mols, nproc, nmols, quiet, ipynb, id)),
             columns=[str(d) for d in self.descriptors],
+            index=index,
         )
 
 
@@ -373,11 +384,4 @@ def get_descriptors_from_module(mdl, submodule=False):
             if is_descriptor_class(fn)
         ]
 
-    def key_by_def(d):
-        try:
-            return getsourcelines(d)[1]
-        except IOError:
-            return sys.maxsize
-
-    descs.sort(key=key_by_def)
     return descs

@@ -3,6 +3,9 @@ mordred package
 
 .. automodule:: mordred
 
+.. autoclass:: mordred.Result
+    :members:
+
 .. autoclass:: mordred.Descriptor
     :members:
 

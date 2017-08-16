@@ -50,7 +50,7 @@ def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
 
                     bar.write(e)
 
-                yield r
+                yield self._wrap_result(r)
                 bar.update()
 
     finally:

@@ -56,8 +56,64 @@ examples
 as command
 ~~~~~~~~~~
 
+calculate all descriptors
+
 .. code:: console
 
+    $ python -m mordred example.smi
+    name,ECIndex,WPath,WPol,Zagreb1, (snip)
+    benzene,36,27,3,24.0, (snip)
+    chrolobenzene,45,42,5,30.0, (snip)
+
+    
+save to file (display progress bar)
+
+.. code:: console
+
+    $ python -m mordred example.smi -o example.csv
+    50%|███████████████████████████████████████▌                                       | 1/2 [00:00<00:00,  7.66it/s]
+
+
+stream read (low memory, no number of molecules information)
+
+.. code:: console
+
+    $ python -m mordred example.smi -s -o example.csv
+    0it [00:00, ?it/s]
+
+only ABCIndex
+
+.. code:: console
+
+    $ python -m mordred example.smi -d ABCIndex
+    name,ABC,ABCGG
+    benzene,4.242640687119286,3.9999999999999996
+    chlorobenzene,5.059137268047012,4.785854275382693
+    
+ABCIndex and AcidBase
+
+.. code:: console
+
+    $ python -m mordred example.smi -d ABCIndex -d AcidBase
+    name,ABC,ABCGG,nAcid,nBase
+    benzene,4.242640687119286,3.9999999999999996,0,0
+    chlorobenzene,5.059137268047012,4.785854275382693,0,0
+    
+multiple input
+
+.. code:: console
+
+    $ python -m mordred example.smi example2.smi -d ABCIndex
+    name,ABC,ABCGG
+    benzene,4.242640687119286,3.9999999999999996
+    chlorobenzene,5.059137268047012,4.785854275382693
+    pentane,2.8284271247461903,3.1462643699419726
+    
+show help
+
+.. code:: console
+
+    $ python -m mordred --help
     usage: python -m mordred [-h] [--version] [-t {auto,sdf,mol,smi}] [-o OUTPUT]
                              [-p PROCESSES] [-q] [-s] [-d DESC] [-3] [-v]
                              INPUT [INPUT ...]
@@ -121,6 +177,8 @@ as library
     1    1.3922
     2    1.2688
     Name: SLogP, dtype: float64
+    
+see `examples <examples>`_
 
 Documentation
 -------------
