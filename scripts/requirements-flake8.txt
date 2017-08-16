@@ -1,5 +1,5 @@
+pep8
 flake8
-flake8-isort
 flake8-double-quotes
 flake8-print
 flake8-commas

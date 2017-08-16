@@ -1,9 +1,5 @@
 """Mordred base package."""
 
-import os
-import warnings
-
-from importlib import import_module
 from ..error import MissingValueBase
 
 from .descriptor import (
@@ -12,6 +8,8 @@ from .descriptor import (
 )
 from .calculator import Calculator, get_descriptors_from_module
 from .parallel import parallel
+from .util import is_missing, all_descriptors
+from .result import Result
 
 
 __all__ = (
@@ -20,30 +18,8 @@ __all__ = (
     "Calculator",
     "get_descriptors_from_module",
     "is_missing",
+    "Result",
 )
-
-
-def all_descriptors():
-    r"""**[deprecated]** use mordred.descriptors module instead.
-
-    yield all descriptor modules.
-
-    :returns: all modules
-    :rtype: :py:class:`Iterator` (:py:class:`Descriptor`)
-    """
-    warnings.warn(
-        "all_descriptors() is deprecated, use mordred.descriptors module instead",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    base_dir = os.path.dirname(os.path.dirname(__file__))
-
-    for name in os.listdir(base_dir):
-        name, ext = os.path.splitext(name)
-        if name[:1] == "_" or ext != ".py" or name == "descriptors":
-            continue
-
-        yield import_module(".." + name, __package__)
 
 
 def _Descriptor__call__(self, mol, id=-1):
@@ -114,19 +90,6 @@ def _Descriptor_from_json(self, obj):
         self._all_descriptors = descs
 
     return _from_json(obj, descs)
-
-
-def is_missing(v):
-    """Check argument is either MissingValue or not.
-
-    Parameters:
-        v(any): value
-
-    Returns:
-        bool
-
-    """
-    return isinstance(v, MissingValueBase)
 
 
 Descriptor.__call__ = _Descriptor__call__

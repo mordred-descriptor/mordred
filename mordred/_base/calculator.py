@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 from .._util import Capture, DummyBar, NotebookWrapper
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
+from .result import Result
 from .context import Context
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
@@ -235,16 +236,21 @@ class Calculator(object):
         :type id: int
         :param id: conformer id
 
-        :rtype: [scalar or Error]
+        :rtype: Result[scalar or Error]
         :returns: iterator of descriptor and value
         """
-        return list(self._calculate(Context.from_calculator(self, mol, id)))
+        return self._wrap_result(
+            self._calculate(Context.from_calculator(self, mol, id)),
+        )
+
+    def _wrap_result(self, r):
+        return Result(r, self._descriptors)
 
     def _serial(self, mols, nmols, quiet, ipynb, id):
         with self._progress(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
-                    r = list(self._calculate(Context.from_calculator(self, m, id)))
+                    r = self._wrap_result(self._calculate(Context.from_calculator(self, m, id)))
 
                 for e in capture.result:
                     e = e.rstrip()
@@ -314,7 +320,7 @@ class Calculator(object):
             id(int): conformer id to use. default: -1.
 
         Returns:
-            Iterator[scalar]
+            Iterator[Result[scalar]]
 
         """
         if hasattr(mols, "__len__"):
