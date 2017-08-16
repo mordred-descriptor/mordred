@@ -341,7 +341,7 @@ class Calculator(object):
         import pandas
 
         return pandas.DataFrame(
-            self.map(mols, nproc, nmols, quiet, ipynb, id),
+            (list(r) for r in self.map(mols, nproc, nmols, quiet, ipynb, id)),
             columns=[str(d) for d in self.descriptors],
         )
 
