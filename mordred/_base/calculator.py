@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import sys
 from types import ModuleType
-from inspect import getsourcelines
 from contextlib import contextmanager
 
 from tqdm import tqdm
@@ -385,11 +384,4 @@ def get_descriptors_from_module(mdl, submodule=False):
             if is_descriptor_class(fn)
         ]
 
-    def key_by_def(d):
-        try:
-            return getsourcelines(d)[1]
-        except IOError:
-            return sys.maxsize
-
-    descs.sort(key=key_by_def)
     return descs
