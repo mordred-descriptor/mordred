@@ -59,6 +59,9 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
     def __reduce_ex__(self, version):
         return self.__class__, self.parameters()
 
+    def description(self):
+        pass
+
     @classmethod
     def preset(cls):
         r"""Generate preset descriptor instances.

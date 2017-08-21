@@ -57,6 +57,15 @@ class AggrType(IntEnum):
     def as_argument(self):
         return self.name
 
+    def description(self):
+        d = {
+            self.count: "number",
+            self.sum: "sum",
+            self.max: "max",
+            self.min: "min",
+        }
+        return d[self]
+
 
 aggr_names = (
     (AggrType.count, "N"),
@@ -86,6 +95,9 @@ class AtomTypeEState(EStateBase):
     """
 
     __slots__ = ("_type", "_estate",)
+
+    def description(self):
+        return "{} of {}".format(self._type.description(), self._estate)
 
     aggr_types = tuple(a.name for a in AggrType)
 

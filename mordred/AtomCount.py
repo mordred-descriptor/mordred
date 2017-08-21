@@ -8,6 +8,15 @@ __all__ = (
 )
 
 
+_desc_conv = {
+    "Atom": "all",
+    "Bridgehead": "bridgehead",
+    "HeavyAtom": "heavy",
+    "Spiro": "spiro",
+    "X": "halogen",
+}
+
+
 class AtomCount(Descriptor):
     r"""atom count descriptor.
 
@@ -23,6 +32,9 @@ class AtomCount(Descriptor):
     """
 
     __slots__ = ("_type",)
+
+    def description(self):
+        return "number of {} atoms".format(_desc_conv.get(self._type, self._type))
 
     @classmethod
     def preset(cls):

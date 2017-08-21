@@ -156,6 +156,9 @@ class DetourMatrix(DetourMatrixBase):
 
     __slots__ = ("_type",)
 
+    def description(self):
+        return "{} from detourn matrix".format(self._type.description())
+
     @classmethod
     def preset(cls):
         return map(cls, ma.methods)
@@ -197,6 +200,9 @@ class DetourIndex(DetourMatrixBase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "detour index"
 
     def parameters(self):
         return ()

@@ -8,6 +8,14 @@ from ._atomic_property import table
 __all__ = ("MolecularDistanceEdge",)
 
 
+_sp_dict = {
+    1: "primary",
+    2: "secondary",
+    3: "tertiary",
+    4: "quaternary",
+}
+
+
 class MolecularDistanceEdge(Descriptor):
     r"""molecular distance edge descriptor.
 
@@ -26,6 +34,13 @@ class MolecularDistanceEdge(Descriptor):
     __slots__ = ("_valence1", "_valence2", "_atomic_num",)
     explicit_hydrogens = False
 
+    def description(self):
+        return "molecular distance edge between {a} {e} and {b} {e}".format(
+            a=_sp_dict[self._valence1],
+            b=_sp_dict[self._valence2],
+            e=table.GetElementSymbol(self._atomic_num),
+        )
+
     @classmethod
     def preset(cls):
         return (
@@ -43,7 +58,7 @@ class MolecularDistanceEdge(Descriptor):
         )
 
     def parameters(self):
-        return self._valence1, self._valence2, self._atomic_num
+        return self._valence1, self._valence2, table.GetElementSymbol(self._atomic_num)
 
     def __init__(self, valence1=1, valence2=1, element="C"):
         self._valence1 = min(valence1, valence2)

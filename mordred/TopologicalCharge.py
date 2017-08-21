@@ -36,7 +36,7 @@ class TopologicalCharge(Descriptor):
 
     :type type: str
     :param type:
-        * "sum": sum of order-distance atom pairs coefficient
+        * "raw": sum of order-distance atom pairs coefficient
         * "mean": mean of order-distance atom pairs coefficient
         * "global": sum of mean-topoCharge over 0 to order
 
@@ -53,6 +53,12 @@ class TopologicalCharge(Descriptor):
     explicit_hydrogens = False
 
     tc_types = ("global", "mean", "raw")
+
+    def description(self):
+        return "{}-ordered {} topological charge".format(
+            self._order,
+            self._type,
+        )
 
     @classmethod
     def preset(cls):

@@ -1,5 +1,6 @@
 import math
 
+from six import integer_types
 from networkx import Graph
 
 from ._base import Descriptor
@@ -102,6 +103,20 @@ class MolecularId(MolecularIdBase):
     """
 
     __slots__ = ("_orig_type", "_averaged", "_eps", "_type", "_check")
+
+    def description(self):
+        if self._type == "any":
+            t = ""
+        elif self._type == "X":
+            t = " on halogen atoms"
+        else:
+            e = self._type
+            if isinstance(e, integer_types):
+                e = table.GetAtomicSymbol(e)
+
+            t = " on {} atoms".format(e)
+
+        return "{}molecular ID{}".format("averaged " if self._averaged else "", t)
 
     @classmethod
     def preset(cls):

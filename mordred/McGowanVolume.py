@@ -16,6 +16,9 @@ class McGowanVolume(Descriptor):
 
     __slots__ = ()
 
+    def description(self):
+        return "McGowan volume"
+
     @classmethod
     def preset(cls):
         yield cls()

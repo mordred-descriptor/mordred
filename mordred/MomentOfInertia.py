@@ -45,6 +45,9 @@ class PrincipalAxis(MomentOfInertiaBase):
 class MomentOfInertia(MomentOfInertiaBase):
     __slots__ = "_axis",
 
+    def description(self):
+        return "moment of inertia (axis = {})".format(self._axis)
+
     @classmethod
     def preset(cls):
         return map(cls, cls.axes)

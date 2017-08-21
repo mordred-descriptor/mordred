@@ -28,12 +28,21 @@ class ZagrebIndex(Descriptor):
     __slots__ = ("_version", "_variable",)
     explicit_hydrogens = False
 
+    def description(self):
+        if self._variable == 1:
+            return "Zagreb index (version {})".format(self._version)
+        elif self._variable == -1:
+            return "modified Zagreb index (version {})".format(self._version)
+        else:
+            return "Zagreb like index (lambda = {}, version {})".format(
+                self._variable, self._version)
+
     @classmethod
     def preset(cls):
         return (cls(v, x) for x in [1, -1] for v in [1, 2])
 
     def __str__(self):
-        if self._variable in [1, -1]:
+        if self._variable in {1, -1}:
             m = "" if self._variable == 1 else "m"
             return "{}Zagreb{}".format(m, self._version)
 
@@ -43,7 +52,7 @@ class ZagrebIndex(Descriptor):
         return self._version, self._variable
 
     def __init__(self, version=1, variable=1):
-        assert version in [1, 2]
+        assert version in {1, 2}
         self._version = version
         self._variable = variable
 

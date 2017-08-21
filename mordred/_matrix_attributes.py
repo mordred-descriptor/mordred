@@ -103,6 +103,10 @@ class Eigen(Common):
 class SpAbs(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "graph energy"
+
     def calculate(self, eig):
         return np.abs(eig.val).sum()
 
@@ -111,6 +115,10 @@ class SpAbs(Common):
 class SpMax(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "leading eigenvalue"
+
     def calculate(self, eig):
         return eig.val[eig.max]
 
@@ -118,6 +126,10 @@ class SpMax(Common):
 @method
 class SpDiam(Common):
     __slots__ = ()
+
+    @classmethod
+    def description(cls):
+        return "spectral diamiter"
 
     def dependencies(self):
         return {
@@ -132,6 +144,10 @@ class SpDiam(Common):
 class SpMean(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "mean of eigenvalues"
+
     def calculate(self, eig):
         return np.mean(eig.val)
 
@@ -139,6 +155,10 @@ class SpMean(Common):
 @method
 class SpAD(Common):
     __slots__ = ()
+
+    @classmethod
+    def description(cls):
+        return "spectral absolute diviation"
 
     def dependencies(self):
         return {
@@ -154,6 +174,10 @@ class SpAD(Common):
 class SpMAD(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "spectral mean absolute diviation"
+
     def dependencies(self):
         return {"SpAD": self._SpAD}
 
@@ -164,6 +188,10 @@ class SpMAD(Common):
 @method
 class LogEE(Common):
     __slots__ = ()
+
+    @classmethod
+    def description(cls):
+        return "Estrada-like index"
 
     def calculate(self, eig):
         # log sum exp: https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp
@@ -176,6 +204,10 @@ class LogEE(Common):
 class SM1(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "spectral moment"
+
     def calculate(self, eig):
         return eig.val.sum()
 
@@ -184,6 +216,10 @@ class SM1(Common):
 class VE1(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "coefficient sum of the last eigenvector"
+
     def calculate(self, eig):
         return np.abs(eig.vec[:, eig.max]).sum()
 
@@ -191,6 +227,10 @@ class VE1(Common):
 @method
 class VE2(Common):
     __slots__ = ()
+
+    @classmethod
+    def description(cls):
+        return "average coefficient of the last eigenvector"
 
     def dependencies(self):
         return {"VE1": self._VE1}
@@ -203,6 +243,10 @@ class VE2(Common):
 class VE3(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "logarithmic coefficient sum of the last eigenvector"
+
     def dependencies(self):
         return {"VE1": self._VE1}
 
@@ -214,6 +258,10 @@ class VE3(Common):
 @method
 class VR1(Common):
     __slots__ = ()
+
+    @classmethod
+    def description(cls):
+        return "Randic-like eigenvector-based index"
 
     def calculate(self, eig):
         s = 0.0
@@ -231,6 +279,10 @@ class VR1(Common):
 class VR2(Common):
     __slots__ = ()
 
+    @classmethod
+    def description(cls):
+        return "normalized Randic-like eigenvector-based index"
+
     def dependencies(self):
         return {"VR1": self._VR1}
 
@@ -241,6 +293,10 @@ class VR2(Common):
 @method
 class VR3(Common):
     __slots__ = ()
+
+    @classmethod
+    def description(cls):
+        return "logarithmic Randic-like eigenvector-based index"
 
     def dependencies(self):
         return {"VR1": self._VR1}

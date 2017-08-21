@@ -27,6 +27,9 @@ class AromaticAtomsCount(AromaticBase):
     __slots__ = ()
     _name = "nAromAtom"
 
+    def description(self):
+        return "aromatic atoms count"
+
     def calculate(self):
         return sum(
             1
@@ -40,6 +43,9 @@ class AromaticBondsCount(AromaticBase):
 
     __slots__ = ()
     _name = "nAromBond"
+
+    def description(self):
+        return "aromatic bonds count"
 
     def calculate(self):
         return sum(

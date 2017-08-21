@@ -27,6 +27,9 @@ class Radius3D(GeometricalIndexBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "geometric radius"
+
     def __str__(self):
         return "GeomRadius"
 
@@ -41,6 +44,9 @@ class Diameter3D(GeometricalIndexBase):
     r"""geometric diameter descriptor."""
 
     __slots__ = ()
+
+    def description(self):
+        return "geometric diameter"
 
     def __str__(self):
         return "GeomDiameter"
@@ -67,6 +73,9 @@ class GeometricalShapeIndex(GeometricalIndexBase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "geometrical shape index"
 
     def __str__(self):
         return "GeomShapeIndex"
@@ -97,6 +106,9 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "geometric Petitjean index"
 
     def __str__(self):
         return "GeomPetitjeanIndex"

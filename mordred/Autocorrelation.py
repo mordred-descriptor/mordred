@@ -18,6 +18,10 @@ class AutocorrelationBase(Descriptor):
             self._avec.as_argument,
         )
 
+    def description(self):
+        return "{} of lag {} weighted by {}".format(
+            self._description_name, self._order, self._avec.get_long())
+
     def parameters(self):
         return self._order, self._prop
 
@@ -155,6 +159,8 @@ class ATS(AutocorrelationBase):
 
     __slots__ = ()
 
+    _description_name = "moreau-broto autocorrelation"
+
     @classmethod
     def preset(cls):
         return (
@@ -193,6 +199,8 @@ class AATS(ATS):
 
     __slots__ = ()
 
+    _description_name = "averaged moreau-broto autocorrelation"
+
     def dependencies(self):
         return {"ATS": self._ATS, "gsum": self._gsum}
 
@@ -215,6 +223,8 @@ class ATSC(AutocorrelationBase):
     """
 
     __slots__ = ()
+
+    _description_name = "centered moreau-broto autocorrelation"
 
     @classmethod
     def preset(cls):
@@ -254,6 +264,8 @@ class AATSC(ATSC):
 
     __slots__ = ()
 
+    _description_name = "averaged and centered moreau-broto autocorrelation"
+
     def dependencies(self):
         return {"ATSC": self._ATSC, "gsum": self._gsum}
 
@@ -282,6 +294,8 @@ class MATS(AutocorrelationBase):
     """
 
     __slots__ = ()
+
+    _description_name = "moran coefficient"
 
     @classmethod
     def preset(cls):
@@ -316,6 +330,8 @@ class GATS(MATS):
     """
 
     __slots__ = ()
+
+    _description_name = "geary coefficient"
 
     def dependencies(self):
         return {

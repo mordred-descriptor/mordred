@@ -10,6 +10,12 @@ __all__ = ("GravitationalIndex",)
 class GravitationalIndex(Descriptor):
     __slots__ = "_heavy", "_pair"
 
+    def description(self):
+        return "{}{}gravitational index".format(
+            "heavy atom " if self._heavy else "",
+            "pair " if self._pair else "",
+        )
+
     @classmethod
     def preset(cls):
         return (

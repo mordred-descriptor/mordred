@@ -61,6 +61,13 @@ class CarbonTypes(CarbonTypesBase):
 
     __slots__ = ("_nCarbon", "_SP",)
 
+    def description(self):
+        return "SP{} carbon bound to {} other carbon{}".format(
+            self._SP if self._SP != 1 else "",
+            self._nCarbon,
+            "s" if self._nCarbon > 1 else "",
+        )
+
     @classmethod
     def preset(cls):
         return map(lambda args: cls(*args), [
@@ -99,6 +106,9 @@ class HybridizationRatio(CarbonTypesBase):
 
     :returns: NaN when :math:`N_{\rm SP2} + N_{\rm SP3} = 0`.
     """
+
+    def description(self):
+        return "hybridization ratio"
 
     __slots__ = ()
 

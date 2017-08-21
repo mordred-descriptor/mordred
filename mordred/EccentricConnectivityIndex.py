@@ -18,6 +18,9 @@ class EccentricConnectivityIndex(Descriptor):
     __slots__ = ()
     explicit_hydrogens = False
 
+    def description(self):
+        return "eccentric connectivity index"
+
     @classmethod
     def preset(cls):
         yield cls()

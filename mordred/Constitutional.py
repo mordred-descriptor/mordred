@@ -22,6 +22,9 @@ class ConstitutionalSum(Descriptor):
 
     __slots__ = ("_prop",)
 
+    def description(self):
+        return "sum of constitutional weighted by {}".format(self._prop.get_long())
+
     @classmethod
     def preset(cls):
         return map(cls, get_properties())
@@ -60,6 +63,9 @@ class ConstitutionalMean(ConstitutionalSum):
 
     __slots__ = ("_prop",)
     _prefix = "M"
+
+    def description(self):
+        return "mean of constitutional weighted by {}".format(self._prop.get_long())
 
     @classmethod
     def preset(cls):

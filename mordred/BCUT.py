@@ -1,6 +1,7 @@
 import numpy as np
 
 from ._base import Descriptor
+from ._util import to_ordinal
 from ._atomic_property import AtomicProperty, get_properties
 
 __all__ = ("BCUT",)
@@ -86,6 +87,13 @@ class BCUT(BCUTBase):
     """
 
     __slots__ = ("_prop", "_nth",)
+
+    def description(self):
+        return "{} {} eigenvalue of Burden matrix weighted by {}".format(
+            to_ordinal(np.abs(self._nth) if self._nth < 0 else 1 + self._nth),
+            "lowest" if self._nth < 0 else "heighest",
+            self._prop.get_long(),
+        )
 
     @classmethod
     def preset(cls):

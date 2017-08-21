@@ -16,6 +16,9 @@ class LabuteASA(Descriptor):
     __slots__ = ()
     explicit_hydrogens = False
 
+    def description(self):
+        return "Labute's Approximate Surface Area"
+
     @classmethod
     def preset(cls):
         yield cls()
@@ -41,6 +44,13 @@ class MoeTypeBase(Descriptor):
     def preset(cls):
         return map(cls, range(1, cls.k_max))
 
+    def description(self):
+        return self._fn.__doc__
+
+    @property
+    def _fn(self):
+        return getattr(self._module, str(self))
+
     def __str__(self):
         return self.__class__.__name__ + str(self._k)
 
@@ -52,8 +62,7 @@ class MoeTypeBase(Descriptor):
         self._k = k
 
     def calculate(self):
-        f = getattr(self._module, str(self))
-        return f(self.mol)
+        return self._fn(self.mol)
 
     rtype = float
 
