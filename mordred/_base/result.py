@@ -8,8 +8,8 @@ class Result(list):
         super(Result, self).__init__(r)
         self._descriptors = d
 
-    def fillna(self, value=float('nan')):
-        r"""Replace missing value to 'value'.
+    def fillna(self, value=float("nan")):
+        r"""Replace missing value to "value".
 
         Parameters:
             value: value that missing value is replaced
