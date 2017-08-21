@@ -155,6 +155,9 @@ class InformationContent(InformationContentBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "{}-ordered neighborhood information content".format(self._order)
+
     _name = "IC"
 
     def dependencies(self):
@@ -176,6 +179,9 @@ class TotalIC(InformationContentBase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "{}-ordered neighborhood total information content".format(self._order)
 
     _name = "TIC"
 
@@ -200,6 +206,9 @@ class StructuralIC(TotalIC):
 
     __slots__ = ()
 
+    def description(self):
+        return "{}-ordered structural information content".format(self._order)
+
     _name = "SIC"
 
     def calculate(self, ICm):
@@ -223,6 +232,9 @@ class BondingIC(TotalIC):
 
     __slots__ = ()
 
+    def description(self):
+        return "{}-ordered bonding information content".format(self._order)
+
     _name = "BIC"
 
     def calculate(self, ICm):
@@ -245,6 +257,9 @@ class ComplementaryIC(TotalIC):
 
     __slots__ = ()
 
+    def description(self):
+        return "{}-ordered complementary information content".format(self._order)
+
     _name = "CIC"
 
     def calculate(self, ICm):
@@ -262,6 +277,9 @@ class ModifiedIC(InformationContent):
 
     __slots__ = ()
 
+    def description(self):
+        return "{}-ordered modified information content".format(self._order)
+
     _name = "MIC"
 
     def calculate(self, iAgs):
@@ -278,6 +296,9 @@ class ZModifiedIC(InformationContent):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "{}-ordered Z-modified information content".format(self._order)
 
     _name = "ZMIC"
 

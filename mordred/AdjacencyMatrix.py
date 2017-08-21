@@ -15,6 +15,9 @@ class AdjacencyMatrix(Descriptor):
     __slots__ = ("_type",)
     explicit_hydrogens = False
 
+    def description(self):
+        return "{} of adjacency matrix".format(self._type.__name__)
+
     @classmethod
     def preset(cls):
         return map(cls, methods)

@@ -64,6 +64,10 @@ class BaryszMatrix(BaryszMatrixBase):
 
     __slots__ = ("_prop", "_type",)
 
+    def description(self):
+        return "{} from Barysz matrix weighted by {}".format(
+            self._type.description(), self._prop.get_long())
+
     @classmethod
     def preset(cls):
         return (cls(p, m) for p in get_properties() for m in methods)

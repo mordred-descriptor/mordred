@@ -30,6 +30,9 @@ class Lipinski(LipinskiLike):
 
     __slots__ = ()
 
+    def description(self):
+        return "Lipinski rule of five"
+
     def dependencies(self):
         return {
             "HBAcc": HBondAcceptor(),
@@ -53,6 +56,9 @@ class GhoseFilter(LipinskiLike):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "Ghose filter"
 
     def dependencies(self):
         return {

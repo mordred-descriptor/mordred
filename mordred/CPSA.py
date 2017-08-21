@@ -118,6 +118,9 @@ class PNSA(VersionCPSABase):
 
     __slots__ = ()
 
+    def description(self):
+        return "partial negative surface area (version {})".format(self._version)
+
     def dependencies(self):
         return {
             "SA": AtomicSurfaceArea(),
@@ -155,6 +158,9 @@ class PPSA(PNSA):
 
     __slots__ = ()
 
+    def description(self):
+        return "partial positive surface area (version {})".format(self._version)
+
     @staticmethod
     def _mask(charges):
         return charges > 0.0
@@ -168,6 +174,9 @@ class DPSA(VersionCPSABase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "difference in charged partial surface area (version {})".format(self._version)
 
     def dependencies(self):
         return {
@@ -187,6 +196,9 @@ class FNSA(VersionCPSABase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "fractional charged partial negative surface area (version {})".format(self._version)  # noqa: E501
 
     def _SA(self):
         return PNSA(self._version)
@@ -210,6 +222,9 @@ class FPSA(FNSA):
 
     __slots__ = ()
 
+    def description(self):
+        return "fractional charged partial positive surface area (version {})".format(self._version)  # noqa: E501
+
     def _SA(self):
         return PPSA(self._version)
 
@@ -222,6 +237,9 @@ class WNSA(FNSA):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "surface weighted charged partial negative surface area (version {})".format(self._version)  # noqa: E501
 
     def calculate(self, SA, ASA):
         return SA * np.sum(ASA) / 1000.0
@@ -236,6 +254,9 @@ class WPSA(FPSA):
 
     __slots__ = ()
 
+    def description(self):
+        return "surface weighted charged partial positive surface area (version {})".format(self._version)  # noqa: E501
+
     def calculate(self, SA, ASA):
         return SA * np.sum(ASA) / 1000.0
 
@@ -245,6 +266,9 @@ class RNCG(CPSABase):
 
     __slots__ = ()
     require_3D = False
+
+    def description(self):
+        return "relative negative charge"
 
     @staticmethod
     def _mask(charges):
@@ -268,6 +292,9 @@ class RPCG(RNCG):
 
     __slots__ = ()
 
+    def description(self):
+        return "relative positive charge"
+
     @staticmethod
     def _mask(charges):
         return charges > 0.0
@@ -278,6 +305,9 @@ class RNCS(CPSABase):
 
     __slots__ = ()
     _RCG = RNCG()
+
+    def description(self):
+        return "relative negative charge surface area"
 
     def dependencies(self):
         return {
@@ -308,6 +338,9 @@ class RPCS(RNCS):
 
     __slots__ = ()
 
+    def description(self):
+        return "relative positive charge surface area"
+
     @staticmethod
     def _mask(charges):
         return charges > 0
@@ -319,6 +352,9 @@ class TASA(CPSABase):
     r"""total hydrophobic surface area descriptor."""
 
     __slots__ = ()
+
+    def description(self):
+        return "total hydrophobic surface area"
 
     @staticmethod
     def _mask(charges):
@@ -339,6 +375,9 @@ class TPSA(TASA):
 
     __slots__ = ()
 
+    def description(self):
+        return "total polar surface area"
+
     @staticmethod
     def _mask(charges):
         return np.abs(charges) >= 0.2
@@ -349,6 +388,9 @@ class RASA(CPSABase):
 
     __slots__ = ()
     _TxSA = TASA()
+
+    def description(self):
+        return "relative hydrophobic surface area"
 
     def dependencies(self):
         return {
@@ -362,6 +404,9 @@ class RASA(CPSABase):
 
 class RPSA(RASA):
     r"""relative polar surface area descriptor."""
+
+    def description(self):
+        return "relative polar surface area"
 
     __slots__ = ()
     _TxSA = TPSA()

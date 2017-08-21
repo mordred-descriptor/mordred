@@ -1,5 +1,5 @@
 mordred.descriptors
-=============
+===================
 
 .. automodule:: mordred.descriptors
     :members:

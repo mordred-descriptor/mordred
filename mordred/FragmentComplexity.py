@@ -23,6 +23,9 @@ class FragmentComplexity(Descriptor):
 
     __slots__ = ()
 
+    def description(self):
+        return "fragment complexity"
+
     @classmethod
     def preset(cls):
         yield cls()

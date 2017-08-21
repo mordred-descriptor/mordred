@@ -16,6 +16,12 @@ class MoRSE(Descriptor):
 
     require_3D = True
 
+    def description(self):
+        return "3D-MoRSE{} (distance = {})".format(
+            "" if self._prop is None else " weighted by {}".format(self._prop.get_long()),
+            self._distance,
+        )
+
     @classmethod
     def preset(cls):
         return chain(

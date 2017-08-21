@@ -22,6 +22,11 @@ class TopoPSA(Descriptor):
 
     __slots__ = ("_no_only",)
 
+    def description(self):
+        return "topological polar surface area{}".format(
+            " (use only nitrogen and oxygen)" if self._no_only else "",
+        )
+
     @classmethod
     def preset(cls):
         yield cls(True)

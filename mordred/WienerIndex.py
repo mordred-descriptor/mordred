@@ -14,6 +14,11 @@ class WienerIndex(Descriptor):
     __slots__ = ("_polarity",)
     explicit_hydrogens = False
 
+    def description(self):
+        return "Wiener {}index".format(
+            "polarity " if self._polarity else "",
+        )
+
     @classmethod
     def preset(cls):
         yield cls(False)

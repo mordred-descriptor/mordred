@@ -25,14 +25,25 @@ class ChiType(IntEnum):
 
     @property
     def short(self):
-        _chi_type_dict = {
-            self.__class__.path: "p",
-            self.__class__.chain: "ch",
-            self.__class__.path_cluster: "pc",
-            self.__class__.cluster: "c",
+        _short_dict = {
+            self.path: "p",
+            self.chain: "ch",
+            self.path_cluster: "pc",
+            self.cluster: "c",
         }
 
-        return _chi_type_dict[self]
+        return _short_dict[self]
+
+    @property
+    def long(self):
+        _long_dict = {
+            self.path: "Chi path",
+            self.chain: "Chi chain",
+            self.path_cluster: "Chi path-cluster",
+            self.cluster: "Chi cluster",
+        }
+
+        return _long_dict[self]
 
 
 class DFS(object):
@@ -166,6 +177,14 @@ class Chi(ChiBase):
     chi_types = tuple(t.name for t in ChiType)
 
     _deltas = ["d", "dv"]
+
+    def description(self):
+        return "{}-ordered {}{} weighted by {}".format(
+            self._order,
+            "averaged " if self._averaged else "",
+            self._type.long,
+            self._prop.get_long(),
+        )
 
     @classmethod
     def preset(cls):

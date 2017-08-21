@@ -14,6 +14,9 @@ class Weight(Descriptor):
     :param averaged: averaged by number of atom
     """
 
+    def description(self):
+        return "{}molecular weight".format("averaged " if self._averaged else "")
+
     __slots__ = ("_averaged",)
     explicit_hydrogens = True
 

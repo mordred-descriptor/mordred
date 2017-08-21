@@ -44,6 +44,9 @@ class KappaShapeIndex1(KappaShapeIndexBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "kappa shape index 1"
+
     def calculate(self, Chi):
         P, A, Pmin = self._common(Chi)
         Pmax = 0.5 * A * (A - 1)
@@ -60,6 +63,9 @@ class KappaShapeIndex2(KappaShapeIndexBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "kappa shape index 2"
+
     def calculate(self, Chi):
         P, A, Pmin = self._common(Chi)
         Pmax = 0.5 * (A - 1) * (A - 2)
@@ -75,6 +81,9 @@ class KappaShapeIndex3(KappaShapeIndexBase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "kappa shape index 3"
 
     def calculate(self, Chi):
         P, A, Pmin = self._common(Chi)

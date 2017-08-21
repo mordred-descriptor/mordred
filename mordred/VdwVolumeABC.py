@@ -45,6 +45,9 @@ class VdwVolumeABC(Descriptor):
 
     __slots__ = ()
 
+    def description(self):
+        return "ABC van der waals volume"
+
     compat_atoms = tuple(bondi_radii)
 
     @classmethod
