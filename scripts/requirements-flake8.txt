@@ -1,6 +1,6 @@
 pep8
 flake8
-flake8-double-quotes
+flake8-quotes
 flake8-print
 flake8-commas
 flake8-comprehensions
