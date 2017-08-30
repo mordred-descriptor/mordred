@@ -2,6 +2,7 @@ from __future__ import division
 
 import os
 
+import six
 import numpy as np
 from rdkit import Chem
 from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
@@ -107,7 +108,20 @@ period = PeriodicTable(
 
 mc_gowan_volume = PeriodicTable.load("mc_gowan_volume.txt")
 
-table = Chem.GetPeriodicTable()
+
+_table = Chem.GetPeriodicTable()
+
+
+GetElementSymbol = _table.GetElementSymbol
+
+
+if six.PY2:
+    def GetAtomicNumber(symbol):
+        if isinstance(symbol, unicode):  # noqa: F821
+            symbol = str(symbol)
+        return _table.GetAtomicNumber(symbol)
+else:
+    GetAtomicNumber = _table.GetAtomicNumber
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
@@ -117,7 +131,7 @@ def get_valence_electrons(atom):
     if N == 1:
         return 0
 
-    Zv = table.GetNOuterElecs(N) - atom.GetFormalCharge()
+    Zv = _table.GetNOuterElecs(N) - atom.GetFormalCharge()
     Z = atom.GetAtomicNum() - atom.GetFormalCharge()
     hi = atom.GetTotalNumHs()
     he = sum(1 for a in atom.GetNeighbors() if a.GetAtomicNum() == 1)
@@ -150,14 +164,14 @@ def get_core_count(atom):
     if Z == 1:
         return 0.0
 
-    Zv = table.GetNOuterElecs(Z)
+    Zv = _table.GetNOuterElecs(Z)
     PN = period[Z]
 
     return (Z - Zv) / (Zv * (PN - 1))
 
 
 def get_eta_epsilon(atom):
-    Zv = table.GetNOuterElecs(atom.GetAtomicNum())
+    Zv = _table.GetNOuterElecs(atom.GetAtomicNum())
     return 0.3 * Zv - get_core_count(atom)
 
 
@@ -196,7 +210,7 @@ def get_eta_nonsigma_contribute(bond):
 def get_eta_beta_delta(atom):
     if atom.GetIsAromatic() or\
             atom.IsInRing() or\
-            table.GetNOuterElecs(atom.GetAtomicNum()) - atom.GetTotalValence() <= 0:
+            _table.GetNOuterElecs(atom.GetAtomicNum()) - atom.GetTotalValence() <= 0:
         return 0.0
 
     for b in atom.GetNeighbors():

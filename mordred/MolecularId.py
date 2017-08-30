@@ -4,7 +4,7 @@ from six import integer_types
 from networkx import Graph
 
 from ._base import Descriptor
-from ._atomic_property import table, halogen
+from ._atomic_property import GetAtomicNumber, GetElementSymbol, halogen
 
 __all__ = ("MolecularId",)
 
@@ -112,7 +112,7 @@ class MolecularId(MolecularIdBase):
         else:
             e = self._type
             if isinstance(e, integer_types):
-                e = table.GetAtomicSymbol(e)
+                e = GetElementSymbol(e)
 
             t = " on {} atoms".format(e)
 
@@ -142,7 +142,7 @@ class MolecularId(MolecularIdBase):
         self._eps = _eps
 
         if isinstance(type, str) and type not in ["any", "hetero", "X"]:
-            type = table.GetAtomicNumber(type)
+            type = GetAtomicNumber(type)
 
         if type == "any":
             self._check = lambda _: True
