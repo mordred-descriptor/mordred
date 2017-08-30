@@ -6,16 +6,19 @@ source ./scripts/add_path.sh
 [[ -n "$COVERAGE" ]] && coveralls
 
 if [[ -z "$TRAVIS_TAG" && -z "$APPVEYOR_REPO_TAG_NAME" ]]; then
+    LABEL=dev
     echo $(cat mordred/_version.txt).post1.dev1 > mordred/_version.txt
+else
+    LABEL=main
 fi
 
 conda build . --no-test
 
 OUTPUT=`conda build . --output --python $PYTHON_VERSION`
 if [[ -n "$APPVEYOR" ]]; then
-    cmd /c "anaconda -t $ANACONDA_CLOUD_TOKEN upload --label main --force $OUTPUT"
+    cmd /c "anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT"
 else
-    anaconda -t $ANACONDA_CLOUD_TOKEN upload --label main --force $OUTPUT
+    anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT
 fi
 
 # documentation
