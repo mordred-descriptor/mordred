@@ -34,6 +34,9 @@ class SLogP(WildmanCrippenBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "Wildman-Crippen LogP"
+
     def calculate(self):
         return Crippen.MolLogP(self.mol)
 
@@ -42,6 +45,9 @@ class SMR(WildmanCrippenBase):
     r"""Wildman-Crippen MR descriptor(rdkit wrapper)."""
 
     __slots__ = ()
+
+    def description(self):
+        return "Wildman-Crippen MR"
 
     def calculate(self):
         return Crippen.MolMR(self.mol)

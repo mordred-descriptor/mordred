@@ -71,6 +71,20 @@ class RingCount(RingCountBase):
 
     __slots__ = ("_order", "_greater", "_fused", "_aromatic", "_hetero",)
 
+    def description(self):
+        if self._order is None:
+            o = ""
+        elif self._greater:
+            o = "{}-or-greater-membered ".format(self._order)
+        else:
+            o = "{}-membered ".format(self._order)
+
+        return "{}{}{}ring count".format(
+            o,
+            "fused " if self._fused else "",
+            "aromatic " if self._aromatic else "",
+        )
+
     @classmethod
     def preset(cls):
         for fused in [False, True]:

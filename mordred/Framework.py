@@ -61,6 +61,9 @@ class Framework(Descriptor):
 
     __slots__ = ()
 
+    def description(self):
+        return "molecular framework ratio"
+
     @classmethod
     def preset(cls):
         yield cls()

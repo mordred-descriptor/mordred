@@ -51,6 +51,9 @@ class AcidicGroupCount(SmartsCountBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "acidic group count"
+
     _name = "nAcid"
 
     SMARTS = (
@@ -65,6 +68,9 @@ class BasicGroupCount(SmartsCountBase):
     r"""basic group count descriptor."""
 
     __slots__ = ()
+
+    def description(self):
+        return "basic group count"
 
     _name = "nBase"
 

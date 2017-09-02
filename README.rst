@@ -184,7 +184,13 @@ Documentation
 -------------
 
 -  `master <http://mordred-descriptor.github.io/documentation/master>`__
+-  `develop <http://mordred-descriptor.github.io/documentation/develop>`__
 
+-  `v0.5.0 <http://mordred-descriptor.github.io/documentation/v0.5.0>`__
+-  `v0.4.1 <http://mordred-descriptor.github.io/documentation/v0.4.1>`__
+-  `v0.4.0 <http://mordred-descriptor.github.io/documentation/v0.4.0>`__
+-  `v0.3.2 <http://mordred-descriptor.github.io/documentation/v0.3.2>`__
+-  `v0.3.1 <http://mordred-descriptor.github.io/documentation/v0.3.1>`__
 -  `v0.3.0 <http://mordred-descriptor.github.io/documentation/v0.3.0>`__
 -  `v0.2.1 <http://mordred-descriptor.github.io/documentation/v0.2.1>`__
 -  `v0.2.0 <http://mordred-descriptor.github.io/documentation/v0.2.0>`__

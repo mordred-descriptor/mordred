@@ -21,9 +21,12 @@ class RotatableBondsBase(Descriptor):
 
 
 class RotatableBondsCount(RotatableBondsBase):
-    r"""ratatable bonds count descriptor(rdkit wrapper)."""
+    r"""rotatable bonds count descriptor(rdkit wrapper)."""
 
     __slots__ = ()
+
+    def description(self):
+        return "rotatable bonds count"
 
     def __str__(self):
         return "nRot"
@@ -44,6 +47,9 @@ class RotatableBondsRatio(RotatableBondsBase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "rotatable bonds ratio"
 
     def __str__(self):
         return "RotRatio"

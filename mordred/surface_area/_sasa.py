@@ -6,7 +6,7 @@ import numpy as np
 
 from ._mesh import SphereMesh
 from .._util import atoms_to_numpy
-from .._atomic_property import table, vdw_radii
+from .._atomic_property import GetAtomicNumber, vdw_radii
 
 
 class SurfaceArea(object):
@@ -128,7 +128,7 @@ class SurfaceArea(object):
         coords = []
 
         for atom in PDBParser().get_structure("", pdb).get_atoms():
-            rs.append(vdw_radii[table.GetAtomicNumber(atom.element)] + solvent_radius)
+            rs.append(vdw_radii[GetAtomicNumber(atom.element)] + solvent_radius)
             coords.append(atom.coord)
 
         return cls(np.array(rs), np.array(coords), level)

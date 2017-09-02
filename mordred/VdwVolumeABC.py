@@ -3,7 +3,7 @@ from math import pi
 from ._base import Descriptor
 from .BondCount import BondCount
 from .RingCount import RingCount
-from ._atomic_property import table
+from ._atomic_property import GetAtomicNumber
 
 __all__ = (
     "VdwVolumeABC",
@@ -28,7 +28,7 @@ bondi_radii = {
 
 
 atom_contrib = {
-    table.GetAtomicNumber(s): 4. / 3. * pi * r ** 3
+    GetAtomicNumber(s): 4. / 3. * pi * r ** 3
     for s, r in bondi_radii.items()
 }
 
@@ -44,6 +44,9 @@ class VdwVolumeABC(Descriptor):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "ABC van der waals volume"
 
     compat_atoms = tuple(bondi_radii)
 

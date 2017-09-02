@@ -3,9 +3,17 @@ from numpy import product
 
 from ._base import Descriptor
 from ._graph_matrix import Valence, DistanceMatrix
-from ._atomic_property import table
+from ._atomic_property import GetAtomicNumber, GetElementSymbol
 
 __all__ = ("MolecularDistanceEdge",)
+
+
+_sp_dict = {
+    1: "primary",
+    2: "secondary",
+    3: "tertiary",
+    4: "quaternary",
+}
 
 
 class MolecularDistanceEdge(Descriptor):
@@ -26,6 +34,13 @@ class MolecularDistanceEdge(Descriptor):
     __slots__ = ("_valence1", "_valence2", "_atomic_num",)
     explicit_hydrogens = False
 
+    def description(self):
+        return "molecular distance edge between {a} {e} and {b} {e}".format(
+            a=_sp_dict[self._valence1],
+            b=_sp_dict[self._valence2],
+            e=GetElementSymbol(self._atomic_num),
+        )
+
     @classmethod
     def preset(cls):
         return (
@@ -37,13 +52,13 @@ class MolecularDistanceEdge(Descriptor):
 
     def __str__(self):
         return "MDE{}-{}{}".format(
-            table.GetElementSymbol(self._atomic_num),
+            GetElementSymbol(self._atomic_num),
             self._valence1,
             self._valence2,
         )
 
     def parameters(self):
-        return self._valence1, self._valence2, self._atomic_num
+        return self._valence1, self._valence2, GetElementSymbol(self._atomic_num)
 
     def __init__(self, valence1=1, valence2=1, element="C"):
         self._valence1 = min(valence1, valence2)
@@ -51,7 +66,7 @@ class MolecularDistanceEdge(Descriptor):
         if isinstance(element, integer_types):
             self._atomic_num = element
         elif isinstance(element, string_types):
-            self._atomic_num = table.GetAtomicNumber(element)
+            self._atomic_num = GetAtomicNumber(element)
         else:
             raise ValueError("element must be atomic number or atomic symbol")
 

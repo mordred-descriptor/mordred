@@ -23,6 +23,13 @@ class WalkCount(Descriptor):
 
     explicit_hydrogens = False
 
+    def description(self):
+        return "{}walk count (leg-{}{})".format(
+            "total " if self._total else "",
+            self._order,
+            ", only self returning walk" if self._self_returning else "",
+        )
+
     @classmethod
     def preset(cls):
         for start, sr in [(1, False), (2, True)]:

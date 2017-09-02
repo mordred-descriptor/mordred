@@ -28,16 +28,16 @@ class BondType(IntEnum):
 
 
 bond_types = (
-    (BondType.any, ("", lambda _: True)),
-    (BondType.heavy, ("O", lambda _: True)),
+    (BondType.any, ("", "all bonds", lambda _: True)),
+    (BondType.heavy, ("O", "bonds connecting to heavy atom", lambda _: True)),
 
-    (BondType.single, ("S", lambda b: b.GetBondType() == Chem.BondType.SINGLE)),
-    (BondType.double, ("D", lambda b: b.GetBondType() == Chem.BondType.DOUBLE)),
-    (BondType.triple, ("T", lambda b: b.GetBondType() == Chem.BondType.TRIPLE)),
+    (BondType.single, ("S", "single bonds", lambda b: b.GetBondType() == Chem.BondType.SINGLE)),
+    (BondType.double, ("D", "double bonds", lambda b: b.GetBondType() == Chem.BondType.DOUBLE)),
+    (BondType.triple, ("T", "triple bonds", lambda b: b.GetBondType() == Chem.BondType.TRIPLE)),
 
-    (BondType.aromatic, ("A", lambda b: b.GetIsAromatic() or
+    (BondType.aromatic, ("A", "aromatic bonds", lambda b: b.GetIsAromatic() or
                          b.GetBondType() == Chem.BondType.AROMATIC)),
-    (BondType.multiple, ("M", lambda b: b.GetIsAromatic() or
+    (BondType.multiple, ("M", "multiple bonds", lambda b: b.GetIsAromatic() or
                          b.GetBondType() != Chem.BondType.SINGLE)),
 )
 
@@ -54,7 +54,11 @@ class BondCount(Descriptor):
     :param kekulize: use kekulized structure
     """
 
-    __slots__ = ("_type", "_bond_name", "_check_bond", "kekulize",)
+    __slots__ = ("_type", "_bond_name", "_bond_desc", "_check_bond", "kekulize",)
+
+    def description(self):
+        return "number of {} in {}kekulized structure".format(
+            self._bond_desc, "" if self.kekulize else "non-")
 
     bond_types = tuple(b.name for b in BondType)
 
@@ -80,7 +84,7 @@ class BondCount(Descriptor):
 
     def __init__(self, type="any", kekulize=False):
         self._type = parse_enum(BondType, type)
-        self._bond_name, self._check_bond = bond_type_dict[self._type]
+        self._bond_name, self._bond_desc, self._check_bond = bond_type_dict[self._type]
         self.kekulize = kekulize
 
     def calculate(self):

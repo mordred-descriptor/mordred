@@ -41,6 +41,9 @@ class ABCIndex(ABCIndexBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "atom-bond connectivity index"
+
     @staticmethod
     def _each_bond(bond):
         du = bond.GetBeginAtom().GetDegree()
@@ -66,6 +69,9 @@ class ABCGGIndex(ABCIndexBase):
     """  # noqa: E501
 
     __slots__ = ()
+
+    def description(self):
+        return "Graovac-Ghorbani atom-bond connectivity index"
 
     def dependencies(self):
         return {"D": DistanceMatrix(self.explicit_hydrogens)}

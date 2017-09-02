@@ -91,3 +91,14 @@ def PathType(string):
 
 def module_prog(pkg):
     return "{} -m {}".format(os.path.basename(sys.executable), pkg)
+
+
+def to_ordinal(n):
+    if n == 1:
+        return "first"
+    elif n == 2:
+        return "second"
+    elif n == 3:
+        return "third"
+    else:
+        return "{}-th".format(n)

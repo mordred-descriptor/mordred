@@ -1,9 +1,10 @@
 import math
 
+from six import integer_types
 from networkx import Graph
 
 from ._base import Descriptor
-from ._atomic_property import table, halogen
+from ._atomic_property import GetAtomicNumber, GetElementSymbol, halogen
 
 __all__ = ("MolecularId",)
 
@@ -103,6 +104,20 @@ class MolecularId(MolecularIdBase):
 
     __slots__ = ("_orig_type", "_averaged", "_eps", "_type", "_check")
 
+    def description(self):
+        if self._type == "any":
+            t = ""
+        elif self._type == "X":
+            t = " on halogen atoms"
+        else:
+            e = self._type
+            if isinstance(e, integer_types):
+                e = GetElementSymbol(e)
+
+            t = " on {} atoms".format(e)
+
+        return "{}molecular ID{}".format("averaged " if self._averaged else "", t)
+
     @classmethod
     def preset(cls):
         return (
@@ -127,7 +142,7 @@ class MolecularId(MolecularIdBase):
         self._eps = _eps
 
         if isinstance(type, str) and type not in ["any", "hetero", "X"]:
-            type = table.GetAtomicNumber(type)
+            type = GetAtomicNumber(type)
 
         if type == "any":
             self._check = lambda _: True

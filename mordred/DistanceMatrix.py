@@ -15,6 +15,9 @@ class DistanceMatrix(Descriptor):
     __slots__ = ("_type",)
     explicit_hydrogens = False
 
+    def description(self):
+        return "{} from distance matrix".format(self._type.description())
+
     @classmethod
     def preset(cls):
         return map(cls, methods)

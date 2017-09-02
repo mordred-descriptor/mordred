@@ -26,6 +26,9 @@ class Radius(TopologicalIndexBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "topological radius"
+
     def __str__(self):
         return "Radius"
 
@@ -40,6 +43,9 @@ class Diameter(TopologicalIndexBase):
     r"""diameter descriptor."""
 
     __slots__ = ()
+
+    def description(self):
+        return "topological diameter"
 
     def __str__(self):
         return "Diameter"
@@ -66,6 +72,9 @@ class TopologicalShapeIndex(TopologicalIndexBase):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "topological shape index"
 
     def __str__(self):
         return "TopoShapeIndex"
@@ -98,6 +107,9 @@ class PetitjeanIndex(TopologicalShapeIndex):
     """
 
     __slots__ = ()
+
+    def description(self):
+        return "Petitjean index"
 
     def __str__(self):
         return "PetitjeanIndex"

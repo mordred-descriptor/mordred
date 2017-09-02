@@ -18,6 +18,9 @@ class VertexAdjacencyInformation(Descriptor):
 
     __slots__ = ()
 
+    def description(self):
+        return "vertex adjacency information"
+
     @classmethod
     def preset(cls):
         yield cls()

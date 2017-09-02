@@ -11,6 +11,9 @@ class BalabanJ(Descriptor):
 
     __slots__ = ()
 
+    def description(self):
+        return "Balaban's J index"
+
     explicit_hydrogens = False
 
     @classmethod

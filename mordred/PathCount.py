@@ -108,6 +108,16 @@ class PathCount(PathCountBase):
     :param log: use log scale
     """
 
+    __slots__ = ("_order", "_pi", "_total", "_log",)
+
+    def description(self):
+        return "{}-ordered {}{}path count{}".format(
+            self._order,
+            "total " if self._total else "",
+            "pi-" if self._pi else "",
+            " (log scale)" if self._log else "",
+        )
+
     @classmethod
     def preset(cls):
         return chain(
@@ -122,8 +132,6 @@ class PathCount(PathCountBase):
         pi = "piPC" if self._pi else "MPC"
 
         return "{}{}{}".format(base, pi, self._order)
-
-    __slots__ = ("_order", "_pi", "_total", "_log",)
 
     def parameters(self):
         return self._order, self._pi, self._total, self._log

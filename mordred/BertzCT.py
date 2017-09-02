@@ -12,6 +12,9 @@ class BertzCT(Descriptor):
     __slots__ = ()
     explicit_hydrogens = False
 
+    def description(self):
+        return "Bertz CT"
+
     @classmethod
     def preset(cls):
         yield cls()

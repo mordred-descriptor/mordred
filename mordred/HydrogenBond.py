@@ -23,6 +23,9 @@ class HBondAcceptor(HBondBase):
 
     __slots__ = ()
 
+    def description(self):
+        return "number of hydrogen bond acceptor"
+
     def __str__(self):
         return "nHBAcc"
 
@@ -37,6 +40,9 @@ class HBondDonor(HBondBase):
     r"""hydrogen bond donor descriptor(rdkit wrapper)."""
 
     __slots__ = ()
+
+    def description(self):
+        return "number of hydrogen bond donor"
 
     def __str__(self):
         return "nHBDon"

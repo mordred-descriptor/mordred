@@ -126,6 +126,12 @@ class EtaCoreCount(EtaBase):
 
     __slots__ = ("_averaged", "_reference",)
 
+    def description(self):
+        return "{}ETA core count{}".format(
+            "averaged " if self._averaged else "",
+            " for reference graph" if self._reference else "",
+        )
+
     @classmethod
     def preset(cls):
         return map(cls, [False, True])
@@ -171,6 +177,9 @@ class EtaShapeIndex(EtaBase):
     """
 
     __slots__ = ("_type",)
+
+    def description(self):
+        return "ETA shape index (type: {})".format(self._type)
 
     shape_types = ("p", "y", "x",)
     _type_to_degree = {"p": 1, "y": 3, "x": 4}
@@ -251,6 +260,18 @@ class EtaVEMCount(EtaBase):
 
     __slots__ = ("_type", "_averaged",)
 
+    def description(self):
+        if self._type == "":
+            d = ""
+        elif self._type == "s":
+            d = "sigma contribution to "
+        elif self._type == "ns":
+            d = "nonsigma contribution to "
+        else:
+            d = "delta contribution to "
+
+        return "{}{}valence electron mobile count".format("averaged " if self._averaged else "", d)
+
     @classmethod
     def preset(cls):
         return (
@@ -329,6 +350,13 @@ class EtaCompositeIndex(EtaBase):
     """
 
     __slots__ = ("_reference", "_local", "_averaged",)
+
+    def description(self):
+        return "{}{}ETA composite index{}".format(
+            "averaged " if self._averaged else "",
+            "local " if self._local else "",
+            " for reference graph",
+        )
 
     @classmethod
     def preset(cls):
@@ -412,6 +440,12 @@ class EtaFunctionalityIndex(EtaBase):
 
     __slots__ = ("_local", "_averaged",)
 
+    def description(self):
+        return "{}{}ETA functionality index".format(
+            "averaged " if self._averaged else "",
+            "local " if self._local else "",
+        )
+
     @classmethod
     def preset(cls):
         return (
@@ -466,6 +500,12 @@ class EtaBranchingIndex(EtaBase):
     """
 
     __slots__ = ("_ring", "_averaged",)
+
+    def description(self):
+        return "{}ETA branching index{}".format(
+            "averaged " if self._averaged else "",
+            " (use ring count)" if self._ring else "",
+        )
 
     @classmethod
     def preset(cls):
@@ -526,6 +566,9 @@ class EtaDeltaAlpha(EtaBase):
 
     __slots__ = ("_type",)
 
+    def description(self):
+        return "ETA delta alpha (type: {})".format(self._type)
+
     delta_types = ("A", "B",)
 
     @classmethod
@@ -585,6 +628,9 @@ class EtaEpsilon(EtaBase):
 
     __slots__ = ("_type",)
 
+    def description(self):
+        return "ETA epsilon (type: {})".format(self._type)
+
     @classmethod
     def preset(cls):
         return map(cls, cls.epsilon_types)
@@ -642,6 +688,9 @@ class EtaDeltaEpsilon(EtaBase):
 
     __slots__ = ("_type",)
 
+    def description(self):
+        return "ETA delta epsilon (type: {})".format(self._type)
+
     @classmethod
     def preset(cls):
         return map(cls, cls.delta_epsilon_types)
@@ -687,6 +736,9 @@ class EtaDeltaBeta(EtaBase):
 
     __slots__ = ("_averaged",)
 
+    def description(self):
+        return "{}ETA delta beta".format("averaged " if self._averaged else "")
+
     @classmethod
     def preset(cls):
         return (cls(a) for a in [False, True])
@@ -724,6 +776,9 @@ class EtaPsi(EtaBase):
         \psi_1 = \frac{\alpha}{A \cdot \epsilon^2}
     """
 
+    def description(self):
+        return "ETA psi"
+
     @classmethod
     def preset(cls):
         yield cls()
@@ -757,6 +812,9 @@ class EtaDeltaPsi(EtaBase):
     """
 
     __slots__ = ("_type",)
+
+    def description(self):
+        return "ETA delta psi (type: {})".format(self._type)
 
     @classmethod
     def preset(cls):
