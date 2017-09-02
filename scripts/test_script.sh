@@ -3,4 +3,4 @@
 set -e
 source ./scripts/add_path.sh
 
-nosetests mordred -q
+nosetests mordred -q --with-coverage
