@@ -79,10 +79,18 @@ class RingCount(RingCountBase):
         else:
             o = "{}-membered ".format(self._order)
 
-        return "{}{}{}ring count".format(
+        if self._aromatic is None:
+            a = ""
+        elif self._aromatic is True:
+            a = "aromatic "
+        else:
+            a = "aliphatic "
+
+        return "{}{}{}{}ring count".format(
             o,
+            a,
             "fused " if self._fused else "",
-            "aromatic " if self._aromatic else "",
+            "hetero " if self._hetero else "",
         )
 
     @classmethod
