@@ -21,8 +21,9 @@ molecular descriptor calculator.
 .. image:: https://img.shields.io/pypi/v/mordred.svg
     :target: https://pypi.python.org/pypi/mordred
     
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.61242.svg
-   :target: https://doi.org/10.5281/zenodo.61242
+.. image:: https://zenodo.org/badge/48859647.svg
+   :target: https://zenodo.org/badge/latestdoi/48859647
+
 
 Installation
 ------------
