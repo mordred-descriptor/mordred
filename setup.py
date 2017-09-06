@@ -59,5 +59,5 @@ setup(
         "PyYaml>=3.11",
     ],
 
-    test_suite="nose.collector",
+    cmdclass={"test": None},
 )

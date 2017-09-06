@@ -3,4 +3,4 @@
 set -e
 source ./scripts/add_path.sh
 
-nosetests mordred -q --with-coverage
+python -m mordred.tests -q --with-coverage

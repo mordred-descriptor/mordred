@@ -4,14 +4,11 @@
 
     >>> from mordred import Calculator, descriptors
 
-    >>> descriptors.ABCIndex  # ABCIndex module
-    <module 'mordred.ABCIndex' from '/path/to/ABCIndex.py'>
+    >>> descriptors.ABCIndex.__name__  # ABCIndex module
+    'mordred.ABCIndex'
 
-    >>> descriptors.all  # all descriptor modules
-    (<module 'mordred.ABCIndex' from '/path/to/ABCIndex.py'>,
-     <module 'mordred.AcidBase' from '/path/to/AcidBase.py'>,
-     ...
-    )
+    >>> len(descriptors.all)  # all descriptor modules
+    48
 
     >>> calc = Calculator(descriptors) # all descriptors
 """
