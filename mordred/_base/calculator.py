@@ -338,13 +338,14 @@ class Calculator(object):
 
         """
         import pandas
+        from .pandas import MordredDataFrame
 
         if isinstance(mols, pandas.Series):
             index = mols.index
         else:
             index = None
 
-        return pandas.DataFrame(
+        return MordredDataFrame(
             (list(r) for r in self.map(mols, nproc, nmols, quiet, ipynb, id)),
             columns=[str(d) for d in self.descriptors],
             index=index,
