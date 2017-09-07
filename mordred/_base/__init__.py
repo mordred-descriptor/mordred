@@ -8,12 +8,11 @@ from .descriptor import (
 )
 from .calculator import Calculator, get_descriptors_from_module
 from .parallel import parallel
-from .util import is_missing, all_descriptors
+from .util import is_missing
 from .result import Result
 
 
 __all__ = (
-    "all_descriptors",
     "Descriptor",
     "Calculator",
     "get_descriptors_from_module",
