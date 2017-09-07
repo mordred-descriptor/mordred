@@ -118,7 +118,7 @@ class Result(object):
         >>> from rdkit import Chem
         >>> result = Calculator(descriptors)(Chem.MolFromSmiles("C1CCCCC1"))
         >>> result.name["C2SP3"]
-        1
+        6
 
         """
         return GetValueByName(self._values, self._name_to_index)
