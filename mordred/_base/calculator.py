@@ -337,10 +337,9 @@ class Calculator(object):
             pandas.DataFrame
 
         """
-        import pandas
-        from .pandas import MordredDataFrame
+        from .pandas_module import MordredDataFrame, Series
 
-        if isinstance(mols, pandas.Series):
+        if isinstance(mols, Series):
             index = mols.index
         else:
             index = None

@@ -1,7 +1,9 @@
 import numpy as np
-from pandas import DataFrame
+from pandas import Series, DataFrame
 
 from .util import is_missing
+
+__all__ = ("MordredDataFrame", "Series")
 
 
 class MordredDataFrame(DataFrame):
