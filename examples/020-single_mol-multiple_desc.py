@@ -1,6 +1,10 @@
+from multiprocessing import freeze_support
+
 from rdkit import Chem
 
 from mordred import Chi, ABCIndex, RingCount, Calculator, is_missing, descriptors
+
+freeze_support()
 
 benzene = Chem.MolFromSmiles("c1ccccc1")
 
