@@ -1,10 +1,15 @@
+from multiprocessing import freeze_support
+
 from rdkit import Chem
+
 from mordred import Calculator, descriptors
 
+freeze_support()
+
 mols = [
-    Chem.MolFromSmiles('c1ccccc1'),
-    Chem.MolFromSmiles('c1ccccc1Cl'),
-    Chem.MolFromSmiles('c1ccccc1C'),
+    Chem.MolFromSmiles("c1ccccc1"),
+    Chem.MolFromSmiles("c1ccccc1Cl"),
+    Chem.MolFromSmiles("c1ccccc1C"),
 ]
 
 # Create Calculator
