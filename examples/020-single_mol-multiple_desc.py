@@ -1,13 +1,14 @@
 from rdkit import Chem
+
 from mordred import Chi, ABCIndex, RingCount, Calculator, is_missing, descriptors
 
-benzene = Chem.MolFromSmiles('c1ccccc1')
+benzene = Chem.MolFromSmiles("c1ccccc1")
 
 # Create empty Calculator instance
 calc1 = Calculator()
 
 # Register descriptor instance
-calc1.register(Chi.Chi(type='path_cluster', order=4))
+calc1.register(Chi.Chi(type="path_cluster", order=4))
 
 # Register descriptor class using preset
 calc1.register(RingCount.RingCount)
@@ -46,7 +47,7 @@ print(na1.error)
 
 
 # Delete all missing value
-result = result.dropna()
+result = result.drop_missing()
 
 
 # convert to dict
