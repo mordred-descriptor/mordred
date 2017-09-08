@@ -7,9 +7,9 @@ molecular descriptor calculator.
 
 .. image:: https://ci.appveyor.com/api/projects/status/iwk6268d27jusvni/branch/master?svg=true
     :target: https://ci.appveyor.com/project/philopon/mordred/branch/master
-    
+
 .. image:: https://coveralls.io/repos/github/mordred-descriptor/mordred/badge.svg?branch=master
-    :target: https://coveralls.io/github/mordred-descriptor/mordred?branch=master 
+    :target: https://coveralls.io/github/mordred-descriptor/mordred?branch=master
 
 .. image:: https://codeclimate.com/github/mordred-descriptor/mordred/badges/gpa.svg
    :target: https://codeclimate.com/github/mordred-descriptor/mordred
@@ -17,12 +17,13 @@ molecular descriptor calculator.
 
 .. image:: https://anaconda.org/mordred-descriptor/mordred/badges/version.svg
     :target: https://anaconda.org/mordred-descriptor/mordred
-    
+
 .. image:: https://img.shields.io/pypi/v/mordred.svg
     :target: https://pypi.python.org/pypi/mordred
-    
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.61242.svg
-   :target: https://doi.org/10.5281/zenodo.61242
+
+.. image:: https://zenodo.org/badge/48859647.svg
+   :target: https://zenodo.org/badge/latestdoi/48859647
+
 
 Installation
 ------------
@@ -65,7 +66,7 @@ calculate all descriptors
     benzene,36,27,3,24.0, (snip)
     chrolobenzene,45,42,5,30.0, (snip)
 
-    
+
 save to file (display progress bar)
 
 .. code:: console
@@ -89,7 +90,7 @@ only ABCIndex
     name,ABC,ABCGG
     benzene,4.242640687119286,3.9999999999999996
     chlorobenzene,5.059137268047012,4.785854275382693
-    
+
 ABCIndex and AcidBase
 
 .. code:: console
@@ -98,7 +99,7 @@ ABCIndex and AcidBase
     name,ABC,ABCGG,nAcid,nBase
     benzene,4.242640687119286,3.9999999999999996,0,0
     chlorobenzene,5.059137268047012,4.785854275382693,0,0
-    
+
 multiple input
 
 .. code:: console
@@ -108,7 +109,7 @@ multiple input
     benzene,4.242640687119286,3.9999999999999996
     chlorobenzene,5.059137268047012,4.785854275382693
     pentane,2.8284271247461903,3.1462643699419726
-    
+
 show help
 
 .. code:: console
@@ -177,7 +178,7 @@ as library
     1    1.3922
     2    1.2688
     Name: SLogP, dtype: float64
-    
+
 see `examples <examples>`_
 
 Documentation
@@ -186,6 +187,7 @@ Documentation
 -  `master <http://mordred-descriptor.github.io/documentation/master>`__
 -  `develop <http://mordred-descriptor.github.io/documentation/develop>`__
 
+-  `v0.6.0 <http://mordred-descriptor.github.io/documentation/v0.6.0>`__
 -  `v0.5.1 <http://mordred-descriptor.github.io/documentation/v0.5.1>`__
 -  `v0.5.0 <http://mordred-descriptor.github.io/documentation/v0.5.0>`__
 -  `v0.4.1 <http://mordred-descriptor.github.io/documentation/v0.4.1>`__
@@ -196,4 +198,3 @@ Documentation
 -  `v0.2.1 <http://mordred-descriptor.github.io/documentation/v0.2.1>`__
 -  `v0.2.0 <http://mordred-descriptor.github.io/documentation/v0.2.0>`__
 -  `v0.1.0 <http://mordred-descriptor.github.io/documentation/v0.1.0>`__
-

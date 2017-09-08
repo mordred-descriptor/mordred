@@ -94,6 +94,20 @@ def module_prog(pkg):
 
 
 def to_ordinal(n):
+    r"""Int to ordinal string.
+
+    >>> to_ordinal(1)
+    'first'
+    >>> to_ordinal(2)
+    'second'
+    >>> to_ordinal(3)
+    'third'
+    >>> to_ordinal(4)
+    '4-th'
+    >>> to_ordinal(104)
+    '104-th'
+
+    """
     if n == 1:
         return "first"
     elif n == 2:

@@ -1,17 +1,23 @@
+from multiprocessing import freeze_support
+
 from rdkit import Chem
+
 from mordred import Calculator, descriptors
 
-mols = [
-    Chem.MolFromSmiles('c1ccccc1'),
-    Chem.MolFromSmiles('c1ccccc1Cl'),
-    Chem.MolFromSmiles('c1ccccc1C'),
-]
+if __name__ == "__main__":
+    freeze_support()
 
-# Create Calculator
-calc = Calculator(descriptors)
+    mols = [
+        Chem.MolFromSmiles("c1ccccc1"),
+        Chem.MolFromSmiles("c1ccccc1Cl"),
+        Chem.MolFromSmiles("c1ccccc1C"),
+    ]
 
-# map method calculate multiple molecules (return generator)
-print(list(calc.map(mols)))
+    # Create Calculator
+    calc = Calculator(descriptors)
 
-# pandas method calculate multiple molecules (return pandas DataFrame)
-print(calc.pandas(mols))
+    # map method calculate multiple molecules (return generator)
+    print(list(calc.map(mols)))
+
+    # pandas method calculate multiple molecules (return pandas DataFrame)
+    print(calc.pandas(mols))

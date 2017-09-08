@@ -57,11 +57,11 @@ def test_SASA():
 
         desired = data[name]
 
-        e = actual / desired
+        e = abs((actual - desired) / desired)
         p = 0.05
 
-        yield ok_, 1 - p < e < 1 + p, "large SASA error in {}: {}".format(name, e)
+        yield ok_, e < p, "large SASA error in {}: {}".format(name, e)
 
-        e = tsa(mol) / desired
+        e = abs((tsa(mol) - desired) / desired)
 
-        yield ok_, 1 - p < e < 1 + p, "large SASA error in {}: {}".format(name, e)
+        yield ok_, e < p, "large SASA error in {}: {}".format(name, e)

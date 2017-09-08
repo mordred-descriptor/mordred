@@ -38,7 +38,7 @@ setup(
     version=get_version(),
     description="molecular descriptor calculator",
     long_description=README_rst,
-    license="BSD3",
+    license="BSD-3-Clause",
     author="Hirotomo Moriwaki",
     author_email="philopon.dependence@gmail.com",
     url="https://github.com/mordred-descriptor/mordred",
@@ -59,5 +59,5 @@ setup(
         "PyYaml>=3.11",
     ],
 
-    test_suite="nose.collector",
+    cmdclass={"test": None},
 )
