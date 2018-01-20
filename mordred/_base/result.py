@@ -15,6 +15,16 @@ class Result(object):
         self._descriptors = list(d)
         self._name_to_index = {str(a): i for i, a in enumerate(d)}
 
+    def __str__(self):
+        return str(self._name_to_index)
+
+    def __repr__(self):
+        return "{}({!r},{!r})".format(
+            self.__class__.__name__,
+            self._values,
+            self._descriptors,
+        )
+
     def fill_missing(self, value=np.nan):
         r"""Replace missing value to "value".
 
