@@ -5,7 +5,7 @@ environment:
     CYG_ROOT: C:/cygwin
 
   ANACONDA_CLOUD_TOKEN:
-    secure: pc8oWoWVOIURoks1Ha7wHJ0QpWUcjQORf7N3zGa+mSLlXu2uCkL9fEU5w3bvVQGl
+    secure: FzoPss8yt1nu5uDuLiq3C+p+tJAhb6PKYm41+IIRXzXzol8/RzkJPHD6ssQBL19I
 
   matrix:
     - PYTHON_VERSION: 3.6

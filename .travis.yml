@@ -3,7 +3,6 @@ language: bash
 env:
   global:
     - DOC_REMOTE=git@github.com:mordred-descriptor/documentation.git
-    - secure: "OAYVTLgh4wDBD10+32iWqulE4gK9x938xuKmClZ6eLU/S3tpFsWbcrrxno3yjJ6h5kcIM/ss+4OYu9ciuhvhAEusOPJmyFXd/nXVXkPlu6mcdNLmO/ADuvIQyB66DYU+1dumjOyDPe+qme/p/XJtANFQsqMc32yj4U4TN64YV+CWgFfwDdI9bU6AQnVdO+dCRYRdJ5q6UjkEgp0PMqBlsqtyDIFZK/7Hc4Oc7ZvthtHJ8nm3lGY7Pqk+Z7VBz801uri7UudYNdHkP1FyN3ZDeZXe5LjCuYMP+zAMeIkvNRq32Eus6qQhSc85vXYxjYJcWMUWL4wlOZaMpwVHp4uN1rEadzwhDBcaxDx87AWzm2iCRcqGUHjtGFuY9iJS485R/IhChYU/wKr1ETtlZgM/y/cpsiFk7eAMNUwQkUtRTdkwzTrGu2vLmTrGHxsCg+KnfgDuIaHYTYe5cO5YAtMRThWUzemxiIsHY9RsbuVOYqiNkpdkKXeySGlW8O3y5e/7aJdxjfnRM9QeGTeWGMcgBAMHHyAhkztDxK4MEwezb00jG/+AIVWxgAd35wffK2/B0AeOiti0TtujM/TTcwGpqaCH9bI7xY3hqd3xT83lgw4FE2lL7gAQZX6w6J/AcaQM9C246/eGSg6HiNKl7VZctHWRd1uF1m9MD4pxRXBoWiU="
 
   matrix:
     - PYTHON_VERSION=3.6
