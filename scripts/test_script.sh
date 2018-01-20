@@ -12,7 +12,7 @@ fi
 echo "test README.rst" >&2
 python -m doctest README.rst
 
-for example in examples/*; do
+for example in `find examples -name '*.py'`; do
     echo "test $example" >&2
     PYTHONPATH=. python $example > /dev/null
 done

@@ -4,14 +4,14 @@ from mordred import _atomic_property as prop
 load_path.nop()
 
 
-print('''
+print("""
 .. _atomic_properties:
 
 atomic properties
 =================
-'''[1:])
+"""[1:])
 
 
 for v in prop.getter_list:
     print(v.short)
-    print(' ' * 4 + v.long)
+    print(" " * 4 + v.long)
