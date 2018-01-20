@@ -5,10 +5,10 @@ import sys
 from setuptools import setup, find_packages
 
 install_requires = [
-    "six>=1.10",
-    "numpy>=1.10",
-    "networkx>=1.10",
-    "tqdm>=3.7.1",
+    "six==1.*",
+    "numpy==1.*",
+    "networkx==2.*",
+    "tqdm==4.*",
 ]
 
 if sys.version_info < (3, 4, 0):
@@ -55,8 +55,8 @@ setup(
     install_requires=install_requires,
 
     tests_require=[
-        "nose>=1.3",
-        "PyYaml>=3.11",
+        "nose==1.*",
+        "PyYaml==3.*",
     ],
 
     cmdclass={"test": None},

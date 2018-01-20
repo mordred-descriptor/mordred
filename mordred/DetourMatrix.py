@@ -4,7 +4,7 @@ import networkx
 from . import _matrix_attributes as ma
 from ._base import Descriptor
 
-__all__ = ("DetourMatrix", "DetourIndex",)
+__all__ = ("DetourMatrix", "DetourIndex")
 
 
 class LongestSimplePath(object):
@@ -18,12 +18,12 @@ class LongestSimplePath(object):
         self.N = G.number_of_nodes()
         self.neighbors = {
             n: [(v, d.get(weight, 1.0)) for v, d in G[n].items()]
-            for n in G.nodes_iter()
+            for n in G.nodes()
         }
 
     def _start(self, s):
         self.start = s
-        self.result = {n: 0 for n in self.G.nodes_iter()}
+        self.result = {n: 0 for n in self.G.nodes()}
         self.visited = set()
         self.distance = 0.0
         self._search(s)
@@ -50,7 +50,7 @@ class LongestSimplePath(object):
 
     def __call__(self):
         return {(min(s, g), max(s, g)): w
-                for s in self.G.nodes_iter()
+                for s in self.G.nodes()
                 for g, w in self._start(s).items()}
 
 
