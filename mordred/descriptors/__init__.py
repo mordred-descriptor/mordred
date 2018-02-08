@@ -23,7 +23,7 @@ def _import_all_descriptors():
     values = []
     base_dir = os.path.dirname(os.path.dirname(__file__))
 
-    for name in os.listdir(base_dir):
+    for name in sorted(os.listdir(base_dir)):
         name, ext = os.path.splitext(name)
         if name[:1] == "_" or ext != ".py":
             continue
