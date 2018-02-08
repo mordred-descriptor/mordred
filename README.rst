@@ -21,8 +21,8 @@ molecular descriptor calculator.
 .. image:: https://img.shields.io/pypi/v/mordred.svg
     :target: https://pypi.python.org/pypi/mordred
 
-.. image:: https://zenodo.org/badge/48859647.svg
-   :target: https://zenodo.org/badge/latestdoi/48859647
+.. image:: https://img.shields.io/badge/doi-10.1186%2Fs13321--018--0258--y-blue.svg
+   :target: https://doi.org/10.1186/s13321-018-0258-y
 
 
 Installation
@@ -181,20 +181,14 @@ as library
 
 see `examples <examples>`_
 
+Citation
+--------
+Moriwaki H, Tian Y-S, Kawashita N, Takagi T (2018) Mordred: a molecular descriptor calculator. Journal of Cheminformatics 10:4 . doi: `10.1186/s13321-018-0258-y <https://doi.org/10.1186/s13321-018-0258-y>`__
+
 Documentation
 -------------
 
 -  `master <http://mordred-descriptor.github.io/documentation/master>`__
 -  `develop <http://mordred-descriptor.github.io/documentation/develop>`__
 
--  `v0.6.0 <http://mordred-descriptor.github.io/documentation/v0.6.0>`__
--  `v0.5.1 <http://mordred-descriptor.github.io/documentation/v0.5.1>`__
--  `v0.5.0 <http://mordred-descriptor.github.io/documentation/v0.5.0>`__
--  `v0.4.1 <http://mordred-descriptor.github.io/documentation/v0.4.1>`__
--  `v0.4.0 <http://mordred-descriptor.github.io/documentation/v0.4.0>`__
--  `v0.3.2 <http://mordred-descriptor.github.io/documentation/v0.3.2>`__
--  `v0.3.1 <http://mordred-descriptor.github.io/documentation/v0.3.1>`__
--  `v0.3.0 <http://mordred-descriptor.github.io/documentation/v0.3.0>`__
--  `v0.2.1 <http://mordred-descriptor.github.io/documentation/v0.2.1>`__
--  `v0.2.0 <http://mordred-descriptor.github.io/documentation/v0.2.0>`__
--  `v0.1.0 <http://mordred-descriptor.github.io/documentation/v0.1.0>`__
+-  `v1.0.0 <http://mordred-descriptor.github.io/documentation/v1.0.0>`__
