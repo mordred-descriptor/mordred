@@ -31,7 +31,7 @@ class LogS(Descriptor):
     r"""LogS descriptor.
     """
 
-    __slots__ = ("_type",)
+    __slots__ = ("_type",'_smart_logs_molecules',)
 
     @classmethod
     def preset(cls):
@@ -50,15 +50,17 @@ class LogS(Descriptor):
 
     def __init__(self, type="LogS"):
         self._type = type
+        self._smart_logs_molecules = []
+        for key in smarts_logs:
+            self._smart_logs_molecules.append(Chem.MolFromSmarts(key))
 
     def parameters(self):
         return ()
 
     def calculate(self, MW):
         logS = 0.89823 - 0.10369 * math.sqrt(MW)
-
-        for key in smarts_logs:
-            logS += len(self.mol.GetSubstructMatches(Chem.MolFromSmarts(key))) * smarts_logs[key]
+        for index,key in enumerate(smarts_logs):
+            logS += len(self.mol.GetSubstructMatches(self._smart_logs_molecules[index])) * smarts_logs[key]
 
         return logS
 
