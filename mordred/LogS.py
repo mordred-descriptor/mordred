@@ -7,7 +7,7 @@ __all__ = (
     "LogS",
 )
 
-smarts_logs = {
+_smarts_logs = {
     '[NH0;X3;v3]': 0.71535,
     '[NH2;X3;v3]': 0.41056,
     '[nH0;X3]': 0.82535,
@@ -26,12 +26,15 @@ smarts_logs = {
     'I': -0.51547
 }
 
+_smarts_logs_molecules = [
+    (Chem.MolFromSmarts(smarts), log)
+    for smarts, log in _smarts_logs.items()
+]
+
 
 class LogS(Descriptor):
     r"""LogS descriptor.
     """
-
-    __slots__ = ("_type",'_smart_logs_molecules',)
 
     @classmethod
     def preset(cls):
@@ -43,25 +46,22 @@ class LogS(Descriptor):
         }
 
     def description(self):
-        return "LogS"
+        return self.__class__.__name__
 
     def __str__(self):
-        return self._type
+        return self.__class__.__name__
 
     def __init__(self, type="LogS"):
         self._type = type
-        self._smart_logs_molecules = []
-        for key in smarts_logs:
-            self._smart_logs_molecules.append(Chem.MolFromSmarts(key))
 
     def parameters(self):
         return ()
 
     def calculate(self, MW):
         logS = 0.89823 - 0.10369 * math.sqrt(MW)
-        for index,key in enumerate(smarts_logs):
-            logS += len(self.mol.GetSubstructMatches(self._smart_logs_molecules[index])) * smarts_logs[key]
+        for smarts, log in _smarts_logs_molecules:
+            logS += len(self.mol.GetSubstructMatches(smarts)) * log
 
         return logS
 
-    rtype = int
+    rtype = float

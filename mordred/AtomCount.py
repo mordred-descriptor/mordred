@@ -7,12 +7,12 @@ __all__ = (
     "AtomCount",
 )
 
-
 _desc_conv = {
     "Atom": "all",
     "Bridgehead": "bridgehead",
     "HeavyAtom": "heavy",
     "Spiro": "spiro",
+    "Hetero": "hetero",
     "X": "halogen",
 }
 
@@ -27,6 +27,7 @@ class AtomCount(Descriptor):
         * "HeavyAtom"
         * "Spiro"
         * "Bridgehead"
+        * "Hetero"
         * "X" - all halogen
         * element symbol
     """
@@ -39,7 +40,7 @@ class AtomCount(Descriptor):
     @classmethod
     def preset(cls):
         return map(cls, [
-            "Atom", "HeavyAtom", "Spiro", "Bridgehead",
+            "Atom", "HeavyAtom", "Spiro", "Bridgehead", "Hetero",
             "H", "B", "C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "X",
         ])
 
@@ -76,6 +77,8 @@ class AtomCount(Descriptor):
             return rdMolDescriptors.CalcNumSpiroAtoms(self.mol)
         elif self._type == "Bridgehead":
             return rdMolDescriptors.CalcNumBridgeheadAtoms(self.mol)
+        elif self._type == "Hetero":
+            return rdMolDescriptors.CalcNumHeteroatoms(self.mol)
         else:
             return self._calc()
 
