@@ -9,7 +9,7 @@ from rdkit.Chem.rdMolDescriptors import CalcFractionCSP3
 from ._base import Descriptor
 
 __all__ = (
-    "CarbonTypes", "HybridizationRatio", "FractionCSP3",
+    "CarbonTypes", "HybridizationRatio",
 )
 
 
@@ -135,31 +135,5 @@ class HybridizationRatio(CarbonTypesBase):
             self.fail(ValueError("there are no sp3 and sp2 carbons"))
 
         return Nsp3 / (Nsp2 + Nsp3)
-
-    rtype = float
-
-
-class FractionCSP3(Descriptor):
-    r""" the fraction of C atoms that are SP3 hybridized.
-    """
-
-    @classmethod
-    def preset(cls):
-        yield cls()
-
-    def description(self):
-        return "the fraction of C atoms that are SP3 hybridized"
-
-    def __str__(self):
-        return self._type
-
-    def __init__(self, type="FCSP3"):
-        self._type = type
-
-    def parameters(self):
-        return ()
-
-    def calculate(self):
-        return CalcFractionCSP3(self.mol)
 
     rtype = float
