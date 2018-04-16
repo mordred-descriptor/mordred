@@ -1,30 +1,35 @@
+# flake8: noqa: S1
+import math
+
+from rdkit import Chem
+
 from ._base import Descriptor
 from .Weight import Weight
-import math
-import rdkit.Chem as Chem
 
 __all__ = (
     "LogS",
 )
 
+
 _smarts_logs = {
-    '[NH0;X3;v3]': 0.71535,
-    '[NH2;X3;v3]': 0.41056,
-    '[nH0;X3]': 0.82535,
-    '[OH0;X2;v2]': 0.31464,
-    '[OH0;X1;v2]': 0.14787,
-    '[OH1;X2;v2]': 0.62998,
-    '[CH2;!R]': -0.35634,
-    '[CH3;!R]': -0.33888,
-    '[CH0;R]': -0.21912,
-    '[CH2;R]': -0.23057,
-    '[ch0]': -0.37570,
-    '[ch1]': -0.22435,
-    'F': -0.21728,
-    'Cl': -0.49721,
-    'Br': -0.57982,
-    'I': -0.51547
+    "[NH0;X3;v3]": 0.71535,
+    "[NH2;X3;v3]": 0.41056,
+    "[nH0;X3]": 0.82535,
+    "[OH0;X2;v2]": 0.31464,
+    "[OH0;X1;v2]": 0.14787,
+    "[OH1;X2;v2]": 0.62998,
+    "[CH2;!R]": -0.35634,
+    "[CH3;!R]": -0.33888,
+    "[CH0;R]": -0.21912,
+    "[CH2;R]": -0.23057,
+    "[ch0]": -0.37570,
+    "[ch1]": -0.22435,
+    "F": -0.21728,
+    "Cl": -0.49721,
+    "Br": -0.57982,
+    "I": -0.51547
 }
+
 
 _smarts_logs_molecules = [
     (Chem.MolFromSmarts(smarts), log)
@@ -33,8 +38,13 @@ _smarts_logs_molecules = [
 
 
 class LogS(Descriptor):
-    r"""LogS descriptor.
+    r"""Filter-it LogS descriptor.
+
+    http://silicos-it.be.s3-website-eu-west-1.amazonaws.com/software/filter-it/1.0.2/filter-it.html#installation
     """
+
+    explicit_hydrogens = False
+    kekulize = False
 
     @classmethod
     def preset(cls):
@@ -42,7 +52,7 @@ class LogS(Descriptor):
 
     def dependencies(self):
         return {
-            "MW": Weight(),
+            "MW": Weight(exact=False),
         }
 
     def description(self):
@@ -50,9 +60,6 @@ class LogS(Descriptor):
 
     def __str__(self):
         return self.__class__.__name__
-
-    def __init__(self, type="LogS"):
-        self._type = type
 
     def parameters(self):
         return ()

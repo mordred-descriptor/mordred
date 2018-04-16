@@ -1,4 +1,4 @@
-from rdkit.Chem.Descriptors import ExactMolWt
+from rdkit.Chem.Descriptors import MolWt, ExactMolWt
 
 from ._base import Descriptor
 
@@ -15,27 +15,31 @@ class Weight(Descriptor):
     """
 
     def description(self):
-        return "{}molecular weight".format("averaged " if self._averaged else "")
+        return "{}{}molecular weight".format(
+            "averaged " if self._averaged else "",
+            "exact " if self._exact else "",
+        )
 
-    __slots__ = ("_averaged",)
+    __slots__ = ("_averaged", "_exact")
     explicit_hydrogens = True
 
     @classmethod
     def preset(cls):
-        yield cls(False)
-        yield cls(True)
+        yield cls(True, False)
+        yield cls(True, True)
 
     def __str__(self):
-        return "AMW" if self._averaged else "MW"
+        return "{}{}MW".format("A" if self._averaged else "", "" if self._exact else "a")
 
     def parameters(self):
-        return self._averaged,
+        return self._exact, self._averaged
 
-    def __init__(self, averaged=False):
+    def __init__(self, exact=True, averaged=False):
         self._averaged = averaged
+        self._exact = exact
 
     def calculate(self):
-        w = ExactMolWt(self.mol)
+        w = ExactMolWt(self.mol) if self._exact else MolWt(self.mol)
         if self._averaged:
             w /= self.mol.GetNumAtoms()
 
