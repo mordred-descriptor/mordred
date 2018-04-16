@@ -38,7 +38,7 @@ _smarts_logs_molecules = [
 
 
 class LogS(Descriptor):
-    r"""Filter-it LogS descriptor.
+    r"""Filter-it™ LogS descriptor.
 
     http://silicos-it.be.s3-website-eu-west-1.amazonaws.com/software/filter-it/1.0.2/filter-it.html#installation
     """
@@ -56,10 +56,10 @@ class LogS(Descriptor):
         }
 
     def description(self):
-        return self.__class__.__name__
+        return "Filter-it™ LogS"
 
     def __str__(self):
-        return self.__class__.__name__
+        return "FilterItLogS"
 
     def parameters(self):
         return ()
