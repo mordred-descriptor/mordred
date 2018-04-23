@@ -3,7 +3,6 @@ from __future__ import division
 from collections import defaultdict
 
 from rdkit.Chem import HybridizationType
-
 from rdkit.Chem.rdMolDescriptors import CalcFractionCSP3
 
 from ._base import Descriptor
@@ -61,7 +60,7 @@ class CarbonTypes(CarbonTypesBase):
     :param SP: count :math:`{\rm SP}n` carbon
     """
 
-    __slots__ = ("_nCarbon", "_SP",)
+    __slots__ = ("_nCarbon", "_SP")
 
     def description(self):
         return "SP{} carbon bound to {} other carbon{}".format(
@@ -140,8 +139,7 @@ class HybridizationRatio(CarbonTypesBase):
 
 
 class FractionCSP3(Descriptor):
-    r""" the fraction of C atoms that are SP3 hybridized.
-    """
+    r"""the fraction of C atoms that are SP3 hybridized."""
 
     @classmethod
     def preset(cls):
@@ -151,10 +149,7 @@ class FractionCSP3(Descriptor):
         return "the fraction of C atoms that are SP3 hybridized"
 
     def __str__(self):
-        return self._type
-
-    def __init__(self, type="FCSP3"):
-        self._type = type
+        return "FCSP3"
 
     def parameters(self):
         return ()
