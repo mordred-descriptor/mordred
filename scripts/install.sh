@@ -45,4 +45,7 @@ if [[ -n "$DOCUMENTATION" ]]; then
 fi
 
 conda install python=$PYTHON_VERSION --file $CONDA_REQ_FILE
-pip install -r $PIP_REQ_FILE
+
+if [[ -f $PIP_REQ_FILE ]]; then
+    pip install -r $PIP_REQ_FILE
+fi
