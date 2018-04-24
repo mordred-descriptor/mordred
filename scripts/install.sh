@@ -36,6 +36,7 @@ cat ./scripts/requirements-conda.txt ./scripts/requirements.txt > $CONDA_REQ_FIL
 [[ "$PYTHON_VERSION" < 3.4 ]] && echo enum34 >> $CONDA_REQ_FILE
 
 [[ -n "$COVERAGE" ]] && echo coveralls >> $PIP_REQ_FILE
+[[ -n "$LINT" ]] && cat ./scripts/requirements-flake8.txt >> $PIP_REQ_FILE
 
 if [[ -n "$DOCUMENTATION" ]]; then
     echo sphinx >> $CONDA_REQ_FILE
@@ -44,7 +45,4 @@ if [[ -n "$DOCUMENTATION" ]]; then
 fi
 
 conda install python=$PYTHON_VERSION --file $CONDA_REQ_FILE
-
-if [[ -f $PIP_REQ_FILE ]]; then
-    pip install -r $PIP_REQ_FILE
-fi
+pip install -r $PIP_REQ_FILE
