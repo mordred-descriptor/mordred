@@ -28,7 +28,7 @@ class WienerIndex(Descriptor):
         return "WPol" if self._polarity else "WPath"
 
     def parameters(self):
-        return self._polarity,
+        return (self._polarity,)
 
     def __init__(self, polarity=False):
         self._polarity = polarity

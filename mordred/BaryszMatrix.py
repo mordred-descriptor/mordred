@@ -19,7 +19,7 @@ class Barysz(BaryszMatrixBase):
     __slots__ = ("_prop",)
 
     def parameters(self):
-        return self._prop,
+        return (self._prop,)
 
     def __init__(self, prop):
         self._prop = prop
@@ -62,7 +62,7 @@ class BaryszMatrix(BaryszMatrixBase):
     :returns: NaN when any properties are NaN
     """
 
-    __slots__ = ("_prop", "_type",)
+    __slots__ = ("_prop", "_type")
 
     def description(self):
         return "{} from Barysz matrix weighted by {}".format(

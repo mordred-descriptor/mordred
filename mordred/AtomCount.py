@@ -11,8 +11,8 @@ _desc_conv = {
     "Atom": "all",
     "Bridgehead": "bridgehead",
     "HeavyAtom": "heavy",
-    "Spiro": "spiro",
     "Hetero": "hetero",
+    "Spiro": "spiro",
     "X": "halogen",
 }
 
@@ -53,7 +53,7 @@ class AtomCount(Descriptor):
         return "n" + self._type
 
     def parameters(self):
-        return self._type,
+        return (self._type,)
 
     def __init__(self, type="Atom"):
         self._type = type

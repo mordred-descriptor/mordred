@@ -67,7 +67,7 @@ class MolecularIdBase(Descriptor):
     require_connected = True
 
     def parameters(self):
-        return self._eps,
+        return (self._eps,)
 
 
 class AtomicIds(MolecularIdBase):

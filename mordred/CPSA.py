@@ -41,14 +41,14 @@ class CPSABase(Descriptor):
 
 
 class VersionCPSABase(CPSABase):
-    __slots__ = "_version",
+    __slots__ = ("_version",)
 
     @classmethod
     def preset(cls):
         return map(cls, cls.versions)
 
     def parameters(self):
-        return self._version,
+        return (self._version,)
 
     versions = [1, 2, 3, 4, 5]
 

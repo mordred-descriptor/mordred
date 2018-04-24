@@ -29,7 +29,7 @@ __all__ = (
 
 
 class AlterMolecule(Descriptor):
-    __slots__ = ("explicit_hydrogens", "_saturated",)
+    __slots__ = ("explicit_hydrogens", "_saturated")
 
     kekulize = True
     require_connected = True
@@ -124,7 +124,7 @@ class EtaCoreCount(EtaBase):
     :returns: reference and valence of any atoms > 4
     """
 
-    __slots__ = ("_averaged", "_reference",)
+    __slots__ = ("_averaged", "_reference")
 
     def description(self):
         return "{}ETA core count{}".format(
@@ -181,7 +181,7 @@ class EtaShapeIndex(EtaBase):
     def description(self):
         return "ETA shape index (type: {})".format(self._type)
 
-    shape_types = ("p", "y", "x",)
+    shape_types = ("p", "y", "x")
     _type_to_degree = {"p": 1, "y": 3, "x": 4}
 
     @classmethod
@@ -192,7 +192,7 @@ class EtaShapeIndex(EtaBase):
         return "ETA_shape_{}".format(self._type)
 
     def parameters(self):
-        return self._type,
+        return (self._type,)
 
     def __init__(self, type="p"):
         assert type in self.shape_types
@@ -258,7 +258,7 @@ class EtaVEMCount(EtaBase):
     :param averaged: averaged by heavy atom count
     """
 
-    __slots__ = ("_type", "_averaged",)
+    __slots__ = ("_type", "_averaged")
 
     def description(self):
         if self._type == "":
@@ -349,7 +349,7 @@ class EtaCompositeIndex(EtaBase):
     :returns: reference and valence of any atoms > 4
     """
 
-    __slots__ = ("_reference", "_local", "_averaged",)
+    __slots__ = ("_reference", "_local", "_averaged")
 
     def description(self):
         return "{}{}ETA composite index{}".format(
@@ -438,7 +438,7 @@ class EtaFunctionalityIndex(EtaBase):
     :param averaged: averaged
     """
 
-    __slots__ = ("_local", "_averaged",)
+    __slots__ = ("_local", "_averaged")
 
     def description(self):
         return "{}{}ETA functionality index".format(
@@ -499,7 +499,7 @@ class EtaBranchingIndex(EtaBase):
     :returns: NaN when A < 2
     """
 
-    __slots__ = ("_ring", "_averaged",)
+    __slots__ = ("_ring", "_averaged")
 
     def description(self):
         return "{}ETA branching index{}".format(
@@ -569,7 +569,7 @@ class EtaDeltaAlpha(EtaBase):
     def description(self):
         return "ETA delta alpha (type: {})".format(self._type)
 
-    delta_types = ("A", "B",)
+    delta_types = ("A", "B")
 
     @classmethod
     def preset(cls):
@@ -579,7 +579,7 @@ class EtaDeltaAlpha(EtaBase):
         return "ETA_dAlpha_{}".format(self._type)
 
     def parameters(self):
-        return self._type,
+        return (self._type,)
 
     def __init__(self, type="A"):
         assert type in self.delta_types
@@ -645,7 +645,7 @@ class EtaEpsilon(EtaBase):
     epsilon_types = tuple(range(1, 6))
 
     def parameters(self):
-        return self._type,
+        return (self._type,)
 
     def __init__(self, type=1):
         self._type = type
@@ -701,7 +701,7 @@ class EtaDeltaEpsilon(EtaBase):
     delta_epsilon_types = tuple("ABCD")
 
     def parameters(self):
-        return self._type,
+        return (self._type,)
 
     def __init__(self, type="A"):
         self._type = type
@@ -749,7 +749,7 @@ class EtaDeltaBeta(EtaBase):
         return "{}ETA_dBeta".format(ave)
 
     def parameters(self):
-        return self._averaged,
+        return (self._averaged,)
 
     def __init__(self, averaged=False):
         self._averaged = averaged
@@ -823,10 +823,10 @@ class EtaDeltaPsi(EtaBase):
     def __str__(self):
         return "ETA_dPsi_{}".format(self._type)
 
-    delta_psi_types = ("A", "B",)
+    delta_psi_types = ("A", "B")
 
     def parameters(self):
-        return self._type,
+        return (self._type,)
 
     def __init__(self, type="A"):
         assert type in self.delta_psi_types

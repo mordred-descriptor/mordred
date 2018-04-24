@@ -48,7 +48,7 @@ class TopologicalCharge(Descriptor):
 
     """
 
-    __slots__ = ("_type", "_order",)
+    __slots__ = ("_type", "_order")
 
     explicit_hydrogens = False
 

@@ -4,7 +4,7 @@ from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 from ._atomic_property import AtomicProperty, get_properties
 
-__all__ = ("ATS", "AATS", "ATSC", "AATSC", "MATS", "GATS",)
+__all__ = ("ATS", "AATS", "ATSC", "AATSC", "MATS", "GATS")
 
 
 class AutocorrelationBase(Descriptor):
@@ -64,7 +64,7 @@ class AutocorrelationProp(AutocorrelationBase):
     __slots__ = ()
 
     def parameters(self):
-        return self._prop,
+        return (self._prop,)
 
     def __init__(self, prop):
         self._prop = prop
@@ -79,7 +79,7 @@ class AutocorrelationOrder(AutocorrelationBase):
         pass
 
     def parameters(self):
-        return self._order,
+        return (self._order,)
 
     def __init__(self, order):
         self._order = order

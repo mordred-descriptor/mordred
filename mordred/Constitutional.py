@@ -3,7 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._atomic_property import AtomicProperty, get_properties
 
-__all__ = ("ConstitutionalSum", "ConstitutionalMean",)
+__all__ = ("ConstitutionalSum", "ConstitutionalMean")
 
 
 class ConstitutionalSum(Descriptor):
@@ -30,7 +30,7 @@ class ConstitutionalSum(Descriptor):
         return map(cls, get_properties())
 
     def parameters(self):
-        return self._prop,
+        return (self._prop,)
 
     def __init__(self, prop="v"):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)

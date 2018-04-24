@@ -8,7 +8,7 @@ from rdkit.Chem import Crippen
 
 from ._base import Descriptor
 
-__all__ = ("SLogP", "SMR",)
+__all__ = ("SLogP", "SMR")
 
 
 class WildmanCrippenBase(Descriptor):

@@ -94,7 +94,7 @@ class AtomTypeEState(EStateBase):
 
     """
 
-    __slots__ = ("_type", "_estate",)
+    __slots__ = ("_type", "_estate")
 
     def description(self):
         return "{} of {}".format(self._type.description(), self._estate)

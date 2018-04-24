@@ -12,11 +12,11 @@ from rdkit import Chem
 
 from ._base import Descriptor
 
-__all__ = ("AcidicGroupCount", "BasicGroupCount",)
+__all__ = ("AcidicGroupCount", "BasicGroupCount")
 
 
 class SmartsCountBase(Descriptor):
-    __slots__ = "_mol",
+    __slots__ = ("_mol",)
 
     @classmethod
     def preset(cls):
@@ -43,7 +43,7 @@ class SmartsCountBase(Descriptor):
 
     rtype = int
 
-    _extra_docs = "SMARTS",
+    _extra_docs = ("SMARTS",)
 
 
 class AcidicGroupCount(SmartsCountBase):

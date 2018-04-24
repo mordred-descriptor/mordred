@@ -3,7 +3,7 @@ from __future__ import division
 from .Chi import ChiCache
 from ._base import Descriptor
 
-__all__ = ("KappaShapeIndex1", "KappaShapeIndex2", "KappaShapeIndex3",)
+__all__ = ("KappaShapeIndex1", "KappaShapeIndex2", "KappaShapeIndex3")
 
 
 class KappaShapeIndexBase(Descriptor):

@@ -10,7 +10,7 @@ import numpy as np
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
-__all__ = ("ABCIndex", "ABCGGIndex",)
+__all__ = ("ABCIndex", "ABCGGIndex")
 
 
 class ABCIndexBase(Descriptor):

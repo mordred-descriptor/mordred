@@ -4,7 +4,7 @@ from ._base import Descriptor
 from ._graph_matrix import Radius3D as CRadius3D
 from ._graph_matrix import Diameter3D as CDiameter3D
 
-__all__ = ("Diameter3D", "Radius3D", "GeometricalShapeIndex", "PetitjeanIndex3D",)
+__all__ = ("Diameter3D", "Radius3D", "GeometricalShapeIndex", "PetitjeanIndex3D")
 
 
 class GeometricalIndexBase(Descriptor):

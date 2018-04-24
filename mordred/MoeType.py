@@ -55,7 +55,7 @@ class MoeTypeBase(Descriptor):
         return self.__class__.__name__ + str(self._k)
 
     def parameters(self):
-        return self._k,
+        return (self._k,)
 
     def __init__(self, k=1):
         assert 1 <= k <= self.k_max

@@ -36,7 +36,7 @@ class TopoPSA(Descriptor):
         return "TopoPSA(NO)" if self._no_only else "TopoPSA"
 
     def parameters(self):
-        return self._no_only,
+        return (self._no_only,)
 
     def __init__(self, no_only=True):
         self._no_only = no_only

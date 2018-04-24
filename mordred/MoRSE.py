@@ -8,7 +8,7 @@ from ._graph_matrix import DistanceMatrix3D
 from ._atomic_property import AtomicProperty
 from ._base.descriptor import Descriptor
 
-__all__ = "MoRSE",
+__all__ = ("MoRSE",)
 
 
 class MoRSE(Descriptor):

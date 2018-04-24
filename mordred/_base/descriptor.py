@@ -49,7 +49,7 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
     """
 
-    __slots__ = "_context",
+    __slots__ = ("_context",)
 
     explicit_hydrogens = True
     kekulize = False
@@ -152,9 +152,9 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
     def __compare_by_reduce(meth):
         def compare(self, other):
-            l = self.__class__, self.parameters()
+            L = self.__class__, self.parameters()
             r = other.__class__, other.parameters()
-            return getattr(l, meth)(r)
+            return getattr(L, meth)(r)
 
         return compare
 
@@ -312,7 +312,7 @@ class ConstDescriptor(Descriptor):
         return cls()
 
     def parameters(self):
-        return self._value,
+        return (self._value,)
 
     def __init__(self, value):
         self._value = value

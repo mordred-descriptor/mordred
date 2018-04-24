@@ -1,11 +1,11 @@
 from ._base import Descriptor
 from ._atomic_property import polarizability78, polarizability94
 
-__all__ = ("APol", "BPol",)
+__all__ = ("APol", "BPol")
 
 
 class PolarizabilityBase(Descriptor):
-    __slots__ = "_use78",
+    __slots__ = ("_use78",)
 
     @classmethod
     def preset(cls):
@@ -15,7 +15,7 @@ class PolarizabilityBase(Descriptor):
         return self.__class__.__name__.lower() + ("78" if self._use78 else "")
 
     def parameters(self):
-        return self._use78,
+        return (self._use78,)
 
     def __init__(self, use78=False):
         self._use78 = use78

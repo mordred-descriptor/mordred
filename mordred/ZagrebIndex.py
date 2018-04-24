@@ -25,7 +25,7 @@ class ZagrebIndex(Descriptor):
     :returns: NaN when valence of any atoms are 0
     """
 
-    __slots__ = ("_version", "_variable",)
+    __slots__ = ("_version", "_variable")
     explicit_hydrogens = False
 
     def description(self):

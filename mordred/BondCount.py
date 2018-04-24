@@ -54,7 +54,7 @@ class BondCount(Descriptor):
     :param kekulize: use kekulized structure
     """
 
-    __slots__ = ("_type", "_bond_name", "_bond_desc", "_check_bond", "kekulize",)
+    __slots__ = ("_type", "_bond_name", "_bond_desc", "_check_bond", "kekulize")
 
     def description(self):
         return "number of {} in {}kekulized structure".format(
@@ -92,4 +92,4 @@ class BondCount(Descriptor):
 
     rtype = int
 
-    _extra_docs = "bond_types",
+    _extra_docs = ("bond_types",)

@@ -4,7 +4,7 @@ from ._base import Descriptor
 from ._graph_matrix import Radius as CRadius
 from ._graph_matrix import Diameter as CDiameter
 
-__all__ = ("Diameter", "Radius", "TopologicalShapeIndex", "PetitjeanIndex",)
+__all__ = ("Diameter", "Radius", "TopologicalShapeIndex", "PetitjeanIndex")
 
 
 class TopologicalIndexBase(Descriptor):

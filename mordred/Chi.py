@@ -47,7 +47,7 @@ class ChiType(IntEnum):
 
 
 class DFS(object):
-    __slots__ = ("mol", "visited", "vis_edges", "is_chain", "degrees", "bonds", "neighbors",)
+    __slots__ = ("mol", "visited", "vis_edges", "is_chain", "degrees", "bonds", "neighbors")
 
     def __init__(self, mol):
         self.mol = mol
@@ -125,7 +125,7 @@ class ChiCache(ChiBase):
     __slots__ = ("_order",)
 
     def parameters(self):
-        return self._order,
+        return (self._order,)
 
     def __init__(self, order):
         self._order = order
@@ -172,7 +172,7 @@ class Chi(ChiBase):
         * averaged and :math:`N_{\chi} = 0`
     """
 
-    __slots__ = ("_type", "_order", "_prop", "_averaged",)
+    __slots__ = ("_type", "_order", "_prop", "_averaged")
 
     chi_types = tuple(t.name for t in ChiType)
 
@@ -243,4 +243,4 @@ class Chi(ChiBase):
 
     rtype = float
 
-    _extra_docs = "chi_types",
+    _extra_docs = ("chi_types",)

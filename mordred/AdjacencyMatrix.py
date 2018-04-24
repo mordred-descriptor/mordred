@@ -26,7 +26,7 @@ class AdjacencyMatrix(Descriptor):
         return "{}_A".format(self._type.__name__)
 
     def parameters(self):
-        return self._type,
+        return (self._type,)
 
     def __init__(self, type="SpMax"):
         self._type = get_method(type)
