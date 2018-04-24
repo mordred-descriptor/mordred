@@ -1,4 +1,8 @@
 # flake8: noqa: S1
+# -*- coding: UTF-8 -*-
+
+from __future__ import unicode_literals
+
 import math
 
 from rdkit import Chem
