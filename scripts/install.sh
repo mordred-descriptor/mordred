@@ -11,20 +11,15 @@ elif [[ "$TRAVIS_OS_NAME" == linux ]]; then
 elif [[ -n "$APPVEYOR" ]]; then
     export OS_NAME=Windows
 fi
+echo "detected OS: $OS_NAME"
 
 if [[ -n "$TRAVIS_OS_NAME" ]]; then
+    echo "download & install conda"
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-${OS_NAME}-x86_64.sh -O miniconda.sh
     bash miniconda.sh -b -p $HOME/miniconda
 fi
 
-source ./scripts/add_path.sh
-
-# setup conda
-
-hash -r
-
-conda config --set always_yes yes --set changeps1 no
-conda config --add channels rdkit --add channels mordred-descriptor
+source ./scripts/conda.sh
 
 # install requirements
 
@@ -43,6 +38,12 @@ if [[ -n "$DOCUMENTATION" ]]; then
     echo sphinx_rtd_theme >> $CONDA_REQ_FILE
     echo sphinxcontrib-bibtex >> $PIP_REQ_FILE
 fi
+
+echo "=== conda install ==="
+cat $CONDA_REQ_FILE
+echo "=== pip   install ==="
+cat $PIP_REQ_FILE
+echo "====================="
 
 conda install python=$PYTHON_VERSION --file $CONDA_REQ_FILE
 

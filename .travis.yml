@@ -11,7 +11,7 @@ os:
 - linux
 - osx
 sudo: false
-before_install: "./scripts/travis/before_install.sh"
+before_install: "./scripts/before_install.sh"
 install: "./scripts/install.sh"
 script: "./scripts/test_script.sh"
 after_success: "./scripts/after_success.sh"

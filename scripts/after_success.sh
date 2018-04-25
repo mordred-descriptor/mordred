@@ -1,7 +1,12 @@
 #!/bin/bash
 
 set -e
-source ./scripts/add_path.sh
+if [[ ! -f ~/.ssh/id_rsa ]]; then
+    exit 0
+fi
+
+source ./scripts/conda.sh
+
 
 [[ -n "$COVERAGE" ]] && coveralls
 
