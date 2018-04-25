@@ -1,6 +1,11 @@
 #!/bin/bash
 
 set -e
+
+if [[ ! -f ~/.ssh/id_rsa ]]; then
+    exit 0
+fi
+
 source ./scripts/add_path.sh
 
 [[ -n "$COVERAGE" ]] && coveralls
