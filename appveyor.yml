@@ -17,6 +17,6 @@ environment:
     - PYTHON_VERSION: 2.7
       MINICONDA: C:\Miniconda
 
-install: '%CYG_ROOT%/bin/bash ./scripts/install.sh'
-test_script: '%CYG_ROOT%/bin/bash ./scripts/test_script.sh'
-on_success: '%CYG_ROOT%/bin/bash ./scripts/after_success.sh'
+install: '%CYG_ROOT%/bin/bash ./extra/ci/install.sh'
+test_script: '%CYG_ROOT%/bin/bash ./extra/ci/test_script.sh'
+on_success: '%CYG_ROOT%/bin/bash ./extra/ci/after_success.sh'
