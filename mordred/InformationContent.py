@@ -89,7 +89,7 @@ class InformationContentBase(Descriptor):
         return self._name + str(self._order)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(o) for o in range(6))
 
     def parameters(self):
@@ -105,7 +105,7 @@ class Ag(InformationContentBase):
     __slots__ = ("_order",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return ()
 
     _name = "Ag"
@@ -153,6 +153,7 @@ class InformationContent(InformationContentBase):
     :param order: order(number of edge) of subgraph
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -178,6 +179,7 @@ class TotalIC(InformationContentBase):
     :param order: order(number of edge) of subgraph
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -204,6 +206,7 @@ class StructuralIC(TotalIC):
     :param order: order(number of edge) of subgraph
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -230,6 +233,7 @@ class BondingIC(TotalIC):
     :returns: NaN when :math:`\sum^B_{b=1} \pi^{*}_b <= 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -255,6 +259,7 @@ class ComplementaryIC(TotalIC):
     :param order: order(number of edge) of subgraph
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -275,6 +280,7 @@ class ModifiedIC(InformationContent):
     :param order: order(number of edge) of subgraph
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -295,6 +301,7 @@ class ZModifiedIC(InformationContent):
     :param order: order(number of edge) of subgraph
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

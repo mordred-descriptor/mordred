@@ -8,6 +8,7 @@ __all__ = ("GravitationalIndex",)
 
 
 class GravitationalIndex(Descriptor):
+    since = "1.0.0"
     __slots__ = "_heavy", "_pair"
 
     def description(self):
@@ -17,7 +18,7 @@ class GravitationalIndex(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(h, p)
             for p in [False, True]

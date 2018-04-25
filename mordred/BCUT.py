@@ -86,6 +86,7 @@ class BCUT(BCUTBase):
         * :math:`\left| nth \right| > A`
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop", "_nth")
 
     def description(self):
@@ -96,7 +97,7 @@ class BCUT(BCUTBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(a, n)
             for a in get_properties(valence=True, charge=True)

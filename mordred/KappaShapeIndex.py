@@ -12,7 +12,7 @@ class KappaShapeIndexBase(Descriptor):
     __slots__ = ("_order",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -44,6 +44,7 @@ class KappaShapeIndex1(KappaShapeIndexBase):
     :returns: NaN when :math:`N_{\rm Chi-path} = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -63,6 +64,7 @@ class KappaShapeIndex2(KappaShapeIndexBase):
     :returns: NaN when :math:`N_{\rm Chi-path} = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -82,6 +84,7 @@ class KappaShapeIndex3(KappaShapeIndexBase):
     :returns: NaN when :math:`N_{\rm Chi-path} = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

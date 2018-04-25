@@ -54,6 +54,7 @@ class BondCount(Descriptor):
     :param kekulize: use kekulized structure
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_bond_name", "_bond_desc", "_check_bond", "kekulize")
 
     def description(self):
@@ -63,7 +64,7 @@ class BondCount(Descriptor):
     bond_types = tuple(b.name for b in BondType)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             map(lambda t: cls(t, False), BondType),
             map(lambda t: cls(t, True), [

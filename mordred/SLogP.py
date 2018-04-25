@@ -15,7 +15,7 @@ class WildmanCrippenBase(Descriptor):
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -32,6 +32,7 @@ class WildmanCrippenBase(Descriptor):
 class SLogP(WildmanCrippenBase):
     r"""Wildman-Crippen LogP descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -44,6 +45,7 @@ class SLogP(WildmanCrippenBase):
 class SMR(WildmanCrippenBase):
     r"""Wildman-Crippen MR descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

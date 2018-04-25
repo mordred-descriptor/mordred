@@ -102,6 +102,7 @@ class MolecularId(MolecularIdBase):
     :param _eps: internally used
     """
 
+    since = "1.0.0"
     __slots__ = ("_orig_type", "_averaged", "_eps", "_type", "_check")
 
     def description(self):
@@ -119,7 +120,7 @@ class MolecularId(MolecularIdBase):
         return "{}molecular ID{}".format("averaged " if self._averaged else "", t)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(s, a)
             for s in ["any", "hetero", "C", "N", "O", "X"]

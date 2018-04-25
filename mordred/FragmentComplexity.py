@@ -21,13 +21,14 @@ class FragmentComplexity(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
         return "fragment complexity"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     explicit_hydrogens = False

@@ -161,7 +161,10 @@ as library
     >>> calc = Calculator(descriptors, ignore_3D=True)
 
     >>> len(calc.descriptors)
-    1615
+    1613
+
+    >>> len(Calculator(descriptors, ignore_3D=True, version="1.0.0"))
+    1612
 
     # calculate single molecule
     >>> mol = Chem.MolFromSmiles('c1ccccc1')

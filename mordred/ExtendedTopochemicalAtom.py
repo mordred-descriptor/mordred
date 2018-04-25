@@ -124,6 +124,7 @@ class EtaCoreCount(EtaBase):
     :returns: reference and valence of any atoms > 4
     """
 
+    since = "1.0.0"
     __slots__ = ("_averaged", "_reference")
 
     def description(self):
@@ -133,7 +134,7 @@ class EtaCoreCount(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, [False, True])
 
     def __str__(self):
@@ -176,6 +177,7 @@ class EtaShapeIndex(EtaBase):
     :param type: one of shape_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
@@ -185,7 +187,7 @@ class EtaShapeIndex(EtaBase):
     _type_to_degree = {"p": 1, "y": 3, "x": 4}
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(t) for t in cls.shape_types)
 
     def __str__(self):
@@ -258,6 +260,7 @@ class EtaVEMCount(EtaBase):
     :param averaged: averaged by heavy atom count
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_averaged")
 
     def description(self):
@@ -273,7 +276,7 @@ class EtaVEMCount(EtaBase):
         return "{}{}valence electron mobile count".format("averaged " if self._averaged else "", d)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(b, a)
             for b in cls.beta_types
@@ -349,6 +352,7 @@ class EtaCompositeIndex(EtaBase):
     :returns: reference and valence of any atoms > 4
     """
 
+    since = "1.0.0"
     __slots__ = ("_reference", "_local", "_averaged")
 
     def description(self):
@@ -359,7 +363,7 @@ class EtaCompositeIndex(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         ft = [False, True]
         return (cls(r, l, a) for r in ft for l in ft for a in ft)
 
@@ -438,6 +442,7 @@ class EtaFunctionalityIndex(EtaBase):
     :param averaged: averaged
     """
 
+    since = "1.0.0"
     __slots__ = ("_local", "_averaged")
 
     def description(self):
@@ -447,7 +452,7 @@ class EtaFunctionalityIndex(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(l, a)
             for l in [False, True]
@@ -499,6 +504,7 @@ class EtaBranchingIndex(EtaBase):
     :returns: NaN when A < 2
     """
 
+    since = "1.0.0"
     __slots__ = ("_ring", "_averaged")
 
     def description(self):
@@ -508,7 +514,7 @@ class EtaBranchingIndex(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(r, a)
             for r in [False, True]
@@ -564,6 +570,7 @@ class EtaDeltaAlpha(EtaBase):
     :param type: one of delta_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
@@ -572,7 +579,7 @@ class EtaDeltaAlpha(EtaBase):
     delta_types = ("A", "B")
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(t) for t in cls.delta_types)
 
     def __str__(self):
@@ -626,13 +633,14 @@ class EtaEpsilon(EtaBase):
     :returns: type = 3 and valence of any atoms > 4
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
         return "ETA epsilon (type: {})".format(self._type)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.epsilon_types)
 
     def __str__(self):
@@ -686,13 +694,14 @@ class EtaDeltaEpsilon(EtaBase):
     :param type: one of delta_epsilon_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
         return "ETA delta epsilon (type: {})".format(self._type)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.delta_epsilon_types)
 
     def __str__(self):
@@ -734,13 +743,14 @@ class EtaDeltaBeta(EtaBase):
     :param averaged: averaged
     """
 
+    since = "1.0.0"
     __slots__ = ("_averaged",)
 
     def description(self):
         return "{}ETA delta beta".format("averaged " if self._averaged else "")
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(a) for a in [False, True])
 
     def __str__(self):
@@ -776,13 +786,14 @@ class EtaPsi(EtaBase):
         \psi_1 = \frac{\alpha}{A \cdot \epsilon^2}
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
         return "ETA psi"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -813,13 +824,14 @@ class EtaDeltaPsi(EtaBase):
     :param type: one of delta_psi_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
         return "ETA delta psi (type: {})".format(self._type)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.delta_psi_types)
 
     def __str__(self):

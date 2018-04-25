@@ -154,13 +154,14 @@ class DetourMatrix(DetourMatrixBase):
     :param type: :ref:`matrix_aggregating_methods`
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
         return "{} from detourn matrix".format(self._type.description())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, ma.methods)
 
     def __str__(self):
@@ -199,6 +200,7 @@ class DetourIndex(DetourMatrixBase):
     :math:`A` is number of atoms.
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -208,7 +210,7 @@ class DetourIndex(DetourMatrixBase):
         return ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     explicit_hydrogens = False

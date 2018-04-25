@@ -20,6 +20,7 @@ class TopoPSA(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ("_no_only",)
 
     def description(self):
@@ -28,7 +29,7 @@ class TopoPSA(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(True)
         yield cls(False)
 

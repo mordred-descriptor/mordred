@@ -69,6 +69,7 @@ class RingCount(RingCountBase):
         * None: count any rings
     """
 
+    since = "1.0.0"
     __slots__ = ("_order", "_greater", "_fused", "_aromatic", "_hetero")
 
     def description(self):
@@ -94,7 +95,7 @@ class RingCount(RingCountBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         for fused in [False, True]:
             for arom in [None, True, False]:
                 for hetero in [None, True]:

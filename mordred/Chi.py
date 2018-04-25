@@ -172,6 +172,7 @@ class Chi(ChiBase):
         * averaged and :math:`N_{\chi} = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_order", "_prop", "_averaged")
 
     chi_types = tuple(t.name for t in ChiType)
@@ -187,7 +188,7 @@ class Chi(ChiBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             (cls(ChiType.chain, l, a) for a in cls._deltas for l in range(3, 8)),
             (cls(ChiType.cluster, l, a) for a in cls._deltas for l in range(3, 7)),

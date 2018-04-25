@@ -48,6 +48,7 @@ class TopologicalCharge(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_order")
 
     explicit_hydrogens = False
@@ -61,7 +62,7 @@ class TopologicalCharge(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             (cls(t, o) for t in ("raw", "mean") for o in range(1, 11)),
             [cls("global", 10)],

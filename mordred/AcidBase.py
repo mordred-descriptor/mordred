@@ -19,7 +19,7 @@ class SmartsCountBase(Descriptor):
     __slots__ = ("_mol",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def _create_smarts(self):
@@ -49,6 +49,7 @@ class SmartsCountBase(Descriptor):
 class AcidicGroupCount(SmartsCountBase):
     r"""acidic group count descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -67,6 +68,7 @@ class AcidicGroupCount(SmartsCountBase):
 class BasicGroupCount(SmartsCountBase):
     r"""basic group count descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

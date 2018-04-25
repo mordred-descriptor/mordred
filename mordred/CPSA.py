@@ -28,7 +28,7 @@ class CPSABase(Descriptor):
     require_3D = True
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def parameters(self):
@@ -44,7 +44,7 @@ class VersionCPSABase(CPSABase):
     __slots__ = ("_version",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.versions)
 
     def parameters(self):
@@ -116,6 +116,7 @@ class PNSA(VersionCPSABase):
     :param version: one of :py:attr:`versions`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -156,6 +157,7 @@ class PPSA(PNSA):
     :param version: one of :py:attr:`versions`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -173,6 +175,7 @@ class DPSA(VersionCPSABase):
     :param version: one of :py:attr:`versions`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -195,6 +198,7 @@ class FNSA(VersionCPSABase):
     :param version: one of :py:attr:`versions`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -220,6 +224,7 @@ class FPSA(FNSA):
     :param version: one of :py:attr:`versions`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -236,6 +241,7 @@ class WNSA(FNSA):
     :param version: one of :py:attr:`versions`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -252,6 +258,7 @@ class WPSA(FPSA):
     :param version: one of :py:attr:`versions`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -264,6 +271,7 @@ class WPSA(FPSA):
 class RNCG(CPSABase):
     r"""relative negative charge descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
     require_3D = False
 
@@ -290,6 +298,7 @@ class RNCG(CPSABase):
 class RPCG(RNCG):
     r"""relative positive charge descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -303,6 +312,7 @@ class RPCG(RNCG):
 class RNCS(CPSABase):
     r"""relative negative charge surface area descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
     _RCG = RNCG()
 
@@ -336,6 +346,7 @@ class RNCS(CPSABase):
 class RPCS(RNCS):
     r"""relative positive charge surface area descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -351,6 +362,7 @@ class RPCS(RNCS):
 class TASA(CPSABase):
     r"""total hydrophobic surface area descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -373,6 +385,7 @@ class TASA(CPSABase):
 class TPSA(TASA):
     r"""total polar surface area descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -386,6 +399,7 @@ class TPSA(TASA):
 class RASA(CPSABase):
     r"""relative hydrophobic surface area descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
     _TxSA = TASA()
 
@@ -408,5 +422,6 @@ class RPSA(RASA):
     def description(self):
         return "relative polar surface area"
 
+    since = "1.0.0"
     __slots__ = ()
     _TxSA = TPSA()

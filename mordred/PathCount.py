@@ -109,6 +109,7 @@ class PathCount(PathCountBase):
     :param log: use log scale
     """
 
+    since = "1.0.0"
     __slots__ = ("_order", "_pi", "_total", "_log")
 
     def description(self):
@@ -120,7 +121,7 @@ class PathCount(PathCountBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             (cls(o, False, False, False) for o in range(2, 11)),
             [cls(10, False, True, False)],

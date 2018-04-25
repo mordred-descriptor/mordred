@@ -62,6 +62,7 @@ class BaryszMatrix(BaryszMatrixBase):
     :returns: NaN when any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop", "_type")
 
     def description(self):
@@ -69,7 +70,7 @@ class BaryszMatrix(BaryszMatrixBase):
             self._type.description(), self._prop.get_long())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(p, m) for p in get_properties() for m in methods)
 
     def __str__(self):

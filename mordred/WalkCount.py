@@ -19,6 +19,7 @@ class WalkCount(Descriptor):
     :param self_returning: use self returning walk only
     """
 
+    since = "1.0.0"
     __slots__ = ("_order", "_total", "_self_returning")
 
     explicit_hydrogens = False
@@ -31,7 +32,7 @@ class WalkCount(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         for start, sr in [(1, False), (2, True)]:
             for l in range(start, 11):
                 yield cls(l, False, sr)

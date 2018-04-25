@@ -59,13 +59,14 @@ class Framework(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
         return "molecular framework ratio"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

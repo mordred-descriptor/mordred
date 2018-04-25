@@ -43,13 +43,14 @@ class PrincipalAxis(MomentOfInertiaBase):
 
 
 class MomentOfInertia(MomentOfInertiaBase):
+    since = "1.0.0"
     __slots__ = ("_axis",)
 
     def description(self):
         return "moment of inertia (axis = {})".format(self._axis)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.axes)
 
     def __str__(self):

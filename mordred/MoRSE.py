@@ -12,6 +12,7 @@ __all__ = ("MoRSE",)
 
 
 class MoRSE(Descriptor):
+    since = "1.0.0"
     __slots__ = ("_prop", "_distance")
 
     require_3D = True
@@ -23,7 +24,7 @@ class MoRSE(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             (cls(None, i) for i in range(1, 33)),
             (cls("m", i) for i in range(1, 33)),

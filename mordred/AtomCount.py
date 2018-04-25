@@ -1,3 +1,5 @@
+from distutils.version import StrictVersion
+
 from rdkit.Chem import rdMolDescriptors
 
 from ._base import Descriptor
@@ -17,6 +19,9 @@ _desc_conv = {
 }
 
 
+_version_add_Nhetero = StrictVersion("1.1.0")
+
+
 class AtomCount(Descriptor):
     r"""atom count descriptor.
 
@@ -32,17 +37,26 @@ class AtomCount(Descriptor):
         * element symbol
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
         return "number of {} atoms".format(_desc_conv.get(self._type, self._type))
 
     @classmethod
-    def preset(cls):
-        return map(cls, [
-            "Atom", "HeavyAtom", "Spiro", "Bridgehead", "Hetero",
-            "H", "B", "C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "X",
-        ])
+    def preset(cls, version):
+        if version >= _version_add_Nhetero:
+            t = [
+                "Atom", "HeavyAtom", "Spiro", "Bridgehead", "Hetero",
+                "H", "B", "C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "X",
+            ]
+        else:
+            t = [
+                "Atom", "HeavyAtom", "Spiro", "Bridgehead",
+                "H", "B", "C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "X",
+            ]
+
+        return map(cls, t)
 
     @property
     def explicit_hydrogens(self):

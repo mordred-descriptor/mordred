@@ -13,7 +13,7 @@ class GeometricalIndexBase(Descriptor):
     require_3D = True
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def parameters(self):
@@ -25,6 +25,7 @@ class GeometricalIndexBase(Descriptor):
 class Radius3D(GeometricalIndexBase):
     r"""geometric radius descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -43,6 +44,7 @@ class Radius3D(GeometricalIndexBase):
 class Diameter3D(GeometricalIndexBase):
     r"""geometric diameter descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -72,6 +74,7 @@ class GeometricalShapeIndex(GeometricalIndexBase):
     :returns: NaN when :math:`R = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -105,6 +108,7 @@ class PetitjeanIndex3D(GeometricalShapeIndex):
     :returns: NaN when :math:`D = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
