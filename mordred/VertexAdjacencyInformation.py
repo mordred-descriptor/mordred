@@ -16,6 +16,7 @@ class VertexAdjacencyInformation(Descriptor):
     :returns: :math:`m = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

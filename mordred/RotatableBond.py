@@ -23,6 +23,7 @@ class RotatableBondsBase(Descriptor):
 class RotatableBondsCount(RotatableBondsBase):
     r"""rotatable bonds count descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -46,6 +47,7 @@ class RotatableBondsRatio(RotatableBondsBase):
     :returns: NaN when :math:`N_{\rm bonds} = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

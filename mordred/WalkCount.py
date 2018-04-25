@@ -19,6 +19,7 @@ class WalkCount(Descriptor):
     :param self_returning: use self returning walk only
     """
 
+    since = "1.0.0"
     __slots__ = ("_order", "_total", "_self_returning")
 
     explicit_hydrogens = False

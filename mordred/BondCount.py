@@ -54,6 +54,7 @@ class BondCount(Descriptor):
     :param kekulize: use kekulized structure
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_bond_name", "_bond_desc", "_check_bond", "kekulize")
 
     def description(self):

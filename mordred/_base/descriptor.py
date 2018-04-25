@@ -38,7 +38,8 @@ class DescriptorMeta(ABCMeta):
                     break
 
         dict["parameter_names"] = getargs(__init__)
-        dict["since"] = StrictVersion(dict.get("since", "1.0.0"))
+        if "since" in dict:
+            dict["since"] = StrictVersion(dict["since"])
 
         return ABCMeta.__new__(cls, classname, bases, dict)
 

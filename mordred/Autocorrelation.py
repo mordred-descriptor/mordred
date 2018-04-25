@@ -157,6 +157,7 @@ class ATS(AutocorrelationBase):
     :returns: NaN when any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "moreau-broto autocorrelation"
@@ -197,6 +198,7 @@ class AATS(ATS):
         * some properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "averaged moreau-broto autocorrelation"
@@ -222,6 +224,7 @@ class ATSC(AutocorrelationBase):
     :returns: NaN when any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "centered moreau-broto autocorrelation"
@@ -262,6 +265,7 @@ class AATSC(ATSC):
         * any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "averaged and centered moreau-broto autocorrelation"
@@ -293,6 +297,7 @@ class MATS(AutocorrelationBase):
         * denominator = 0
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "moran coefficient"
@@ -329,6 +334,7 @@ class GATS(MATS):
         * denominator = 0
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "geary coefficient"

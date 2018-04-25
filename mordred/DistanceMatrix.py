@@ -17,6 +17,7 @@ class DistanceMatrix(Descriptor):
     :param type: :ref:`matrix_aggregating_methods`
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
     explicit_hydrogens = False
 

@@ -60,6 +60,7 @@ class CarbonTypes(CarbonTypesBase):
     :param SP: count :math:`{\rm SP}n` carbon
     """
 
+    since = "1.0.0"
     __slots__ = ("_nCarbon", "_SP")
 
     def description(self):
@@ -111,6 +112,7 @@ class HybridizationRatio(CarbonTypesBase):
     def description(self):
         return "hybridization ratio"
 
+    since = "1.0.0"
     __slots__ = ()
 
     @classmethod

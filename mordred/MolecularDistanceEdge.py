@@ -31,6 +31,7 @@ class MolecularDistanceEdge(Descriptor):
     :returns: NaN when :math:`N_{\rm MDE} = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ("_valence1", "_valence2", "_atomic_num")
     explicit_hydrogens = False
 

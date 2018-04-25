@@ -33,6 +33,7 @@ class APol(PolarizabilityBase):
     :param use78: use old atomic polarizability data
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -50,6 +51,7 @@ class BPol(PolarizabilityBase):
     :param use78: use old atomic polarizability data
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

@@ -37,6 +37,7 @@ class AtomCount(Descriptor):
         * element symbol
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):

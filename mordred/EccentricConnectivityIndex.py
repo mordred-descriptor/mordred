@@ -15,6 +15,7 @@ class EccentricConnectivityIndex(Descriptor):
     :math:`V` is valences of atoms.
     """
 
+    since = "1.0.0"
     __slots__ = ()
     explicit_hydrogens = False
 

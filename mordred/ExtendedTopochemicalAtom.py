@@ -124,6 +124,7 @@ class EtaCoreCount(EtaBase):
     :returns: reference and valence of any atoms > 4
     """
 
+    since = "1.0.0"
     __slots__ = ("_averaged", "_reference")
 
     def description(self):
@@ -176,6 +177,7 @@ class EtaShapeIndex(EtaBase):
     :param type: one of shape_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
@@ -258,6 +260,7 @@ class EtaVEMCount(EtaBase):
     :param averaged: averaged by heavy atom count
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_averaged")
 
     def description(self):
@@ -349,6 +352,7 @@ class EtaCompositeIndex(EtaBase):
     :returns: reference and valence of any atoms > 4
     """
 
+    since = "1.0.0"
     __slots__ = ("_reference", "_local", "_averaged")
 
     def description(self):
@@ -438,6 +442,7 @@ class EtaFunctionalityIndex(EtaBase):
     :param averaged: averaged
     """
 
+    since = "1.0.0"
     __slots__ = ("_local", "_averaged")
 
     def description(self):
@@ -499,6 +504,7 @@ class EtaBranchingIndex(EtaBase):
     :returns: NaN when A < 2
     """
 
+    since = "1.0.0"
     __slots__ = ("_ring", "_averaged")
 
     def description(self):
@@ -564,6 +570,7 @@ class EtaDeltaAlpha(EtaBase):
     :param type: one of delta_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
@@ -626,6 +633,7 @@ class EtaEpsilon(EtaBase):
     :returns: type = 3 and valence of any atoms > 4
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
@@ -686,6 +694,7 @@ class EtaDeltaEpsilon(EtaBase):
     :param type: one of delta_epsilon_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
@@ -734,6 +743,7 @@ class EtaDeltaBeta(EtaBase):
     :param averaged: averaged
     """
 
+    since = "1.0.0"
     __slots__ = ("_averaged",)
 
     def description(self):
@@ -776,6 +786,7 @@ class EtaPsi(EtaBase):
         \psi_1 = \frac{\alpha}{A \cdot \epsilon^2}
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -813,6 +824,7 @@ class EtaDeltaPsi(EtaBase):
     :param type: one of delta_psi_types
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):

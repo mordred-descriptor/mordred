@@ -59,6 +59,7 @@ class Framework(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

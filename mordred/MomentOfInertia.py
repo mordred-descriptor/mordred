@@ -43,6 +43,7 @@ class PrincipalAxis(MomentOfInertiaBase):
 
 
 class MomentOfInertia(MomentOfInertiaBase):
+    since = "1.0.0"
     __slots__ = ("_axis",)
 
     def description(self):

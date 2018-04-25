@@ -9,6 +9,7 @@ __all__ = ("BalabanJ",)
 class BalabanJ(Descriptor):
     r"""Balaban's J index descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

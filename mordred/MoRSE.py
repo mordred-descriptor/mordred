@@ -12,6 +12,7 @@ __all__ = ("MoRSE",)
 
 
 class MoRSE(Descriptor):
+    since = "1.0.0"
     __slots__ = ("_prop", "_distance")
 
     require_3D = True

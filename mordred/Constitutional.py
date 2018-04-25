@@ -20,6 +20,7 @@ class ConstitutionalSum(Descriptor):
     :param prop: :ref:`atomic_properties`
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop",)
 
     def description(self):
@@ -61,6 +62,7 @@ class ConstitutionalMean(ConstitutionalSum):
     :rtype: float
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop",)
     _prefix = "M"
 

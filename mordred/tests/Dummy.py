@@ -6,6 +6,8 @@ class Dummy1(Descriptor):
 
 
 class Dummy2(Dummy1):
+    since = "1.0.0"
+
     def parameters(self):
         return ()
 

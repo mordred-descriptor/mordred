@@ -86,6 +86,7 @@ class BCUT(BCUTBase):
         * :math:`\left| nth \right| > A`
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop", "_nth")
 
     def description(self):

@@ -172,6 +172,7 @@ class Chi(ChiBase):
         * averaged and :math:`N_{\chi} = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_order", "_prop", "_averaged")
 
     chi_types = tuple(t.name for t in ChiType)

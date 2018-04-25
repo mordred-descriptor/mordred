@@ -62,6 +62,7 @@ class BaryszMatrix(BaryszMatrixBase):
     :returns: NaN when any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop", "_type")
 
     def description(self):

@@ -12,6 +12,7 @@ class WienerIndex(Descriptor):
     """
 
     __slots__ = ("_polarity",)
+    since = "1.0.0"
     explicit_hydrogens = False
 
     def description(self):

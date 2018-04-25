@@ -94,6 +94,7 @@ class AtomTypeEState(EStateBase):
 
     """
 
+    since = "1.0.0"
     __slots__ = ("_type", "_estate")
 
     def description(self):

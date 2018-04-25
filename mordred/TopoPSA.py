@@ -20,6 +20,7 @@ class TopoPSA(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ("_no_only",)
 
     def description(self):

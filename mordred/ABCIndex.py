@@ -39,6 +39,7 @@ class ABCIndex(ABCIndexBase):
 
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -68,6 +69,7 @@ class ABCGGIndex(ABCIndexBase):
 
     """  # noqa: E501
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

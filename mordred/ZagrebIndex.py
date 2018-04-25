@@ -25,6 +25,7 @@ class ZagrebIndex(Descriptor):
     :returns: NaN when valence of any atoms are 0
     """
 
+    since = "1.0.0"
     __slots__ = ("_version", "_variable")
     explicit_hydrogens = False
 

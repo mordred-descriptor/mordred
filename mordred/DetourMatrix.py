@@ -154,6 +154,7 @@ class DetourMatrix(DetourMatrixBase):
     :param type: :ref:`matrix_aggregating_methods`
     """
 
+    since = "1.0.0"
     __slots__ = ("_type",)
 
     def description(self):
@@ -199,6 +200,7 @@ class DetourIndex(DetourMatrixBase):
     :math:`A` is number of atoms.
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

@@ -69,6 +69,7 @@ class RingCount(RingCountBase):
         * None: count any rings
     """
 
+    since = "1.0.0"
     __slots__ = ("_order", "_greater", "_fused", "_aromatic", "_hetero")
 
     def description(self):

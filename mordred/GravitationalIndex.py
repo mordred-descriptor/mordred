@@ -8,6 +8,7 @@ __all__ = ("GravitationalIndex",)
 
 
 class GravitationalIndex(Descriptor):
+    since = "1.0.0"
     __slots__ = "_heavy", "_pair"
 
     def description(self):
