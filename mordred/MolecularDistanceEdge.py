@@ -42,7 +42,7 @@ class MolecularDistanceEdge(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(a, b, e)
             for e in [6, 8, 7]

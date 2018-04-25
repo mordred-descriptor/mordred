@@ -17,7 +17,7 @@ class Dummy2(Dummy1):
 
 class Dummy3(Dummy2):
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
 
@@ -32,6 +32,6 @@ class Dummy4(Dummy3):
         return "Dummy4_{}".format(self.i)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(0)
         yield cls(1)

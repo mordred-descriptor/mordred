@@ -24,7 +24,7 @@ class Weight(Descriptor):
     explicit_hydrogens = True
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(True, False)
         yield cls(True, True)
 

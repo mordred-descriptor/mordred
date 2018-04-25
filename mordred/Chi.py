@@ -187,7 +187,7 @@ class Chi(ChiBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             (cls(ChiType.chain, l, a) for a in cls._deltas for l in range(3, 8)),
             (cls(ChiType.cluster, l, a) for a in cls._deltas for l in range(3, 7)),

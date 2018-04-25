@@ -20,7 +20,7 @@ class WienerIndex(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(False)
         yield cls(True)
 

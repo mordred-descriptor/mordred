@@ -160,7 +160,7 @@ class DetourMatrix(DetourMatrixBase):
         return "{} from detourn matrix".format(self._type.description())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, ma.methods)
 
     def __str__(self):
@@ -208,7 +208,7 @@ class DetourIndex(DetourMatrixBase):
         return ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     explicit_hydrogens = False

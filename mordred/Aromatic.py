@@ -9,7 +9,7 @@ class AromaticBase(Descriptor):
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

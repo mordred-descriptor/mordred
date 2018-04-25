@@ -104,7 +104,7 @@ class AtomTypeEState(EStateBase):
     es_types = es_types
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(a, t)
             for a in AggrType

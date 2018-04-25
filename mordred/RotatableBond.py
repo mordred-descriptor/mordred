@@ -13,7 +13,7 @@ class RotatableBondsBase(Descriptor):
     explicit_hydrogens = False
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def parameters(self):

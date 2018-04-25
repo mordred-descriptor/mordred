@@ -13,7 +13,7 @@ class GeometricalIndexBase(Descriptor):
     require_3D = True
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def parameters(self):

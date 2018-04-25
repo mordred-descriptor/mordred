@@ -16,7 +16,7 @@ class BertzCT(Descriptor):
         return "Bertz CT"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

@@ -12,7 +12,7 @@ class KappaShapeIndexBase(Descriptor):
     __slots__ = ("_order",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

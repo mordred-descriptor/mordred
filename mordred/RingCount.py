@@ -94,7 +94,7 @@ class RingCount(RingCountBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         for fused in [False, True]:
             for arom in [None, True, False]:
                 for hetero in [None, True]:

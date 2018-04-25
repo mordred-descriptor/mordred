@@ -31,7 +31,7 @@ class WalkCount(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         for start, sr in [(1, False), (2, True)]:
             for l in range(start, 11):
                 yield cls(l, False, sr)

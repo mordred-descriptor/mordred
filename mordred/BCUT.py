@@ -96,7 +96,7 @@ class BCUT(BCUTBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(a, n)
             for a in get_properties(valence=True, charge=True)

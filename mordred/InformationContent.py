@@ -89,7 +89,7 @@ class InformationContentBase(Descriptor):
         return self._name + str(self._order)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(o) for o in range(6))
 
     def parameters(self):
@@ -105,7 +105,7 @@ class Ag(InformationContentBase):
     __slots__ = ("_order",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return ()
 
     _name = "Ag"

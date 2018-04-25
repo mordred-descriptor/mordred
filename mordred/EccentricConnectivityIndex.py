@@ -22,7 +22,7 @@ class EccentricConnectivityIndex(Descriptor):
         return "eccentric connectivity index"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

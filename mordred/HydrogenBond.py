@@ -12,7 +12,7 @@ class HBondBase(Descriptor):
     explicit_hydrogens = False
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     rtype = int

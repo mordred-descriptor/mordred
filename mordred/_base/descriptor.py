@@ -2,6 +2,7 @@ import inspect
 import operator
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
+from distutils.version import StrictVersion
 
 import six
 import numpy as np
@@ -37,6 +38,7 @@ class DescriptorMeta(ABCMeta):
                     break
 
         dict["parameter_names"] = getargs(__init__)
+        dict["since"] = StrictVersion(dict.get("since", "1.0.0"))
 
         return ABCMeta.__new__(cls, classname, bases, dict)
 
@@ -63,7 +65,7 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
         pass
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         r"""Generate preset descriptor instances.
 
         Returns:
@@ -266,7 +268,7 @@ def is_descriptor_class(desc, include_abstract=False):
 
 class UnaryOperatingDescriptor(Descriptor):
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return cls()
 
     operators = {
@@ -308,7 +310,7 @@ class UnaryOperatingDescriptor(Descriptor):
 
 class ConstDescriptor(Descriptor):
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return cls()
 
     def parameters(self):
@@ -326,7 +328,7 @@ class ConstDescriptor(Descriptor):
 
 class BinaryOperatingDescriptor(Descriptor):
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return cls()
 
     operators = {

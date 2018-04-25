@@ -26,7 +26,7 @@ class ConstitutionalSum(Descriptor):
         return "sum of constitutional weighted by {}".format(self._prop.get_long())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, get_properties())
 
     def parameters(self):
@@ -68,7 +68,7 @@ class ConstitutionalMean(ConstitutionalSum):
         return "mean of constitutional weighted by {}".format(self._prop.get_long())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, get_properties())
 
     def dependencies(self):

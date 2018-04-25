@@ -20,7 +20,7 @@ class McGowanVolume(Descriptor):
         return "McGowan volume"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

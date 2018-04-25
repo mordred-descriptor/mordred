@@ -133,7 +133,7 @@ class EtaCoreCount(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, [False, True])
 
     def __str__(self):
@@ -185,7 +185,7 @@ class EtaShapeIndex(EtaBase):
     _type_to_degree = {"p": 1, "y": 3, "x": 4}
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(t) for t in cls.shape_types)
 
     def __str__(self):
@@ -273,7 +273,7 @@ class EtaVEMCount(EtaBase):
         return "{}{}valence electron mobile count".format("averaged " if self._averaged else "", d)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(b, a)
             for b in cls.beta_types
@@ -359,7 +359,7 @@ class EtaCompositeIndex(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         ft = [False, True]
         return (cls(r, l, a) for r in ft for l in ft for a in ft)
 
@@ -447,7 +447,7 @@ class EtaFunctionalityIndex(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(l, a)
             for l in [False, True]
@@ -508,7 +508,7 @@ class EtaBranchingIndex(EtaBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(r, a)
             for r in [False, True]
@@ -572,7 +572,7 @@ class EtaDeltaAlpha(EtaBase):
     delta_types = ("A", "B")
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(t) for t in cls.delta_types)
 
     def __str__(self):
@@ -632,7 +632,7 @@ class EtaEpsilon(EtaBase):
         return "ETA epsilon (type: {})".format(self._type)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.epsilon_types)
 
     def __str__(self):
@@ -692,7 +692,7 @@ class EtaDeltaEpsilon(EtaBase):
         return "ETA delta epsilon (type: {})".format(self._type)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.delta_epsilon_types)
 
     def __str__(self):
@@ -740,7 +740,7 @@ class EtaDeltaBeta(EtaBase):
         return "{}ETA delta beta".format("averaged " if self._averaged else "")
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(a) for a in [False, True])
 
     def __str__(self):
@@ -782,7 +782,7 @@ class EtaPsi(EtaBase):
         return "ETA psi"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -819,7 +819,7 @@ class EtaDeltaPsi(EtaBase):
         return "ETA delta psi (type: {})".format(self._type)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.delta_psi_types)
 
     def __str__(self):

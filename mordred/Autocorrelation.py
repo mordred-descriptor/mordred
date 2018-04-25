@@ -162,7 +162,7 @@ class ATS(AutocorrelationBase):
     _description_name = "moreau-broto autocorrelation"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(d, a)
             for a in get_properties(valence=True)
@@ -227,7 +227,7 @@ class ATSC(AutocorrelationBase):
     _description_name = "centered moreau-broto autocorrelation"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(d, a)
             for a in get_properties(charge=True, valence=True)
@@ -298,7 +298,7 @@ class MATS(AutocorrelationBase):
     _description_name = "moran coefficient"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(d, a)
             for a in get_properties(charge=True, valence=True)

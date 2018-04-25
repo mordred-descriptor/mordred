@@ -49,7 +49,7 @@ class MomentOfInertia(MomentOfInertiaBase):
         return "moment of inertia (axis = {})".format(self._axis)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.axes)
 
     def __str__(self):

@@ -8,7 +8,7 @@ class PolarizabilityBase(Descriptor):
     __slots__ = ("_use78",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

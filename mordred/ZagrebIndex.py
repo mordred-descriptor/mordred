@@ -38,7 +38,7 @@ class ZagrebIndex(Descriptor):
                 self._variable, self._version)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(v, x) for x in [1, -1] for v in [1, 2])
 
     def __str__(self):

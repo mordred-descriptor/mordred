@@ -70,7 +70,7 @@ class CarbonTypes(CarbonTypesBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(lambda args: cls(*args), [
             (1, 1), (2, 1),
             (1, 2), (2, 2), (3, 2),
@@ -114,7 +114,7 @@ class HybridizationRatio(CarbonTypesBase):
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -142,9 +142,10 @@ class FractionCSP3(Descriptor):
     r"""the fraction of C atoms that are SP3 hybridized."""
 
     __slots__ = ()
+    since = "1.1.0"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def description(self):

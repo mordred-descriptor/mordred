@@ -49,11 +49,12 @@ class LogS(Descriptor):
 
     __slots__ = ()
 
+    since = "1.1.0"
     explicit_hydrogens = False
     kekulize = False
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def dependencies(self):

@@ -51,7 +51,7 @@ class VdwVolumeABC(Descriptor):
     compat_atoms = tuple(bondi_radii)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

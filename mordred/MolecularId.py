@@ -119,7 +119,7 @@ class MolecularId(MolecularIdBase):
         return "{}molecular ID{}".format("averaged " if self._averaged else "", t)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(s, a)
             for s in ["any", "hetero", "C", "N", "O", "X"]

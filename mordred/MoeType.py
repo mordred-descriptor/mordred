@@ -20,7 +20,7 @@ class LabuteASA(Descriptor):
         return "Labute's Approximate Surface Area"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -41,7 +41,7 @@ class MoeTypeBase(Descriptor):
     _module = MolSurf
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, range(1, cls.k_max))
 
     def description(self):

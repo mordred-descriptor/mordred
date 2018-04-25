@@ -120,7 +120,7 @@ class PathCount(PathCountBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             (cls(o, False, False, False) for o in range(2, 11)),
             [cls(10, False, True, False)],

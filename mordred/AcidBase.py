@@ -19,7 +19,7 @@ class SmartsCountBase(Descriptor):
     __slots__ = ("_mol",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def _create_smarts(self):

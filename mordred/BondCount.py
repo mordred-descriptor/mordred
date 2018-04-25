@@ -63,7 +63,7 @@ class BondCount(Descriptor):
     bond_types = tuple(b.name for b in BondType)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             map(lambda t: cls(t, False), BondType),
             map(lambda t: cls(t, True), [

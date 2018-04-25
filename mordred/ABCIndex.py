@@ -17,7 +17,7 @@ class ABCIndexBase(Descriptor):
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     explicit_hydrogens = False

@@ -28,7 +28,7 @@ class CPSABase(Descriptor):
     require_3D = True
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def parameters(self):
@@ -44,7 +44,7 @@ class VersionCPSABase(CPSABase):
     __slots__ = ("_version",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.versions)
 
     def parameters(self):

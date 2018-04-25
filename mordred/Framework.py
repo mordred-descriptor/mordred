@@ -65,7 +65,7 @@ class Framework(Descriptor):
         return "molecular framework ratio"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

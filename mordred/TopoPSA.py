@@ -28,7 +28,7 @@ class TopoPSA(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(True)
         yield cls(False)
 

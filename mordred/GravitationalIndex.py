@@ -17,7 +17,7 @@ class GravitationalIndex(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(h, p)
             for p in [False, True]
