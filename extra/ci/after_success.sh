@@ -6,7 +6,7 @@ if [[ ! -f ~/.ssh/id_rsa ]]; then
     exit 0
 fi
 
-source ./scripts/add_path.sh
+source ./extra/ci/conda.sh
 
 [[ -n "$COVERAGE" ]] && coveralls
 

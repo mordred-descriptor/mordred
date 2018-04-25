@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-source ./scripts/add_path.sh
+source ./extra/ci/conda.sh
 
 if [[ -n "$COVERAGE" ]]; then
     python -m mordred.tests -q --with-coverage
