@@ -47,6 +47,8 @@ class LogS(Descriptor):
     http://silicos-it.be.s3-website-eu-west-1.amazonaws.com/software/filter-it/1.0.2/filter-it.html#installation
     """
 
+    __slots__ = ()
+
     explicit_hydrogens = False
     kekulize = False
 

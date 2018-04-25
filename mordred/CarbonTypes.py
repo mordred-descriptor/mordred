@@ -141,6 +141,8 @@ class HybridizationRatio(CarbonTypesBase):
 class FractionCSP3(Descriptor):
     r"""the fraction of C atoms that are SP3 hybridized."""
 
+    __slots__ = ()
+
     @classmethod
     def preset(cls):
         yield cls()

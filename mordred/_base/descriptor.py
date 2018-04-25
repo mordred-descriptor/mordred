@@ -250,7 +250,7 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
         __floor__ = _unary_common("floor({})", "floor")
 
 
-def is_descriptor_class(desc):
+def is_descriptor_class(desc, include_abstract=False):
     r"""Check calculatable descriptor class or not.
 
     Returns:
@@ -260,7 +260,7 @@ def is_descriptor_class(desc):
     return (
         isinstance(desc, type) and
         issubclass(desc, Descriptor) and
-        not inspect.isabstract(desc)
+        (True if include_abstract else not inspect.isabstract(desc))
     )
 
 
