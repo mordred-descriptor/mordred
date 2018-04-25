@@ -776,6 +776,8 @@ class EtaPsi(EtaBase):
         \psi_1 = \frac{\alpha}{A \cdot \epsilon^2}
     """
 
+    __slots__ = ()
+
     def description(self):
         return "ETA psi"
 

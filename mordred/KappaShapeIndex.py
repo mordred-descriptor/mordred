@@ -9,6 +9,8 @@ __all__ = ("KappaShapeIndex1", "KappaShapeIndex2", "KappaShapeIndex3")
 class KappaShapeIndexBase(Descriptor):
     explicit_hydrogens = False
 
+    __slots__ = ("_order",)
+
     @classmethod
     def preset(cls):
         yield cls()

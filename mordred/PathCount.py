@@ -11,6 +11,7 @@ __all__ = (
 
 
 class PathCountBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
 
