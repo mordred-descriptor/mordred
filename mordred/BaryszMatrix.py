@@ -18,6 +18,8 @@ class BaryszMatrixBase(Descriptor):
 class Barysz(BaryszMatrixBase):
     __slots__ = ("_prop",)
 
+    hermitian = True
+
     def parameters(self):
         return (self._prop,)
 

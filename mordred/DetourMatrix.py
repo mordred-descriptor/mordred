@@ -133,6 +133,8 @@ class DetourMatrixBase(Descriptor):
 class DetourMatrixCache(DetourMatrixBase):
     __slots__ = ()
 
+    hermitian = True
+
     def parameters(self):
         return ()
 

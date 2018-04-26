@@ -67,7 +67,7 @@ class Eigen(Descriptor):
         if matrix is None:
             raise ValueError("matrix is None")
 
-        w, v = np.linalg.eig(matrix)
+        w, v = (np.linalg.eigh if self.matrix.hermitian else np.linalg.eig)(matrix)
 
         if np.iscomplexobj(w):
             w = w.real
