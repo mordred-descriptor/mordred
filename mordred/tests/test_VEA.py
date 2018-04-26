@@ -1,7 +1,7 @@
 from rdkit import Chem
 from numpy.testing import assert_almost_equal
 
-from mordred import Calculator, DistanceMatrix, AdjacencyMatrix
+from mordred import Calculator, DistanceMatrix, AdjacencyMatrix, is_missing
 
 # Balaban, A. T.; Ciubotariu, D.; Medeleanu, M.
 # Topological indices and real number vertex invariants based on graph eigenvalues or eigenvectors.
@@ -73,9 +73,14 @@ def test_VEA():
         actuals = {str(k): v for k, v in zip(calc.descriptors, calc(mol))}
 
         for desc in descs:
+            actual = actuals[desc]
             decimal, desired = desireds[desc]
             if desired is None:
                 continue
 
-            yield assert_almost_equal, actuals[desc], desired,\
-                decimal, "{} of {}".format(desc, smi)
+            assert not is_missing(actual), actual
+
+            yield (
+                assert_almost_equal, actual, desired,
+                decimal, "{} of {}".format(desc, smi),
+            )
