@@ -208,8 +208,11 @@ class SM1(Common):
     def description(cls):
         return "spectral moment"
 
-    def calculate(self, eig):
-        return eig.val.sum()
+    def dependencies(self):
+        return {"matrix": self.matrix}
+
+    def calculate(self, matrix):
+        return np.trace(matrix)
 
 
 @method
