@@ -24,6 +24,18 @@ molecular descriptor calculator.
 .. image:: https://img.shields.io/badge/doi-10.1186%2Fs13321--018--0258--y-blue.svg
    :target: https://doi.org/10.1186/s13321-018-0258-y
 
+number of descriptors
+---------------------
+.. code:: python
+
+    >>> from mordred import Calculator, descriptors
+    >>> n_all = len(Calculator(descriptors, ignore_3D=False).descriptors)
+    >>> n_2D = len(Calculator(descriptors, ignore_3D=True).descriptors)
+    >>> print("2D:    {:5}\n3D:    {:5}\n------------\ntotal: {:5}".format(n_2D, n_all - n_2D, n_all))
+    2D:     1613
+    3D:      212
+    ------------
+    total:  1825
 
 Installation
 ------------
