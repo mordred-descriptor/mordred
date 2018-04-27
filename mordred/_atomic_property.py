@@ -36,6 +36,11 @@ def getter(since, short, **attrs):
     return proc
 
 
+@getter("1.1.0", short="x", long="unweighted")
+def unweighted(_atom):
+    return 1.0
+
+
 @getter("1.0.0", short="c", long="gasteiger charge", gasteiger_charges=True)
 def get_gasteiger_charge(atom):
     return (
