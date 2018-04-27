@@ -1,6 +1,7 @@
 from __future__ import division
 
 import os
+from distutils.version import StrictVersion
 
 import six
 import numpy as np
@@ -17,9 +18,10 @@ getter_list = []
 getters = {}
 
 
-def getter(short, **attrs):
+def getter(since, short, **attrs):
     def proc(f):
         f.short = short
+        f.since = StrictVersion(since)
 
         for a, v in attrs.items():
             setattr(f, a, v)
@@ -34,7 +36,7 @@ def getter(short, **attrs):
     return proc
 
 
-@getter(short="c", long="gasteiger charge", gasteiger_charges=True)
+@getter("1.0.0", short="c", long="gasteiger charge", gasteiger_charges=True)
 def get_gasteiger_charge(atom):
     return (
         atom.GetDoubleProp("_GasteigerCharge") +
@@ -125,7 +127,7 @@ else:
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
-@getter(short="dv", long="valence electrons", valence=True)
+@getter("1.0.0", short="dv", long="valence electrons", valence=True)
 def get_valence_electrons(atom):
     N = atom.GetAtomicNum()
     if N == 1:
@@ -139,7 +141,7 @@ def get_valence_electrons(atom):
     return (Zv - h) / (Z - Zv - 1)
 
 
-@getter(short="d", long="sigma electrons", valence=True)
+@getter("1.0.0", short="d", long="sigma electrons", valence=True)
 def get_sigma_electrons(atom):
     return sum(1 for a in atom.GetNeighbors()
                if a.GetAtomicNum() != 1)
@@ -147,7 +149,7 @@ def get_sigma_electrons(atom):
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
 # p. 283
-@getter(short="s", long="intrinsic state", require_connected=True, valence=True)
+@getter("1.0.0", short="s", long="intrinsic state", require_connected=True, valence=True)
 def get_intrinsic_state(atom):
     i = atom.GetAtomicNum()
     d = get_sigma_electrons(atom)
@@ -244,42 +246,42 @@ def get_eta_gamma(atom):
     return get_core_count(atom) / beta
 
 
-@getter(short="Z", long="atomic number")
+@getter("1.0.0", short="Z", long="atomic number")
 def get_atomic_number(a):
     return a.GetAtomicNum()
 
 
-@getter(short="m", long="mass")
+@getter("1.0.0", short="m", long="mass")
 def get_mass(a):
     return mass[a.GetAtomicNum()]
 
 
-@getter(short="v", long="vdw volume")
+@getter("1.0.0", short="v", long="vdw volume")
 def get_vdw_volume(a):
     return vdw_volume[a.GetAtomicNum()]
 
 
-@getter(short="se", long="sanderson EN")
+@getter("1.0.0", short="se", long="sanderson EN")
 def get_sanderson_en(a):
     return sanderson[a.GetAtomicNum()]
 
 
-@getter(short="pe", long="pauling EN")
+@getter("1.0.0", short="pe", long="pauling EN")
 def get_pauling_en(a):
     return pauling[a.GetAtomicNum()]
 
 
-@getter(short="are", long="allred-rocow EN")
+@getter("1.0.0", short="are", long="allred-rocow EN")
 def get_allred_rocow_en(a):
     return allred_rocow[a.GetAtomicNum()]
 
 
-@getter(short="p", long="polarizability")
+@getter("1.0.0", short="p", long="polarizability")
 def get_polarizability(a):
     return polarizability94[a.GetAtomicNum()]
 
 
-@getter(short="i", long="ionization potential")
+@getter("1.0.0", short="i", long="ionization potential")
 def get_ionization_potential(a):
     return ionization_potentials[a.GetAtomicNum()]
 
@@ -288,8 +290,11 @@ def get_mc_gowan_volume(a):
     return mc_gowan_volume[a.GetAtomicNum()]
 
 
-def get_properties(charge=False, valence=False):
+def get_properties(version, charge=False, valence=False):
     for f in getters.values():
+        if version < f.since:
+            continue
+
         if not charge and getattr(f, "gasteiger_charges", False):
             continue
 
@@ -301,6 +306,7 @@ def get_properties(charge=False, valence=False):
 
 class AtomicProperty(Descriptor):
     __slots__ = "explicit_hydrogens", "prop", "_initialized"
+    since = "1.0.0"
 
     def __str__(self):
         return "Prop{}".format(self.as_argument)

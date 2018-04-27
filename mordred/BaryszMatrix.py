@@ -73,7 +73,7 @@ class BaryszMatrix(BaryszMatrixBase):
 
     @classmethod
     def preset(cls, version):
-        return (cls(p, m) for p in get_properties() for m in methods)
+        return (cls(p, m) for p in get_properties(version) for m in methods)
 
     def __str__(self):
         return "{}_Dz{}".format(self._type.__name__, self._prop.as_argument)
