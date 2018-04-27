@@ -19,6 +19,8 @@ class Result(object):
         buf = ["Result({"]
         for k, v in zip(self._descriptors, self._values):
             buf.append("'{}': {}".format(k, v))
+            buf.append(", ")
+        buf.pop()
         buf.append("})")
         return "".join(buf)
 
