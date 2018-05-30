@@ -206,4 +206,5 @@ Documentation
 -  `master <http://mordred-descriptor.github.io/documentation/master>`__
 -  `develop <http://mordred-descriptor.github.io/documentation/develop>`__
 
+-  `v1.1.0 <http://mordred-descriptor.github.io/documentation/v1.1.0>`__
 -  `v1.0.0 <http://mordred-descriptor.github.io/documentation/v1.0.0>`__
