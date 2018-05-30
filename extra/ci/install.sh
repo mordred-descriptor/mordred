@@ -38,9 +38,7 @@ if [[ "$PYTHON_VERSION" < 3.4 ]]; then
     echo enum34 >> $CONDA_REQ_FILE
 fi
 
-if [[ -n "$COVERAGE" ]]; then
-    echo coveralls >> $PIP_REQ_FILE
-fi
+[[ "$PYTHON_VERSION" < 3.4 ]] && echo enum34 >> $CONDA_REQ_FILE
 
 if [[ -n "$LINT" ]]; then
     cat $REQUIREMENTS/requirements-flake8.txt >> $PIP_REQ_FILE

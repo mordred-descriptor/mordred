@@ -8,9 +8,10 @@ from .descriptor import Descriptor
 class Result(object):
     r"""Result type."""
 
-    __slots__ = ("_values", "_descriptors", "_name_to_value")
+    __slots__ = ("mol", "_values", "_descriptors", "_name_to_value")
 
-    def __init__(self, r, d):
+    def __init__(self, mol, r, d):
+        self.mol = mol
         self._values = list(r)
         self._descriptors = list(d)
         self._name_to_value = None
@@ -25,7 +26,8 @@ class Result(object):
         return "".join(buf)
 
     def __repr__(self):
-        return "{}({!r},{!r})".format(
+        return "{}({!r},{!r},{!r})".format(
+            self.mol,
             self.__class__.__name__,
             self._values,
             self._descriptors,
@@ -42,6 +44,7 @@ class Result(object):
 
         """
         return self.__class__(
+            self.mol,
             [(value if is_missing(v) else v) for v in self.values()],
             self.keys(),
         )
@@ -60,7 +63,7 @@ class Result(object):
                 newvalues.append(v)
                 newdescs.append(d)
 
-        return self.__class__(newvalues, newdescs)
+        return self.__class__(self.mol, newvalues, newdescs)
 
     def items(self):
         r"""Get items.
