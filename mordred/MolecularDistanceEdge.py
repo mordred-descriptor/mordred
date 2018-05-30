@@ -31,7 +31,8 @@ class MolecularDistanceEdge(Descriptor):
     :returns: NaN when :math:`N_{\rm MDE} = 0`
     """
 
-    __slots__ = ("_valence1", "_valence2", "_atomic_num",)
+    since = "1.0.0"
+    __slots__ = ("_valence1", "_valence2", "_atomic_num")
     explicit_hydrogens = False
 
     def description(self):
@@ -42,7 +43,7 @@ class MolecularDistanceEdge(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(a, b, e)
             for e in [6, 8, 7]

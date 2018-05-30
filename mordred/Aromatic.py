@@ -9,7 +9,7 @@ class AromaticBase(Descriptor):
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -24,6 +24,7 @@ class AromaticBase(Descriptor):
 class AromaticAtomsCount(AromaticBase):
     r"""aromatic atoms count descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
     _name = "nAromAtom"
 
@@ -41,6 +42,7 @@ class AromaticAtomsCount(AromaticBase):
 class AromaticBondsCount(AromaticBase):
     r"""aromatic bonds count descriptor."""
 
+    since = "1.0.0"
     __slots__ = ()
     _name = "nAromBond"
 

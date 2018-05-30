@@ -43,7 +43,7 @@ def get_gasteiger_charge(atom):
 
 
 class PeriodicTable(object):
-    __slots__ = "data",
+    __slots__ = ("data",)
 
     _datadir = os.path.join(
         os.path.dirname(__file__),

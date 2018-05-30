@@ -20,11 +20,12 @@ class Weight(Descriptor):
             "exact " if self._exact else "",
         )
 
+    since = "1.0.0"
     __slots__ = ("_averaged", "_exact")
     explicit_hydrogens = True
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(True, False)
         yield cls(True, True)
 

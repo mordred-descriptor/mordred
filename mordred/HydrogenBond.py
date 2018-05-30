@@ -12,7 +12,7 @@ class HBondBase(Descriptor):
     explicit_hydrogens = False
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     rtype = int
@@ -21,6 +21,7 @@ class HBondBase(Descriptor):
 class HBondAcceptor(HBondBase):
     r"""hydrogen bond acceptor descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -39,6 +40,7 @@ class HBondAcceptor(HBondBase):
 class HBondDonor(HBondBase):
     r"""hydrogen bond donor descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

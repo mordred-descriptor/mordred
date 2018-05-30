@@ -32,7 +32,7 @@ def main_process(sdf, solvent_radius, mesh_level):
         print(name)  # noqa: T003
 
         for a, s in zip(mol.GetAtoms(), sa.surface_area()):
-            print("{:4d} {:2s} {:8.3f}".format(
+            print("{:4d} {:2s} {:8.3f}".format(  # noqa: T001
                 a.GetIdx(),
                 a.GetSymbol(),
                 s,

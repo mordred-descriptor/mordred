@@ -2,6 +2,10 @@
 
 set -e
 
+REQUIREMENTS=./extra/requirements
+CONDA_REQ_FILE=requirements-conda.txt
+PIP_REQ_FILE=requirements-pip.txt
+
 # install conda
 
 if [[ "$TRAVIS_OS_NAME" == osx ]]; then
@@ -17,7 +21,7 @@ if [[ -n "$TRAVIS_OS_NAME" ]]; then
     bash miniconda.sh -b -p $HOME/miniconda
 fi
 
-source ./scripts/add_path.sh
+source ./extra/ci/conda.sh
 
 # setup conda
 
@@ -28,19 +32,20 @@ conda config --add channels rdkit --add channels mordred-descriptor
 
 # install requirements
 
-CONDA_REQ_FILE=requirements-conda.txt
-PIP_REQ_FILE=requirements-pip.txt
+cat $REQUIREMENTS/requirements-conda.txt $REQUIREMENTS/requirements.txt > $CONDA_REQ_FILE
 
-cat ./scripts/requirements-conda.txt ./scripts/requirements.txt > $CONDA_REQ_FILE
+if [[ "$PYTHON_VERSION" < 3.4 ]]; then
+    echo enum34 >> $CONDA_REQ_FILE
+fi
 
 [[ "$PYTHON_VERSION" < 3.4 ]] && echo enum34 >> $CONDA_REQ_FILE
 
-[[ -n "$COVERAGE" ]] && echo coveralls >> $PIP_REQ_FILE
+if [[ -n "$LINT" ]]; then
+    cat $REQUIREMENTS/requirements-flake8.txt >> $PIP_REQ_FILE
+fi
 
 if [[ -n "$DOCUMENTATION" ]]; then
-    echo sphinx >> $CONDA_REQ_FILE
-    echo sphinx_rtd_theme >> $CONDA_REQ_FILE
-    echo sphinxcontrib-bibtex >> $PIP_REQ_FILE
+    cat $REQUIREMENTS/requirements-documentation.txt >> $PIP_REQ_FILE
 fi
 
 conda install python=$PYTHON_VERSION --file $CONDA_REQ_FILE

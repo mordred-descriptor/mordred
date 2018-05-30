@@ -16,12 +16,15 @@ def method(cls):
     return cls
 
 
-class Common(Descriptor):
+class MatrixAttributeBase(Descriptor):
     __slots__ = "matrix", "explicit_hydrogens", "kekulize"
     require_connected = True
 
     def parameters(self):
         return self.matrix, self.explicit_hydrogens, self.kekulize
+
+    def dependencies(self):
+        return {"eig": Eigen(self.matrix)}
 
     def __init__(self, matrix, explicit_hydrogens, kekulize):
         self.matrix = matrix
@@ -36,33 +39,6 @@ class Common(Descriptor):
             self.kekulize,
         )
 
-    def dependencies(self):
-        return {"eig": Eigen(*self._key_args)}
-
-    @property
-    def _eig(self):
-        return Eigen(*self._key_args)
-
-    @property
-    def _SpMax(self):
-        return SpMax(*self._key_args)
-
-    @property
-    def _SpMean(self):
-        return SpMean(*self._key_args)
-
-    @property
-    def _SpAD(self):
-        return SpAD(*self._key_args)
-
-    @property
-    def _VE1(self):
-        return VE1(*self._key_args)
-
-    @property
-    def _VR1(self):
-        return VR1(*self._key_args)
-
     def __str__(self):
         n = self.__class__.__name__
 
@@ -75,8 +51,14 @@ class Common(Descriptor):
         return n
 
 
-class Eigen(Common):
-    __slots__ = ()
+class Eigen(Descriptor):
+    __slots__ = ("matrix",)
+
+    def parameters(self):
+        return (self.matrix,)
+
+    def __init__(self, matrix):
+        self.matrix = matrix
 
     def dependencies(self):
         return {"matrix": self.matrix}
@@ -85,7 +67,7 @@ class Eigen(Common):
         if matrix is None:
             raise ValueError("matrix is None")
 
-        w, v = np.linalg.eig(matrix)
+        w, v = (np.linalg.eigh if self.matrix.hermitian else np.linalg.eig)(matrix)
 
         if np.iscomplexobj(w):
             w = w.real
@@ -100,7 +82,7 @@ class Eigen(Common):
 
 
 @method
-class SpAbs(Common):
+class SpAbs(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -112,7 +94,7 @@ class SpAbs(Common):
 
 
 @method
-class SpMax(Common):
+class SpMax(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -124,7 +106,7 @@ class SpMax(Common):
 
 
 @method
-class SpDiam(Common):
+class SpDiam(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -133,15 +115,15 @@ class SpDiam(Common):
 
     def dependencies(self):
         return {
-            "SpMax": self._SpMax,
-            "eig": self._eig,
+            "SpMax": SpMax(*self._key_args),
+            "eig": Eigen(self.matrix),
         }
 
     def calculate(self, SpMax, eig):
         return SpMax - eig.val[eig.min]
 
 
-class SpMean(Common):
+class SpMean(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -153,7 +135,7 @@ class SpMean(Common):
 
 
 @method
-class SpAD(Common):
+class SpAD(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -162,8 +144,8 @@ class SpAD(Common):
 
     def dependencies(self):
         return {
-            "SpMean": self._SpMean,
-            "eig": self._eig,
+            "SpMean": SpMean(*self._key_args),
+            "eig": Eigen(self.matrix),
         }
 
     def calculate(self, eig, SpMean):
@@ -171,7 +153,7 @@ class SpAD(Common):
 
 
 @method
-class SpMAD(Common):
+class SpMAD(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -179,14 +161,14 @@ class SpMAD(Common):
         return "spectral mean absolute diviation"
 
     def dependencies(self):
-        return {"SpAD": self._SpAD}
+        return {"SpAD": SpAD(*self._key_args)}
 
     def calculate(self, SpAD):
         return SpAD / self.mol.GetNumAtoms()
 
 
 @method
-class LogEE(Common):
+class LogEE(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -201,22 +183,24 @@ class LogEE(Common):
 
 
 @method
-class SM1(Common):
+class SM1(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
     def description(cls):
         return "spectral moment"
 
-    def calculate(self, eig):
-        return eig.val.sum()
+    def dependencies(self):
+        return {"matrix": self.matrix}
+
+    def calculate(self, matrix):
+        return np.trace(matrix)
 
 
 @method
-class VE1(Common):
+class VE1(MatrixAttributeBase):
     __slots__ = ()
 
-    @classmethod
     def description(cls):
         return "coefficient sum of the last eigenvector"
 
@@ -225,7 +209,7 @@ class VE1(Common):
 
 
 @method
-class VE2(Common):
+class VE2(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -233,14 +217,14 @@ class VE2(Common):
         return "average coefficient of the last eigenvector"
 
     def dependencies(self):
-        return {"VE1": self._VE1}
+        return {"VE1": VE1(*self._key_args)}
 
     def calculate(self, VE1):
         return VE1 / self.mol.GetNumAtoms()
 
 
 @method
-class VE3(Common):
+class VE3(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -248,7 +232,7 @@ class VE3(Common):
         return "logarithmic coefficient sum of the last eigenvector"
 
     def dependencies(self):
-        return {"VE1": self._VE1}
+        return {"VE1": VE1(*self._key_args)}
 
     def calculate(self, VE1):
         with self.rethrow_zerodiv():
@@ -256,8 +240,11 @@ class VE3(Common):
 
 
 @method
-class VR1(Common):
+class VR1(MatrixAttributeBase):
     __slots__ = ()
+
+    def dependencies(self):
+        return {"eig": Eigen(self.matrix)}
 
     @classmethod
     def description(cls):
@@ -276,7 +263,7 @@ class VR1(Common):
 
 
 @method
-class VR2(Common):
+class VR2(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -284,14 +271,14 @@ class VR2(Common):
         return "normalized Randic-like eigenvector-based index"
 
     def dependencies(self):
-        return {"VR1": self._VR1}
+        return {"VR1": VR1(*self._key_args)}
 
     def calculate(self, VR1):
         return VR1 / self.mol.GetNumAtoms()
 
 
 @method
-class VR3(Common):
+class VR3(MatrixAttributeBase):
     __slots__ = ()
 
     @classmethod
@@ -299,7 +286,7 @@ class VR3(Common):
         return "logarithmic Randic-like eigenvector-based index"
 
     def dependencies(self):
-        return {"VR1": self._VR1}
+        return {"VR1": VR1(*self._key_args)}
 
     def calculate(self, VR1):
         with self.rethrow_zerodiv():

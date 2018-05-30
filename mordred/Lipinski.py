@@ -10,7 +10,7 @@ class LipinskiLike(Descriptor):
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def parameters(self):
@@ -28,6 +28,7 @@ class Lipinski(LipinskiLike):
     LogP: SLogP
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -55,6 +56,7 @@ class GhoseFilter(LipinskiLike):
     LogP, MR: SLogP, SMR
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

@@ -24,6 +24,18 @@ molecular descriptor calculator.
 .. image:: https://img.shields.io/badge/doi-10.1186%2Fs13321--018--0258--y-blue.svg
    :target: https://doi.org/10.1186/s13321-018-0258-y
 
+number of descriptors
+---------------------
+.. code:: python
+
+    >>> from mordred import Calculator, descriptors
+    >>> n_all = len(Calculator(descriptors, ignore_3D=False).descriptors)
+    >>> n_2D = len(Calculator(descriptors, ignore_3D=True).descriptors)
+    >>> print("2D:    {:5}\n3D:    {:5}\n------------\ntotal: {:5}".format(n_2D, n_all - n_2D, n_all))
+    2D:     1613
+    3D:      212
+    ------------
+    total:  1825
 
 Installation
 ------------
@@ -161,7 +173,10 @@ as library
     >>> calc = Calculator(descriptors, ignore_3D=True)
 
     >>> len(calc.descriptors)
-    1615
+    1613
+
+    >>> len(Calculator(descriptors, ignore_3D=True, version="1.0.0"))
+    1612
 
     # calculate single molecule
     >>> mol = Chem.MolFromSmiles('c1ccccc1')
@@ -191,4 +206,5 @@ Documentation
 -  `master <http://mordred-descriptor.github.io/documentation/master>`__
 -  `develop <http://mordred-descriptor.github.io/documentation/develop>`__
 
+-  `v1.1.0 <http://mordred-descriptor.github.io/documentation/v1.1.0>`__
 -  `v1.0.0 <http://mordred-descriptor.github.io/documentation/v1.0.0>`__

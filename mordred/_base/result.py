@@ -8,18 +8,26 @@ from .descriptor import Descriptor
 class Result(object):
     r"""Result type."""
 
-    __slots__ = ("_values", "_descriptors", "_name_to_index")
+    __slots__ = ("mol", "_values", "_descriptors", "_name_to_value")
 
-    def __init__(self, r, d):
+    def __init__(self, mol, r, d):
+        self.mol = mol
         self._values = list(r)
         self._descriptors = list(d)
-        self._name_to_index = {str(a): i for i, a in enumerate(d)}
+        self._name_to_value = None
 
     def __str__(self):
-        return str(self._name_to_index)
+        buf = ["Result({"]
+        for k, v in zip(self._descriptors, self._values):
+            buf.append("'{}': {}".format(k, v))
+            buf.append(", ")
+        buf.pop()
+        buf.append("})")
+        return "".join(buf)
 
     def __repr__(self):
-        return "{}({!r},{!r})".format(
+        return "{}({!r},{!r},{!r})".format(
+            self.mol,
             self.__class__.__name__,
             self._values,
             self._descriptors,
@@ -36,6 +44,7 @@ class Result(object):
 
         """
         return self.__class__(
+            self.mol,
             [(value if is_missing(v) else v) for v in self.values()],
             self.keys(),
         )
@@ -54,7 +63,7 @@ class Result(object):
                 newvalues.append(v)
                 newdescs.append(d)
 
-        return self.__class__(newvalues, newdescs)
+        return self.__class__(self.mol, newvalues, newdescs)
 
     def items(self):
         r"""Get items.
@@ -131,7 +140,10 @@ class Result(object):
         6
 
         """
-        return GetValueByName(self._values, self._name_to_index)
+        if self._name_to_value is None:
+            self._name_to_value = {str(d): v for d, v in zip(self._descriptors, self._values)}
+
+        return GetValueByName(self._name_to_value)
 
     def __getitem__(self, key):
         if isinstance(key, (integer_types, slice)):
@@ -161,11 +173,10 @@ class GetValueByIndex(object):
 
 
 class GetValueByName(object):
-    __slots__ = ("_values", "_name_to_index")
+    __slots__ = ("_name_to_value",)
 
-    def __init__(self, values, name_to_index):
-        self._values = values
-        self._name_to_index = name_to_index
+    def __init__(self, name_to_value):
+        self._name_to_value = name_to_value
 
     def __getitem__(self, key):
-        return self._values[self._name_to_index[str(key)]]
+        return self._name_to_value[str(key)]

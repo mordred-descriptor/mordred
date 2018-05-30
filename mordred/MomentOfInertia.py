@@ -26,7 +26,7 @@ class PrincipalAxis(MomentOfInertiaBase):
     def calculate(self):
         ws, ps = self._numpy()
 
-        I = np.sum(
+        i = np.sum(
             -ws[:, np.newaxis, np.newaxis] *
             (ps[:, np.newaxis] * ps[:, :, np.newaxis]),
             axis=0,
@@ -38,25 +38,26 @@ class PrincipalAxis(MomentOfInertiaBase):
             axis=0,
         )
 
-        np.fill_diagonal(I, diag)
-        return np.sort(np.linalg.eig(I)[0])[::-1]
+        np.fill_diagonal(i, diag)
+        return np.sort(np.linalg.eig(i)[0])[::-1]
 
 
 class MomentOfInertia(MomentOfInertiaBase):
-    __slots__ = "_axis",
+    since = "1.0.0"
+    __slots__ = ("_axis",)
 
     def description(self):
         return "moment of inertia (axis = {})".format(self._axis)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, cls.axes)
 
     def __str__(self):
         return "MOMI-{}".format(self._axis)
 
     def parameters(self):
-        return self._axis,
+        return (self._axis,)
 
     axes = ("X", "Y", "Z")
     _axis_to_index = {a: i for i, a in enumerate(axes)}

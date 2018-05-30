@@ -1,21 +1,21 @@
 from ._base import Descriptor
 from ._atomic_property import polarizability78, polarizability94
 
-__all__ = ("APol", "BPol",)
+__all__ = ("APol", "BPol")
 
 
 class PolarizabilityBase(Descriptor):
-    __slots__ = "_use78",
+    __slots__ = ("_use78",)
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
         return self.__class__.__name__.lower() + ("78" if self._use78 else "")
 
     def parameters(self):
-        return self._use78,
+        return (self._use78,)
 
     def __init__(self, use78=False):
         self._use78 = use78
@@ -33,6 +33,7 @@ class APol(PolarizabilityBase):
     :param use78: use old atomic polarizability data
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -50,6 +51,7 @@ class BPol(PolarizabilityBase):
     :param use78: use old atomic polarizability data
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

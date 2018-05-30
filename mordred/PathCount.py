@@ -11,6 +11,7 @@ __all__ = (
 
 
 class PathCountBase(Descriptor):
+    __slots__ = ()
     explicit_hydrogens = False
 
 
@@ -18,7 +19,7 @@ class PathCountCache(PathCountBase):
     __slots__ = ("_order", "_bonds")
 
     def parameters(self):
-        return self._order,
+        return (self._order,)
 
     def __init__(self, order):
         self._order = order
@@ -63,7 +64,7 @@ class PathCountCache(PathCountBase):
         return path
 
     def calculate(self):
-        l = 0
+        L = 0
         pi = 0
 
         self._gen_bonds()
@@ -86,10 +87,10 @@ class PathCountCache(PathCountBase):
                 before = i
 
             else:
-                l += 1
+                L += 1
                 pi += w
 
-        return l, pi
+        return L, pi
 
 
 class PathCount(PathCountBase):
@@ -108,7 +109,8 @@ class PathCount(PathCountBase):
     :param log: use log scale
     """
 
-    __slots__ = ("_order", "_pi", "_total", "_log",)
+    since = "1.0.0"
+    __slots__ = ("_order", "_pi", "_total", "_log")
 
     def description(self):
         return "{}-ordered {}{}path count{}".format(
@@ -119,7 +121,7 @@ class PathCount(PathCountBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return chain(
             (cls(o, False, False, False) for o in range(2, 11)),
             [cls(10, False, True, False)],

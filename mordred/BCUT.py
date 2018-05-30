@@ -48,7 +48,7 @@ class BurdenEigenValues(BCUTBase):
     __slots__ = ("_prop",)
 
     def parameters(self):
-        return self._prop,
+        return (self._prop,)
 
     def __init__(self, prop):
         self._prop = prop
@@ -86,7 +86,8 @@ class BCUT(BCUTBase):
         * :math:`\left| nth \right| > A`
     """
 
-    __slots__ = ("_prop", "_nth",)
+    since = "1.0.0"
+    __slots__ = ("_prop", "_nth")
 
     def description(self):
         return "{} {} eigenvalue of Burden matrix weighted by {}".format(
@@ -96,7 +97,7 @@ class BCUT(BCUTBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(a, n)
             for a in get_properties(valence=True, charge=True)

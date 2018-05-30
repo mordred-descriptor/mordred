@@ -94,7 +94,8 @@ class AtomTypeEState(EStateBase):
 
     """
 
-    __slots__ = ("_type", "_estate",)
+    since = "1.0.0"
+    __slots__ = ("_type", "_estate")
 
     def description(self):
         return "{} of {}".format(self._type.description(), self._estate)
@@ -104,7 +105,7 @@ class AtomTypeEState(EStateBase):
     es_types = es_types
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(a, t)
             for a in AggrType

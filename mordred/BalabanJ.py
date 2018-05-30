@@ -9,6 +9,7 @@ __all__ = ("BalabanJ",)
 class BalabanJ(Descriptor):
     r"""Balaban's J index descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -17,7 +18,7 @@ class BalabanJ(Descriptor):
     explicit_hydrogens = False
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def parameters(self):

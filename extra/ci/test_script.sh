@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-source ./scripts/add_path.sh
+source ./extra/ci/conda.sh
 
 if [[ -n "$COVERAGE" ]]; then
     python -m mordred.tests -q --with-coverage
@@ -16,3 +16,8 @@ for example in `find examples -name '*.py'`; do
     echo "test $example" >&2
     PYTHONPATH=. python $example > /dev/null
 done
+
+if [[ -n "$LINT" ]]; then
+    python setup.py flake8
+    python setup.py isort
+fi

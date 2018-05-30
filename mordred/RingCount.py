@@ -33,8 +33,8 @@ class FusedRings(RingCountBase):
 
         G = networkx.Graph()
 
-        l = len(Rings)
-        for i, j in ((i, j) for i in range(l) for j in range(i + 1, l)):
+        L = len(Rings)
+        for i, j in ((i, j) for i in range(L) for j in range(i + 1, L)):
             if len(Rings[i] & Rings[j]) >= 2:
                 G.add_edge(i, j)
 
@@ -69,7 +69,8 @@ class RingCount(RingCountBase):
         * None: count any rings
     """
 
-    __slots__ = ("_order", "_greater", "_fused", "_aromatic", "_hetero",)
+    since = "1.0.0"
+    __slots__ = ("_order", "_greater", "_fused", "_aromatic", "_hetero")
 
     def description(self):
         if self._order is None:
@@ -94,7 +95,7 @@ class RingCount(RingCountBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         for fused in [False, True]:
             for arom in [None, True, False]:
                 for hetero in [None, True]:

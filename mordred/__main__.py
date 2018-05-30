@@ -167,15 +167,15 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
 
             return str(v)
 
-        for mol, val in zip(mols, calc.map(mols, nproc=nproc, nmols=N, quiet=quiet)):
+        for result in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
             err_set = set()
 
-            if mol.HasProp("_Name"):
-                name = mol.GetProp("_Name")
+            if result.mol.HasProp("_Name"):
+                name = result.mol.GetProp("_Name")
             else:
-                name = Chem.MolToSmiles(mol)
+                name = Chem.MolToSmiles(result.mol)
 
-            write_row(output, [name] + [pretty(name, v, err_set) for v in val])
+            write_row(output, [name] + [pretty(name, v, err_set) for v in result])
 
 
 def write_row(file, data):

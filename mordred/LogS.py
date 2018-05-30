@@ -47,11 +47,14 @@ class LogS(Descriptor):
     http://silicos-it.be.s3-website-eu-west-1.amazonaws.com/software/filter-it/1.0.2/filter-it.html#installation
     """
 
+    __slots__ = ()
+
+    since = "1.1.0"
     explicit_hydrogens = False
     kekulize = False
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def dependencies(self):

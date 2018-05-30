@@ -20,6 +20,7 @@ class TopoPSA(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ("_no_only",)
 
     def description(self):
@@ -28,7 +29,7 @@ class TopoPSA(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(True)
         yield cls(False)
 
@@ -36,7 +37,7 @@ class TopoPSA(Descriptor):
         return "TopoPSA(NO)" if self._no_only else "TopoPSA"
 
     def parameters(self):
-        return self._no_only,
+        return (self._no_only,)
 
     def __init__(self, no_only=True):
         self._no_only = no_only

@@ -1,6 +1,6 @@
-from multiprocessing import Pool
-
-import six
+from itertools import islice
+from collections import deque
+from multiprocessing import Pool, Manager
 
 from .._util import Capture
 from .context import Context
@@ -8,41 +8,75 @@ from .context import Context
 calculator = None
 
 
-def initializer(self):
+def worker(calc_proxy, cxt):
     global calculator
+    if calculator is None:
+        calculator = calc_proxy[0]
 
-    calculator = self
-
-
-def worker(cxt):
     with Capture() as capture:
         r = list(calculator._calculate(cxt))
 
         return r, capture.result
 
 
-def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
-    if six.PY3:
-        def get_result(r):
-            return r.get()
-    else:
-        # timeout: avoid python2 KeyboardInterrupt bug.
-        # http://stackoverflow.com/a/1408476
-        def get_result(r):
-            return r.get(1e9)
+class MolPool(object):
+    def __init__(self, calc, nproc):
+        self.pool = Pool(nproc)
+        self.mgr = Manager()
+        self.calc = calc
+        self.calc_proxy = self.mgr.list([calc])
+        self.nproc = nproc
 
-    # without with-statement for compat. python2
-    pool = Pool(nproc, initializer=initializer, initargs=(self,))
+    def __enter__(self):
+        self.mgr.__enter__()
+        return self
 
-    def do_task(mol):
-        args = Context.from_calculator(self, mol, id)
-        return pool.apply_async(worker, (args,))
+    def __exit__(self, *args, **kwargs):
+        self.pool.terminate()
+        self.mgr.__exit__(*args, **kwargs)
 
-    try:
-        with self._progress(quiet, nmols, ipynb) as bar:
-            for result in [do_task(m) for m in mols]:
-                r, err = get_result(result)
+    def map(self, mols, id):
+        return MolIterator(self, mols, id, self.nproc * 2 + 10)
 
+    def submit(self, mol, id):
+        cxt = Context.from_calculator(self.calc, mol, id)
+        return self.pool.apply_async(worker, (self.calc_proxy, cxt))
+
+
+class MolIterator(object):
+    def __init__(self, pool, mols, id, buf):
+        self.pool = pool
+        self.futures = deque()
+        self.mols = iter(mols)
+        self.id = id
+
+        for mol in islice(self.mols, buf):
+            self.submit(mol)
+
+    def submit(self, mol):
+        self.futures.append((mol, self.pool.submit(mol, self.id)))
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        try:
+            self.submit(next(self.mols))
+        except StopIteration:
+            pass
+
+        try:
+            mol, fut = self.futures.popleft()
+            return mol, fut.get()
+        except IndexError:
+            raise StopIteration
+
+    next = __next__
+
+
+def parallel(calc, mols, nproc, nmols, quiet, ipynb, id):
+    with MolPool(calc, nproc) as pool, calc._progress(quiet, nmols, ipynb) as bar:
+            for mol, (r, err) in pool.map(mols, id):
                 for e in err:
                     e = e.rstrip()
                     if not e:
@@ -50,9 +84,5 @@ def parallel(self, mols, nproc, nmols, quiet, ipynb, id):
 
                     bar.write(e)
 
-                yield self._wrap_result(r)
+                yield calc._wrap_result(mol, r)
                 bar.update()
-
-    finally:
-        pool.terminate()
-        pool.join()

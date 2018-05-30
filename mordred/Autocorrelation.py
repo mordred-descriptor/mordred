@@ -4,7 +4,7 @@ from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 from ._atomic_property import AtomicProperty, get_properties
 
-__all__ = ("ATS", "AATS", "ATSC", "AATSC", "MATS", "GATS",)
+__all__ = ("ATS", "AATS", "ATSC", "AATSC", "MATS", "GATS")
 
 
 class AutocorrelationBase(Descriptor):
@@ -64,7 +64,7 @@ class AutocorrelationProp(AutocorrelationBase):
     __slots__ = ()
 
     def parameters(self):
-        return self._prop,
+        return (self._prop,)
 
     def __init__(self, prop):
         self._prop = prop
@@ -79,7 +79,7 @@ class AutocorrelationOrder(AutocorrelationBase):
         pass
 
     def parameters(self):
-        return self._order,
+        return (self._order,)
 
     def __init__(self, order):
         self._order = order
@@ -157,12 +157,13 @@ class ATS(AutocorrelationBase):
     :returns: NaN when any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "moreau-broto autocorrelation"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(d, a)
             for a in get_properties(valence=True)
@@ -197,6 +198,7 @@ class AATS(ATS):
         * some properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "averaged moreau-broto autocorrelation"
@@ -222,12 +224,13 @@ class ATSC(AutocorrelationBase):
     :returns: NaN when any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "centered moreau-broto autocorrelation"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(d, a)
             for a in get_properties(charge=True, valence=True)
@@ -262,6 +265,7 @@ class AATSC(ATSC):
         * any properties are NaN
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "averaged and centered moreau-broto autocorrelation"
@@ -293,12 +297,13 @@ class MATS(AutocorrelationBase):
         * denominator = 0
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "moran coefficient"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (
             cls(d, a)
             for a in get_properties(charge=True, valence=True)
@@ -329,6 +334,7 @@ class GATS(MATS):
         * denominator = 0
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     _description_name = "geary coefficient"

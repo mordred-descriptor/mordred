@@ -60,6 +60,7 @@ class CarbonTypes(CarbonTypesBase):
     :param SP: count :math:`{\rm SP}n` carbon
     """
 
+    since = "1.0.0"
     __slots__ = ("_nCarbon", "_SP")
 
     def description(self):
@@ -70,7 +71,7 @@ class CarbonTypes(CarbonTypesBase):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(lambda args: cls(*args), [
             (1, 1), (2, 1),
             (1, 2), (2, 2), (3, 2),
@@ -111,10 +112,11 @@ class HybridizationRatio(CarbonTypesBase):
     def description(self):
         return "hybridization ratio"
 
+    since = "1.0.0"
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):
@@ -141,8 +143,11 @@ class HybridizationRatio(CarbonTypesBase):
 class FractionCSP3(Descriptor):
     r"""the fraction of C atoms that are SP3 hybridized."""
 
+    __slots__ = ()
+    since = "1.1.0"
+
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def description(self):

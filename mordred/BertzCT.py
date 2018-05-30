@@ -9,6 +9,7 @@ __all__ = ("BertzCT",)
 class BertzCT(Descriptor):
     r"""Bertz CT descriptor(rdkit wrapper)."""
 
+    since = "1.0.0"
     __slots__ = ()
     explicit_hydrogens = False
 
@@ -16,7 +17,7 @@ class BertzCT(Descriptor):
         return "Bertz CT"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

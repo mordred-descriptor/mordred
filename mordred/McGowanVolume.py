@@ -14,13 +14,14 @@ class McGowanVolume(Descriptor):
 
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
         return "McGowan volume"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def __str__(self):

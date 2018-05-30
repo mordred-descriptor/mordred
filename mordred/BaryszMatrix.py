@@ -18,8 +18,10 @@ class BaryszMatrixBase(Descriptor):
 class Barysz(BaryszMatrixBase):
     __slots__ = ("_prop",)
 
+    hermitian = True
+
     def parameters(self):
-        return self._prop,
+        return (self._prop,)
 
     def __init__(self, prop):
         self._prop = prop
@@ -62,14 +64,15 @@ class BaryszMatrix(BaryszMatrixBase):
     :returns: NaN when any properties are NaN
     """
 
-    __slots__ = ("_prop", "_type",)
+    since = "1.0.0"
+    __slots__ = ("_prop", "_type")
 
     def description(self):
         return "{} from Barysz matrix weighted by {}".format(
             self._type.description(), self._prop.get_long())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return (cls(p, m) for p in get_properties() for m in methods)
 
     def __str__(self):

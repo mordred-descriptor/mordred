@@ -3,6 +3,8 @@ from __future__ import print_function
 import sys
 from types import ModuleType
 from contextlib import contextmanager
+from multiprocessing import cpu_count
+from distutils.version import StrictVersion
 
 from tqdm import tqdm
 
@@ -10,6 +12,7 @@ from .._util import Capture, DummyBar, NotebookWrapper
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
 from .result import Result
 from .context import Context
+from .._version import __version__
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
 
@@ -81,7 +84,7 @@ class Calculator(object):
     def __getitem__(self, key):
         return self._name_dict[key]
 
-    def __init__(self, descs=None, ignore_3D=False):
+    def __init__(self, descs=None, version=None, ignore_3D=False):
         if descs is None:
             descs = []
 
@@ -93,7 +96,7 @@ class Calculator(object):
         self._require_3D = False
         self._debug = False
 
-        self.register(descs, ignore_3D=ignore_3D)
+        self.register(descs, version=version, ignore_3D=ignore_3D)
 
     @property
     def descriptors(self):
@@ -147,7 +150,7 @@ class Calculator(object):
             self._name_dict[sdesc] = desc
             self._descriptors.append(desc)
 
-    def register(self, desc, ignore_3D=False):
+    def register(self, desc, version=None, ignore_3D=False):
         r"""Register descriptors.
 
         Descriptor-like:
@@ -158,23 +161,38 @@ class Calculator(object):
 
         Parameters:
             desc(Descriptor-like): descriptors to register
+            version(str): version
             ignore_3D(bool): ignore 3D descriptors
 
         """
+        if version is None:
+            version = __version__
+
+        version = StrictVersion(version)
+        return self._register(desc, version, ignore_3D)
+
+    def _register(self, desc, version, ignore_3D):
         if not hasattr(desc, "__iter__"):
             if is_descriptor_class(desc):
-                for d in desc.preset():
+                if desc.since > version:
+                    return
+
+                for d in desc.preset(version=version):
                     self._register_one(d, ignore_3D=ignore_3D)
 
             elif isinstance(desc, ModuleType):
-                self.register(get_descriptors_from_module(desc, True), ignore_3D=ignore_3D)
+                self._register(
+                    get_descriptors_from_module(desc, True),
+                    version=version,
+                    ignore_3D=ignore_3D,
+                )
 
             else:
                 self._register_one(desc, ignore_3D=ignore_3D)
 
         else:
             for d in desc:
-                self.register(d, ignore_3D=ignore_3D)
+                self._register(d, version=version, ignore_3D=ignore_3D)
 
     def _calculate_one(self, cxt, desc, reset):
         if desc in self._cache:
@@ -239,17 +257,18 @@ class Calculator(object):
         :returns: iterator of descriptor and value
         """
         return self._wrap_result(
+            mol,
             self._calculate(Context.from_calculator(self, mol, id)),
         )
 
-    def _wrap_result(self, r):
-        return Result(r, self._descriptors)
+    def _wrap_result(self, mol, r):
+        return Result(mol, r, self._descriptors)
 
     def _serial(self, mols, nmols, quiet, ipynb, id):
         with self._progress(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
-                    r = self._wrap_result(self._calculate(Context.from_calculator(self, m, id)))
+                    r = self._wrap_result(m, self._calculate(Context.from_calculator(self, m, id)))
 
                 for e in capture.result:
                     e = e.rstrip()
@@ -322,6 +341,9 @@ class Calculator(object):
             Iterator[Result[scalar]]
 
         """
+        if nproc is None:
+            nproc = cpu_count()
+
         if hasattr(mols, "__len__"):
             nmols = len(mols)
 

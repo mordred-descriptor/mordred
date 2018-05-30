@@ -10,14 +10,14 @@ import numpy as np
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix
 
-__all__ = ("ABCIndex", "ABCGGIndex",)
+__all__ = ("ABCIndex", "ABCGGIndex")
 
 
 class ABCIndexBase(Descriptor):
     __slots__ = ()
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     explicit_hydrogens = False
@@ -39,6 +39,7 @@ class ABCIndex(ABCIndexBase):
 
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
@@ -68,6 +69,7 @@ class ABCGGIndex(ABCIndexBase):
 
     """  # noqa: E501
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):

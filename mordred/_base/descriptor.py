@@ -2,6 +2,7 @@ import inspect
 import operator
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
+from distutils.version import StrictVersion
 
 import six
 import numpy as np
@@ -37,6 +38,8 @@ class DescriptorMeta(ABCMeta):
                     break
 
         dict["parameter_names"] = getargs(__init__)
+        if "since" in dict:
+            dict["since"] = StrictVersion(dict["since"])
 
         return ABCMeta.__new__(cls, classname, bases, dict)
 
@@ -49,7 +52,7 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
     """
 
-    __slots__ = "_context",
+    __slots__ = ("_context",)
 
     explicit_hydrogens = True
     kekulize = False
@@ -63,7 +66,7 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
         pass
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         r"""Generate preset descriptor instances.
 
         Returns:
@@ -152,9 +155,9 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
 
     def __compare_by_reduce(meth):
         def compare(self, other):
-            l = self.__class__, self.parameters()
+            L = self.__class__, self.parameters()
             r = other.__class__, other.parameters()
-            return getattr(l, meth)(r)
+            return getattr(L, meth)(r)
 
         return compare
 
@@ -250,7 +253,7 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
         __floor__ = _unary_common("floor({})", "floor")
 
 
-def is_descriptor_class(desc):
+def is_descriptor_class(desc, include_abstract=False):
     r"""Check calculatable descriptor class or not.
 
     Returns:
@@ -260,13 +263,13 @@ def is_descriptor_class(desc):
     return (
         isinstance(desc, type) and
         issubclass(desc, Descriptor) and
-        not inspect.isabstract(desc)
+        (True if include_abstract else not inspect.isabstract(desc))
     )
 
 
 class UnaryOperatingDescriptor(Descriptor):
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return cls()
 
     operators = {
@@ -308,11 +311,11 @@ class UnaryOperatingDescriptor(Descriptor):
 
 class ConstDescriptor(Descriptor):
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return cls()
 
     def parameters(self):
-        return self._value,
+        return (self._value,)
 
     def __init__(self, value):
         self._value = value
@@ -326,7 +329,7 @@ class ConstDescriptor(Descriptor):
 
 class BinaryOperatingDescriptor(Descriptor):
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return cls()
 
     operators = {

@@ -28,7 +28,7 @@ class Dummy2(Descriptor):
         raise ValueError("error")
 
 
-result = Result([1, error.Error(ValueError("error"), [])], [Dummy1(), Dummy2()])
+result = Result(None, [1, error.Error(ValueError("error"), [])], [Dummy1(), Dummy2()])
 
 
 def test_length():

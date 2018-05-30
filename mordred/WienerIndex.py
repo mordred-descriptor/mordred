@@ -12,6 +12,7 @@ class WienerIndex(Descriptor):
     """
 
     __slots__ = ("_polarity",)
+    since = "1.0.0"
     explicit_hydrogens = False
 
     def description(self):
@@ -20,7 +21,7 @@ class WienerIndex(Descriptor):
         )
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls(False)
         yield cls(True)
 
@@ -28,7 +29,7 @@ class WienerIndex(Descriptor):
         return "WPol" if self._polarity else "WPath"
 
     def parameters(self):
-        return self._polarity,
+        return (self._polarity,)
 
     def __init__(self, polarity=False):
         self._polarity = polarity

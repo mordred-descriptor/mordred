@@ -3,7 +3,7 @@ import numpy as np
 from ._base import Descriptor
 from ._atomic_property import AtomicProperty, get_properties
 
-__all__ = ("ConstitutionalSum", "ConstitutionalMean",)
+__all__ = ("ConstitutionalSum", "ConstitutionalMean")
 
 
 class ConstitutionalSum(Descriptor):
@@ -20,17 +20,18 @@ class ConstitutionalSum(Descriptor):
     :param prop: :ref:`atomic_properties`
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop",)
 
     def description(self):
         return "sum of constitutional weighted by {}".format(self._prop.get_long())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, get_properties())
 
     def parameters(self):
-        return self._prop,
+        return (self._prop,)
 
     def __init__(self, prop="v"):
         self._prop = AtomicProperty(self.explicit_hydrogens, prop)
@@ -61,6 +62,7 @@ class ConstitutionalMean(ConstitutionalSum):
     :rtype: float
     """
 
+    since = "1.0.0"
     __slots__ = ("_prop",)
     _prefix = "M"
 
@@ -68,7 +70,7 @@ class ConstitutionalMean(ConstitutionalSum):
         return "mean of constitutional weighted by {}".format(self._prop.get_long())
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         return map(cls, get_properties())
 
     def dependencies(self):

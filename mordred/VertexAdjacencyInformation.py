@@ -16,13 +16,14 @@ class VertexAdjacencyInformation(Descriptor):
     :returns: :math:`m = 0`
     """
 
+    since = "1.0.0"
     __slots__ = ()
 
     def description(self):
         return "vertex adjacency information"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     explicit_hydrogens = False
