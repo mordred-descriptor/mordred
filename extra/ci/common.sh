@@ -5,3 +5,13 @@ if [[ -n "$APPVEYOR" ]]; then
 else
     export PATH="$HOME/miniconda/bin:$PATH"
 fi
+
+info() {
+    echo ">>> $@"
+    "$@"
+}
+
+banner() {
+    line="=================="
+    echo "$line $@ $line"
+}

@@ -2,13 +2,11 @@
 
 set -e
 
-if [[ ! -f ~/.ssh/id_rsa ]]; then
-    exit 0
+source ./extra/ci/common.sh
+
+if [[ -n "$COVERAGE" ]]; then
+    info coveralls
 fi
-
-source ./extra/ci/conda.sh
-
-[[ -n "$COVERAGE" ]] && coveralls
 
 if [[ -z "$TRAVIS_TAG" && -z "$APPVEYOR_REPO_TAG_NAME" ]]; then
     LABEL=dev
@@ -17,31 +15,33 @@ else
     LABEL=main
 fi
 
-conda build . --no-test
+info conda build . --no-test
 
 OUTPUT=`conda build . --output --python $PYTHON_VERSION`
-if [[ -n "$APPVEYOR" ]]; then
-    cmd /c "anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT"
-else
-    anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT
+if [[ -n "$ANACONDA_CLOUD_TOKEN" ]]; then
+    if [[ -n "$APPVEYOR" ]]; then
+        cmd /c "anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT"
+    else
+        anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT
+    fi
 fi
 
 # documentation
-if [[ "$TRAVIS_PULL_REQUEST" == false && -n "$DOCUMENTATION" && "$TRAVIS_OS_NAME" == linux ]]; then
+if [[ -f ~/.ssh/id_rsa && "$TRAVIS_PULL_REQUEST" == false && -n "$DOCUMENTATION" && "$TRAVIS_OS_NAME" == linux ]]; then
     eval $(ssh-agent -s)
     ssh-add
     ssh-add -l
     echo "$SSH_AGENT_PID"
 
     cd docs
-    make html
+    info make html
 
-    git clone -b gh-pages $DOC_REMOTE gh-pages
-    rm -r gh-pages/$TRAVIS_BRANCH || true
-    cp -r _build/html gh-pages/$TRAVIS_BRANCH
+    info git clone -b gh-pages $DOC_REMOTE gh-pages
+    info rm -r gh-pages/$TRAVIS_BRANCH || true
+    info cp -r _build/html gh-pages/$TRAVIS_BRANCH
 
     cd gh-pages
-    git add .
-    git commit -m "update documentation to mordred-descriptor/mordred@$TRAVIS_COMMIT"
-    git push origin gh-pages
+    info git add .
+    info git commit -m "update documentation to mordred-descriptor/mordred@$TRAVIS_COMMIT"
+    info git push origin gh-pages
 fi

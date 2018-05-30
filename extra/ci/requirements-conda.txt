@@ -1,3 +1,2 @@
-rdkit>=2015.09.2
 conda-build
 anaconda-client

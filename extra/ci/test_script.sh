@@ -1,23 +1,25 @@
 #!/bin/bash
 
 set -e
-source ./extra/ci/conda.sh
+source ./extra/ci/common.sh
+
+PYTHON=python
+
+conda list
 
 if [[ -n "$COVERAGE" ]]; then
-    python -m mordred.tests -q --with-coverage
+    info $PYTHON -m mordred.tests -q --with-coverage
 else
-    python -m mordred.tests -q
+    info $PYTHON -m mordred.tests -q
 fi
 
 echo "test README.rst" >&2
-python -m doctest README.rst
+info $PYTHON -m doctest README.rst
 
 for example in `find examples -name '*.py'`; do
     echo "test $example" >&2
-    PYTHONPATH=. python $example > /dev/null
+    PYTHONPATH=. info $PYTHON $example > /dev/null
 done
 
-if [[ -n "$LINT" ]]; then
-    python setup.py flake8
-    python setup.py isort
-fi
+info $PYTHON setup.py flake8
+info $PYTHON setup.py isort
