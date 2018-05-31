@@ -15,10 +15,10 @@ else
     LABEL=main
 fi
 
-info conda build . --no-test
-
-OUTPUT=`conda build . --output --python $PYTHON_VERSION`
 if [[ -n "$ANACONDA_CLOUD_TOKEN" ]]; then
+    info conda build . --no-test
+
+    OUTPUT=`conda build . --output --python $PYTHON_VERSION`
     if [[ -n "$APPVEYOR" ]]; then
         cmd /c "anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT"
     else
