@@ -12,8 +12,6 @@ mordred package
 .. autoclass:: mordred.Calculator
     :members:
 
-.. autofunction:: all_descriptors
-
 .. autofunction:: get_descriptors_from_module
 
 .. toctree::
