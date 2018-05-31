@@ -14,9 +14,7 @@ environment:
       MINICONDA: C:\Miniconda35-x64
     - PYTHON_VERSION: 2.7
       MINICONDA: C:\Miniconda-x64
-    - PYTHON_VERSION: 2.7
-      MINICONDA: C:\Miniconda
 
-install: '%CYG_ROOT%/bin/bash ./extra/ci/install.sh'
-test_script: '%CYG_ROOT%/bin/bash ./extra/ci/test_script.sh'
-on_success: '%CYG_ROOT%/bin/bash ./extra/ci/after_success.sh'
+install: appveyor-retry %CYG_ROOT%/bin/bash ./extra/ci/install.sh
+test_script: appveyor-retry %CYG_ROOT%/bin/bash ./extra/ci/test_script.sh
+on_success: appveyor-retry %CYG_ROOT%/bin/bash ./extra/ci/after_success.sh
