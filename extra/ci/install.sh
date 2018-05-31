@@ -10,7 +10,10 @@ if [[ -n "$TRAVIS_OS_NAME" ]]; then
     elif [[ "$TRAVIS_OS_NAME" == linux ]]; then
         export OS_NAME=Linux
     fi
-    info wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-${OS_NAME}-x86_64.sh -O miniconda.sh
+    if [[ ! -f "miniconda.sh" ]]; then
+        info wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-${OS_NAME}-x86_64.sh -O miniconda.sh
+    fi
+    rm -rf $HOME/miniconda
     info bash miniconda.sh -b -p $HOME/miniconda
 elif [[ -n "$APPVEYOR" ]]; then
     export OS_NAME=Windows
