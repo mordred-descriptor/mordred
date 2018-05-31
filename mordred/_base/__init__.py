@@ -6,7 +6,7 @@ from .descriptor import (
     Descriptor, UnaryOperatingDescriptor,
     ConstDescriptor, BinaryOperatingDescriptor,
 )
-from .calculator import Calculator, get_descriptors_from_module
+from .calculator import Calculator, get_descriptors_from_module, get_descriptors_in_module
 from .parallel import parallel
 from .util import is_missing
 from .result import Result
@@ -16,6 +16,7 @@ __all__ = (
     "Descriptor",
     "Calculator",
     "get_descriptors_from_module",
+    "get_descriptors_in_module",
     "is_missing",
     "Result",
 )
@@ -83,7 +84,7 @@ def _Descriptor_from_json(self, obj):
         from mordred import descriptors
         descs = {
             cls.__name__: cls
-            for cls in get_descriptors_from_module(descriptors, submodule=True)
+            for cls in get_descriptors_in_module(descriptors)
         }
         descs[ConstDescriptor.__name__] = ConstDescriptor
         self._all_descriptors = descs
