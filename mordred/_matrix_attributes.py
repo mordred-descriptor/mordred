@@ -201,6 +201,7 @@ class SM1(MatrixAttributeBase):
 class VE1(MatrixAttributeBase):
     __slots__ = ()
 
+    @classmethod
     def description(cls):
         return "coefficient sum of the last eigenvector"
 

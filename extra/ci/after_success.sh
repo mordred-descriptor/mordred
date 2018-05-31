@@ -10,7 +10,7 @@ fi
 
 if [[ -z "$TRAVIS_TAG" && -z "$APPVEYOR_REPO_TAG_NAME" ]]; then
     LABEL=dev
-    echo $(cat mordred/_version.txt).post1.dev1 > mordred/_version.txt
+    python extra/ci/bump-beta-version.py $(cat mordred/_version.txt) > mordred/_version.txt
 else
     LABEL=main
 fi
@@ -36,8 +36,12 @@ if [[ -f ~/.ssh/id_rsa && "$TRAVIS_PULL_REQUEST" == false && -n "$DOCUMENTATION"
     cd docs
     info make html
 
+    rm -rf gh-pages
     info git clone -b gh-pages $DOC_REMOTE gh-pages
-    info rm -r gh-pages/$TRAVIS_BRANCH || true
+    if [[ -d gh-pages/$TRAVIS_BRANCH ]]; then
+        info rm -r gh-pages/$TRAVIS_BRANCH
+    fi
+    mkdir -p gh-pages/$(dirname $TRAVIS_BRANCH)
     info cp -r _build/html gh-pages/$TRAVIS_BRANCH
 
     cd gh-pages
