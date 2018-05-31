@@ -10,7 +10,7 @@ from multiprocessing import freeze_support
 from rdkit import Chem
 
 from . import Calculator, __version__, descriptors
-from ._base import get_descriptors_from_module
+from ._base import get_descriptors_in_module
 from ._util import PathType, module_prog
 from .error import Missing, MissingValueBase
 
@@ -137,7 +137,7 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
         calc.register(
             (d
              for m in descriptor
-             for d in get_descriptors_from_module(import_module("." + m, __package__))
+             for d in get_descriptors_in_module(import_module("." + m, __package__), False)
              ),
             ignore_3D=not with3D,
         )

@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import sys
+import warnings
 from types import ModuleType
 from contextlib import contextmanager
 from multiprocessing import cpu_count
@@ -182,7 +183,7 @@ class Calculator(object):
 
             elif isinstance(desc, ModuleType):
                 self._register(
-                    get_descriptors_from_module(desc, True),
+                    get_descriptors_in_module(desc),
                     version=version,
                     ignore_3D=ignore_3D,
                 )
@@ -374,7 +375,7 @@ class Calculator(object):
 
 
 def get_descriptors_from_module(mdl, submodule=False):
-    r"""Get descriptors from module.
+    r"""[DEPRECATED] Get descriptors from module.
 
     Parameters:
         mdl(module): module to search
@@ -383,6 +384,7 @@ def get_descriptors_from_module(mdl, submodule=False):
         [Descriptor]
 
     """
+    warnings.warn("use get_descriptors_in_module", DeprecationWarning)
     __all__ = getattr(mdl, "__all__", None)
     if __all__ is None:
         __all__ = dir(mdl)
@@ -407,3 +409,34 @@ def get_descriptors_from_module(mdl, submodule=False):
         ]
 
     return descs
+
+
+def get_descriptors_in_module(mdl, submodule=True):
+    r"""Get descriptors in module.
+
+    Parameters:
+        mdl(module): module to search
+        submodule(bool): search recursively
+
+    Returns:
+        Iterator[Descriptor]
+
+    """
+    __all__ = getattr(mdl, "__all__", None)
+    if __all__ is None:
+        __all__ = dir(mdl)
+
+    all_values = (getattr(mdl, name) for name in __all__ if name[:1] != "_")
+
+    if submodule:
+        for v in all_values:
+            if is_descriptor_class(v):
+                yield v
+            if isinstance(v, ModuleType):
+                for v in get_descriptors_in_module(v, submodule=True):
+                    yield v
+
+    else:
+        for v in all_values:
+            if is_descriptor_class(v):
+                yield v
