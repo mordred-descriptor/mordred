@@ -10,7 +10,7 @@ fi
 
 if [[ -z "$TRAVIS_TAG" && -z "$APPVEYOR_REPO_TAG_NAME" ]]; then
     LABEL=dev
-    python extra/ci/bump-beta-version.py $(cat mordred/_version.txt) > mordred/_version.txt
+    python extra/ci/bump-dev-version.py $(cat mordred/_version.txt) > mordred/_version.txt
 else
     LABEL=main
 fi

@@ -3,7 +3,12 @@ import sys
 
 
 def main(version):
-    (major, minor, patch) = StrictVersion(version).version
+    vsn = StrictVersion(version)
+    if vsn.prerelease:
+        print(version)
+        return
+
+    (major, minor, patch) = vsn.version
     print("{}.{}.{}a1".format(major, minor, patch + 1))
 
 
