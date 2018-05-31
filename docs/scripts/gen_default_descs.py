@@ -1,5 +1,7 @@
+import sys
 import load_path
-from mordred import Descriptor, descriptors, get_descriptors_from_module
+from mordred import Descriptor, descriptors, get_descriptors_from_module, __version__
+from distutils.version import StrictVersion
 
 load_path.nop()
 
@@ -55,10 +57,11 @@ class DescriptorInfo(object):
 
 
 def get_all_descriptors():
+    v = StrictVersion(__version__)
     for mdl in descriptors.all:
         ds = []
         for Desc in get_descriptors_from_module(mdl):
-            for desc in Desc.preset():
+            for desc in Desc.preset(v):
                 ds.append(desc)
 
         yield ds
