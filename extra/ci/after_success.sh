@@ -38,7 +38,10 @@ if [[ -f ~/.ssh/id_rsa && "$TRAVIS_PULL_REQUEST" == false && -n "$DOCUMENTATION"
 
     rm -rf gh-pages
     info git clone -b gh-pages $DOC_REMOTE gh-pages
-    info rm -r gh-pages/$TRAVIS_BRANCH || true
+    if [[ -d gh-pages/$TRAVIS_BRANCH ]]; then
+        info rm -r gh-pages/$TRAVIS_BRANCH
+    fi
+    mkdir -p gh-pages/$(dirname $TRAVIS_BRANCH)
     info cp -r _build/html gh-pages/$TRAVIS_BRANCH
 
     cd gh-pages
