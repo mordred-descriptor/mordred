@@ -1,5 +1,6 @@
 ---
 name: Bug report or Question
+about: Report bug or question about this project
 ---
 
 description
