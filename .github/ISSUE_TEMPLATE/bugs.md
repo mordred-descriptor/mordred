@@ -1,22 +1,27 @@
-# description
+---
+name: Bug report or Question
+---
 
+description
+--
 Please fill me.
 
-# minimal reproduction code
+minimal reproduction code
+--
 
 Please fill me if possible.
 
-# environment
-
-## OS/distribution
+environment
+--
+### OS/distribution
 
 Please fill me.
 
-## conda or pip
+### conda or pip
 
 Please choose conda or pip.
 
-## python version
+### python version
 
 Please execute the command and paste result.
 
@@ -24,7 +29,7 @@ Please execute the command and paste result.
 python --version
 ```
 
-## library version
+### library version
 
 Please execute the command and paste result.
 
