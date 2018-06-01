@@ -21,4 +21,4 @@ Pull Request
 
 Reporting bugs / Question
 --
-Please fill [template](/issues/new?template=bugs.md).
+Please fill [template](http://github.com/mordred-descriptor/mordred/issues/new?template=bugs.md).
