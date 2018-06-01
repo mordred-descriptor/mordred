@@ -2,13 +2,13 @@ import inspect
 
 from nose.tools import ok_
 
-from mordred import descriptors, get_descriptors_from_module
+from mordred import descriptors, get_descriptors_in_module
 from mordred._base.descriptor import is_descriptor_class
 
 
 def test_attributes():
     for mdl in descriptors.all:
-        for desc in get_descriptors_from_module(mdl):
+        for desc in get_descriptors_in_module(mdl, submodule=False):
             for cls in desc.__mro__:
                 if cls == object:
                     continue
