@@ -1,14 +1,24 @@
 # description
 
-# minimal reproduction code (if possible)
+Please fill me.
+
+# minimal reproduction code
+
+Please fill me if possible.
 
 # environment
 
 ## OS/distribution
 
+Please fill me.
+
 ## conda or pip
 
+Please choose conda or pip.
+
 ## python version
+
+Please execute the command and paste result.
 
 ```.bash
 python --version
@@ -16,15 +26,17 @@ python --version
 
 ## library version
 
-conda
+Please execute the command and paste result.
 
-```.bash
-conda list
-```
+* conda
 
-pip
+    ```.bash
+    conda list
+    ```
 
-```.bash
-pip list
-python -c 'import rdkit; print("rdkit " + rdkit.__version__)'
-```
+* pip
+
+    ```.bash
+    python -m pip list
+    python -c 'import rdkit; print("rdkit " + rdkit.__version__)'
+    ```
