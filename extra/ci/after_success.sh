@@ -10,15 +10,15 @@ fi
 
 if [[ -z "$TRAVIS_TAG" && -z "$APPVEYOR_REPO_TAG_NAME" ]]; then
     LABEL=dev
-    python extra/ci/bump-beta-version.py $(cat mordred/_version.txt) > mordred/_version.txt
+    python extra/ci/bump-dev-version.py $(cat mordred/_version.txt) > mordred/_version.txt
 else
     LABEL=main
 fi
 
-info conda build . --no-test
-
-OUTPUT=`conda build . --output --python $PYTHON_VERSION`
 if [[ -n "$ANACONDA_CLOUD_TOKEN" ]]; then
+    info conda build . --no-test
+
+    OUTPUT=`conda build . --output --python $PYTHON_VERSION`
     if [[ -n "$APPVEYOR" ]]; then
         cmd /c "anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT"
     else
