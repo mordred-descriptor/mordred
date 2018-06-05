@@ -24,6 +24,9 @@ molecular descriptor calculator.
 .. image:: https://img.shields.io/badge/doi-10.1186%2Fs13321--018--0258--y-blue.svg
    :target: https://doi.org/10.1186/s13321-018-0258-y
 
+.. image:: https://img.shields.io/badge/slack-mordred--descriptor-brightgreen.svg
+    :target: https://join.slack.com/t/mordred-descriptor/shared_invite/enQtMzc1MzkyODk1NTY5LTdlYzM4MWUzY2YwZmEwMWYzN2M4YTVkMGRlMDY0ZjU2NjQ1M2RiYzllMzVjZGE4NGZkNWZjODBjODE0YmExNjk
+
 number of descriptors
 ---------------------
 .. code:: python
