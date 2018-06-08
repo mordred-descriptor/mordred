@@ -1,7 +1,8 @@
-from rdkit import Chem
-from . import get_molecular_framework
-from logging import getLogger, StreamHandler
+from logging import StreamHandler, getLogger
 
+from rdkit import Chem
+
+from . import get_molecular_framework
 
 logger = getLogger(__file__)
 
