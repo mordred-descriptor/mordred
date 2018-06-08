@@ -57,10 +57,10 @@ class Framework(Descriptor):
 
     def calculate(self, F):
         linkers, rings = F
-        Nlinkers = len({i for linker in linkers for i in linker})
-        Nrings = len({i for ring in rings for i in ring})
+        indices = {i for linker in linkers for ab in linker for i in ab}
+        indices.update(i for ring in rings for i in ring)
         N = self.mol.GetNumAtoms()
 
-        return (Nlinkers + Nrings) / N
+        return len(indices) / N
 
     rtype = float

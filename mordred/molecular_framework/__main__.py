@@ -1,21 +1,27 @@
 from rdkit import Chem
 from . import get_molecular_framework
-from itertools import chain
+from logging import getLogger, StreamHandler
+
+
+logger = getLogger(__file__)
 
 
 def main():
     import sys
     mol = Chem.MolFromSmiles(sys.argv[1])
     linkers, rings = get_molecular_framework(mol)
-    indices = set(chain(chain(*linkers), chain(*rings)))
+    indices = {i for linker in linkers for ab in linker for i in ab}
+    indices.update(i for ring in rings for i in ring)
 
     rwmol = Chem.EditableMol(mol)
     for i in range(mol.GetNumAtoms() - 1, -1, -1):
         if i not in indices:
             rwmol.RemoveAtom(i)
 
-    print(Chem.MolToSmiles(rwmol.GetMol()))
+    logger.info(Chem.MolToSmiles(rwmol.GetMol()))
 
 
 if __name__ == "__main__":
+    logger.addHandler(StreamHandler())
+    logger.setLevel(20)
     main()
