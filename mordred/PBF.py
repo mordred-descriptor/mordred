@@ -14,7 +14,7 @@ class PBF(Descriptor):
     since = "1.1.0"
 
     @classmethod
-    def preset(cls):
+    def preset(cls, version):
         yield cls()
 
     def description(self):
