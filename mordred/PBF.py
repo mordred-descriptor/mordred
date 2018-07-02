@@ -8,10 +8,11 @@ __all__ = (
 
 
 class PBF(Descriptor):
-    r"""PBF descriptor.
-    """
+    r"""PBF descriptor."""
+
     __slots__ = ()
-    since = "1.1.0"
+    since = "1.1.2"
+    require_3D = True
 
     @classmethod
     def preset(cls, version):
