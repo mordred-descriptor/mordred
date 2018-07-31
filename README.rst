@@ -64,8 +64,7 @@ pip
 
        .. code:: console
 
-           $ sudo apt-get install python-yaml # on Ubuntu/Debian
-           $ pip install pandas
+           $ pip install pandas # optional
            $ pip install mordred
 
 examples
