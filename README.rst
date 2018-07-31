@@ -65,6 +65,11 @@ pip
        .. code:: console
 
            $ pip install mordred
+           
+Testing the installation
+------------------------
+
+            $ python -m mordred.tests
 
 examples
 --------
