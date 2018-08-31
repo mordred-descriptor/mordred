@@ -12,6 +12,7 @@ class QED(Descriptor):
 
     __slots__ = ()
     since = "1.1.2"
+    explicit_hydrogens = False
 
     @classmethod
     def preset(cls, version):
