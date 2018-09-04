@@ -28,22 +28,7 @@ info conda update -y --all
 
 info conda install python=$PYTHON_VERSION
 
-# install requirements
-info pip install pipenv
+RDKIT="rdkit==$(python ./extra/requirements/get-rdkit-version.py $OS_NAME $PYTHON_VERSION)"
+info conda install $RDKIT --file ./extra/requirements/requirements-conda.txt
 
-pipenv lock -r > requirements.txt
-info python ./extra/ci/scrub-requirements.py requirements.txt
-
-banner "requirements.txt start"
-cat requirements.txt
-banner "requirements.txt  end "
-
-RDKIT="rdkit==$(python ./extra/ci/get-rdkit-version.py $OS_NAME $PYTHON_VERSION)"
-info conda install $RDKIT --file requirements.txt --file ./extra/ci/requirements-conda.txt
-
-pipenv lock -r --dev > requirements.txt
-banner "requirements.txt(dev) start"
-cat requirements.txt
-banner "requirements.txt(dev)  end "
-
-info pip install -r requirements.txt
+info pip install -r ./extra/requirements/requirements-pip.txt
