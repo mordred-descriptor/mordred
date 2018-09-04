@@ -12,5 +12,4 @@ if __name__ == "__main__":
     import sys
     import os
 
-    data = os.path.join(os.path.dirname(__file__), "rdkit-versions.txt")
-    main(data, *sys.argv[1:])
+    main(*sys.argv[1:])
