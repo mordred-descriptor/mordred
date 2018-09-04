@@ -197,7 +197,7 @@ as library
     2    1.2688
     Name: SLogP, dtype: float64
 
-see `examples <examples>`_
+see `examples <https://github.com/mordred-descriptor/mordred/tree/develop/examples>`_
 
 Citation
 --------
