@@ -28,7 +28,7 @@ info conda update -y --all
 
 info conda install python=$PYTHON_VERSION
 
-RDKIT="rdkit==$(python ./extra/requirements/get-rdkit-version.py $OS_NAME $PYTHON_VERSION)"
+RDKIT="rdkit==$(python ./extra/ci/get-rdkit-version.py ./extra/requirements/rdkit-versions.txt $OS_NAME $PYTHON_VERSION)"
 info conda install $RDKIT --file ./extra/requirements/requirements-conda.txt
 
 info pip install -r ./extra/requirements/requirements-pip.txt
