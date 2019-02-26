@@ -31,12 +31,12 @@ class Context(object):
         if mol.HasProp("_Name"):
             name = mol.GetProp("_Name")
         else:
-            name = Chem.MolToSmiles(Chem.RemoveHs(mol))
+            name = Chem.MolToSmiles(Chem.RemoveHs(mol, updateExplicitCount=True))
 
         mols, coords = {}, {}
 
         for eh, ke in ((eh, ke) for eh in explicit_hydrogens for ke in kekulizes):
-            m = Chem.AddHs(mol) if eh else Chem.RemoveHs(mol)
+            m = Chem.AddHs(mol) if eh else Chem.RemoveHs(mol, updateExplicitCount=True)
 
             if ke:
                 Chem.Kekulize(m)
