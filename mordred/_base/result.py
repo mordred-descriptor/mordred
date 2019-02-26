@@ -17,18 +17,15 @@ class Result(object):
         self._name_to_value = None
 
     def __str__(self):
-        buf = ["Result({"]
-        for k, v in zip(self._descriptors, self._values):
-            buf.append("'{}': {}".format(k, v))
-            buf.append(", ")
-        buf.pop()
-        buf.append("})")
-        return "".join(buf)
+        return '{}({{{}}})'.format(
+            self.__class__.__name__,
+            ", ".join("'{}': {}".format(k, v) for k, v in zip(self._descriptors, self._values))
+        )
 
     def __repr__(self):
         return "{}({!r},{!r},{!r})".format(
-            self.mol,
             self.__class__.__name__,
+            self.mol,
             self._values,
             self._descriptors,
         )
