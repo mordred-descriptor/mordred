@@ -17,9 +17,9 @@ class Result(object):
         self._name_to_value = None
 
     def __str__(self):
-        return '{}({{{}}})'.format(
+        return "{}({{{}}})".format(
             self.__class__.__name__,
-            ", ".join("'{}': {}".format(k, v) for k, v in zip(self._descriptors, self._values))
+            ", ".join("'{}': {}".format(k, v) for k, v in zip(self._descriptors, self._values)),
         )
 
     def __repr__(self):

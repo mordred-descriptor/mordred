@@ -395,7 +395,7 @@ class EtaCompositeIndex(EtaBase):
     def dependencies(self):
         if self._reference:
             return {
-                "rmol": AlterMolecule(self.explicit_hydrogens)
+                "rmol": AlterMolecule(self.explicit_hydrogens),
             }
 
     def calculate(self, rmol=None):
