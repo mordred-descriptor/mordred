@@ -1,5 +1,5 @@
-from distutils.version import StrictVersion
 import sys
+from distutils.version import StrictVersion
 
 
 def main(version):

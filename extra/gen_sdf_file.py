@@ -2,7 +2,6 @@ import os
 
 from rdkit.Chem import AllChem as Chem
 
-
 BASE = os.path.join(
     os.path.dirname(__file__),
     '..', 'mordred', 'tests', 'references'

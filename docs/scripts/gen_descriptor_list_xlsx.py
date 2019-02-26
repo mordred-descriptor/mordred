@@ -1,6 +1,5 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font
-
 from gen_default_descs import DescriptorInfo, get_all_descriptors
 
 
