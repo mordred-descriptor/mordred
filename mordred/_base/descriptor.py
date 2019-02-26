@@ -3,6 +3,7 @@ import operator
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
 from distutils.version import StrictVersion
+from rdkit import Chem
 
 import six
 import numpy as np
@@ -193,6 +194,15 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
             self.fail(AttributeError("use 3D coordinate in 2D descriptor"))
 
         return self._context.get_coord(self)
+
+    def get_3D_mol(self):
+        mol = Chem.Mol(self.mol)
+        conf = Chem.Conformer(mol.GetNumAtoms())
+        for i, xyz in enumerate(self.coord):
+            conf.SetAtomPosition(i, xyz)
+
+        mol.AddConformer(conf)
+        return mol
 
     def fail(self, exception):
         """Raise known exception and return missing value.
