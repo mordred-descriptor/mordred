@@ -56,7 +56,7 @@ setup(
 
     tests_require=[
         "nose==1.*",
-        "PyYaml==3.*",
+        "PyYaml>=4.2b1",
     ],
 
     cmdclass={"test": None},
