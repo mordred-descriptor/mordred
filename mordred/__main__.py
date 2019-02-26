@@ -165,6 +165,9 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
             if isinstance(v, MissingValueBase):
                 return ""
 
+            if isinstance(v, bool):
+                return int(v)
+
             return str(v)
 
         for result in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
