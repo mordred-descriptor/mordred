@@ -14,7 +14,6 @@ from . import _atomic_property as ap
 from ._base import Descriptor
 from ._util import atoms_to_numpy
 from .RingCount import RingCount
-from ._graph_matrix import DistanceMatrix
 
 __all__ = (
     "EtaCoreCount", "EtaShapeIndex",
@@ -394,15 +393,14 @@ class EtaCompositeIndex(EtaBase):
         self._averaged = averaged
 
     def dependencies(self):
-        deps = {"D": DistanceMatrix(self.explicit_hydrogens)}
-
         if self._reference:
-            deps["rmol"] = AlterMolecule(self.explicit_hydrogens)
+            return {
+                "rmol": AlterMolecule(self.explicit_hydrogens)
+            }
 
-        return deps
-
-    def calculate(self, D, rmol=None):
+    def calculate(self, rmol=None):
         mol = rmol if self._reference else self.mol
+        D = Chem.GetDistanceMatrix(mol, force=True)
 
         if self._local:
             def checker(r):
