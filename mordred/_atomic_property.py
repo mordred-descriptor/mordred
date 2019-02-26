@@ -112,7 +112,8 @@ mc_gowan_volume = PeriodicTable.load("mc_gowan_volume.txt")
 _table = Chem.GetPeriodicTable()
 
 
-GetElementSymbol = _table.GetElementSymbol
+def GetElementSymbol(i):
+    return _table.GetElementSymbol(i)
 
 
 if six.PY2:
@@ -121,7 +122,8 @@ if six.PY2:
             symbol = str(symbol)
         return _table.GetAtomicNumber(symbol)
 else:
-    GetAtomicNumber = _table.GetAtomicNumber
+    def GetAtomicNumber(symbol):
+        return _table.GetAtomicNumber(symbol)
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
