@@ -1,4 +1,5 @@
-from rdkit.Chem.AllChem import CalcPBF
+from rdkit.Chem import Conformer
+from rdkit.Chem.rdMolDescriptors import CalcPBF
 
 from ._base import Descriptor
 
@@ -28,6 +29,6 @@ class PBF(Descriptor):
         return ()
 
     def calculate(self):
-        return CalcPBF(self.mol)
+        return CalcPBF(self.get_3D_mol())
 
     rtype = float
