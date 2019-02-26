@@ -3,10 +3,10 @@ import operator
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
 from distutils.version import StrictVersion
-from rdkit import Chem
 
 import six
 import numpy as np
+from rdkit import Chem
 
 if hasattr(inspect, "getfullargspec"):
     def getargs(func):
