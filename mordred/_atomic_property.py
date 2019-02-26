@@ -37,8 +37,8 @@ def getter(short, **attrs):
 @getter(short="c", long="gasteiger charge", gasteiger_charges=True)
 def get_gasteiger_charge(atom):
     return (
-        atom.GetDoubleProp("_GasteigerCharge") +
-        atom.GetDoubleProp("_GasteigerHCharge") if atom.HasProp("_GasteigerHCharge") else 0.0
+        atom.GetDoubleProp("_GasteigerCharge")
+        + atom.GetDoubleProp("_GasteigerHCharge") if atom.HasProp("_GasteigerHCharge") else 0.0
     )
 
 
@@ -100,10 +100,10 @@ polarizability94 = PeriodicTable.load("polarizalibity94.txt")
 polarizability78 = PeriodicTable.load("polarizalibity78.txt")
 ionization_potentials = PeriodicTable.load("ionization_potential.txt")
 period = PeriodicTable(
-    ([1] * 2) +
-    ([2] * 8) + ([3] * 8) +
-    ([4] * 18) + ([5] * 18) +
-    ([6] * 32) + ([7] * 32),
+    ([1] * 2)
+    + ([2] * 8) + ([3] * 8)
+    + ([4] * 18) + ([5] * 18)
+    + ([6] * 32) + ([7] * 32),
 )
 
 mc_gowan_volume = PeriodicTable.load("mc_gowan_volume.txt")

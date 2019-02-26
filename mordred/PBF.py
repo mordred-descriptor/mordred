@@ -1,4 +1,3 @@
-from rdkit.Chem import Conformer
 from rdkit.Chem.rdMolDescriptors import CalcPBF
 
 from ._base import Descriptor

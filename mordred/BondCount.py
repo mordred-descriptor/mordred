@@ -35,10 +35,10 @@ bond_types = (
     (BondType.double, ("D", "double bonds", lambda b: b.GetBondType() == Chem.BondType.DOUBLE)),
     (BondType.triple, ("T", "triple bonds", lambda b: b.GetBondType() == Chem.BondType.TRIPLE)),
 
-    (BondType.aromatic, ("A", "aromatic bonds", lambda b: b.GetIsAromatic() or
-                         b.GetBondType() == Chem.BondType.AROMATIC)),
-    (BondType.multiple, ("M", "multiple bonds", lambda b: b.GetIsAromatic() or
-                         b.GetBondType() != Chem.BondType.SINGLE)),
+    (BondType.aromatic, ("A", "aromatic bonds", lambda b: b.GetIsAromatic()
+                         or b.GetBondType() == Chem.BondType.AROMATIC)),
+    (BondType.multiple, ("M", "multiple bonds", lambda b: b.GetIsAromatic()
+                         or b.GetBondType() != Chem.BondType.SINGLE)),
 )
 
 bond_type_dict = dict(bond_types)
