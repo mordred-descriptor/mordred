@@ -271,9 +271,9 @@ def is_descriptor_class(desc, include_abstract=False):
 
     """
     return (
-        isinstance(desc, type) and
-        issubclass(desc, Descriptor) and
-        (True if include_abstract else not inspect.isabstract(desc))
+        isinstance(desc, type)
+        and issubclass(desc, Descriptor)
+        and (True if include_abstract else not inspect.isabstract(desc))
     )
 
 

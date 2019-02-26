@@ -2,6 +2,7 @@ import re
 
 comment = re.compile(r'^\s*#')
 
+
 def main(data, os, pyver):
     d = {
         (os, pyver): ver
@@ -14,6 +15,5 @@ def main(data, os, pyver):
 
 if __name__ == "__main__":
     import sys
-    import os
 
     main(*sys.argv[1:])

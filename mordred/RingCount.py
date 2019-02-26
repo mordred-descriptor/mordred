@@ -178,9 +178,9 @@ class RingCount(RingCountBase):
     def calculate(self, Rs):
         return sum(
             1 for R in Rs
-            if self._check_order(R) and
-            self._check_arom(R) and
-            self._check_hetero(R)
+            if self._check_order(R)
+            and self._check_arom(R)
+            and self._check_hetero(R)
         )
 
     rtype = int

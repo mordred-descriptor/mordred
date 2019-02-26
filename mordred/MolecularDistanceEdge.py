@@ -83,11 +83,10 @@ class MolecularDistanceEdge(Descriptor):
             D[i, j]
             for i in range(N)
             for j in range(i + 1, N)
-            if (V[i] == self._valence1 and V[j] == self._valence2) or
-            (V[j] == self._valence1 and V[i] == self._valence2)
-            if self.mol.GetAtomWithIdx(i).GetAtomicNum() ==
-            self.mol.GetAtomWithIdx(j).GetAtomicNum() ==
-            self._atomic_num
+            if (V[i] == self._valence1 and V[j] == self._valence2)
+            or (V[j] == self._valence1 and V[i] == self._valence2)
+            if self.mol.GetAtomWithIdx(i).GetAtomicNum()
+            == self.mol.GetAtomWithIdx(j).GetAtomicNum() == self._atomic_num
         ]
         n = len(Dv)
 
