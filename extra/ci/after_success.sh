@@ -15,6 +15,8 @@ else
     LABEL=main
 fi
 
+python extra/ci/gen_conda_build_config.py > conda_build_config.yaml
+
 if [[ -n "$ANACONDA_CLOUD_TOKEN" ]]; then
     info conda build . --no-test
 

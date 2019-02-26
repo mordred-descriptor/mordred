@@ -7,14 +7,18 @@ from contextlib import contextmanager
 from multiprocessing import cpu_count
 from distutils.version import StrictVersion
 
-from tqdm import tqdm
-
-from .._util import Capture, DummyBar, NotebookWrapper
+from .._util import Capture, DummyBar
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
 from .result import Result
 from .context import Context
 from .._version import __version__
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
+
+try:
+    from tqdm import tqdm
+    from .._util import NotebookWrapper
+except ImportError:
+    tqdm = NotebookWrapper = DummyBar
 
 
 class Calculator(object):

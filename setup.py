@@ -8,7 +8,6 @@ install_requires = [
     "six==1.*",
     "numpy==1.*",
     "networkx==2.*",
-    "tqdm==4.*",
 ]
 
 if sys.version_info < (3, 4, 0):
@@ -58,6 +57,10 @@ setup(
         "nose==1.*",
         "PyYaml>=4.2b1",
     ],
+
+    extras_require={
+        "full": ["pandas", "tqdm"],
+    },
 
     cmdclass={"test": None},
 )

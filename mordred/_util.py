@@ -4,7 +4,6 @@ import os
 import sys
 
 import numpy as np
-from tqdm import tqdm_notebook
 
 
 def parse_enum(enum, v):
@@ -67,6 +66,7 @@ class DummyBar(object):
 
 class NotebookWrapper(object):
     def __init__(self, **kwargs):
+        from tqdm import tqdm_notebook
         self.bar = tqdm_notebook(**kwargs)
 
     def __enter__(self):

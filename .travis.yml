@@ -10,6 +10,7 @@ env:
 os:
 - linux
 - osx
+- windows
 sudo: false
 before_install: travis_retry ./extra/ci/before_install.sh
 install: travis_retry ./extra/ci/install.sh
