@@ -18,7 +18,6 @@ requirements:
     - six
     - rdkit
     - enum34 [py27]
-    - tqdm
 
     - setuptools
     - pyyaml
@@ -41,6 +40,5 @@ test:
     - pyyaml
 
   commands:
-    - python -c "from mordred import all_descriptors; all_descriptors()"
     - pip install coveralls
     - nosetests mordred --with-coverage --cover-package=mordred

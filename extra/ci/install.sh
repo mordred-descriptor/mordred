@@ -3,27 +3,34 @@ set -e
 
 source ./extra/ci/common.sh
 
-# install conda
-if [[ -n "$TRAVIS_OS_NAME" ]]; then
-    if [[ "$TRAVIS_OS_NAME" == osx ]]; then
-        export OS_NAME=MacOSX
-    elif [[ "$TRAVIS_OS_NAME" == linux ]]; then
-        export OS_NAME=Linux
-    fi
-    if [[ ! -f "miniconda.sh" ]]; then
-        info wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-${OS_NAME}-x86_64.sh -O miniconda.sh
-    fi
-    rm -rf $HOME/miniconda
-    info bash miniconda.sh -b -p $HOME/miniconda
-elif [[ -n "$APPVEYOR" ]]; then
+if [[ -n "$APPVEYOR" ]]; then
     export OS_NAME=Windows
+else
+    EXTENSION=sh
+    if [[ "$OS_NAME" == Windows ]]; then
+        EXTENSION=exe
+    fi
+
+    MINICONDA_INSTALLER=Miniconda3-latest-${OS_NAME}-x86_64.$EXTENSION
+
+    if [[ ! -f "$MINICONDA_INSTALLER" ]]; then
+        info wget -oq https://repo.continuum.io/miniconda/$MINICONDA_INSTALLER
+    else
+        rm -rf $HOME/miniconda
+    fi
+
+    if [[ "$OS_NAME" == Windows ]]; then
+        cmd.exe /C "$MINICONDA_INSTALLER /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\\miniconda"
+    else
+        info bash $MINICONDA_INSTALLER -b -p $HOME/miniconda
+    fi
 fi
 
 # setup conda
 hash -r
 
 info conda config --set always_yes yes --set changeps1 no
-info conda config --add channels rdkit --add channels mordred-descriptor
+info conda config --add channels rdkit
 info conda update -y --all
 
 info conda install python=$PYTHON_VERSION
