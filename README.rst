@@ -64,6 +64,7 @@ pip
 
        .. code:: console
 
+           $ pip install pandas # optional
            $ pip install mordred
 
 examples
