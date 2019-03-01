@@ -3,27 +3,23 @@ set -e
 
 source ./extra/ci/common.sh
 
-if [[ -n "$APPVEYOR" ]]; then
-    export OS_NAME=Windows
+EXTENSION=sh
+if [[ "$OS_NAME" == Windows ]]; then
+    EXTENSION=exe
+fi
+
+MINICONDA_INSTALLER=Miniconda3-latest-${OS_NAME}-x86_64.$EXTENSION
+
+if [[ ! -f "$MINICONDA_INSTALLER" ]]; then
+    info wget -oq https://repo.continuum.io/miniconda/$MINICONDA_INSTALLER
 else
-    EXTENSION=sh
-    if [[ "$OS_NAME" == Windows ]]; then
-        EXTENSION=exe
-    fi
+    rm -rf $HOME/miniconda
+fi
 
-    MINICONDA_INSTALLER=Miniconda3-latest-${OS_NAME}-x86_64.$EXTENSION
-
-    if [[ ! -f "$MINICONDA_INSTALLER" ]]; then
-        info wget -oq https://repo.continuum.io/miniconda/$MINICONDA_INSTALLER
-    else
-        rm -rf $HOME/miniconda
-    fi
-
-    if [[ "$OS_NAME" == Windows ]]; then
-        cmd.exe /C "$MINICONDA_INSTALLER /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\\miniconda"
-    else
-        info bash $MINICONDA_INSTALLER -b -p $HOME/miniconda
-    fi
+if [[ "$OS_NAME" == Windows ]]; then
+    cmd.exe /C "$MINICONDA_INSTALLER /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\\miniconda"
+else
+    info bash $MINICONDA_INSTALLER -b -p $HOME/miniconda
 fi
 
 # setup conda
