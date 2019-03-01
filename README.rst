@@ -5,9 +5,6 @@ molecular descriptor calculator.
 .. image:: https://travis-ci.org/mordred-descriptor/mordred.svg?branch=master
     :target: https://travis-ci.org/mordred-descriptor/mordred
 
-.. image:: https://ci.appveyor.com/api/projects/status/iwk6268d27jusvni/branch/master?svg=true
-    :target: https://ci.appveyor.com/project/philopon/mordred/branch/master
-
 .. image:: https://coveralls.io/repos/github/mordred-descriptor/mordred/badge.svg?branch=master
     :target: https://coveralls.io/github/mordred-descriptor/mordred?branch=master
 
@@ -64,7 +61,8 @@ pip
 
        .. code:: console
 
-           $ pip install pandas # optional
+           $ pip install 'mordred[full]'  # install with extra requires
+           # or
            $ pip install mordred
            
 Testing the installation
