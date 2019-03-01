@@ -1,17 +1,13 @@
 #!/bin/bash
 
-if [[ -n "$APPVEYOR" ]]; then
-    export OS_NAME=Windows
-else
-    export MINICONDA=$HOME/miniconda
+export MINICONDA=$HOME/miniconda
 
-    if [[ "$TRAVIS_OS_NAME" == osx ]]; then
-        export OS_NAME=MacOSX
-    elif [[ "$TRAVIS_OS_NAME" == linux ]]; then
-        export OS_NAME=Linux
-    elif [[ "$TRAVIS_OS_NAME" == windows ]]; then
-        export OS_NAME=Windows
-    fi
+if [[ "$TRAVIS_OS_NAME" == osx ]]; then
+    export OS_NAME=MacOSX
+elif [[ "$TRAVIS_OS_NAME" == linux ]]; then
+    export OS_NAME=Linux
+elif [[ "$TRAVIS_OS_NAME" == windows ]]; then
+    export OS_NAME=Windows
 fi
 
 if [[ "$OS_NAME" == Windows ]]; then
