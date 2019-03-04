@@ -6,7 +6,7 @@ from ..error import MissingValueBase
 from .parallel import parallel
 from .calculator import Calculator, get_descriptors_in_module, get_descriptors_from_module
 from .descriptor import (
-    Descriptor, ConstDescriptor, UnaryOperatingDescriptor, BinaryOperatingDescriptor
+    Descriptor, ConstDescriptor, UnaryOperatingDescriptor, BinaryOperatingDescriptor,
 )
 
 __all__ = (
