@@ -1,5 +1,6 @@
-from rdkit import Chem
 from multiprocessing import freeze_support
+
+from rdkit import Chem
 
 from mordred import Calculator
 from mordred.RingCount import RingCount

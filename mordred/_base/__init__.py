@@ -1,16 +1,13 @@
 """Mordred base package."""
 
-from ..error import MissingValueBase
-
-from .descriptor import (
-    Descriptor, UnaryOperatingDescriptor,
-    ConstDescriptor, BinaryOperatingDescriptor,
-)
-from .calculator import Calculator, get_descriptors_from_module, get_descriptors_in_module
-from .parallel import parallel
 from .util import is_missing
 from .result import Result
-
+from ..error import MissingValueBase
+from .parallel import parallel
+from .calculator import Calculator, get_descriptors_in_module, get_descriptors_from_module
+from .descriptor import (
+    Descriptor, ConstDescriptor, UnaryOperatingDescriptor, BinaryOperatingDescriptor
+)
 
 __all__ = (
     "Descriptor",
