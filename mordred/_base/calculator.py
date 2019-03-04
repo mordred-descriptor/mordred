@@ -7,9 +7,9 @@ from contextlib import contextmanager
 from multiprocessing import cpu_count
 from distutils.version import StrictVersion
 
+from .result import Result
 from .._util import Capture, DummyBar
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
-from .result import Result
 from .context import Context
 from .._version import __version__
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
@@ -209,22 +209,33 @@ class Calculator(object):
         cxt.add_stack(desc)
 
         if desc.require_connected and desc._context.n_frags != 1:
-            desc.fail(MultipleFragments())
+            return False, Missing(MultipleFragments(), desc._context.get_stack())
 
-        args = {
-            name: self._calculate_one(cxt, dep, False)
-            if dep is not None else None
-            for name, dep in (desc.dependencies() or {}).items()
-        }
+        args = {}
+        for name, dep in (desc.dependencies() or {}).items():
+            if dep is None:
+                args[name] = None
+            else:
+                ok, r = self._calculate_one(cxt, dep, False)
+                if ok:
+                    args[name] = r
+                else:
+                    return False, r
 
-        r = desc.calculate(**args)
+        ok = False
+        try:
+            r = desc.calculate(**args)
+            if self._debug:
+                self._check_rtype(desc, r)
+            ok = True
+        except MissingValueException as e:
+            r = Missing(e.error, desc._context.get_stack())
+        except Exception as e:
+            r = Error(e, desc._context.get_stack())
 
-        if self._debug:
-            self._check_rtype(desc, r)
+        self._cache[desc] = ok, r
 
-        self._cache[desc] = r
-
-        return r
+        return ok, r
 
     def _check_rtype(self, desc, result):
         if desc.rtype is None:
@@ -239,15 +250,8 @@ class Calculator(object):
     def _calculate(self, cxt):
         self._cache = {}
         for desc in self.descriptors:
-            try:
-                yield self._calculate_one(cxt, desc, True)
-            except MissingValueException as e:
-                yield Missing(e.error, desc._context.get_stack())
-            except Exception as e:
-                yield Error(e, desc._context.get_stack())
-            finally:
-                if hasattr(desc, "_context"):
-                    del desc._context
+            _, r = self._calculate_one(cxt, desc, True)
+            yield r
 
     def __call__(self, mol, id=-1):
         r"""Calculate descriptors.
