@@ -2,9 +2,7 @@ from rdkit.Chem.rdMolDescriptors import CalcPBF
 
 from ._base import Descriptor
 
-__all__ = (
-    "PBF",
-)
+__all__ = ("PBF",)
 
 
 class PBF(Descriptor):

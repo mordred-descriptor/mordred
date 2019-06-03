@@ -2,9 +2,7 @@ from rdkit.Chem.Descriptors import MolWt, ExactMolWt
 
 from ._base import Descriptor
 
-__all__ = (
-    "Weight",
-)
+__all__ = ("Weight",)
 
 
 class Weight(Descriptor):
@@ -16,8 +14,7 @@ class Weight(Descriptor):
 
     def description(self):
         return "{}{}molecular weight".format(
-            "averaged " if self._averaged else "",
-            "exact " if self._exact else "",
+            "averaged " if self._averaged else "", "exact " if self._exact else ""
         )
 
     since = "1.0.0"
@@ -30,7 +27,9 @@ class Weight(Descriptor):
         yield cls(True, True)
 
     def __str__(self):
-        return "{}{}MW".format("A" if self._averaged else "", "" if self._exact else "a")
+        return "{}{}MW".format(
+            "A" if self._averaged else "", "" if self._exact else "a"
+        )
 
     def parameters(self):
         return self._exact, self._averaged

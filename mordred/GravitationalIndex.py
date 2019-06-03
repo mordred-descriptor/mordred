@@ -13,17 +13,12 @@ class GravitationalIndex(Descriptor):
 
     def description(self):
         return "{}{}gravitational index".format(
-            "heavy atom " if self._heavy else "",
-            "pair " if self._pair else "",
+            "heavy atom " if self._heavy else "", "pair " if self._pair else ""
         )
 
     @classmethod
     def preset(cls, version):
-        return (
-            cls(h, p)
-            for p in [False, True]
-            for h in [True, False]
-        )
+        return (cls(h, p) for p in [False, True] for h in [True, False])
 
     require_3D = True
 
@@ -32,10 +27,7 @@ class GravitationalIndex(Descriptor):
         return not self._heavy
 
     def __str__(self):
-        return "GRAV{}{}".format(
-            "" if self._heavy else "H",
-            "p" if self._pair else "",
-        )
+        return "GRAV{}{}".format("" if self._heavy else "H", "p" if self._pair else "")
 
     def parameters(self):
         return self._heavy, self._pair

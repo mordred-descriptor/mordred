@@ -54,10 +54,7 @@ class BurdenEigenValues(BCUTBase):
         self._prop = prop
 
     def dependencies(self):
-        return {
-            "burden": Burden(),
-            "ps": self._prop,
-        }
+        return {"burden": Burden(), "ps": self._prop}
 
     def calculate(self, burden, ps):
         bmat = burden.copy()

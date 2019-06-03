@@ -48,7 +48,7 @@ class Barysz(BaryszMatrixBase):
             G.add_edge(i, j, weight=w)
 
         sp = floyd_warshall_numpy(G)
-        np.fill_diagonal(sp, [1. - C / P[a.GetIdx()] for a in self.mol.GetAtoms()])
+        np.fill_diagonal(sp, [1.0 - C / P[a.GetIdx()] for a in self.mol.GetAtoms()])
         return sp
 
 
@@ -69,7 +69,8 @@ class BaryszMatrix(BaryszMatrixBase):
 
     def description(self):
         return "{} from Barysz matrix weighted by {}".format(
-            self._type.description(), self._prop.get_long())
+            self._type.description(), self._prop.get_long()
+        )
 
     @classmethod
     def preset(cls, version):
@@ -88,10 +89,8 @@ class BaryszMatrix(BaryszMatrixBase):
     def dependencies(self):
         return {
             "result": self._type(
-                Barysz(self._prop),
-                self.explicit_hydrogens,
-                self.kekulize,
-            ),
+                Barysz(self._prop), self.explicit_hydrogens, self.kekulize
+            )
         }
 
     def calculate(self, result):

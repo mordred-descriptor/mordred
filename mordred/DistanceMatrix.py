@@ -43,10 +43,8 @@ class DistanceMatrix(Descriptor):
     def dependencies(self):
         return {
             "result": self._type(
-                D(self.explicit_hydrogens),
-                self.explicit_hydrogens,
-                self.kekulize,
-            ),
+                D(self.explicit_hydrogens), self.explicit_hydrogens, self.kekulize
+            )
         }
 
     def calculate(self, result):

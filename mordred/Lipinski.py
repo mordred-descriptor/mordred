@@ -43,11 +43,7 @@ class Lipinski(LipinskiLike):
         }
 
     def calculate(self, LogP, MW, HBDon, HBAcc):
-        return\
-            HBDon <= 5 and\
-            HBAcc <= 10 and\
-            MW <= 500 and\
-            LogP <= 5
+        return HBDon <= 5 and HBAcc <= 10 and MW <= 500 and LogP <= 5
 
 
 class GhoseFilter(LipinskiLike):
@@ -63,15 +59,12 @@ class GhoseFilter(LipinskiLike):
         return "Ghose filter"
 
     def dependencies(self):
-        return {
-            "LogP": SLogP(),
-            "MR": SMR(),
-            "MW": Weight(),
-        }
+        return {"LogP": SLogP(), "MR": SMR(), "MW": Weight()}
 
     def calculate(self, MW, LogP, MR):
-        return\
-            (160 <= MW <= 480) and\
-            (20 <= self.mol.GetNumAtoms() <= 70) and\
-            (-0.4 <= LogP <= 5.6) and\
-            (40 <= MR <= 130)
+        return (
+            (160 <= MW <= 480)
+            and (20 <= self.mol.GetNumAtoms() <= 70)
+            and (-0.4 <= LogP <= 5.6)
+            and (40 <= MR <= 130)
+        )

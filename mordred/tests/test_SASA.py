@@ -1,8 +1,8 @@
 import os
 
 from rdkit import Chem
-from nose.tools import ok_
 
+from nose.tools import ok_
 from mordred.CPSA import TotalSurfaceArea
 from mordred.surface_area import SurfaceArea
 
@@ -30,14 +30,12 @@ MethylphosphonicAcid 235.685
 MethylCyclopropane   229.071
 Acetonitrile         182.197
 Histidine            335.672
-"""[1:-1]
+"""[
+    1:-1
+]
 
 
-sdf_file = os.path.join(
-    os.path.dirname(__file__),
-    "references",
-    "structures.sdf",
-)
+sdf_file = os.path.join(os.path.dirname(__file__), "references", "structures.sdf")
 
 
 def test_SASA():

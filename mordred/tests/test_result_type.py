@@ -1,9 +1,9 @@
 from collections import Iterable
 
 import numpy as np
-from nose.tools import eq_, ok_, raises
 
 from mordred import Result, Descriptor, error, is_missing
+from nose.tools import eq_, ok_, raises
 
 
 class Dummy1(Descriptor):
