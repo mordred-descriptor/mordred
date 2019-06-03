@@ -33,11 +33,7 @@ class MatrixAttributeBase(Descriptor):
 
     @property
     def _key_args(self):
-        return (
-            self.matrix,
-            self.explicit_hydrogens,
-            self.kekulize,
-        )
+        return (self.matrix, self.explicit_hydrogens, self.kekulize)
 
     def __str__(self):
         n = self.__class__.__name__
@@ -114,10 +110,7 @@ class SpDiam(MatrixAttributeBase):
         return "spectral diamiter"
 
     def dependencies(self):
-        return {
-            "SpMax": SpMax(*self._key_args),
-            "eig": Eigen(self.matrix),
-        }
+        return {"SpMax": SpMax(*self._key_args), "eig": Eigen(self.matrix)}
 
     def calculate(self, SpMax, eig):
         return SpMax - eig.val[eig.min]
@@ -143,10 +136,7 @@ class SpAD(MatrixAttributeBase):
         return "spectral absolute diviation"
 
     def dependencies(self):
-        return {
-            "SpMean": SpMean(*self._key_args),
-            "eig": Eigen(self.matrix),
-        }
+        return {"SpMean": SpMean(*self._key_args), "eig": Eigen(self.matrix)}
 
     def calculate(self, eig, SpMean):
         return np.abs(eig.val - SpMean).sum()

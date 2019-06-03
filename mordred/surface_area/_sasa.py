@@ -36,12 +36,7 @@ class SurfaceArea(object):
     def _gen_neighbor_list(self):
         r = self.rads[:, np.newaxis] + self.rads
 
-        d = np.sqrt(
-            np.sum(
-                (self.xyzs[:, np.newaxis] - self.xyzs) ** 2,
-                axis=2,
-            ),
-        )
+        d = np.sqrt(np.sum((self.xyzs[:, np.newaxis] - self.xyzs) ** 2, axis=2))
 
         ns = defaultdict(list)
         for i, j in np.transpose(np.nonzero(d <= r)):

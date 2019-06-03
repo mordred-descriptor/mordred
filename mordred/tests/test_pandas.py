@@ -1,14 +1,16 @@
 import numpy as np
-from nose.tools import eq_, ok_
 
+from nose.tools import eq_, ok_
 from mordred.error import Error, Missing
 from mordred._base.pandas_module import MordredDataFrame
 
-df = MordredDataFrame([
-    [1, 2],
-    [1, Error(ValueError("error"), ())],
-    [Missing(ValueError("missing"), ()), 4],
-])
+df = MordredDataFrame(
+    [
+        [1, 2],
+        [1, Error(ValueError("error"), ())],
+        [Missing(ValueError("missing"), ()), 4],
+    ]
+)
 
 
 def test_copy():

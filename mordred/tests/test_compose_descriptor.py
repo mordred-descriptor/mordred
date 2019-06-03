@@ -3,6 +3,7 @@ import operator
 
 import six
 from rdkit import Chem
+
 from nose.tools import eq_
 
 from .. import ABCIndex
@@ -17,20 +18,11 @@ binary = [
     operator.pow,
 ]
 
-unary = [
-    operator.neg,
-    operator.pos,
-    operator.abs,
-
-    math.trunc,
-]
+unary = [operator.neg, operator.pos, operator.abs, math.trunc]
 
 
 if six.PY3:
-    unary.extend([
-        math.ceil,
-        math.floor,
-    ])
+    unary.extend([math.ceil, math.floor])
 
 
 def test_compose_descriptor():

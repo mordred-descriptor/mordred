@@ -1,8 +1,12 @@
 from collections import Iterator
 
+from mordred import (
+    Calculator,
+    descriptors,
+    get_descriptors_in_module,
+    get_descriptors_from_module,
+)
 from nose.tools import ok_
-
-from mordred import Calculator, descriptors, get_descriptors_in_module, get_descriptors_from_module
 
 
 def test_descriptor_order():

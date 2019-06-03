@@ -7,9 +7,7 @@ from rdkit.Chem.rdMolDescriptors import CalcFractionCSP3
 
 from ._base import Descriptor
 
-__all__ = (
-    "CarbonTypes", "HybridizationRatio", "FractionCSP3",
-)
+__all__ = ("CarbonTypes", "HybridizationRatio", "FractionCSP3")
 
 
 class CarbonTypesBase(Descriptor):
@@ -38,10 +36,7 @@ class CarbonTypesCache(CarbonTypesBase):
             if a.GetAtomicNum() != 6:
                 continue
 
-            carbon = sum(
-                other.GetAtomicNum() == 6
-                for other in a.GetNeighbors()
-            )
+            carbon = sum(other.GetAtomicNum() == 6 for other in a.GetNeighbors())
 
             SP = self._hybridization.get(a.GetHybridization())
 
@@ -72,11 +67,10 @@ class CarbonTypes(CarbonTypesBase):
 
     @classmethod
     def preset(cls, version):
-        return map(lambda args: cls(*args), [
-            (1, 1), (2, 1),
-            (1, 2), (2, 2), (3, 2),
-            (1, 3), (2, 3), (3, 3), (4, 3),
-        ])
+        return map(
+            lambda args: cls(*args),
+            [(1, 1), (2, 1), (1, 2), (2, 2), (3, 2), (1, 3), (2, 3), (3, 3), (4, 3)],
+        )
 
     def __str__(self):
         return "C{}SP{}".format(self._nCarbon, self._SP)

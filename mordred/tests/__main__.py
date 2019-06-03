@@ -15,9 +15,7 @@ def main():
 
     os.environ["NOSE_WITH_DOCTEST"] = "1"
 
-    nose.main(
-        defaultTest=",".join(tests),
-    )
+    nose.main(defaultTest=",".join(tests))
 
 
 if __name__ == "__main__":

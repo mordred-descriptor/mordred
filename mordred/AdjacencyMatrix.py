@@ -43,10 +43,8 @@ class AdjacencyMatrix(Descriptor):
     def dependencies(self):
         return {
             "result": self._type(
-                A(self.explicit_hydrogens),
-                self.explicit_hydrogens,
-                self.kekulize,
-            ),
+                A(self.explicit_hydrogens), self.explicit_hydrogens, self.kekulize
+            )
         }
 
     def calculate(self, result):

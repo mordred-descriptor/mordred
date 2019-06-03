@@ -22,7 +22,3 @@ for example in `find examples -name '*.py'`; do
 done
 
 info $PYTHON setup.py flake8
-
-if [[ "$OS_NAME" != Windows ]]; then
-    info $PYTHON setup.py isort
-fi

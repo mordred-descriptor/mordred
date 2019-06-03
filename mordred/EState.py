@@ -16,15 +16,85 @@ __all__ = ("AtomTypeEState",)
 
 
 es_types = (
-    "sLi", "ssBe", "ssssBe", "ssBH", "sssB", "ssssB", "sCH3", "dCH2", "ssCH2",
-    "tCH", "dsCH", "aaCH", "sssCH", "ddC", "tsC", "dssC", "aasC", "aaaC",
-    "ssssC", "sNH3", "sNH2", "ssNH2", "dNH", "ssNH", "aaNH", "tN", "sssNH",
-    "dsN", "aaN", "sssN", "ddsN", "aasN", "ssssN", "sOH", "dO", "ssO", "aaO",
-    "sF", "sSiH3", "ssSiH2", "sssSiH", "ssssSi", "sPH2", "ssPH", "sssP",
-    "dsssP", "sssssP", "sSH", "dS", "ssS", "aaS", "dssS", "ddssS", "sCl",
-    "sGeH3", "ssGeH2", "sssGeH", "ssssGe", "sAsH2", "ssAsH", "sssAs", "sssdAs",
-    "sssssAs", "sSeH", "dSe", "ssSe", "aaSe", "dssSe", "ddssSe", "sBr", "sSnH3",
-    "ssSnH2", "sssSnH", "ssssSn", "sI", "sPbH3", "ssPbH2", "sssPbH", "ssssPb",
+    "sLi",
+    "ssBe",
+    "ssssBe",
+    "ssBH",
+    "sssB",
+    "ssssB",
+    "sCH3",
+    "dCH2",
+    "ssCH2",
+    "tCH",
+    "dsCH",
+    "aaCH",
+    "sssCH",
+    "ddC",
+    "tsC",
+    "dssC",
+    "aasC",
+    "aaaC",
+    "ssssC",
+    "sNH3",
+    "sNH2",
+    "ssNH2",
+    "dNH",
+    "ssNH",
+    "aaNH",
+    "tN",
+    "sssNH",
+    "dsN",
+    "aaN",
+    "sssN",
+    "ddsN",
+    "aasN",
+    "ssssN",
+    "sOH",
+    "dO",
+    "ssO",
+    "aaO",
+    "sF",
+    "sSiH3",
+    "ssSiH2",
+    "sssSiH",
+    "ssssSi",
+    "sPH2",
+    "ssPH",
+    "sssP",
+    "dsssP",
+    "sssssP",
+    "sSH",
+    "dS",
+    "ssS",
+    "aaS",
+    "dssS",
+    "ddssS",
+    "sCl",
+    "sGeH3",
+    "ssGeH2",
+    "sssGeH",
+    "ssssGe",
+    "sAsH2",
+    "ssAsH",
+    "sssAs",
+    "sssdAs",
+    "sssssAs",
+    "sSeH",
+    "dSe",
+    "ssSe",
+    "aaSe",
+    "dssSe",
+    "ddssSe",
+    "sBr",
+    "sSnH3",
+    "ssSnH2",
+    "sssSnH",
+    "ssssSn",
+    "sI",
+    "sPbH3",
+    "ssPbH2",
+    "sssPbH",
+    "ssssPb",
 )
 
 es_type_set = set(es_types)
@@ -58,12 +128,7 @@ class AggrType(IntEnum):
         return self.name
 
     def description(self):
-        d = {
-            self.count: "number",
-            self.sum: "sum",
-            self.max: "max",
-            self.min: "min",
-        }
+        d = {self.count: "number", self.sum: "sum", self.max: "max", self.min: "min"}
         return d[self]
 
 
@@ -106,11 +171,7 @@ class AtomTypeEState(EStateBase):
 
     @classmethod
     def preset(cls, version):
-        return (
-            cls(a, t)
-            for a in AggrType
-            for t in es_types
-        )
+        return (cls(a, t) for a in AggrType for t in es_types)
 
     def __str__(self):
         aggr = aggr_name_dict[self._type]
@@ -133,10 +194,7 @@ class AtomTypeEState(EStateBase):
         if self._type == AggrType.count:
             return reduce(lambda a, b: a + b, E[0]).count(self._estate)
 
-        indices = map(
-            lambda e: e[1],
-            filter(lambda e: self._estate in e[0], zip(*E)),
-        )
+        indices = map(lambda e: e[1], filter(lambda e: self._estate in e[0], zip(*E)))
 
         with self.rethrow_na(ValueError):
             return getattr(builtins, self._type.name)(indices)

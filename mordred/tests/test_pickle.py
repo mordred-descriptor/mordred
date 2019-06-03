@@ -3,10 +3,10 @@ import pickle
 
 import six
 from rdkit import Chem
-from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 
 from mordred import Calculator, descriptors
+from nose.tools import eq_
 from mordred.error import MissingValueBase
 
 
@@ -14,10 +14,20 @@ def test_pickle_calculator():
     orig = Calculator(descriptors)
     d0 = orig.descriptors[0]
     d1 = orig.descriptors[1]
-    orig.register([
-        d0 + d1, d0 - d1, d0 * d1, d0 // d1, d0 % d1, d0 ** d1,
-        -d0, +d1, abs(d0), math.trunc(d0),
-    ])
+    orig.register(
+        [
+            d0 + d1,
+            d0 - d1,
+            d0 * d1,
+            d0 // d1,
+            d0 % d1,
+            d0 ** d1,
+            -d0,
+            +d1,
+            abs(d0),
+            math.trunc(d0),
+        ]
+    )
 
     if six.PY3:
         orig.register([math.ceil(d0), math.floor(d1)])

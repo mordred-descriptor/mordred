@@ -1,8 +1,7 @@
 import json
 
-from nose.tools import eq_
-
 from mordred import Calculator, descriptors
+from nose.tools import eq_
 
 
 def test_json():

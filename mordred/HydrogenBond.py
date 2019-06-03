@@ -2,9 +2,7 @@ from rdkit.Chem import rdMolDescriptors
 
 from ._base import Descriptor
 
-__all__ = (
-    "HBondAcceptor", "HBondDonor",
-)
+__all__ = ("HBondAcceptor", "HBondDonor")
 
 
 class HBondBase(Descriptor):

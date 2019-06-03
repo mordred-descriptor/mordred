@@ -56,10 +56,7 @@ class TopologicalCharge(Descriptor):
     tc_types = ("global", "mean", "raw")
 
     def description(self):
-        return "{}-ordered {} topological charge".format(
-            self._order,
-            self._type,
-        )
+        return "{}-ordered {} topological charge".format(self._order, self._type)
 
     @classmethod
     def preset(cls, version):
@@ -87,10 +84,7 @@ class TopologicalCharge(Descriptor):
         self._order = order
 
     def dependencies(self):
-        return {
-            "CT": ChargeTermMatrix(),
-            "D": DistanceMatrix(self.explicit_hydrogens),
-        }
+        return {"CT": ChargeTermMatrix(), "D": DistanceMatrix(self.explicit_hydrogens)}
 
     def calculate(self, CT, D):
         D = D * np.tri(*D.shape)
