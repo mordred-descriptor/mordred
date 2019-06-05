@@ -33,9 +33,9 @@ number of descriptors
     >>> n_2D = len(Calculator(descriptors, ignore_3D=True).descriptors)
     >>> print("2D:    {:5}\n3D:    {:5}\n------------\ntotal: {:5}".format(n_2D, n_all - n_2D, n_all))
     2D:     1613
-    3D:      212
+    3D:      213
     ------------
-    total:  1825
+    total:  1826
 
 Installation
 ------------
