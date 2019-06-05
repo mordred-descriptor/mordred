@@ -39,6 +39,7 @@ class Calculator(object):
         "_cache",
         "_debug",
         "_progress_bar",
+        "config",
     )
 
     def __setstate__(self, dict):
@@ -93,15 +94,19 @@ class Calculator(object):
                 "_explicit_hydrogens": self._explicit_hydrogens,
                 "_kekulizes": self._kekulizes,
                 "_require_3D": self._require_3D,
+                "config": self.config,
             },
         )
 
     def __getitem__(self, key):
         return self._name_dict[key]
 
-    def __init__(self, descs=None, version=None, ignore_3D=False):
+    def __init__(self, descs=None, version=None, ignore_3D=False, config=None):
         if descs is None:
             descs = []
+
+        if config is None:
+            config = {}
 
         self._descriptors = []
         self._name_dict = {}
@@ -110,6 +115,7 @@ class Calculator(object):
         self._kekulizes = set()
         self._require_3D = False
         self._debug = False
+        self.config = config
 
         self.register(descs, version=version, ignore_3D=ignore_3D)
 

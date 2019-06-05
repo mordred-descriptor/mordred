@@ -149,15 +149,12 @@ class DetourMatrixBase(Descriptor):
 
 
 class DetourMatrixCache(DetourMatrixBase):
-    __slots__ = ("_timeout",)
+    __slots__ = ()
 
     hermitian = True
 
-    def __init__(self, timeout):
-        self._timeout = timeout
-
     def parameters(self):
-        return (self._timeout,)
+        return ()
 
     def calculate(self):
         G = networkx.Graph()
@@ -166,7 +163,7 @@ class DetourMatrixCache(DetourMatrixBase):
             (b.GetBeginAtomIdx(), b.GetEndAtomIdx()) for b in self.mol.GetBonds()
         )
 
-        return CalcDetour(G, timeout=self._timeout)()
+        return CalcDetour(G, timeout=self.config.get("timeout", 60))()
 
 
 class DetourMatrix(DetourMatrixBase):
@@ -174,13 +171,10 @@ class DetourMatrix(DetourMatrixBase):
 
     :type type: str
     :param type: :ref:`matrix_aggregating_methods`
-
-    :type timeout: int or None
-    :param timeout: timeout in seconds
     """
 
     since = "1.0.0"
-    __slots__ = ("_type", "_timeout")
+    __slots__ = ("_type",)
 
     def description(self):
         return "{} from detourn matrix".format(self._type.description())
@@ -193,16 +187,15 @@ class DetourMatrix(DetourMatrixBase):
         return "{}_Dt".format(self._type.__name__)
 
     def parameters(self):
-        return (self._type, self._timeout)
+        return (self._type,)
 
-    def __init__(self, type="SpMax", timeout=60):
+    def __init__(self, type="SpMax"):
         self._type = ma.get_method(type)
-        self._timeout = timeout
 
     def dependencies(self):
         return {
             "result": self._type(
-                DetourMatrixCache(self._timeout), self.explicit_hydrogens, self.kekulize
+                DetourMatrixCache(), self.explicit_hydrogens, self.kekulize
             )
         }
 
@@ -225,16 +218,13 @@ class DetourIndex(DetourMatrixBase):
     """
 
     since = "1.0.0"
-    __slots__ = ("_timeout",)
-
-    def __init__(self, timeout=60):
-        self._timeout = timeout
+    __slots__ = ()
 
     def description(self):
         return "detour index"
 
     def parameters(self):
-        return (self._timeout,)
+        return ()
 
     @classmethod
     def preset(cls, version):
@@ -246,7 +236,7 @@ class DetourIndex(DetourMatrixBase):
         return self.__class__.__name__
 
     def dependencies(self):
-        return {"D": DetourMatrixCache(timeout=self._timeout)}
+        return {"D": DetourMatrixCache()}
 
     def calculate(self, D):
         return int(0.5 * D.sum())
