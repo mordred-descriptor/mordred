@@ -36,7 +36,8 @@ class ZagrebIndex(Descriptor):
             return "modified Zagreb index (version {})".format(self._version)
         else:
             return "Zagreb like index (lambda = {}, version {})".format(
-                self._variable, self._version)
+                self._variable, self._version
+            )
 
     @classmethod
     def preset(cls, version):
@@ -71,7 +72,7 @@ class ZagrebIndex(Descriptor):
                 sum(
                     (V[b.GetBeginAtomIdx()] * V[b.GetEndAtomIdx()]) ** self._variable
                     for b in self.mol.GetBonds()
-                ),
+                )
             )
 
     rtype = float

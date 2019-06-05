@@ -55,10 +55,7 @@ class AtomicId(object):
             self.weights.pop()
 
     def __call__(self):
-        return [
-            self.get_atomic_id(i)
-            for i in range(self.G.number_of_nodes())
-        ]
+        return [self.get_atomic_id(i) for i in range(self.G.number_of_nodes())]
 
 
 class MolecularIdBase(Descriptor):
@@ -78,10 +75,7 @@ class AtomicIds(MolecularIdBase):
 
     def calculate(self):
         aid = AtomicId(self.mol, self._eps)
-        return [
-            1 + aid.get_atomic_id(i) / 2.0
-            for i in range(self.mol.GetNumAtoms())
-        ]
+        return [1 + aid.get_atomic_id(i) / 2.0 for i in range(self.mol.GetNumAtoms())]
 
 
 class MolecularId(MolecularIdBase):
@@ -164,7 +158,7 @@ class MolecularId(MolecularIdBase):
                 aid
                 for aid, atom in zip(aids, self.mol.GetAtoms())
                 if self._check(atom.GetAtomicNum())
-            ),
+            )
         )
 
         if self._averaged:

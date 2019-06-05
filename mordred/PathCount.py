@@ -5,9 +5,7 @@ from rdkit import Chem
 
 from ._base import Descriptor
 
-__all__ = (
-    "PathCount",
-)
+__all__ = ("PathCount",)
 
 
 class PathCountBase(Descriptor):
@@ -26,8 +24,7 @@ class PathCountCache(PathCountBase):
 
     def _gen_bonds(self):
         self._bonds = [
-            (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
-            for b in self.mol.GetBonds()
+            (b.GetBeginAtomIdx(), b.GetEndAtomIdx()) for b in self.mol.GetBonds()
         ]
 
     def _bond_ids_to_atom_ids(self, p):
@@ -149,11 +146,7 @@ class PathCount(PathCountBase):
     def dependencies(self):
         deps = {"PC": PathCountCache(self._order)}
         if self._total and self._order > 0:
-            deps["acc"] = self.__class__(
-                self._order - 1,
-                self._pi,
-                self._total,
-            )
+            deps["acc"] = self.__class__(self._order - 1, self._pi, self._total)
 
         return deps
 

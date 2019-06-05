@@ -1,12 +1,19 @@
 """Mordred base package."""
 
 from .util import is_missing
-from .result import Result
 from ..error import MissingValueBase
+from .result import Result
 from .parallel import parallel
-from .calculator import Calculator, get_descriptors_in_module, get_descriptors_from_module
+from .calculator import (
+    Calculator,
+    get_descriptors_in_module,
+    get_descriptors_from_module,
+)
 from .descriptor import (
-    Descriptor, ConstDescriptor, UnaryOperatingDescriptor, BinaryOperatingDescriptor,
+    Descriptor,
+    ConstDescriptor,
+    UnaryOperatingDescriptor,
+    BinaryOperatingDescriptor,
 )
 
 __all__ = (
@@ -43,9 +50,7 @@ def _from_json(obj, descs):
 
     if name == UnaryOperatingDescriptor.__name__:
         return UnaryOperatingDescriptor(
-            args["name"],
-            args["operator"],
-            _from_json(args["value"]),
+            args["name"], args["operator"], _from_json(args["value"])
         )
 
     elif name == BinaryOperatingDescriptor.__name__:
@@ -79,10 +84,8 @@ def _Descriptor_from_json(self, obj):
 
     if descs is None:
         from mordred import descriptors
-        descs = {
-            cls.__name__: cls
-            for cls in get_descriptors_in_module(descriptors)
-        }
+
+        descs = {cls.__name__: cls for cls in get_descriptors_in_module(descriptors)}
         descs[ConstDescriptor.__name__] = ConstDescriptor
         self._all_descriptors = descs
 

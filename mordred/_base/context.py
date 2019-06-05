@@ -56,7 +56,9 @@ class Context(object):
 
     @classmethod
     def from_calculator(cls, calc, mol, id):
-        return cls.from_query(mol, calc._require_3D, calc._explicit_hydrogens, calc._kekulizes, id)
+        return cls.from_query(
+            mol, calc._require_3D, calc._explicit_hydrogens, calc._kekulizes, id
+        )
 
     def get_coord(self, desc):
         try:

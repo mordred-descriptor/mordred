@@ -12,14 +12,21 @@ from .surface_area import SurfaceArea
 from ._atomic_property import AtomicProperty, vdw_radii
 
 __all__ = (
-    "PNSA", "PPSA",
+    "PNSA",
+    "PPSA",
     "DPSA",
-    "FNSA", "FPSA",
-    "WNSA", "WPSA",
-    "RNCG", "RPCG",
-    "RNCS", "RPCS",
-    "TASA", "TPSA",
-    "RASA", "RPSA",
+    "FNSA",
+    "FPSA",
+    "WNSA",
+    "WPSA",
+    "RNCG",
+    "RPCG",
+    "RNCS",
+    "RPCS",
+    "TASA",
+    "TPSA",
+    "RASA",
+    "RPSA",
 )
 
 
@@ -70,7 +77,9 @@ class AtomicSurfaceArea(CPSABase):
         self._level = level
 
     def calculate(self):
-        rs = atoms_to_numpy(lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, self.mol)
+        rs = atoms_to_numpy(
+            lambda a: vdw_radii[a.GetAtomicNum()] + self._solvent_radius, self.mol
+        )
 
         with self.rethrow_zerodiv():
             sa = SurfaceArea(rs, self.coord, self._level)
@@ -123,10 +132,7 @@ class PNSA(VersionCPSABase):
         return "partial negative surface area (version {})".format(self._version)
 
     def dependencies(self):
-        return {
-            "SA": AtomicSurfaceArea(),
-            "charges": AtomicCharge(),
-        }
+        return {"SA": AtomicSurfaceArea(), "charges": AtomicCharge()}
 
     @staticmethod
     def _mask(charges):
@@ -179,13 +185,12 @@ class DPSA(VersionCPSABase):
     __slots__ = ()
 
     def description(self):
-        return "difference in charged partial surface area (version {})".format(self._version)
+        return "difference in charged partial surface area (version {})".format(
+            self._version
+        )
 
     def dependencies(self):
-        return {
-            "PNSA": PNSA(self._version),
-            "PPSA": PPSA(self._version),
-        }
+        return {"PNSA": PNSA(self._version), "PPSA": PPSA(self._version)}
 
     def calculate(self, PPSA, PNSA):
         return PPSA - PNSA
@@ -202,16 +207,15 @@ class FNSA(VersionCPSABase):
     __slots__ = ()
 
     def description(self):
-        return "fractional charged partial negative surface area (version {})".format(self._version)  # noqa: E501
+        return "fractional charged partial negative surface area (version {})".format(
+            self._version
+        )  # noqa: E501
 
     def _SA(self):
         return PNSA(self._version)
 
     def dependencies(self):
-        return {
-            "ASA": AtomicSurfaceArea(),
-            "SA": self._SA(),
-        }
+        return {"ASA": AtomicSurfaceArea(), "SA": self._SA()}
 
     def calculate(self, SA, ASA):
         return SA / np.sum(ASA)
@@ -228,7 +232,9 @@ class FPSA(FNSA):
     __slots__ = ()
 
     def description(self):
-        return "fractional charged partial positive surface area (version {})".format(self._version)  # noqa: E501
+        return "fractional charged partial positive surface area (version {})".format(
+            self._version
+        )  # noqa: E501
 
     def _SA(self):
         return PPSA(self._version)
@@ -245,7 +251,9 @@ class WNSA(FNSA):
     __slots__ = ()
 
     def description(self):
-        return "surface weighted charged partial negative surface area (version {})".format(self._version)  # noqa: E501
+        return "surface weighted charged partial negative surface area (version {})".format(
+            self._version
+        )  # noqa: E501
 
     def calculate(self, SA, ASA):
         return SA * np.sum(ASA) / 1000.0
@@ -262,7 +270,9 @@ class WPSA(FPSA):
     __slots__ = ()
 
     def description(self):
-        return "surface weighted charged partial positive surface area (version {})".format(self._version)  # noqa: E501
+        return "surface weighted charged partial positive surface area (version {})".format(
+            self._version
+        )  # noqa: E501
 
     def calculate(self, SA, ASA):
         return SA * np.sum(ASA) / 1000.0
@@ -320,11 +330,7 @@ class RNCS(CPSABase):
         return "relative negative charge surface area"
 
     def dependencies(self):
-        return {
-            "RCG": self._RCG,
-            "SA": AtomicSurfaceArea(),
-            "charges": AtomicCharge(),
-        }
+        return {"RCG": self._RCG, "SA": AtomicSurfaceArea(), "charges": AtomicCharge()}
 
     @staticmethod
     def _mask(charges):
@@ -373,10 +379,7 @@ class TASA(CPSABase):
         return np.abs(charges) < 0.2
 
     def dependencies(self):
-        return {
-            "SA": AtomicSurfaceArea(),
-            "charges": AtomicCharge(),
-        }
+        return {"SA": AtomicSurfaceArea(), "charges": AtomicCharge()}
 
     def calculate(self, SA, charges):
         return np.sum(SA[self._mask(charges)])
@@ -407,10 +410,7 @@ class RASA(CPSABase):
         return "relative hydrophobic surface area"
 
     def dependencies(self):
-        return {
-            "SASA": AtomicSurfaceArea(),
-            "TxSA": self._TxSA,
-        }
+        return {"SASA": AtomicSurfaceArea(), "TxSA": self._TxSA}
 
     def calculate(self, TxSA, SASA):
         return TxSA / np.sum(SASA)

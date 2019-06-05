@@ -10,9 +10,7 @@ from rdkit import Chem
 from ._base import Descriptor
 from .Weight import Weight
 
-__all__ = (
-    "LogS",
-)
+__all__ = ("LogS",)
 
 
 _smarts_logs = {
@@ -31,13 +29,12 @@ _smarts_logs = {
     "F": -0.21728,
     "Cl": -0.49721,
     "Br": -0.57982,
-    "I": -0.51547
+    "I": -0.51547,
 }
 
 
 _smarts_logs_molecules = [
-    (Chem.MolFromSmarts(smarts), log)
-    for smarts, log in _smarts_logs.items()
+    (Chem.MolFromSmarts(smarts), log) for smarts, log in _smarts_logs.items()
 ]
 
 
@@ -58,9 +55,7 @@ class LogS(Descriptor):
         yield cls()
 
     def dependencies(self):
-        return {
-            "MW": Weight(exact=False),
-        }
+        return {"MW": Weight(exact=False)}
 
     def description(self):
         return "Filter-it™ LogS"

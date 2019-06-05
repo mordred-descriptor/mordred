@@ -115,4 +115,6 @@ def test_ETA():
         actuals = {str(d): v for d, v in zip(calc.descriptors, calc(mol))}
 
         for name, desired in desireds.items():
-            yield assert_almost_equal, actuals[name], desired, 2, "{} of {}".format(name, smi)
+            yield assert_almost_equal, actuals[name], desired, 2, "{} of {}".format(
+                name, smi
+            )

@@ -7,8 +7,12 @@ from ._graph_matrix import DistanceMatrix
 
 __all__ = (
     "InformationContent",
-    "TotalIC", "StructuralIC", "BondingIC", "ComplementaryIC",
-    "ModifiedIC", "ZModifiedIC",
+    "TotalIC",
+    "StructuralIC",
+    "BondingIC",
+    "ComplementaryIC",
+    "ModifiedIC",
+    "ZModifiedIC",
 )
 
 
@@ -28,7 +32,9 @@ class BFSTree(object):
             self.bonds[s, d] = t
             self.bonds[d, s] = t
 
-        self.atoms = [(a.GetAtomicNum(), a.GetDegree(), a.GetNeighbors()) for a in mol.GetAtoms()]
+        self.atoms = [
+            (a.GetAtomicNum(), a.GetDegree(), a.GetNeighbors()) for a in mol.GetAtoms()
+        ]
 
     def reset(self, i):
         self.tree.clear()
@@ -119,8 +125,7 @@ class Ag(InformationContentBase):
         else:
             tree = BFSTree(self.mol)
             atoms = [
-                tree.get_code(i, self._order)
-                for i in range(self.mol.GetNumAtoms())
+                tree.get_code(i, self._order) for i in range(self.mol.GetNumAtoms())
             ]
 
         ad = {a: i for i, a in enumerate(atoms)}
@@ -311,5 +316,7 @@ class ZModifiedIC(InformationContent):
 
     def calculate(self, iAgs):
         ids, Ags = iAgs
-        w = Ags * np.vectorize(lambda i: self.mol.GetAtomWithIdx(int(i)).GetAtomicNum())(ids)
+        w = Ags * np.vectorize(
+            lambda i: self.mol.GetAtomWithIdx(int(i)).GetAtomicNum()
+        )(ids)
         return shannon_entropy(Ags, w)

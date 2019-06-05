@@ -7,9 +7,9 @@ from contextlib import contextmanager
 from multiprocessing import cpu_count
 from distutils.version import StrictVersion
 
-from .result import Result
 from .._util import Capture, DummyBar
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
+from .result import Result
 from .context import Context
 from .._version import __version__
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
@@ -31,8 +31,14 @@ class Calculator(object):
     """
 
     __slots__ = (
-        "_descriptors", "_name_dict", "_explicit_hydrogens", "_kekulizes", "_require_3D",
-        "_cache", "_debug", "_progress_bar",
+        "_descriptors",
+        "_name_dict",
+        "_explicit_hydrogens",
+        "_kekulizes",
+        "_require_3D",
+        "_cache",
+        "_debug",
+        "_progress_bar",
     )
 
     def __setstate__(self, dict):
@@ -79,12 +85,16 @@ class Calculator(object):
         return [d.to_json() for d in self.descriptors]
 
     def __reduce_ex__(self, version):
-        return self.__class__, (), {
-            "_descriptors": self._descriptors,
-            "_explicit_hydrogens": self._explicit_hydrogens,
-            "_kekulizes": self._kekulizes,
-            "_require_3D": self._require_3D,
-        }
+        return (
+            self.__class__,
+            (),
+            {
+                "_descriptors": self._descriptors,
+                "_explicit_hydrogens": self._explicit_hydrogens,
+                "_kekulizes": self._kekulizes,
+                "_require_3D": self._require_3D,
+            },
+        )
 
     def __getitem__(self, key):
         return self._name_dict[key]
@@ -266,8 +276,7 @@ class Calculator(object):
         :returns: iterator of descriptor and value
         """
         return self._wrap_result(
-            mol,
-            self._calculate(Context.from_calculator(self, mol, id)),
+            mol, self._calculate(Context.from_calculator(self, mol, id))
         )
 
     def _wrap_result(self, mol, r):
@@ -277,7 +286,9 @@ class Calculator(object):
         with self._progress(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
-                    r = self._wrap_result(m, self._calculate(Context.from_calculator(self, m, id)))
+                    r = self._wrap_result(
+                        m, self._calculate(Context.from_calculator(self, m, id))
+                    )
 
                 for e in capture.result:
                     e = e.rstrip()
@@ -291,11 +302,7 @@ class Calculator(object):
 
     @contextmanager
     def _progress(self, quiet, total, ipynb):
-        args = {
-            "dynamic_ncols": True,
-            "leave": True,
-            "total": total,
-        }
+        args = {"dynamic_ncols": True, "leave": True, "total": total}
 
         if quiet:
             Bar = DummyBar
@@ -359,7 +366,9 @@ class Calculator(object):
         if nproc == 1:
             return self._serial(mols, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
         else:
-            return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
+            return self._parallel(
+                mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id
+            )
 
     def pandas(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""Calculate descriptors over mols.
@@ -405,16 +414,13 @@ def get_descriptors_from_module(mdl, submodule=False):
             for fn in all_functions
             if is_descriptor_class(fn) or isinstance(fn, ModuleType)
             for d in (
-                [fn] if is_descriptor_class(fn)
+                [fn]
+                if is_descriptor_class(fn)
                 else get_descriptors_from_module(fn, submodule=True)
             )
         ]
     else:
-        descs = [
-            fn
-            for fn in all_functions
-            if is_descriptor_class(fn)
-        ]
+        descs = [fn for fn in all_functions if is_descriptor_class(fn)]
 
     return descs
 

@@ -1,8 +1,6 @@
 from ._base import Descriptor
 
-__all__ = (
-    "AromaticAtomsCount", "AromaticBondsCount",
-)
+__all__ = ("AromaticAtomsCount", "AromaticBondsCount")
 
 
 class AromaticBase(Descriptor):
@@ -32,11 +30,7 @@ class AromaticAtomsCount(AromaticBase):
         return "aromatic atoms count"
 
     def calculate(self):
-        return sum(
-            1
-            for a in self.mol.GetAtoms()
-            if a.GetIsAromatic()
-        )
+        return sum(1 for a in self.mol.GetAtoms() if a.GetIsAromatic())
 
 
 class AromaticBondsCount(AromaticBase):
@@ -50,8 +44,4 @@ class AromaticBondsCount(AromaticBase):
         return "aromatic bonds count"
 
     def calculate(self):
-        return sum(
-            1
-            for b in self.mol.GetBonds()
-            if b.GetIsAromatic()
-        )
+        return sum(1 for b in self.mol.GetBonds() if b.GetIsAromatic())

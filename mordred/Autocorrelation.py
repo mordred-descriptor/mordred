@@ -13,14 +13,13 @@ class AutocorrelationBase(Descriptor):
 
     def __str__(self):
         return "{}{}{}".format(
-            self.__class__.__name__,
-            self._order,
-            self._avec.as_argument,
+            self.__class__.__name__, self._order, self._avec.as_argument
         )
 
     def description(self):
         return "{} of lag {} weighted by {}".format(
-            self._description_name, self._order, self._avec.get_long())
+            self._description_name, self._order, self._avec.get_long()
+        )
 
     def parameters(self):
         return self._order, self._prop
@@ -311,11 +310,7 @@ class MATS(AutocorrelationBase):
         )
 
     def dependencies(self):
-        return {
-            "AATSC": self._AATSC,
-            "avec": self._avec,
-            "cavec": self._cavec,
-        }
+        return {"AATSC": self._AATSC, "avec": self._avec, "cavec": self._cavec}
 
     def calculate(self, avec, AATSC, cavec):
         with self.rethrow_zerodiv():

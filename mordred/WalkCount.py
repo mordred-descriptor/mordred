@@ -54,27 +54,14 @@ class WalkCount(Descriptor):
     def dependencies(self):
         if self._total:
             d = {}
-            d["W"] = self.__class__(
-                self._order,
-                False,
-                self._self_returning,
-            )
+            d["W"] = self.__class__(self._order, False, self._self_returning)
 
             if self._order > 1:
-                d["T"] = self.__class__(
-                    self._order - 1,
-                    True,
-                    self._self_returning,
-                )
+                d["T"] = self.__class__(self._order - 1, True, self._self_returning)
 
             return d
 
-        return {
-            "An": AdjacencyMatrix(
-                self.explicit_hydrogens,
-                order=self._order,
-            ),
-        }
+        return {"An": AdjacencyMatrix(self.explicit_hydrogens, order=self._order)}
 
     def calculate(self, An=None, T=None, W=None):
         if self._total:
