@@ -10,11 +10,18 @@ from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 from ._base import Descriptor
 from ._util import atoms_to_numpy
 
+
 halogen = {9, 17, 35, 53, 85, 117}
 
 
 getter_list = []
-getters = {}
+
+if six.PY2:
+    from collections import OrderedDict
+
+    getters = OrderedDict()
+else:
+    getters = {}
 
 
 def getter(short, **attrs):
