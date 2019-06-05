@@ -66,7 +66,7 @@ class Context(object):
             calc._explicit_hydrogens,
             calc._kekulizes,
             id,
-            calc.config,
+            calc._config,
         )
 
     def get_coord(self, desc):
