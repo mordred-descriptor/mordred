@@ -186,6 +186,10 @@ class Descriptor(six.with_metaclass(DescriptorMeta, object)):
         return self._context.get_mol(self)
 
     @property
+    def config(self):
+        return self._context.config
+
+    @property
     def coord(self):
         """Get 3D coordinate.
 
