@@ -39,7 +39,7 @@ class Calculator(object):
         "_cache",
         "_debug",
         "_progress_bar",
-        "config",
+        "_config",
     )
 
     def __setstate__(self, dict):
@@ -94,7 +94,7 @@ class Calculator(object):
                 "_explicit_hydrogens": self._explicit_hydrogens,
                 "_kekulizes": self._kekulizes,
                 "_require_3D": self._require_3D,
-                "config": self.config,
+                "_config": self._config,
             },
         )
 
@@ -115,9 +115,13 @@ class Calculator(object):
         self._kekulizes = set()
         self._require_3D = False
         self._debug = False
-        self.config = config
+        self._config = config
 
         self.register(descs, version=version, ignore_3D=ignore_3D)
+
+    def config(self, **configs):
+        r"Set global configuration."
+        self._config.update(configs)
 
     @property
     def descriptors(self):
