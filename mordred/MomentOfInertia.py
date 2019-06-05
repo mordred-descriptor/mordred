@@ -27,14 +27,12 @@ class PrincipalAxis(MomentOfInertiaBase):
         ws, ps = self._numpy()
 
         i = np.sum(
-            -ws[:, np.newaxis, np.newaxis] *
-            (ps[:, np.newaxis] * ps[:, :, np.newaxis]),
+            -ws[:, np.newaxis, np.newaxis] * (ps[:, np.newaxis] * ps[:, :, np.newaxis]),
             axis=0,
         )
 
         diag = np.sum(
-            ws[:, np.newaxis] *
-            (np.sum(ps ** 2, axis=1)[:, np.newaxis] - ps ** 2),
+            ws[:, np.newaxis] * (np.sum(ps ** 2, axis=1)[:, np.newaxis] - ps ** 2),
             axis=0,
         )
 

@@ -1,19 +1,24 @@
 from __future__ import print_function
 
 import sys
+import warnings
 from types import ModuleType
 from contextlib import contextmanager
 from multiprocessing import cpu_count
 from distutils.version import StrictVersion
 
-from tqdm import tqdm
-
-from .._util import Capture, DummyBar, NotebookWrapper
+from .._util import Capture, DummyBar
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
 from .result import Result
 from .context import Context
 from .._version import __version__
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
+
+try:
+    from tqdm import tqdm
+    from .._util import NotebookWrapper
+except ImportError:
+    tqdm = NotebookWrapper = DummyBar
 
 
 class Calculator(object):
@@ -26,8 +31,15 @@ class Calculator(object):
     """
 
     __slots__ = (
-        "_descriptors", "_name_dict", "_explicit_hydrogens", "_kekulizes", "_require_3D",
-        "_cache", "_debug", "_progress_bar",
+        "_descriptors",
+        "_name_dict",
+        "_explicit_hydrogens",
+        "_kekulizes",
+        "_require_3D",
+        "_cache",
+        "_debug",
+        "_progress_bar",
+        "_config",
     )
 
     def __setstate__(self, dict):
@@ -74,19 +86,27 @@ class Calculator(object):
         return [d.to_json() for d in self.descriptors]
 
     def __reduce_ex__(self, version):
-        return self.__class__, (), {
-            "_descriptors": self._descriptors,
-            "_explicit_hydrogens": self._explicit_hydrogens,
-            "_kekulizes": self._kekulizes,
-            "_require_3D": self._require_3D,
-        }
+        return (
+            self.__class__,
+            (),
+            {
+                "_config": self._config,
+                "_descriptors": self._descriptors,
+                "_explicit_hydrogens": self._explicit_hydrogens,
+                "_kekulizes": self._kekulizes,
+                "_require_3D": self._require_3D,
+            },
+        )
 
     def __getitem__(self, key):
         return self._name_dict[key]
 
-    def __init__(self, descs=None, version=None, ignore_3D=False):
+    def __init__(self, descs=None, version=None, ignore_3D=False, config=None):
         if descs is None:
             descs = []
+
+        if config is None:
+            config = {}
 
         self._descriptors = []
         self._name_dict = {}
@@ -95,8 +115,13 @@ class Calculator(object):
         self._kekulizes = set()
         self._require_3D = False
         self._debug = False
+        self._config = config
 
         self.register(descs, version=version, ignore_3D=ignore_3D)
+
+    def config(self, **configs):
+        r"""Set global configuration."""
+        self._config.update(configs)
 
     @property
     def descriptors(self):
@@ -182,7 +207,7 @@ class Calculator(object):
 
             elif isinstance(desc, ModuleType):
                 self._register(
-                    get_descriptors_from_module(desc, True),
+                    get_descriptors_in_module(desc),
                     version=version,
                     ignore_3D=ignore_3D,
                 )
@@ -204,22 +229,33 @@ class Calculator(object):
         cxt.add_stack(desc)
 
         if desc.require_connected and desc._context.n_frags != 1:
-            desc.fail(MultipleFragments())
+            return False, Missing(MultipleFragments(), desc._context.get_stack())
 
-        args = {
-            name: self._calculate_one(cxt, dep, False)
-            if dep is not None else None
-            for name, dep in (desc.dependencies() or {}).items()
-        }
+        args = {}
+        for name, dep in (desc.dependencies() or {}).items():
+            if dep is None:
+                args[name] = None
+            else:
+                ok, r = self._calculate_one(cxt, dep, False)
+                if ok:
+                    args[name] = r
+                else:
+                    return False, r
 
-        r = desc.calculate(**args)
+        ok = False
+        try:
+            r = desc.calculate(**args)
+            if self._debug:
+                self._check_rtype(desc, r)
+            ok = True
+        except MissingValueException as e:
+            r = Missing(e.error, desc._context.get_stack())
+        except Exception as e:
+            r = Error(e, desc._context.get_stack())
 
-        if self._debug:
-            self._check_rtype(desc, r)
+        self._cache[desc] = ok, r
 
-        self._cache[desc] = r
-
-        return r
+        return ok, r
 
     def _check_rtype(self, desc, result):
         if desc.rtype is None:
@@ -234,15 +270,8 @@ class Calculator(object):
     def _calculate(self, cxt):
         self._cache = {}
         for desc in self.descriptors:
-            try:
-                yield self._calculate_one(cxt, desc, True)
-            except MissingValueException as e:
-                yield Missing(e.error, desc._context.get_stack())
-            except Exception as e:
-                yield Error(e, desc._context.get_stack())
-            finally:
-                if hasattr(desc, "_context"):
-                    del desc._context
+            _, r = self._calculate_one(cxt, desc, True)
+            yield r
 
     def __call__(self, mol, id=-1):
         r"""Calculate descriptors.
@@ -257,8 +286,7 @@ class Calculator(object):
         :returns: iterator of descriptor and value
         """
         return self._wrap_result(
-            mol,
-            self._calculate(Context.from_calculator(self, mol, id)),
+            mol, self._calculate(Context.from_calculator(self, mol, id))
         )
 
     def _wrap_result(self, mol, r):
@@ -268,7 +296,9 @@ class Calculator(object):
         with self._progress(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
-                    r = self._wrap_result(m, self._calculate(Context.from_calculator(self, m, id)))
+                    r = self._wrap_result(
+                        m, self._calculate(Context.from_calculator(self, m, id))
+                    )
 
                 for e in capture.result:
                     e = e.rstrip()
@@ -282,11 +312,7 @@ class Calculator(object):
 
     @contextmanager
     def _progress(self, quiet, total, ipynb):
-        args = {
-            "dynamic_ncols": True,
-            "leave": True,
-            "total": total,
-        }
+        args = {"dynamic_ncols": True, "leave": True, "total": total}
 
         if quiet:
             Bar = DummyBar
@@ -350,7 +376,9 @@ class Calculator(object):
         if nproc == 1:
             return self._serial(mols, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
         else:
-            return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
+            return self._parallel(
+                mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id
+            )
 
     def pandas(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""Calculate descriptors over mols.
@@ -374,7 +402,7 @@ class Calculator(object):
 
 
 def get_descriptors_from_module(mdl, submodule=False):
-    r"""Get descriptors from module.
+    r"""[DEPRECATED] Get descriptors from module.
 
     Parameters:
         mdl(module): module to search
@@ -383,6 +411,7 @@ def get_descriptors_from_module(mdl, submodule=False):
         [Descriptor]
 
     """
+    warnings.warn("use get_descriptors_in_module", DeprecationWarning)
     __all__ = getattr(mdl, "__all__", None)
     if __all__ is None:
         __all__ = dir(mdl)
@@ -395,15 +424,43 @@ def get_descriptors_from_module(mdl, submodule=False):
             for fn in all_functions
             if is_descriptor_class(fn) or isinstance(fn, ModuleType)
             for d in (
-                [fn] if is_descriptor_class(fn)
+                [fn]
+                if is_descriptor_class(fn)
                 else get_descriptors_from_module(fn, submodule=True)
             )
         ]
     else:
-        descs = [
-            fn
-            for fn in all_functions
-            if is_descriptor_class(fn)
-        ]
+        descs = [fn for fn in all_functions if is_descriptor_class(fn)]
 
     return descs
+
+
+def get_descriptors_in_module(mdl, submodule=True):
+    r"""Get descriptors in module.
+
+    Parameters:
+        mdl(module): module to search
+        submodule(bool): search recursively
+
+    Returns:
+        Iterator[Descriptor]
+
+    """
+    __all__ = getattr(mdl, "__all__", None)
+    if __all__ is None:
+        __all__ = dir(mdl)
+
+    all_values = (getattr(mdl, name) for name in __all__ if name[:1] != "_")
+
+    if submodule:
+        for v in all_values:
+            if is_descriptor_class(v):
+                yield v
+            if isinstance(v, ModuleType):
+                for v in get_descriptors_in_module(v, submodule=True):
+                    yield v
+
+    else:
+        for v in all_values:
+            if is_descriptor_class(v):
+                yield v

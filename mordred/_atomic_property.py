@@ -10,11 +10,18 @@ from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
 from ._base import Descriptor
 from ._util import atoms_to_numpy
 
+
 halogen = {9, 17, 35, 53, 85, 117}
 
 
 getter_list = []
-getters = {}
+
+if six.PY2:
+    from collections import OrderedDict
+
+    getters = OrderedDict()
+else:
+    getters = {}
 
 
 def getter(short, **attrs):
@@ -37,18 +44,16 @@ def getter(short, **attrs):
 @getter(short="c", long="gasteiger charge", gasteiger_charges=True)
 def get_gasteiger_charge(atom):
     return (
-        atom.GetDoubleProp("_GasteigerCharge") +
-        atom.GetDoubleProp("_GasteigerHCharge") if atom.HasProp("_GasteigerHCharge") else 0.0
+        atom.GetDoubleProp("_GasteigerCharge") + atom.GetDoubleProp("_GasteigerHCharge")
+        if atom.HasProp("_GasteigerHCharge")
+        else 0.0
     )
 
 
 class PeriodicTable(object):
     __slots__ = ("data",)
 
-    _datadir = os.path.join(
-        os.path.dirname(__file__),
-        "data",
-    )
+    _datadir = os.path.join(os.path.dirname(__file__), "data")
 
     def __init__(self, data=None):
         self.data = data
@@ -68,9 +73,7 @@ class PeriodicTable(object):
 
         with open(os.path.join(cls._datadir, name)) as file:
             self.data = [
-                v
-                for v in (read(l.split("#")[0]) for l in file)
-                if v is not None
+                v for v in (read(l.split("#")[0]) for l in file) if v is not None
             ]
 
         return self
@@ -92,7 +95,7 @@ class PeriodicTable(object):
 
 mass = PeriodicTable.load("mass.txt")
 vdw_radii = PeriodicTable.load("van_der_waals_radii.txt")
-vdw_volume = vdw_radii.map(lambda r: 4. / 3. * np.pi * r ** 3)
+vdw_volume = vdw_radii.map(lambda r: 4.0 / 3.0 * np.pi * r ** 3)
 sanderson = PeriodicTable.load("sanderson_electron_negativity.txt")
 pauling = PeriodicTable.load("pauling_electron_negativity.txt")
 allred_rocow = PeriodicTable.load("allred_rocow_electron_negativity.txt")
@@ -100,10 +103,13 @@ polarizability94 = PeriodicTable.load("polarizalibity94.txt")
 polarizability78 = PeriodicTable.load("polarizalibity78.txt")
 ionization_potentials = PeriodicTable.load("ionization_potential.txt")
 period = PeriodicTable(
-    ([1] * 2) +
-    ([2] * 8) + ([3] * 8) +
-    ([4] * 18) + ([5] * 18) +
-    ([6] * 32) + ([7] * 32),
+    ([1] * 2)
+    + ([2] * 8)
+    + ([3] * 8)
+    + ([4] * 18)
+    + ([5] * 18)
+    + ([6] * 32)
+    + ([7] * 32)
 )
 
 mc_gowan_volume = PeriodicTable.load("mc_gowan_volume.txt")
@@ -112,16 +118,22 @@ mc_gowan_volume = PeriodicTable.load("mc_gowan_volume.txt")
 _table = Chem.GetPeriodicTable()
 
 
-GetElementSymbol = _table.GetElementSymbol
+def GetElementSymbol(i):
+    return _table.GetElementSymbol(i)
 
 
 if six.PY2:
+
     def GetAtomicNumber(symbol):
         if isinstance(symbol, unicode):  # noqa: F821
             symbol = str(symbol)
         return _table.GetAtomicNumber(symbol)
+
+
 else:
-    GetAtomicNumber = _table.GetAtomicNumber
+
+    def GetAtomicNumber(symbol):
+        return _table.GetAtomicNumber(symbol)
 
 
 # http://dx.doi.org/10.1002%2Fjps.2600721016
@@ -141,8 +153,7 @@ def get_valence_electrons(atom):
 
 @getter(short="d", long="sigma electrons", valence=True)
 def get_sigma_electrons(atom):
-    return sum(1 for a in atom.GetNeighbors()
-               if a.GetAtomicNum() != 1)
+    return sum(1 for a in atom.GetNeighbors() if a.GetAtomicNum() != 1)
 
 
 # http://www.edusoft-lc.com/molconn/manuals/400/chaptwo.html
@@ -156,7 +167,7 @@ def get_intrinsic_state(atom):
     if d == 0:
         return np.nan
 
-    return ((2. / period[i]) ** 2 * dv + 1) / d
+    return ((2.0 / period[i]) ** 2 * dv + 1) / d
 
 
 def get_core_count(atom):
@@ -208,9 +219,11 @@ def get_eta_nonsigma_contribute(bond):
 
 
 def get_eta_beta_delta(atom):
-    if atom.GetIsAromatic() or\
-            atom.IsInRing() or\
-            _table.GetNOuterElecs(atom.GetAtomicNum()) - atom.GetTotalValence() <= 0:
+    if (
+        atom.GetIsAromatic()
+        or atom.IsInRing()
+        or _table.GetNOuterElecs(atom.GetAtomicNum()) - atom.GetTotalValence() <= 0
+    ):
         return 0.0
 
     for b in atom.GetNeighbors():
@@ -237,7 +250,11 @@ def get_eta_beta_non_sigma(atom):
 
 
 def get_eta_gamma(atom):
-    beta = get_eta_beta_sigma(atom) + get_eta_beta_non_sigma(atom) + get_eta_beta_delta(atom)
+    beta = (
+        get_eta_beta_sigma(atom)
+        + get_eta_beta_non_sigma(atom)
+        + get_eta_beta_delta(atom)
+    )
     if beta == 0:
         return np.nan
 
@@ -347,7 +364,9 @@ class AtomicProperty(Descriptor):
         nans = np.isnan(r)
         if np.any(nans):
             atms = set(np.array([a.GetSymbol() for a in self.mol.GetAtoms()])[nans])
-            self.fail(ValueError("missing {} for {}".format(self.get_long(), list(atms))))
+            self.fail(
+                ValueError("missing {} for {}".format(self.get_long(), list(atms)))
+            )
 
         return r
 

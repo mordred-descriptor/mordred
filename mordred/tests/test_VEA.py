@@ -48,7 +48,9 @@ CC(C)(C)CCCC       2.54201    0.70981    2.78428  0:0.88085  3:23.97131    22.25
 CC(C)(C)C(C)CC     2.58279    0.72573    2.7838     0.80067    19.83745  3:23.03447
 CC(C)(C)CC(C)C     2.61183    0.73691    2.78783    0.80212  4:19.55118  3:22.60561
 CC(C)(C)C(C)(C)C   2.6026     0.73337    2.7892     0.80261  4:17.88167  3:23.56702
-""".strip().split("\n")
+""".strip().split(
+    "\n"
+)
 
 
 def parse_reference(a):
@@ -81,6 +83,9 @@ def test_VEA():
             assert not is_missing(actual), actual
 
             yield (
-                assert_almost_equal, actual, desired,
-                decimal, "{} of {}".format(desc, smi),
+                assert_almost_equal,
+                actual,
+                desired,
+                decimal,
+                "{} of {}".format(desc, smi),
             )

@@ -4,7 +4,6 @@ import os
 import sys
 
 import numpy as np
-from tqdm import tqdm_notebook
 
 
 def parse_enum(enum, v):
@@ -15,16 +14,11 @@ def parse_enum(enum, v):
 
 
 def atoms_to_numpy(f, mol, dtype="float"):
-    return np.fromiter(
-        (f(a) for a in mol.GetAtoms()),
-        dtype, mol.GetNumAtoms(),
-    )
+    return np.fromiter((f(a) for a in mol.GetAtoms()), dtype, mol.GetNumAtoms())
 
 
 def conformer_to_numpy(conf):
-    return np.array(
-        [list(conf.GetAtomPosition(i)) for i in range(conf.GetNumAtoms())],
-    )
+    return np.array([list(conf.GetAtomPosition(i)) for i in range(conf.GetNumAtoms())])
 
 
 class Capture(object):
@@ -67,6 +61,8 @@ class DummyBar(object):
 
 class NotebookWrapper(object):
     def __init__(self, **kwargs):
+        from tqdm import tqdm_notebook
+
         self.bar = tqdm_notebook(**kwargs)
 
     def __enter__(self):

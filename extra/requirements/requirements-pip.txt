@@ -1,0 +1,10 @@
+flake8-quotes
+flake8-print
+flake8-black
+flake8-comprehensions
+flake8-docstrings
+flake8-sorted-keys
+flake8-regex
+flake8-string-format
+sphinx-rtd-theme
+sphinxcontrib-bibtex

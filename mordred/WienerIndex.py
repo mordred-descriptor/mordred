@@ -16,9 +16,7 @@ class WienerIndex(Descriptor):
     explicit_hydrogens = False
 
     def description(self):
-        return "Wiener {}index".format(
-            "polarity " if self._polarity else "",
-        )
+        return "Wiener {}index".format("polarity " if self._polarity else "")
 
     @classmethod
     def preset(cls, version):

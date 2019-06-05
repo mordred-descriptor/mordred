@@ -17,20 +17,16 @@ class Result(object):
         self._name_to_value = None
 
     def __str__(self):
-        buf = ["Result({"]
-        for k, v in zip(self._descriptors, self._values):
-            buf.append("'{}': {}".format(k, v))
-            buf.append(", ")
-        buf.pop()
-        buf.append("})")
-        return "".join(buf)
+        return "{}({{{}}})".format(
+            self.__class__.__name__,
+            ", ".join(
+                "'{}': {}".format(k, v) for k, v in zip(self._descriptors, self._values)
+            ),
+        )
 
     def __repr__(self):
         return "{}({!r},{!r},{!r})".format(
-            self.mol,
-            self.__class__.__name__,
-            self._values,
-            self._descriptors,
+            self.__class__.__name__, self.mol, self._values, self._descriptors
         )
 
     def fill_missing(self, value=np.nan):
@@ -112,10 +108,7 @@ class Result(object):
         if rawkey:
             return dict(self.items())
         else:
-            return {
-                str(k): v
-                for k, v in self.items()
-            }
+            return {str(k): v for k, v in self.items()}
 
     @property
     def ix(self):
@@ -141,7 +134,9 @@ class Result(object):
 
         """
         if self._name_to_value is None:
-            self._name_to_value = {str(d): v for d, v in zip(self._descriptors, self._values)}
+            self._name_to_value = {
+                str(d): v for d, v in zip(self._descriptors, self._values)
+            }
 
         return GetValueByName(self._name_to_value)
 
@@ -156,7 +151,8 @@ class Result(object):
             raise TypeError(
                 "Result indices must be "
                 "integers, slices, strings or Descriptor instance, "
-                "not {}".format(key.__class__.__name__))
+                "not {}".format(key.__class__.__name__)
+            )
 
     def __len__(self):
         return len(self._descriptors)

@@ -19,7 +19,7 @@ class DistanceMatrix(Descriptor):
 
     def calculate(self):
         return Chem.GetDistanceMatrix(
-            self.mol, useBO=self.useBO, useAtomWts=self.useAtomWts, force=True,
+            self.mol, useBO=self.useBO, useAtomWts=self.useAtomWts, force=True
         )
 
 
@@ -28,11 +28,7 @@ class Eccentricity(DistanceMatrix):
 
     def dependencies(self):
         return {
-            "D": DistanceMatrix(
-                self.explicit_hydrogens,
-                self.useBO,
-                self.useAtomWts,
-            ),
+            "D": DistanceMatrix(self.explicit_hydrogens, self.useBO, self.useAtomWts)
         }
 
     def calculate(self, D):
@@ -43,13 +39,7 @@ class Radius(Eccentricity):
     __slots__ = ()
 
     def dependencies(self):
-        return {
-            "E": Eccentricity(
-                self.explicit_hydrogens,
-                self.useBO,
-                self.useAtomWts,
-            ),
-        }
+        return {"E": Eccentricity(self.explicit_hydrogens, self.useBO, self.useAtomWts)}
 
     def calculate(self, E):
         return E.min()
@@ -78,15 +68,9 @@ class AdjacencyMatrix(Descriptor):
     def dependencies(self):
         if self.order > 1:
             return {
-                "A1": self.__class__(
-                    self.explicit_hydrogens,
-                    self.useBO,
-                    1,
-                ),
+                "A1": self.__class__(self.explicit_hydrogens, self.useBO, 1),
                 "An": self.__class__(
-                    self.explicit_hydrogens,
-                    self.useBO,
-                    self.order - 1,
+                    self.explicit_hydrogens, self.useBO, self.order - 1
                 ),
             }
         else:
@@ -103,12 +87,7 @@ class Valence(AdjacencyMatrix):
     __slots__ = ()
 
     def dependencies(self):
-        return {
-            "D": AdjacencyMatrix(
-                self.explicit_hydrogens,
-                self.useBO,
-            ),
-        }
+        return {"D": AdjacencyMatrix(self.explicit_hydrogens, self.useBO)}
 
     def calculate(self, D):
         return D.sum(axis=0)
@@ -134,12 +113,7 @@ class Eccentricity3D(DistanceMatrix3D):
     __slots__ = ()
 
     def dependencies(self):
-        return {
-            "D": DistanceMatrix3D(
-                self.explicit_hydrogens,
-                self.useAtomWts,
-            ),
-        }
+        return {"D": DistanceMatrix3D(self.explicit_hydrogens, self.useAtomWts)}
 
     def calculate(self, D):
         return D.max(axis=0)
@@ -149,12 +123,7 @@ class Radius3D(Eccentricity3D):
     __slots__ = ()
 
     def dependencies(self):
-        return {
-            "E": Eccentricity3D(
-                self.explicit_hydrogens,
-                self.useAtomWts,
-            ),
-        }
+        return {"E": Eccentricity3D(self.explicit_hydrogens, self.useAtomWts)}
 
     def calculate(self, E):
         return E.min()

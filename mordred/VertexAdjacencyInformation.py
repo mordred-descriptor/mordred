@@ -38,8 +38,8 @@ class VertexAdjacencyInformation(Descriptor):
         m = sum(
             1
             for b in self.mol.GetBonds()
-            if b.GetBeginAtom().GetAtomicNum() != 1 and
-            b.GetEndAtom().GetAtomicNum() != 1
+            if b.GetBeginAtom().GetAtomicNum() != 1
+            and b.GetEndAtom().GetAtomicNum() != 1
         )
 
         with self.rethrow_zerodiv():

@@ -8,12 +8,7 @@ from ._atomic_property import GetAtomicNumber, GetElementSymbol
 __all__ = ("MolecularDistanceEdge",)
 
 
-_sp_dict = {
-    1: "primary",
-    2: "secondary",
-    3: "tertiary",
-    4: "quaternary",
-}
+_sp_dict = {1: "primary", 2: "secondary", 3: "tertiary", 4: "quaternary"}
 
 
 class MolecularDistanceEdge(Descriptor):
@@ -53,9 +48,7 @@ class MolecularDistanceEdge(Descriptor):
 
     def __str__(self):
         return "MDE{}-{}{}".format(
-            GetElementSymbol(self._atomic_num),
-            self._valence1,
-            self._valence2,
+            GetElementSymbol(self._atomic_num), self._valence1, self._valence2
         )
 
     def parameters(self):
@@ -83,16 +76,16 @@ class MolecularDistanceEdge(Descriptor):
             D[i, j]
             for i in range(N)
             for j in range(i + 1, N)
-            if (V[i] == self._valence1 and V[j] == self._valence2) or
-            (V[j] == self._valence1 and V[i] == self._valence2)
-            if self.mol.GetAtomWithIdx(i).GetAtomicNum() ==
-            self.mol.GetAtomWithIdx(j).GetAtomicNum() ==
-            self._atomic_num
+            if (V[i] == self._valence1 and V[j] == self._valence2)
+            or (V[j] == self._valence1 and V[i] == self._valence2)
+            if self.mol.GetAtomWithIdx(i).GetAtomicNum()
+            == self.mol.GetAtomWithIdx(j).GetAtomicNum()
+            == self._atomic_num
         ]
         n = len(Dv)
 
         with self.rethrow_zerodiv():
-            dx = product(Dv) ** (1. / (2. * n))
+            dx = product(Dv) ** (1.0 / (2.0 * n))
 
         return n / (dx ** 2)
 

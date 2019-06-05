@@ -1,6 +1,5 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font
-
 from gen_default_descs import DescriptorInfo, get_all_descriptors
 
 
@@ -30,8 +29,8 @@ def main(out):
             first = False
 
     for cells in ws.columns:
-        l = max(len(str(cell.value or "")) for cell in cells)
-        ws.column_dimensions[cells[0].column].width = l + 1
+        L = max(len(str(cell.value or "")) for cell in cells)
+        ws.column_dimensions[cells[0].column].width = L + 1
 
     wb.save(out)
 

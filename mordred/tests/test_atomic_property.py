@@ -31,11 +31,14 @@ _data = {
     "-I": "CI",
 }
 
-explicitHs = {key: Chem.AddHs(Chem.MolFromSmiles(smi)).GetAtomWithIdx(1)
-              for key, smi in _data.items()}
+explicitHs = {
+    key: Chem.AddHs(Chem.MolFromSmiles(smi)).GetAtomWithIdx(1)
+    for key, smi in _data.items()
+}
 
-implicitHs = {key: Chem.MolFromSmiles(smi).GetAtomWithIdx(1)
-              for key, smi in _data.items()}
+implicitHs = {
+    key: Chem.MolFromSmiles(smi).GetAtomWithIdx(1) for key, smi in _data.items()
+}
 
 
 def make_cases(results, fn, decimal=7):

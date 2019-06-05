@@ -5,9 +5,7 @@ from .BondCount import BondCount
 from .RingCount import RingCount
 from ._atomic_property import GetAtomicNumber
 
-__all__ = (
-    "VdwVolumeABC",
-)
+__all__ = ("VdwVolumeABC",)
 
 
 bondi_radii = {
@@ -28,8 +26,7 @@ bondi_radii = {
 
 
 atom_contrib = {
-    GetAtomicNumber(s): 4. / 3. * pi * r ** 3
-    for s, r in bondi_radii.items()
+    GetAtomicNumber(s): 4.0 / 3.0 * pi * r ** 3 for s, r in bondi_radii.items()
 }
 
 
@@ -70,10 +67,7 @@ class VdwVolumeABC(Descriptor):
 
     def calculate(self, Nb, NRa, NRA):
         try:
-            ac = sum(
-                atom_contrib[a.GetAtomicNum()]
-                for a in self.mol.GetAtoms()
-            )
+            ac = sum(atom_contrib[a.GetAtomicNum()] for a in self.mol.GetAtoms())
         except KeyError:
             self.fail(ValueError("unknown atom type"))
 

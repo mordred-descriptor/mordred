@@ -76,13 +76,13 @@ class MolIterator(object):
 
 def parallel(calc, mols, nproc, nmols, quiet, ipynb, id):
     with MolPool(calc, nproc) as pool, calc._progress(quiet, nmols, ipynb) as bar:
-            for mol, (r, err) in pool.map(mols, id):
-                for e in err:
-                    e = e.rstrip()
-                    if not e:
-                        continue
+        for mol, (r, err) in pool.map(mols, id):
+            for e in err:
+                e = e.rstrip()
+                if not e:
+                    continue
 
-                    bar.write(e)
+                bar.write(e)
 
-                yield calc._wrap_result(mol, r)
-                bar.update()
+            yield calc._wrap_result(mol, r)
+            bar.update()

@@ -1,14 +1,17 @@
+{% set data = load_setup_py_data(from_recipe_dir=True) %}
+
 package:
-  name: mordred
-  version: {{load_setup_py_data().version}}
+  name: {{data["name"]}}
+  version: {{data["version"]}}
 
 source:
   path: .
 
 build:
   number: 0
+  noarch: python
   script:
-    - python setup.py install
+    - python setup.py install --single-version-externally-managed --record=record.txt
 
 requirements:
   build:
@@ -18,7 +21,6 @@ requirements:
     - six
     - rdkit
     - enum34 [py27]
-    - tqdm
 
     - setuptools
     - pyyaml
@@ -39,8 +41,7 @@ test:
   requires:
     - nose
     - pyyaml
+    - coveralls
 
   commands:
-    - python -c "from mordred import all_descriptors; all_descriptors()"
-    - pip install coveralls
     - nosetests mordred --with-coverage --cover-package=mordred

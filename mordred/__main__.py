@@ -10,7 +10,7 @@ from multiprocessing import freeze_support
 from rdkit import Chem
 
 from . import Calculator, __version__, descriptors
-from ._base import get_descriptors_from_module
+from ._base import get_descriptors_in_module
 from ._util import PathType, module_prog
 from .error import Missing, MissingValueBase
 
@@ -45,10 +45,7 @@ def sdf_parser(path):
             continue
 
         if mol.GetProp("_Name") == "":
-            mol.SetProp(
-                "_Name",
-                "{}.{}".format(base, i),
-            )
+            mol.SetProp("_Name", "{}.{}".format(base, i))
 
         yield mol
 
@@ -92,28 +89,58 @@ def make_parser():
         prog=module_prog(__package__),
         epilog="descriptors: {}".format(" ".join(descriptors.__all__)),
     )
-    parser.add_argument("--version", action="version", help="input molecular file",
-                        version="{}-{}".format(__package__, __version__))
+    parser.add_argument(
+        "--version",
+        action="version",
+        help="input molecular file",
+        version="{}-{}".format(__package__, __version__),
+    )
     parser.add_argument("input", type=PathType, nargs="+", metavar="INPUT")
-    parser.add_argument("-t", "--type", action=ParserAction,
-                        help="input filetype (default: auto)")
-    parser.add_argument("-o", "--output", default="-", type=argparse.FileType("w"),
-                        help="output file path (default: stdout)")
-    parser.add_argument("-p", "--processes", default=None, type=int,
-                        help="number of processes (default: number of logical processors)")
+    parser.add_argument(
+        "-t", "--type", action=ParserAction, help="input filetype (default: auto)"
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="-",
+        type=argparse.FileType("w"),
+        help="output file path (default: stdout)",
+    )
+    parser.add_argument(
+        "-p",
+        "--processes",
+        default=None,
+        type=int,
+        help="number of processes (default: number of logical processors)",
+    )
     parser.add_argument("-q", "--quiet", action="store_true", help="hide progress bar")
     parser.add_argument("-s", "--stream", action="store_true", help="stream read")
-    parser.add_argument("-d", "--descriptor",
-                        default=[], choices=descriptors.__all__, action="append",
-                        help="descriptors to calculate (default: all)", metavar="DESC")
-    parser.add_argument("-3", "--3D", action="store_true", dest="with3D",
-                        help="use 3D descriptors (require sdf or mol file)")
-    parser.add_argument("-v", "--verbosity", action="count", default=0, help="verbosity")
+    parser.add_argument(
+        "-d",
+        "--descriptor",
+        default=[],
+        choices=descriptors.__all__,
+        action="append",
+        help="descriptors to calculate (default: all)",
+        metavar="DESC",
+    )
+    parser.add_argument(
+        "-3",
+        "--3D",
+        action="store_true",
+        dest="with3D",
+        help="use 3D descriptors (require sdf or mol file)",
+    )
+    parser.add_argument(
+        "-v", "--verbosity", action="count", default=0, help="verbosity"
+    )
 
     return parser
 
 
-def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity):
+def main_process(
+    input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity
+):
     mols = (m for i in input for m in parser(i))
 
     if output.isatty():
@@ -135,10 +162,13 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
         calc.register(descriptors, ignore_3D=not with3D)
     else:
         calc.register(
-            (d
-             for m in descriptor
-             for d in get_descriptors_from_module(import_module("." + m, __package__))
-             ),
+            (
+                d
+                for m in descriptor
+                for d in get_descriptors_in_module(
+                    import_module("." + m, __package__), False
+                )
+            ),
             ignore_3D=not with3D,
         )
 
@@ -165,6 +195,9 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
             if isinstance(v, MissingValueBase):
                 return ""
 
+            if isinstance(v, bool):
+                return int(v)
+
             return str(v)
 
         for result in calc.map(mols, nproc=nproc, nmols=N, quiet=quiet):
@@ -181,9 +214,8 @@ def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D
 def write_row(file, data):
     file.write(
         ",".join(
-            str(v).replace("\"", "\"\"").replace("\n", "").replace("\r", "")
-            for v in data
-        ),
+            str(v).replace('"', '""').replace("\n", "").replace("\r", "") for v in data
+        )
     )
     file.write("\n")
 
@@ -192,9 +224,15 @@ def main(args=None):
     parser = make_parser()
     p = parser.parse_args(args)
     return main_process(
-        input=p.input, parser=p.type, output=p.output,
-        nproc=p.processes, quiet=p.quiet, stream=p.stream,
-        descriptor=p.descriptor, with3D=p.with3D, verbosity=p.verbosity,
+        input=p.input,
+        parser=p.type,
+        output=p.output,
+        nproc=p.processes,
+        quiet=p.quiet,
+        stream=p.stream,
+        descriptor=p.descriptor,
+        with3D=p.with3D,
+        verbosity=p.verbosity,
     )
 
 

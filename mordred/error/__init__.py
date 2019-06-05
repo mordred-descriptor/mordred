@@ -1,8 +1,9 @@
 """Error objects."""
 
-import numpy as np
-import six
 from abc import ABCMeta, abstractproperty
+
+import six
+import numpy as np
 
 
 class MissingValueBase(six.with_metaclass(ABCMeta, object)):
@@ -93,3 +94,12 @@ class DuplicatedDescriptorName(MordredException):
 
     def __str__(self):
         return "duplicated descriptor name: {!r} and {!r}".format(self.a, self.b)
+
+
+class Timeout(MordredException):
+    """calculation timed out."""
+
+    __slots__ = ()
+
+    def __str__(self):
+        return "timed out"

@@ -1,24 +1,33 @@
+import time
+
 import numpy as np
 import networkx
 
 from . import _matrix_attributes as ma
 from ._base import Descriptor
+from .error import Timeout
 
 __all__ = ("DetourMatrix", "DetourIndex")
 
 
 class LongestSimplePath(object):
     __slots__ = (
-        "G", "N", "neighbors",
-        "start", "result", "visited", "distance",
+        "G",
+        "N",
+        "neighbors",
+        "start",
+        "result",
+        "visited",
+        "distance",
+        "timeout_at",
     )
 
-    def __init__(self, G, weight=None):
+    def __init__(self, G, weight=None, timeout_at=None):
         self.G = G
         self.N = G.number_of_nodes()
+        self.timeout_at = timeout_at
         self.neighbors = {
-            n: [(v, d.get(weight, 1.0)) for v, d in G[n].items()]
-            for n in G.nodes()
+            n: [(v, d.get(weight, 1.0)) for v, d in G[n].items()] for n in G.nodes()
         }
 
     def _start(self, s):
@@ -30,6 +39,9 @@ class LongestSimplePath(object):
         return self.result
 
     def _search(self, u):
+        if self.timeout_at < time.time():
+            raise Timeout()
+
         self.visited.add(u)
         for v, w in self.neighbors[u]:
             if v in self.visited:
@@ -42,31 +54,28 @@ class LongestSimplePath(object):
             if d > self.result[v]:
                 self.result[v] = d
 
-            if v != self.start:
-                self._search(v)
+            self._search(v)
 
             self.visited.remove(v)
             self.distance -= w
 
     def __call__(self):
-        return {(min(s, g), max(s, g)): w
-                for s in self.G.nodes()
-                for g, w in self._start(s).items()}
+        return {
+            (min(s, g), max(s, g)): w
+            for s in self.G.nodes()
+            for g, w in self._start(s).items()
+        }
 
 
 class CalcDetour(object):
-    __slots__ = ("N", "Q", "nodes", "C")
+    __slots__ = ("N", "G", "Q", "nodes", "C", "weight", "timeout")
 
-    def __init__(self, G, weight="weight"):
+    def __init__(self, G, weight="weight", timeout=None):
+        self.G = G
         self.N = G.number_of_nodes()
         self.Q = []
-        for bcc in networkx.biconnected_component_subgraphs(G, False):
-            lsp = LongestSimplePath(bcc, weight)()
-            nodes = set()
-            for a, b in lsp:
-                nodes.add(a)
-                nodes.add(b)
-            self.Q.append((nodes, lsp))
+        self.weight = weight
+        self.timeout = timeout
 
     def merge(self):
         for i in range(1, len(self.Q) + 1):
@@ -102,12 +111,21 @@ class CalcDetour(object):
             else:
                 raise ValueError("bug: unknown weight")
 
-        self.C = {(i, j): calc_weight(i, j)
-                  for i in self.nodes
-                  for j in self.nodes
-                  if i <= j}
+        self.C = {
+            (i, j): calc_weight(i, j) for i in self.nodes for j in self.nodes if i <= j
+        }
 
     def __call__(self):
+        timeout_at = None if self.timeout is None else time.time() + self.timeout
+
+        for bcc in networkx.biconnected_component_subgraphs(self.G, False):
+            lsp = LongestSimplePath(bcc, self.weight, timeout_at)()
+            nodes = set()
+            for a, b in lsp:
+                nodes.add(a)
+                nodes.add(b)
+            self.Q.append((nodes, lsp))
+
         if self.N == 1:
             return np.array([[0]])
 
@@ -142,11 +160,10 @@ class DetourMatrixCache(DetourMatrixBase):
         G = networkx.Graph()
         G.add_nodes_from(a.GetIdx() for a in self.mol.GetAtoms())
         G.add_edges_from(
-            (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
-            for b in self.mol.GetBonds()
+            (b.GetBeginAtomIdx(), b.GetEndAtomIdx()) for b in self.mol.GetBonds()
         )
 
-        return CalcDetour(G)()
+        return CalcDetour(G, timeout=self.config.get("timeout", 60))()
 
 
 class DetourMatrix(DetourMatrixBase):
@@ -178,10 +195,8 @@ class DetourMatrix(DetourMatrixBase):
     def dependencies(self):
         return {
             "result": self._type(
-                DetourMatrixCache(),
-                self.explicit_hydrogens,
-                self.kekulize,
-            ),
+                DetourMatrixCache(), self.explicit_hydrogens, self.kekulize
+            )
         }
 
     def calculate(self, result):

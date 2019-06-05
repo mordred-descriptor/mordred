@@ -47,7 +47,15 @@ class ChiType(IntEnum):
 
 
 class DFS(object):
-    __slots__ = ("mol", "visited", "vis_edges", "is_chain", "degrees", "bonds", "neighbors")
+    __slots__ = (
+        "mol",
+        "visited",
+        "vis_edges",
+        "is_chain",
+        "degrees",
+        "bonds",
+        "neighbors",
+    )
 
     def __init__(self, mol):
         self.mol = mol
@@ -57,8 +65,7 @@ class DFS(object):
         self.neighbors = defaultdict(set)
 
         self.bonds = [
-            (b.GetBeginAtomIdx(), b.GetEndAtomIdx())
-            for b in self.mol.GetBonds()
+            (b.GetBeginAtomIdx(), b.GetEndAtomIdx()) for b in self.mol.GetBonds()
         ]
 
     def reset(self, use_bonds):
@@ -193,8 +200,12 @@ class Chi(ChiBase):
             (cls(ChiType.chain, l, a) for a in cls._deltas for l in range(3, 8)),
             (cls(ChiType.cluster, l, a) for a in cls._deltas for l in range(3, 7)),
             (cls(ChiType.path_cluster, l, a) for a in cls._deltas for l in range(4, 7)),
-            (cls(ChiType.path, l, a, m)
-             for a in cls._deltas for m in [False, True] for l in range(8)),
+            (
+                cls(ChiType.path, l, a, m)
+                for a in cls._deltas
+                for m in [False, True]
+                for l in range(8)
+            ),
         )
 
     def __str__(self):

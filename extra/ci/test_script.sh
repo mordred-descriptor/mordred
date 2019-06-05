@@ -22,4 +22,3 @@ for example in `find examples -name '*.py'`; do
 done
 
 info $PYTHON setup.py flake8
-info $PYTHON setup.py isort

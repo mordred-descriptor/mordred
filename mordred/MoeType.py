@@ -3,11 +3,7 @@ from rdkit.Chem.EState import EState_VSA as RDKit_EState_VSA
 
 from ._base import Descriptor
 
-__all__ = (
-    "LabuteASA",
-    "PEOE_VSA", "SMR_VSA", "SlogP_VSA",
-    "EState_VSA", "VSA_EState",
-)
+__all__ = ("LabuteASA", "PEOE_VSA", "SMR_VSA", "SlogP_VSA", "EState_VSA", "VSA_EState")
 
 
 class LabuteASA(Descriptor):

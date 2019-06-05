@@ -3,9 +3,7 @@ from rdkit.Chem.rdMolDescriptors import CalcNumRotatableBonds
 from ._base import Descriptor
 from .BondCount import BondCount
 
-__all__ = (
-    "RotatableBondsCount", "RotatableBondsRatio",
-)
+__all__ = ("RotatableBondsCount", "RotatableBondsRatio")
 
 
 class RotatableBondsBase(Descriptor):
@@ -57,10 +55,7 @@ class RotatableBondsRatio(RotatableBondsBase):
         return "RotRatio"
 
     def dependencies(self):
-        return {
-            "nB": BondCount("heavy"),
-            "nRot": RotatableBondsCount(),
-        }
+        return {"nB": BondCount("heavy"), "nRot": RotatableBondsCount()}
 
     def calculate(self, nRot, nB):
         with self.rethrow_zerodiv():

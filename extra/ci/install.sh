@@ -3,47 +3,41 @@ set -e
 
 source ./extra/ci/common.sh
 
-# install conda
-if [[ -n "$TRAVIS_OS_NAME" ]]; then
-    if [[ "$TRAVIS_OS_NAME" == osx ]]; then
-        export OS_NAME=MacOSX
-    elif [[ "$TRAVIS_OS_NAME" == linux ]]; then
-        export OS_NAME=Linux
-    fi
-    if [[ ! -f "miniconda.sh" ]]; then
-        info wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-${OS_NAME}-x86_64.sh -O miniconda.sh
-    fi
-    rm -rf $HOME/miniconda
-    info bash miniconda.sh -b -p $HOME/miniconda
-elif [[ -n "$APPVEYOR" ]]; then
-    export OS_NAME=Windows
+EXTENSION=sh
+if [[ "$OS_NAME" == Windows ]]; then
+    EXTENSION=exe
 fi
+
+MINICONDA_INSTALLER=Miniconda3-latest-${OS_NAME}-x86_64.$EXTENSION
+
+if [[ ! -f "$MINICONDA_INSTALLER" ]]; then
+    info wget -q https://repo.continuum.io/miniconda/$MINICONDA_INSTALLER
+else
+    rm -rf $HOME/miniconda
+fi
+
+if [[ "$OS_NAME" == Windows ]]; then
+    cmd.exe /C "$MINICONDA_INSTALLER /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\\miniconda"
+else
+    info bash $MINICONDA_INSTALLER -b -p $HOME/miniconda
+fi
+
+rm $MINICONDA_INSTALLER
 
 # setup conda
 hash -r
 
 info conda config --set always_yes yes --set changeps1 no
-info conda config --add channels rdkit --add channels mordred-descriptor
+info conda config --add channels rdkit
 info conda update -y --all
 
 info conda install python=$PYTHON_VERSION
 
-# install requirements
-info pip install pipenv
+RDKIT="rdkit==$(python ./extra/ci/get-rdkit-version.py ./extra/requirements/rdkit-versions.txt $OS_NAME $PYTHON_VERSION)"
+info conda install $RDKIT --file ./extra/requirements/requirements-conda.txt
 
-pipenv lock -r > requirements.txt
-info python ./extra/ci/scrub-requirements.py requirements.txt
-
-banner "requirements.txt start"
-cat requirements.txt
-banner "requirements.txt  end "
-
-RDKIT="rdkit==$(python ./extra/ci/get-rdkit-version.py $OS_NAME $PYTHON_VERSION)"
-info conda install $RDKIT --file requirements.txt --file ./extra/ci/requirements-conda.txt
-
-pipenv lock -r --dev > requirements.txt
-banner "requirements.txt(dev) start"
-cat requirements.txt
-banner "requirements.txt(dev)  end "
-
-info pip install -r requirements.txt
+if [[ "$PYTHON_VERSION" == "2.7" ]]; then
+    mv ./extra/requirements/requirements-pip.txt ./extra/requirements/requirements-pip.txt.bak
+    grep -v flake8-black ./extra/requirements/requirements-pip.txt.bak > ./extra/requirements/requirements-pip.txt
+fi
+info pip install -r ./extra/requirements/requirements-pip.txt

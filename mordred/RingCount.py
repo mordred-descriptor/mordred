@@ -88,10 +88,7 @@ class RingCount(RingCountBase):
             a = "aliphatic "
 
         return "{}{}{}{}ring count".format(
-            o,
-            a,
-            "fused " if self._fused else "",
-            "hetero " if self._hetero else "",
+            o, a, "fused " if self._fused else "", "hetero " if self._hetero else ""
         )
 
     @classmethod
@@ -132,7 +129,9 @@ class RingCount(RingCountBase):
     def parameters(self):
         return self._order, self._greater, self._fused, self._aromatic, self._hetero
 
-    def __init__(self, order=None, greater=False, fused=False, aromatic=None, hetero=None):
+    def __init__(
+        self, order=None, greater=False, fused=False, aromatic=None, hetero=None
+    ):
         self._order = order
         self._greater = greater
         self._fused = fused
@@ -140,9 +139,7 @@ class RingCount(RingCountBase):
         self._hetero = hetero
 
     def dependencies(self):
-        return {
-            "Rs": (FusedRings if self._fused else Rings)(),
-        }
+        return {"Rs": (FusedRings if self._fused else Rings)()}
 
     def _check_order(self, R):
         if self._order is None:
@@ -177,10 +174,9 @@ class RingCount(RingCountBase):
 
     def calculate(self, Rs):
         return sum(
-            1 for R in Rs
-            if self._check_order(R) and
-            self._check_arom(R) and
-            self._check_hetero(R)
+            1
+            for R in Rs
+            if self._check_order(R) and self._check_arom(R) and self._check_hetero(R)
         )
 
     rtype = int

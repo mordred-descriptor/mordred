@@ -10,20 +10,18 @@ fi
 
 if [[ -z "$TRAVIS_TAG" && -z "$APPVEYOR_REPO_TAG_NAME" ]]; then
     LABEL=dev
-    python extra/ci/bump-beta-version.py $(cat mordred/_version.txt) > mordred/_version.txt
+    python extra/ci/bump-dev-version.py $(cat mordred/_version.txt) > mordred/_version.txt
 else
     LABEL=main
 fi
 
-info conda build . --no-test
+python extra/ci/gen_conda_build_config.py > conda_build_config.yaml
 
-OUTPUT=`conda build . --output --python $PYTHON_VERSION`
-if [[ -n "$ANACONDA_CLOUD_TOKEN" ]]; then
-    if [[ -n "$APPVEYOR" ]]; then
-        cmd /c "anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT"
-    else
-        anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT
-    fi
+if [[ -n "$ANACONDA_CLOUD_TOKEN" && -n "$ANACONDA_CLOUD" && "$TRAVIS_OS_NAME" == linux ]]; then
+    info conda build .
+
+    OUTPUT=`conda build . --output --python $PYTHON_VERSION`
+    anaconda -t $ANACONDA_CLOUD_TOKEN upload --label $LABEL --force $OUTPUT
 fi
 
 # documentation
@@ -46,6 +44,7 @@ if [[ -f ~/.ssh/id_rsa && "$TRAVIS_PULL_REQUEST" == false && -n "$DOCUMENTATION"
 
     cd gh-pages
     info git add .
-    info git commit -m "update documentation to mordred-descriptor/mordred@$TRAVIS_COMMIT"
-    info git push origin gh-pages
+    if info git commit -m "update documentation to mordred-descriptor/mordred@$TRAVIS_COMMIT"; then
+        info git push origin gh-pages
+    fi
 fi

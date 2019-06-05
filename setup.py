@@ -4,12 +4,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-install_requires = [
-    "six==1.*",
-    "numpy==1.*",
-    "networkx==2.*",
-    "tqdm==4.*",
-]
+install_requires = ["six==1.*", "numpy==1.*", "networkx==2.*"]
 
 if sys.version_info < (3, 4, 0):
     install_requires.append("enum34")
@@ -44,20 +39,13 @@ setup(
     url="https://github.com/mordred-descriptor/mordred",
     platforms=["any"],
     keywords="QSAR chemoinformatics",
-
     packages=find_packages(),
-
     package_data={
         "mordred": ["data/*.txt", "_version.txt"],
         "mordred.tests": list(get_test_data()),
     },
-
     install_requires=install_requires,
-
-    tests_require=[
-        "nose==1.*",
-        "PyYaml==3.*",
-    ],
-
+    tests_require=["nose==1.*", "PyYaml>=4.2b1"],
+    extras_require={"full": ["pandas", "tqdm"]},
     cmdclass={"test": None},
 )

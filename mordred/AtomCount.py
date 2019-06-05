@@ -5,9 +5,7 @@ from rdkit.Chem import rdMolDescriptors
 from ._base import Descriptor
 from ._atomic_property import halogen
 
-__all__ = (
-    "AtomCount",
-)
+__all__ = ("AtomCount",)
 
 _desc_conv = {
     "Atom": "all",
@@ -47,13 +45,42 @@ class AtomCount(Descriptor):
     def preset(cls, version):
         if version >= _version_add_Nhetero:
             t = [
-                "Atom", "HeavyAtom", "Spiro", "Bridgehead", "Hetero",
-                "H", "B", "C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "X",
+                "Atom",
+                "HeavyAtom",
+                "Spiro",
+                "Bridgehead",
+                "Hetero",
+                "H",
+                "B",
+                "C",
+                "N",
+                "O",
+                "S",
+                "P",
+                "F",
+                "Cl",
+                "Br",
+                "I",
+                "X",
             ]
         else:
             t = [
-                "Atom", "HeavyAtom", "Spiro", "Bridgehead",
-                "H", "B", "C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "X",
+                "Atom",
+                "HeavyAtom",
+                "Spiro",
+                "Bridgehead",
+                "H",
+                "B",
+                "C",
+                "N",
+                "O",
+                "S",
+                "P",
+                "F",
+                "Cl",
+                "Br",
+                "I",
+                "X",
             ]
 
         return map(cls, t)

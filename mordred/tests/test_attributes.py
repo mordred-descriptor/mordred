@@ -1,14 +1,13 @@
 import inspect
 
+from mordred import descriptors, get_descriptors_in_module
 from nose.tools import ok_
-
-from mordred import descriptors, get_descriptors_from_module
 from mordred._base.descriptor import is_descriptor_class
 
 
 def test_attributes():
     for mdl in descriptors.all:
-        for desc in get_descriptors_from_module(mdl):
+        for desc in get_descriptors_in_module(mdl, submodule=False):
             for cls in desc.__mro__:
                 if cls == object:
                     continue
@@ -18,7 +17,7 @@ def test_attributes():
                         ok_,
                         "__slots__" in cls.__dict__,
                         "{}({}) class don't have __slots__".format(
-                            cls.__name__, inspect.getfile(desc),
+                            cls.__name__, inspect.getfile(desc)
                         ),
                     )
 
@@ -26,6 +25,6 @@ def test_attributes():
                 ok_,
                 "since" in desc.__dict__,
                 "{}({}) class don't have since".format(
-                    desc.__name__, inspect.getfile(desc),
+                    desc.__name__, inspect.getfile(desc)
                 ),
             )

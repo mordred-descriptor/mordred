@@ -5,16 +5,20 @@ from ..error import Missing3DCoordinate
 
 
 class Context(object):
-    __slots__ = "_mols", "_coords", "n_frags", "name", "_stack"
+    __slots__ = "_mols", "_coords", "n_frags", "name", "_stack", "config"
 
-    def __init__(self, mols, coords, n_frags, name):
+    def __init__(self, mols, coords, n_frags, name, config):
         self._mols = mols
         self._coords = coords
         self.n_frags = n_frags
         self.name = name
+        self.config = config
 
     def __reduce_ex__(self, version):
-        return self.__class__, (self._mols, self._coords, self.n_frags, self.name)
+        return (
+            self.__class__,
+            (self._mols, self._coords, self.n_frags, self.name, self.config),
+        )
 
     def __str__(self):
         return self.name
@@ -22,7 +26,7 @@ class Context(object):
     __tf = {True, False}
 
     @classmethod
-    def from_query(cls, mol, require_3D, explicit_hydrogens, kekulizes, id):
+    def from_query(cls, mol, require_3D, explicit_hydrogens, kekulizes, id, config):
         if not isinstance(mol, Chem.Mol):
             raise TypeError("{!r} is not rdkit.Chem.Mol instance".format(mol))
 
@@ -31,12 +35,12 @@ class Context(object):
         if mol.HasProp("_Name"):
             name = mol.GetProp("_Name")
         else:
-            name = Chem.MolToSmiles(Chem.RemoveHs(mol))
+            name = Chem.MolToSmiles(Chem.RemoveHs(mol, updateExplicitCount=True))
 
         mols, coords = {}, {}
 
         for eh, ke in ((eh, ke) for eh in explicit_hydrogens for ke in kekulizes):
-            m = Chem.AddHs(mol) if eh else Chem.RemoveHs(mol)
+            m = Chem.AddHs(mol) if eh else Chem.RemoveHs(mol, updateExplicitCount=True)
 
             if ke:
                 Chem.Kekulize(m)
@@ -52,11 +56,18 @@ class Context(object):
             m.RemoveAllConformers()
             mols[eh, ke] = m
 
-        return cls(mols, coords, n_frags, name)
+        return cls(mols, coords, n_frags, name, config)
 
     @classmethod
     def from_calculator(cls, calc, mol, id):
-        return cls.from_query(mol, calc._require_3D, calc._explicit_hydrogens, calc._kekulizes, id)
+        return cls.from_query(
+            mol,
+            calc._require_3D,
+            calc._explicit_hydrogens,
+            calc._kekulizes,
+            id,
+            calc._config,
+        )
 
     def get_coord(self, desc):
         try:

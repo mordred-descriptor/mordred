@@ -4,8 +4,9 @@ import shutil
 import tempfile
 from contextlib import contextmanager
 
-from nose.tools import eq_
 from rdkit.Chem import AllChem as Chem
+
+from nose.tools import eq_
 
 from .. import Calculator, __version__, descriptors
 from ..__main__ import main as mordred
@@ -76,7 +77,10 @@ def test_no_args():
     eq_(stdout, "")
     in_("usage:", stderr)
     # python3 or python2
-    assert "the following arguments are required: INPUT" in stderr or "too few arguments" in stderr
+    assert (
+        "the following arguments are required: INPUT" in stderr
+        or "too few arguments" in stderr
+    )
 
 
 def test_help():
@@ -144,7 +148,9 @@ def test_sdf():
         mol.SetProp("_Name", "Benzene")
         Chem.MolToMolFile(mol, "input.sdf")
 
-        stdout, stderr, exitcode = command(mordred, "input.sdf", "-q", "-o", "output.csv")
+        stdout, stderr, exitcode = command(
+            mordred, "input.sdf", "-q", "-o", "output.csv"
+        )
 
         eq_(exitcode, 0)
         eq_(stdout, "")
@@ -161,7 +167,9 @@ def test_sdf_3D():
         mol.SetProp("_Name", "Benzene")
         Chem.MolToMolFile(mol, "input.sdf")
 
-        stdout, stderr, exitcode = command(mordred, "input.sdf", "-q", "-o", "output.csv", "-3")
+        stdout, stderr, exitcode = command(
+            mordred, "input.sdf", "-q", "-o", "output.csv", "-3"
+        )
 
         eq_(exitcode, 0)
         eq_(stdout, "")

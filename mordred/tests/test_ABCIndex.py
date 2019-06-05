@@ -9,7 +9,9 @@ CC(C)CCCCCCC   6.58 6.49
 CCC(C)CCCCCC   6.47 6.58
 CC(C)(C)CCCCCC 6.84 6.82
 CCC(C)(C)CCCCC 6.68 6.95
-"""[1:-1]
+"""[
+    1:-1
+]
 
 
 def test_ABC():

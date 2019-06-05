@@ -1,7 +1,8 @@
 import sys
-import load_path
-from mordred import Descriptor, descriptors, get_descriptors_from_module, __version__
 from distutils.version import StrictVersion
+
+import load_path
+from mordred import Descriptor, __version__, descriptors, get_descriptors_in_module
 
 load_path.nop()
 
@@ -60,7 +61,7 @@ def get_all_descriptors():
     v = StrictVersion(__version__)
     for mdl in descriptors.all:
         ds = []
-        for Desc in get_descriptors_from_module(mdl):
+        for Desc in get_descriptors_in_module(mdl, submodule=False):
             for desc in Desc.preset(v):
                 ds.append(desc)
 
@@ -81,5 +82,4 @@ def main(out):
 
 
 if __name__ == "__main__":
-    import sys
     main(sys.stdout)

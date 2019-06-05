@@ -4,10 +4,10 @@ from glob import glob
 import yaml
 import numpy as np
 from rdkit import Chem
-from nose.tools import eq_
 from numpy.testing import assert_almost_equal
 
 from mordred import Calculator, Polarizability, descriptors
+from nose.tools import eq_
 from mordred.error import MissingValueBase
 
 try:
@@ -16,10 +16,7 @@ except ImportError:
     from yaml import Loader
 
 
-data_dir = os.path.join(
-    os.path.dirname(__file__),
-    "references",
-)
+data_dir = os.path.join(os.path.dirname(__file__), "references")
 
 
 def test_by_references():
@@ -29,16 +26,19 @@ def test_by_references():
         if d.__class__ not in [Polarizability.APol, Polarizability.BPol]
     )
 
-    calc.register([
-        Polarizability.APol(True),
-        Polarizability.BPol(True),
-    ])
+    calc.register([Polarizability.APol(True), Polarizability.BPol(True)])
 
     actuals = {}
-    for mol in Chem.SDMolSupplier(os.path.join(data_dir, "structures.sdf"), removeHs=False):
-        actuals[mol.GetProp("_Name")] = {str(d): v for d, v in zip(calc.descriptors, calc(mol))}
+    for mol in Chem.SDMolSupplier(
+        os.path.join(data_dir, "structures.sdf"), removeHs=False
+    ):
+        actuals[mol.GetProp("_Name")] = {
+            str(d): v for d, v in zip(calc.descriptors, calc(mol))
+        }
 
-    for path in glob(os.path.join(data_dir, "*.yaml")) + glob(os.path.join(data_dir, "**/*.yaml")):
+    for path in glob(os.path.join(data_dir, "*.yaml")) + glob(
+        os.path.join(data_dir, "**/*.yaml")
+    ):
         for test in yaml.load(open(path), Loader=Loader):
             dnames = test["names"]
             if not isinstance(dnames, list):
@@ -53,6 +53,7 @@ def test_by_references():
             if digit is None:
                 assert_f = eq_
             else:
+
                 def assert_f(a, d, m):
                     if np.isnan(d):
                         assert isinstance(a, MissingValueBase)

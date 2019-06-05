@@ -30,15 +30,34 @@ class BondType(IntEnum):
 bond_types = (
     (BondType.any, ("", "all bonds", lambda _: True)),
     (BondType.heavy, ("O", "bonds connecting to heavy atom", lambda _: True)),
-
-    (BondType.single, ("S", "single bonds", lambda b: b.GetBondType() == Chem.BondType.SINGLE)),
-    (BondType.double, ("D", "double bonds", lambda b: b.GetBondType() == Chem.BondType.DOUBLE)),
-    (BondType.triple, ("T", "triple bonds", lambda b: b.GetBondType() == Chem.BondType.TRIPLE)),
-
-    (BondType.aromatic, ("A", "aromatic bonds", lambda b: b.GetIsAromatic() or
-                         b.GetBondType() == Chem.BondType.AROMATIC)),
-    (BondType.multiple, ("M", "multiple bonds", lambda b: b.GetIsAromatic() or
-                         b.GetBondType() != Chem.BondType.SINGLE)),
+    (
+        BondType.single,
+        ("S", "single bonds", lambda b: b.GetBondType() == Chem.BondType.SINGLE),
+    ),
+    (
+        BondType.double,
+        ("D", "double bonds", lambda b: b.GetBondType() == Chem.BondType.DOUBLE),
+    ),
+    (
+        BondType.triple,
+        ("T", "triple bonds", lambda b: b.GetBondType() == Chem.BondType.TRIPLE),
+    ),
+    (
+        BondType.aromatic,
+        (
+            "A",
+            "aromatic bonds",
+            lambda b: b.GetIsAromatic() or b.GetBondType() == Chem.BondType.AROMATIC,
+        ),
+    ),
+    (
+        BondType.multiple,
+        (
+            "M",
+            "multiple bonds",
+            lambda b: b.GetIsAromatic() or b.GetBondType() != Chem.BondType.SINGLE,
+        ),
+    ),
 )
 
 bond_type_dict = dict(bond_types)
@@ -59,7 +78,8 @@ class BondCount(Descriptor):
 
     def description(self):
         return "number of {} in {}kekulized structure".format(
-            self._bond_desc, "" if self.kekulize else "non-")
+            self._bond_desc, "" if self.kekulize else "non-"
+        )
 
     bond_types = tuple(b.name for b in BondType)
 
@@ -67,9 +87,7 @@ class BondCount(Descriptor):
     def preset(cls, version):
         return chain(
             map(lambda t: cls(t, False), BondType),
-            map(lambda t: cls(t, True), [
-                BondType.single, BondType.double,
-            ]),
+            map(lambda t: cls(t, True), [BondType.single, BondType.double]),
         )
 
     def __str__(self):
