@@ -90,11 +90,11 @@ class Calculator(object):
             self.__class__,
             (),
             {
+                "_config": self._config,
                 "_descriptors": self._descriptors,
                 "_explicit_hydrogens": self._explicit_hydrogens,
                 "_kekulizes": self._kekulizes,
                 "_require_3D": self._require_3D,
-                "_config": self._config,
             },
         )
 
@@ -120,7 +120,7 @@ class Calculator(object):
         self.register(descs, version=version, ignore_3D=ignore_3D)
 
     def config(self, **configs):
-        r"Set global configuration."
+        r"""Set global configuration."""
         self._config.update(configs)
 
     @property
