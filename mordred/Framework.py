@@ -1,9 +1,8 @@
 from __future__ import division
 
-import networkx as nx
-
 from ._base import Descriptor
 from .RingCount import Rings
+from .molecular_framework import _get_linkers
 
 __all__ = ("Framework",)
 
@@ -18,29 +17,7 @@ class FrameworkCache(Descriptor):
         return {"Rs": Rings()}
 
     def calculate(self, Rs):
-        G = nx.Graph()
-        Rd = {i: ("R", Ri) for Ri, R in enumerate(Rs) for i in R}
-        R = list(set(Rd.values()))
-        NR = len(R)
-
-        for bond in self.mol.GetBonds():
-            a = bond.GetBeginAtomIdx()
-            b = bond.GetEndAtomIdx()
-
-            a = Rd.get(a, ("A", a))
-            b = Rd.get(b, ("A", b))
-
-            G.add_edge(a, b)
-
-        linkers = set()
-        for Ri, Rj in ((i, j) for i in range(NR) for j in range(i + 1, NR)):
-            Ra, Rb = R[Ri], R[Rj]
-            try:
-                linkers.update(i for t, i in nx.shortest_path(G, Ra, Rb) if t == "A")
-            except nx.NetworkXNoPath:
-                pass
-
-        return linkers, Rs
+        return _get_linkers(self.mol, Rs), Rs
 
 
 class Framework(Descriptor):
@@ -80,9 +57,10 @@ class Framework(Descriptor):
 
     def calculate(self, F):
         linkers, rings = F
-        Nmf = len(linkers) + len({i for ring in rings for i in ring})
+        indices = {i for linker in linkers for ab in linker for i in ab}
+        indices.update(i for ring in rings for i in ring)
         N = self.mol.GetNumAtoms()
 
-        return Nmf / N
+        return len(indices) / N
 
     rtype = float
