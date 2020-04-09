@@ -4,7 +4,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-install_requires = ["six==1.*", "numpy==1.*", "networkx==2.*"]
+install_requires = ["six==1.*", "numpy==1.*", "networkx==2.1.0"]
 
 if sys.version_info < (3, 4, 0):
     install_requires.append("enum34")
