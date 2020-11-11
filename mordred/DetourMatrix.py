@@ -118,7 +118,7 @@ class CalcDetour(object):
     def __call__(self):
         timeout_at = None if self.timeout is None else time.time() + self.timeout
 
-        for bcc in networkx.biconnected_component_subgraphs(self.G, False):
+        for bcc in (self.G.subgraph(c) for c in networkx.biconnected_components(self.G)):
             lsp = LongestSimplePath(bcc, self.weight, timeout_at)()
             nodes = set()
             for a, b in lsp:
