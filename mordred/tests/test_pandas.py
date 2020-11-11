@@ -19,9 +19,9 @@ def test_copy():
 
 def test_fill_missing():
     f = df.fill_missing()
-    yield eq_, f.ix[0, 0], 1
-    yield eq_, f.ix[0, 1], 2
-    yield eq_, f.ix[1, 0], 1
-    yield ok_, np.isnan(f.ix[1, 1])
-    yield ok_, np.isnan(f.ix[2, 0])
-    yield eq_, f.ix[2, 1], 4
+    yield eq_, f.iloc[0, 0], 1
+    yield eq_, f.iloc[0, 1], 2
+    yield eq_, f.iloc[1, 0], 1
+    yield ok_, np.isnan(f.iloc[1, 1])
+    yield ok_, np.isnan(f.iloc[2, 0])
+    yield eq_, f.iloc[2, 1], 4
