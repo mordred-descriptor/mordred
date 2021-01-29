@@ -75,7 +75,7 @@ class NotebookWrapper(object):
         self.bar.update(*args, **kwargs)
 
     def write(self, *args, **kwargs):
-        self.bar.update(*args, **kwargs)
+        self.bar.write(*args, **kwargs)
 
 
 def PathType(string):
