@@ -17,7 +17,7 @@ classifiers = [
 ]
 urls = { Homepage = "https://github.com/JacksonBurns/mordred-community" }
 requires-python = ">=3.7"
-dependencies = ["six==1.*", "numpy==1.*", "networkx>=3"]
+dependencies = ["rdkit", "six==1.*", "numpy==1.*", "networkx>=3"]
 
 [project.optional-dependencies]
 full = ["pandas", "tqdm"]
