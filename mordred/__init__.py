@@ -8,10 +8,8 @@ from ._base import (
     get_descriptors_in_module,
     get_descriptors_from_module,
 )
-from ._version import __version__
 
 __all__ = (
-    "__version__",
     "Descriptor",
     "Calculator",
     "get_descriptors_from_module",
