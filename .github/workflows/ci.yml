@@ -56,15 +56,15 @@ jobs:
         uses: maybe-hello-world/pyproject-check-version@v3
         id: versioncheck
         with:
-        pyproject-path: "./pyproject.toml"
+          pyproject-path: "./pyproject.toml"
     
       - name: Report Results
         run: |
             echo "New Release found? ${{ steps.versioncheck.outputs.local_version_is_higher }}"
             echo "Local version: ${{ steps.versioncheck.outputs.local_version }}"
             echo "Public version: ${{ steps.versioncheck.outputs.public_version }}"
-        outputs:
-        do_publish: ${{ steps.versioncheck.outputs.local_version_is_higher }} 
+    outputs:
+      do_publish: ${{ steps.versioncheck.outputs.local_version_is_higher }} 
   pypi-package:
     name: Build and publish Python 🐍 distributions 📦 to PyPI
     runs-on: ubuntu-latest
