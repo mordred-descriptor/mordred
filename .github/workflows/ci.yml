@@ -130,12 +130,12 @@ jobs:
         conda build .
   ci-report-status:
     name: report CI status
-    needs: [build-and-test, pypi-package, conda-package]
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - run: |
-          result1="${{ needs.build.build-and-test }}"
-          if [[ $result1 == "success" ]] ; then
+          result="${{ needs.build-and-test.result }}"
+          if [[ $result == "success" ]] ; then
             exit 0
           else
             exit 1
