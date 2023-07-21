@@ -1,4 +1,4 @@
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 from rdkit.Chem import rdMolDescriptors
 
@@ -87,7 +87,7 @@ class AtomCount(Descriptor):
 
     @property
     def explicit_hydrogens(self):
-        u"""Require explicit_hydrogens when type is "H" or "Atom"."""
+        """Require explicit_hydrogens when type is "H" or "Atom"."""
         return self._type in {"H", "Atom"}
 
     def __str__(self):

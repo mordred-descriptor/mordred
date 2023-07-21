@@ -83,6 +83,6 @@ class MoRSE(Descriptor):
 
         np.fill_diagonal(n, 0)
 
-        return float(0.5 * A.dot(n).dot(A.T))
+        return float(0.5 * np.ravel(A.dot(n).dot(A.T))[0])
 
     rtype = float

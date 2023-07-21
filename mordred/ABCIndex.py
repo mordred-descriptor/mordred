@@ -53,7 +53,7 @@ class ABCIndex(ABCIndexBase):
         return np.sqrt((du + dv - 2.0) / (du * dv))
 
     def calculate(self):
-        return float(np.sum(self._each_bond(bond) for bond in self.mol.GetBonds()))
+        return float(sum(self._each_bond(bond) for bond in self.mol.GetBonds()))
 
 
 class ABCGGIndex(ABCIndexBase):
@@ -84,4 +84,4 @@ class ABCGGIndex(ABCIndexBase):
         return np.sqrt((nu + nv - 2.0) / (nu * nv))
 
     def calculate(self, D):
-        return float(np.sum(self._each_bond(bond, D) for bond in self.mol.GetBonds()))
+        return float(sum(self._each_bond(bond, D) for bond in self.mol.GetBonds()))

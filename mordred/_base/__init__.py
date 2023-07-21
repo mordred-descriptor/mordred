@@ -7,7 +7,6 @@ from .parallel import parallel
 from .calculator import (
     Calculator,
     get_descriptors_in_module,
-    get_descriptors_from_module,
 )
 from .descriptor import (
     Descriptor,
@@ -19,7 +18,6 @@ from .descriptor import (
 __all__ = (
     "Descriptor",
     "Calculator",
-    "get_descriptors_from_module",
     "get_descriptors_in_module",
     "is_missing",
     "Result",

@@ -98,7 +98,7 @@ def test_version():
     stdout, stderr, exitcode = command(mordred, "--version")
     assert exitcode == 0
 
-    vstr = "mordredcommunity-{}\n".format(__version__)
+    vstr = "mordred-{}\n".format(__version__)
 
     assert stdout == vstr
 
@@ -189,4 +189,4 @@ def test_verbose():
         assert r.exitcode == 0
         assert number_of_field(r.stdout) == Nd2D
         assert r.stdout.split("\n")[1].split(",")[0] == "Benzene"
-        assert "" == r.stderr
+        assert "[Missing]" in r.stderr

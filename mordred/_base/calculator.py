@@ -5,7 +5,7 @@ import warnings
 from types import ModuleType
 from contextlib import contextmanager
 from multiprocessing import cpu_count
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 from .._util import Capture, DummyBar
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
@@ -13,9 +13,9 @@ from .result import Result
 from .context import Context
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
-from importlib.metadata import version
+from importlib.metadata import version as importlib_version
 
-__version__ = version("mordredcommunity")
+__version__ = importlib_version("mordredcommunity")
 
 try:
     from tqdm import tqdm
@@ -197,6 +197,7 @@ class Calculator(object):
             version = __version__
 
         version = StrictVersion(version)
+
         return self._register(desc, version, ignore_3D)
 
     def _register(self, desc, version, ignore_3D):
@@ -402,40 +403,6 @@ class Calculator(object):
             columns=[str(d) for d in self.descriptors],
             index=index,
         )
-
-
-def get_descriptors_from_module(mdl, submodule=False):
-    r"""[DEPRECATED] Get descriptors from module.
-
-    Parameters:
-        mdl(module): module to search
-
-    Returns:
-        [Descriptor]
-
-    """
-    warnings.warn("use get_descriptors_in_module", DeprecationWarning)
-    __all__ = getattr(mdl, "__all__", None)
-    if __all__ is None:
-        __all__ = dir(mdl)
-
-    all_functions = (getattr(mdl, name) for name in __all__ if name[:1] != "_")
-
-    if submodule:
-        descs = [
-            d
-            for fn in all_functions
-            if is_descriptor_class(fn) or isinstance(fn, ModuleType)
-            for d in (
-                [fn]
-                if is_descriptor_class(fn)
-                else get_descriptors_from_module(fn, submodule=True)
-            )
-        ]
-    else:
-        descs = [fn for fn in all_functions if is_descriptor_class(fn)]
-
-    return descs
 
 
 def get_descriptors_in_module(mdl, submodule=True):
