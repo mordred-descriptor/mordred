@@ -13,7 +13,10 @@ from ..__main__ import main as mordred
 Nd2D = len(Calculator(descriptors, ignore_3D=True).descriptors)
 Nd3D = len(Calculator(descriptors, ignore_3D=False).descriptors)
 
-from importlib.metadata import version
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
 
 __version__ = version("mordredcommunity")
 

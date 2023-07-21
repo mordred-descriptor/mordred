@@ -9,7 +9,6 @@ authors = [{ name = "Jackson Burns", email = "jwburns@mit.edu" }]
 license = { text = "BSD-3-Clause" }
 description = "Community-Maintained Version of mordred"
 classifiers = [
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -17,8 +16,14 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 urls = { Homepage = "https://github.com/JacksonBurns/mordred-community" }
-requires-python = ">=3.6"
-dependencies = ["rdkit", "six", "numpy", "networkx"]
+requires-python = ">=3.7"
+dependencies = [
+    "rdkit",
+    "six",
+    "numpy",
+    "networkx",
+    "importlib-metadata ; python_version < '3.8'",
+]
 
 [project.optional-dependencies]
 full = ["pandas", "tqdm", "pyyaml"]

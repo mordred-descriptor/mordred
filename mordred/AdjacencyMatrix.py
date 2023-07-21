@@ -6,7 +6,10 @@ from ._matrix_attributes import SM1, methods, get_method
 
 __all__ = ("AdjacencyMatrix",)
 
-from importlib.metadata import version
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
 
 _version_remove_SM1_A = StrictVersion("1.1.0")
 

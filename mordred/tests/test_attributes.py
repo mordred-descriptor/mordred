@@ -18,9 +18,6 @@ def test_attributes():
                         cls.__name__, inspect.getfile(desc)
                     )
 
-            assert (
-                "since" in desc.__dict__,
-                "{}({}) class don't have since".format(
-                    desc.__name__, inspect.getfile(desc)
-                ),
+            assert "since" in desc.__dict__, "{}({}) class don't have since".format(
+                desc.__name__, inspect.getfile(desc)
             )

@@ -13,7 +13,10 @@ from .result import Result
 from .context import Context
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
-from importlib.metadata import version as importlib_version
+try:
+    from importlib.metadata import version as importlib_version
+except ImportError:
+    from importlib_metadata import version as importlib_version
 
 __version__ = importlib_version("mordredcommunity")
 

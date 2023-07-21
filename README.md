@@ -7,6 +7,8 @@ Reach out on the Issues page if you are interested in helping out!
 ## Installation
 `mordredcommunity` is currently available primarily on PyPI (conda package (_hopefully_) coming soon).
 
+It supports Python 3.7 to 3.11 on all platforms.
+
 For a basic installation, do `pip install mordredcommunity`.
 
 To add support for `pandas` and progress bars, do `pip install mordredcommunity[full]`

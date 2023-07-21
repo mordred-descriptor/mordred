@@ -1,7 +1,14 @@
 try:
-    from collections import Iterable
-except ImportError:
     from collections.abc import Iterable
+except ImportError:
+    import warnings
+
+    warnings.filterwarnings(
+        "ignore",
+        ".* ABCs from 'collections' .*",
+        DeprecationWarning,
+    )
+    from collections import Iterable
 
 import numpy as np
 
