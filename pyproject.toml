@@ -9,6 +9,8 @@ authors = [{ name = "Jackson Burns", email = "jwburns@mit.edu" }]
 license = { text = "BSD-3-Clause" }
 description = "Community-Maintained Version of mordred"
 classifiers = [
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -23,7 +25,7 @@ full = ["pandas", "tqdm", "pyyaml"]
 
 [project.readme]
 file = "README.md"
-content-type = "text/x-rst"
+content-type = "text/markdown"
 
 [tool.isort]
 profile = "black"
