@@ -17,7 +17,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 urls = { Homepage = "https://github.com/JacksonBurns/mordred-community" }
-requires-python = ">=3.8"
+requires-python = ">=3.6"
 dependencies = ["rdkit", "six", "numpy", "networkx"]
 
 [project.optional-dependencies]
