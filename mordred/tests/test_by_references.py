@@ -7,7 +7,6 @@ from rdkit import Chem
 from numpy.testing import assert_almost_equal
 
 from mordred import Calculator, Polarizability, descriptors
-from nose.tools import eq_
 from mordred.error import MissingValueBase
 
 try:
@@ -64,8 +63,7 @@ def test_by_references():
             for mname, descs in desireds:
                 for dname, desired in descs:
                     if not desired == "skip":
-                        yield (
-                            assert_f,
+                        assert_f(
                             actuals[mname][dname],
                             desired,
                             "{} of {}".format(dname, mname),

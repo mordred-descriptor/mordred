@@ -43,8 +43,8 @@ implicitHs = {
 
 def make_cases(results, fn, decimal=7):
     for key, result in results.items():
-        yield assert_almost_equal, result, fn(explicitHs[key]), decimal, key
-        yield assert_almost_equal, result, fn(implicitHs[key]), decimal, key
+        assert assert_almost_equal(result, fn(explicitHs[key]), decimal, key) is None
+        assert assert_almost_equal(result, fn(implicitHs[key]), decimal, key) is None
 
 
 def test_sigma():
@@ -75,8 +75,7 @@ def test_sigma():
         "-Br": 1,  # noqa: S001
         "-I": 1,
     }
-    for test in make_cases(results, _atomic_property.get_sigma_electrons):
-        yield test
+    make_cases(results, _atomic_property.get_sigma_electrons)
 
 
 def test_valence_sigma():
@@ -105,8 +104,7 @@ def test_valence_sigma():
         "-Br": 0.26,  # noqa: S001
         "-I": 0.16,
     }
-    for test in make_cases(results, _atomic_property.get_valence_electrons, 2):
-        yield test
+    make_cases(results, _atomic_property.get_valence_electrons, 2)
 
 
 def test_IntrinsicState():
@@ -132,5 +130,4 @@ def test_IntrinsicState():
         "-F": 8.0,  # noqa: S001
     }
 
-    for test in make_cases(results, _atomic_property.get_intrinsic_state, 3):
-        yield test
+    make_cases(results, _atomic_property.get_intrinsic_state, 3)

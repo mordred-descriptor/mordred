@@ -4,7 +4,6 @@ import operator
 import six
 from rdkit import Chem
 
-from nose.tools import eq_
 
 from .. import ABCIndex
 
@@ -31,7 +30,7 @@ def test_compose_descriptor():
     m = Chem.MolFromSmiles("c1ccccc1C")
 
     for op in binary:
-        yield eq_, op(L, r)(m), op(L(m), r(m))
+        assert op(L, r)(m) == op(L(m), r(m))
 
     for op in unary:
-        yield eq_, op(L)(m), op(L(m))
+        assert op(L)(m) == op(L(m))

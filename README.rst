@@ -1,28 +1,8 @@
-mordred
-=======
-molecular descriptor calculator.
+mordred-community
+=================
+Community maintained version of the mordred molecular descriptor calculator.
 
-.. image:: https://travis-ci.org/mordred-descriptor/mordred.svg?branch=master
-    :target: https://travis-ci.org/mordred-descriptor/mordred
-
-.. image:: https://coveralls.io/repos/github/mordred-descriptor/mordred/badge.svg?branch=master
-    :target: https://coveralls.io/github/mordred-descriptor/mordred?branch=master
-
-.. image:: https://codeclimate.com/github/mordred-descriptor/mordred/badges/gpa.svg
-   :target: https://codeclimate.com/github/mordred-descriptor/mordred
-   :alt: Code Climate
-
-.. image:: https://anaconda.org/mordred-descriptor/mordred/badges/version.svg
-    :target: https://anaconda.org/mordred-descriptor/mordred
-
-.. image:: https://img.shields.io/pypi/v/mordred.svg
-    :target: https://pypi.python.org/pypi/mordred
-
-.. image:: https://img.shields.io/badge/doi-10.1186%2Fs13321--018--0258--y-blue.svg
-   :target: https://doi.org/10.1186/s13321-018-0258-y
-
-.. image:: https://img.shields.io/badge/slack-mordred--descriptor-brightgreen.svg
-    :target: https://join.slack.com/t/mordred-descriptor/shared_invite/enQtMzc1MzkyODk1NTY5LTdlYzM4MWUzY2YwZmEwMWYzN2M4YTVkMGRlMDY0ZjU2NjQ1M2RiYzllMzVjZGE4NGZkNWZjODBjODE0YmExNjk
+Accepting Pull Requests!
 
 number of descriptors
 ---------------------

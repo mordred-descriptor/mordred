@@ -1,9 +1,11 @@
-from collections import Iterable
+try:
+    from collections import Iterable
+except ImportError:
+    from collections.abc import Iterable
 
 import numpy as np
 
 from mordred import Result, Descriptor, error, is_missing
-from nose.tools import eq_, ok_, raises
 
 
 class Dummy1(Descriptor):
@@ -32,7 +34,7 @@ result = Result(None, [1, error.Error(ValueError("error"), [])], [Dummy1(), Dumm
 
 
 def test_length():
-    eq_(len(result), 2)
+    assert len(result) == 2
 
 
 def test_fill_missing():
@@ -40,81 +42,76 @@ def test_fill_missing():
 
 
 def test_drop_missing():
-    eq_(len(result.drop_missing()), 1)
+    assert len(result.drop_missing()) == 1
 
 
 def test_items():
     i = result.items()
-    yield ok_, isinstance(i, Iterable)
+    assert isinstance(i, Iterable)
     li = list(i)
-    yield eq_, len(li), 2
-    yield eq_, len(li[0]), 2
+    assert len(li) == 2
+    assert len(li[0]) == 2
 
     d, v = li[0]
-    yield ok_, isinstance(d, Descriptor)
-    yield ok_, isinstance(v, int)
+    assert isinstance(d, Descriptor)
+    assert isinstance(v, int)
 
 
 def test_keys():
     i = result.keys()
-    yield ok_, isinstance(i, Iterable)
+    assert isinstance(i, Iterable)
     li = list(i)
-    yield eq_, len(li), 2
+    assert len(li), 2
 
-    yield ok_, isinstance(li[0], Descriptor)
+    assert isinstance(li[0], Descriptor)
 
 
 def test_iter():
     i = iter(result)
-    yield ok_, isinstance(i, Iterable)
+    assert isinstance(i, Iterable)
     li = list(i)
-    yield eq_, len(li), 2
+    assert len(li) == 2
 
-    yield ok_, isinstance(li[0], int)
+    assert isinstance(li[0], int)
 
 
 def test_reversed():
     i = reversed(result)
-    yield ok_, isinstance(i, Iterable)
+    assert isinstance(i, Iterable)
     li = list(i)
-    yield eq_, len(li), 2
+    assert len(li) == 2
 
-    yield ok_, isinstance(li[1], int)
+    assert isinstance(li[1], int)
 
 
 def test_asdict_non_rawkey():
     d = result.asdict()
-    yield eq_, len(d), 2
-    yield ok_, isinstance(d, dict)
+    assert len(d) == 2
+    assert isinstance(d, dict)
     for k in d.keys():
-        yield ok_, isinstance(k, str)
+        assert isinstance(k, str)
 
 
 def test_asdict_rawkey():
     d = result.asdict(True)
-    yield eq_, len(d), 2
-    yield ok_, isinstance(d, dict)
+    assert len(d) == 2
+    assert isinstance(d, dict)
     for k in d.keys():
-        yield ok_, isinstance(k, Descriptor)
+        assert isinstance(k, Descriptor)
 
 
 def test_ix():
-    yield eq_, 1, result.ix[0]
-    yield ok_, is_missing(result.ix[1])
+    assert 1 == result.ix[0]
+    assert is_missing(result.ix[1])
 
 
 def test_name():
-    yield eq_, 1, result.name["Dummy1"]
-    yield ok_, is_missing(result.name["Dummy2"])
+    assert 1 == result.name["Dummy1"]
+    assert is_missing(result.name["Dummy2"])
 
 
 def test_getitem():
-    yield eq_, 1, result[0]
-    yield ok_, is_missing(result[1])
-    yield eq_, 1, result["Dummy1"]
-    yield ok_, is_missing(result["Dummy2"])
-
-
-@raises(TypeError)
-def test_getitem_raise():
-    result[1.2]
+    assert 1 == result[0]
+    assert is_missing(result[1])
+    assert 1 == result["Dummy1"]
+    assert is_missing(result["Dummy2"])

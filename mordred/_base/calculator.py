@@ -11,8 +11,11 @@ from .._util import Capture, DummyBar
 from ..error import Error, Missing, MultipleFragments, DuplicatedDescriptorName
 from .result import Result
 from .context import Context
-from .._version import __version__
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
+
+from importlib.metadata import version
+
+__version__ = version("mordredcommunity")
 
 try:
     from tqdm import tqdm

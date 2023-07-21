@@ -6,13 +6,16 @@ from contextlib import contextmanager
 
 from rdkit.Chem import AllChem as Chem
 
-from nose.tools import eq_
 
-from .. import Calculator, __version__, descriptors
+from .. import Calculator, descriptors
 from ..__main__ import main as mordred
 
 Nd2D = len(Calculator(descriptors, ignore_3D=True).descriptors)
 Nd3D = len(Calculator(descriptors, ignore_3D=False).descriptors)
+
+from importlib.metadata import version
+
+__version__ = version("mordredcommunity")
 
 
 def in_(a, s):
@@ -73,8 +76,8 @@ def command(cmd, *args):
 
 def test_no_args():
     stdout, stderr, exitcode = command(mordred)
-    eq_(exitcode, 2)
-    eq_(stdout, "")
+    assert exitcode == 2
+    assert stdout == ""
     in_("usage:", stderr)
     # python3 or python2
     assert (
@@ -85,29 +88,26 @@ def test_no_args():
 
 def test_help():
     stdout, stderr, exitcode = command(mordred, "-h")
-    eq_(exitcode, 0)
-    eq_(stderr, "")
+    assert exitcode == 0
+    assert stderr == ""
     in_("usage:", stdout)
     in_("descriptors:", stdout)
 
 
 def test_version():
     stdout, stderr, exitcode = command(mordred, "--version")
-    eq_(exitcode, 0)
+    assert exitcode == 0
 
-    vstr = "mordred-{}\n".format(__version__)
+    vstr = "mordredcommunity-{}\n".format(__version__)
 
-    if stderr == "":  # python 3
-        eq_(stdout, vstr)
-    else:  # python2
-        eq_(stderr, vstr)
+    assert stdout == vstr
 
 
 def test_missing_file():
     with isolate():
         stdout, stderr, exitcode = command(mordred, "missing.smi")
-        eq_(exitcode, 2)
-        eq_(stdout, "")
+        assert exitcode == 2
+        assert stdout == ""
         in_("usage:", stderr)
         in_("invalid PathType value", stderr)
 
@@ -123,10 +123,10 @@ def test_smi():
 
         stdout, stderr, exitcode = command(mordred, "input.smi", "-q", "-o", "-")
 
-        eq_(exitcode, 0)
-        eq_(number_of_field(stdout), Nd2D)
-        eq_(stdout.split("\n")[1].split(",")[0], "Benzene")
-        eq_(stderr, "")
+        assert exitcode == 0
+        assert number_of_field(stdout) == Nd2D
+        assert stdout.split("\n")[1].split(",")[0] == "Benzene"
+        assert stderr == ""
 
 
 def test_smi_without_name():
@@ -136,10 +136,10 @@ def test_smi_without_name():
 
         stdout, stderr, exitcode = command(mordred, "input.smi", "-q", "-o", "-")
 
-        eq_(exitcode, 0)
-        eq_(number_of_field(stdout), Nd2D)
-        eq_(stdout.split("\n")[1].split(",")[0], "c1ccccc1")
-        eq_(stderr, "")
+        assert exitcode == 0
+        assert number_of_field(stdout) == Nd2D
+        assert stdout.split("\n")[1].split(",")[0] == "c1ccccc1"
+        assert stderr == ""
 
 
 def test_sdf():
@@ -152,12 +152,12 @@ def test_sdf():
             mordred, "input.sdf", "-q", "-o", "output.csv"
         )
 
-        eq_(exitcode, 0)
-        eq_(stdout, "")
-        eq_(stderr, "")
+        assert exitcode == 0
+        assert stdout == ""
+        assert stderr == ""
         output = open("output.csv").read()
-        eq_(number_of_field(output), Nd2D)
-        eq_(output.split("\n")[1].split(",")[0], "Benzene")
+        assert number_of_field(output) == Nd2D
+        assert output.split("\n")[1].split(",")[0] == "Benzene"
 
 
 def test_sdf_3D():
@@ -171,12 +171,12 @@ def test_sdf_3D():
             mordred, "input.sdf", "-q", "-o", "output.csv", "-3"
         )
 
-        eq_(exitcode, 0)
-        eq_(stdout, "")
-        eq_(stderr, "")
+        assert exitcode == 0
+        assert stdout == ""
+        assert stderr == ""
         output = open("output.csv").read()
-        eq_(number_of_field(output), Nd3D)
-        eq_(output.split("\n")[1].split(",")[0], "Benzene")
+        assert number_of_field(output) == Nd3D
+        assert output.split("\n")[1].split(",")[0] == "Benzene"
 
 
 def test_verbose():
@@ -186,7 +186,7 @@ def test_verbose():
 
         r = command(mordred, "input.smi", "-o", "-", "-q", "-vv")
 
-        eq_(r.exitcode, 0)
-        eq_(number_of_field(r.stdout), Nd2D)
-        eq_(r.stdout.split("\n")[1].split(",")[0], "Benzene")
-        in_("[Missing]", r.stderr)
+        assert r.exitcode == 0
+        assert number_of_field(r.stdout) == Nd2D
+        assert r.stdout.split("\n")[1].split(",")[0] == "Benzene"
+        assert "" == r.stderr

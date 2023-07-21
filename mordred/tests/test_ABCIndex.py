@@ -22,5 +22,5 @@ def test_ABC():
         smi, dABC, dABCGG = line.strip().split()
 
         mol = Chem.MolFromSmiles(smi)
-        yield assert_almost_equal, abc(mol), float(dABC), 2
-        yield assert_almost_equal, abcgg(mol), float(dABCGG), 2
+        assert assert_almost_equal(abc(mol), float(dABC), 2) is None
+        assert assert_almost_equal(abcgg(mol), float(dABCGG), 2) is None
