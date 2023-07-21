@@ -13,7 +13,6 @@ mordred package
     :members:
 
 .. autofunction:: get_descriptors_in_module
-.. autofunction:: get_descriptors_from_module
 
 .. toctree::
     subpackages/subpackages.rst

@@ -6,7 +6,6 @@ from rdkit import Chem
 from numpy.testing import assert_almost_equal
 
 from mordred import Calculator, descriptors
-from nose.tools import eq_
 from mordred.error import MissingValueBase
 
 
@@ -21,7 +20,7 @@ def test_pickle_calculator():
             d0 * d1,
             d0 // d1,
             d0 % d1,
-            d0 ** d1,
+            d0**d1,
             -d0,
             +d1,
             abs(d0),
@@ -37,10 +36,10 @@ def test_pickle_calculator():
     mol = Chem.MolFromSmiles("c1ccccc1C(O)O")
 
     for a, b in zip(orig.descriptors, pickled.descriptors):
-        yield eq_, a, b
+        assert a == b
 
     for a, b in zip(orig(mol), pickled(mol)):
         if isinstance(a, MissingValueBase):
-            yield eq_, a.__class__, b.__class__
+            assert a.__class__ == b.__class__
         else:
-            yield assert_almost_equal, a, b
+            assert_almost_equal(a, b)

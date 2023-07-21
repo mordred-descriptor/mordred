@@ -2,7 +2,6 @@ import os
 
 from rdkit import Chem
 
-from nose.tools import ok_
 from mordred.CPSA import TotalSurfaceArea
 from mordred.surface_area import SurfaceArea
 
@@ -58,8 +57,8 @@ def test_SASA():
         e = abs((actual - desired) / desired)
         p = 0.05
 
-        yield ok_, e < p, "large SASA error in {}: {}".format(name, e)
+        assert e < p, "large SASA error in {}: {}".format(name, e)
 
         e = abs((tsa(mol) - desired) / desired)
 
-        yield ok_, e < p, "large SASA error in {}: {}".format(name, e)
+        assert e < p, "large SASA error in {}: {}".format(name, e)

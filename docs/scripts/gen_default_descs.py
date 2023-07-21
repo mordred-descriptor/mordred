@@ -1,5 +1,5 @@
 import sys
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 import load_path
 from mordred import Descriptor, __version__, descriptors, get_descriptors_in_module
@@ -19,7 +19,9 @@ preset descriptors
     :header: "#", "module", "name", "constructor", "dim", "description"
     :widths: 1, 2, 2, 4, 1, 10
 
-"""[1:]
+"""[
+    1:
+]
 
 
 class DescriptorInfo(object):
@@ -50,7 +52,8 @@ class DescriptorInfo(object):
         mdl = "" if hide_module else ":py:mod:`~{}`".format(self.module)
         desc = self.raw
         cnst = ":py:class:`~{}.{}` ({})".format(
-            self.module, self.constructor, ", ".join(self.parameters))
+            self.module, self.constructor, ", ".join(self.parameters)
+        )
         info = self.description
         dim = self.dimention
 

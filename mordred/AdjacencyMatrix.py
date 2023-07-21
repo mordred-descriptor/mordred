@@ -1,4 +1,4 @@
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 from ._base import Descriptor
 from ._graph_matrix import AdjacencyMatrix as A
@@ -6,6 +6,10 @@ from ._matrix_attributes import SM1, methods, get_method
 
 __all__ = ("AdjacencyMatrix",)
 
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
 
 _version_remove_SM1_A = StrictVersion("1.1.0")
 

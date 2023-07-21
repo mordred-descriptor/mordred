@@ -82,10 +82,11 @@ def test_VEA():
 
             assert not is_missing(actual), actual
 
-            yield (
-                assert_almost_equal,
-                actual,
-                desired,
-                decimal,
-                "{} of {}".format(desc, smi),
-            )
+            assert (
+                assert_almost_equal(
+                    actual,
+                    desired,
+                    decimal,
+                    "{} of {}".format(desc, smi),
+                )
+            ) is None

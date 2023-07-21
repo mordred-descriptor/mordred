@@ -7,7 +7,6 @@ from rdkit import Chem
 from numpy.testing import assert_almost_equal
 
 from mordred import Calculator, Polarizability, descriptors
-from nose.tools import eq_
 from mordred.error import MissingValueBase
 
 try:
@@ -51,21 +50,19 @@ def test_by_references():
 
             digit = test.get("digit")
             if digit is None:
-                assert_f = eq_
-            else:
+                digit = 0  # exact match
 
-                def assert_f(a, d, m):
-                    if np.isnan(d):
-                        assert isinstance(a, MissingValueBase)
-                        return
+            def assert_f(a, d, m):
+                if np.isnan(d):
+                    assert isinstance(a, MissingValueBase)
+                    return
 
-                    assert_almost_equal(a, d, digit, m)
+                assert_almost_equal(a, d, digit, m)
 
             for mname, descs in desireds:
                 for dname, desired in descs:
                     if not desired == "skip":
-                        yield (
-                            assert_f,
+                        assert_f(
                             actuals[mname][dname],
                             desired,
                             "{} of {}".format(dname, mname),

@@ -2,7 +2,7 @@ import inspect
 import operator
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 import six
 import numpy as np
@@ -12,7 +12,6 @@ if hasattr(inspect, "getfullargspec"):
 
     def getargs(func):
         return tuple(inspect.getfullargspec(func).args[1:])
-
 
 else:
 

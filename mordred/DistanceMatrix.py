@@ -1,4 +1,4 @@
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 from ._base import Descriptor
 from ._graph_matrix import DistanceMatrix as D

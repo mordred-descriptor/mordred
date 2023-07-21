@@ -1,7 +1,6 @@
 from rdkit import Chem
 
 from mordred import Calculator, Descriptor
-from nose.tools import eq_
 from mordred.error import Error
 
 
@@ -25,4 +24,4 @@ def test_catch_non_critical_error():
 
     result = calc(mol)[0]
     assert isinstance(result, Error)
-    eq_(result.error.args, ("test exception",))
+    assert result.error.args == ("test exception",)

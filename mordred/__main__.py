@@ -9,10 +9,17 @@ from multiprocessing import freeze_support
 
 from rdkit import Chem
 
-from . import Calculator, __version__, descriptors
+from . import Calculator, descriptors
 from ._base import get_descriptors_in_module
 from ._util import PathType, module_prog
 from .error import Missing, MissingValueBase
+
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
+
+__version__ = version("mordredcommunity")
 
 
 def smiles_parser(path):

@@ -1,5 +1,5 @@
 from six import string_types, integer_types
-from numpy import product
+from numpy import prod
 
 from ._base import Descriptor
 from ._graph_matrix import Valence, DistanceMatrix
@@ -85,8 +85,8 @@ class MolecularDistanceEdge(Descriptor):
         n = len(Dv)
 
         with self.rethrow_zerodiv():
-            dx = product(Dv) ** (1.0 / (2.0 * n))
+            dx = prod(Dv) ** (1.0 / (2.0 * n))
 
-        return n / (dx ** 2)
+        return n / (dx**2)
 
     rtype = float
