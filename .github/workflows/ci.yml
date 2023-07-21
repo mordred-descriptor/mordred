@@ -43,7 +43,7 @@ jobs:
           python -m pip install coverage
       - name: Run Tests
         run: |
-          coverage run --source=. -m unittest discover -v
+          coverage run --source=. -m pytest -v
       - name: Show Coverage
         run: |
           coverage report -m
