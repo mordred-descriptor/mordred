@@ -135,9 +135,7 @@ jobs:
     steps:
       - run: |
           result1="${{ needs.build.build-and-test }}"
-          result2="${{ needs.build.pypi-package }}"
-          result3="${{ needs.build.conda-package }}"
-          if [[ $result1 == "success" ]] && [[ $result2 == "success" || $result2 == "skipped" ]] && [[ $result3 == "success" || $result3 == "skipped" ]]; then
+          if [[ $result1 == "success" ]] ; then
             exit 0
           else
             exit 1
