@@ -38,6 +38,9 @@ profile = "black"
 [tool.setuptools]
 include-package-data = true
 
+[tool.setuptools.package-data]
+mordred = ["data/*.txt", "tests/references/**"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["mordred*"]
