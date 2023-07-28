@@ -14,10 +14,7 @@ from ._base import get_descriptors_in_module
 from ._util import PathType, module_prog
 from .error import Missing, MissingValueBase
 
-try:
-    from importlib.metadata import version
-except ImportError:
-    from importlib_metadata import version
+from importlib.metadata import version
 
 __version__ = version("mordredcommunity")
 
@@ -103,9 +100,7 @@ def make_parser():
         version="{}-{}".format(__package__, __version__),
     )
     parser.add_argument("input", type=PathType, nargs="+", metavar="INPUT")
-    parser.add_argument(
-        "-t", "--type", action=ParserAction, help="input filetype (default: auto)"
-    )
+    parser.add_argument("-t", "--type", action=ParserAction, help="input filetype (default: auto)")
     parser.add_argument(
         "-o",
         "--output",
@@ -138,16 +133,12 @@ def make_parser():
         dest="with3D",
         help="use 3D descriptors (require sdf or mol file)",
     )
-    parser.add_argument(
-        "-v", "--verbosity", action="count", default=0, help="verbosity"
-    )
+    parser.add_argument("-v", "--verbosity", action="count", default=0, help="verbosity")
 
     return parser
 
 
-def main_process(
-    input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity
-):
+def main_process(input, parser, output, nproc, quiet, stream, descriptor, with3D, verbosity):
     mols = (m for i in input for m in parser(i))
 
     if output.isatty():
@@ -169,13 +160,7 @@ def main_process(
         calc.register(descriptors, ignore_3D=not with3D)
     else:
         calc.register(
-            (
-                d
-                for m in descriptor
-                for d in get_descriptors_in_module(
-                    import_module("." + m, __package__), False
-                )
-            ),
+            (d for m in descriptor for d in get_descriptors_in_module(import_module("." + m, __package__), False)),
             ignore_3D=not with3D,
         )
 
@@ -219,11 +204,7 @@ def main_process(
 
 
 def write_row(file, data):
-    file.write(
-        ",".join(
-            str(v).replace('"', '""').replace("\n", "").replace("\r", "") for v in data
-        )
-    )
+    file.write(",".join(str(v).replace('"', '""').replace("\n", "").replace("\r", "") for v in data))
     file.write("\n")
 
 

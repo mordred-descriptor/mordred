@@ -6,11 +6,6 @@ from ._matrix_attributes import SM1, methods, get_method
 
 __all__ = ("AdjacencyMatrix",)
 
-try:
-    from importlib.metadata import version
-except ImportError:
-    from importlib_metadata import version
-
 _version_remove_SM1_A = StrictVersion("1.1.0")
 
 
@@ -45,11 +40,7 @@ class AdjacencyMatrix(Descriptor):
         self._type = get_method(type)
 
     def dependencies(self):
-        return {
-            "result": self._type(
-                A(self.explicit_hydrogens), self.explicit_hydrogens, self.kekulize
-            )
-        }
+        return {"result": self._type(A(self.explicit_hydrogens), self.explicit_hydrogens, self.kekulize)}
 
     def calculate(self, result):
         return result

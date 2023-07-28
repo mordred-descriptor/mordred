@@ -13,10 +13,7 @@ from .result import Result
 from .context import Context
 from .descriptor import Descriptor, MissingValueException, is_descriptor_class
 
-try:
-    from importlib.metadata import version as importlib_version
-except ImportError:
-    from importlib_metadata import version as importlib_version
+from importlib.metadata import version as importlib_version
 
 __version__ = importlib_version("mordredcommunity")
 
@@ -292,9 +289,7 @@ class Calculator(object):
         :rtype: Result[scalar or Error]
         :returns: iterator of descriptor and value
         """
-        return self._wrap_result(
-            mol, self._calculate(Context.from_calculator(self, mol, id))
-        )
+        return self._wrap_result(mol, self._calculate(Context.from_calculator(self, mol, id)))
 
     def _wrap_result(self, mol, r):
         return Result(mol, r, self._descriptors)
@@ -303,9 +298,7 @@ class Calculator(object):
         with self._progress(quiet, nmols, ipynb) as bar:
             for m in mols:
                 with Capture() as capture:
-                    r = self._wrap_result(
-                        m, self._calculate(Context.from_calculator(self, m, id))
-                    )
+                    r = self._wrap_result(m, self._calculate(Context.from_calculator(self, m, id)))
 
                 for e in capture.result:
                     e = e.rstrip()
@@ -383,9 +376,7 @@ class Calculator(object):
         if nproc == 1:
             return self._serial(mols, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
         else:
-            return self._parallel(
-                mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id
-            )
+            return self._parallel(mols, nproc, nmols=nmols, quiet=quiet, ipynb=ipynb, id=id)
 
     def pandas(self, mols, nproc=None, nmols=None, quiet=False, ipynb=False, id=-1):
         r"""Calculate descriptors over mols.

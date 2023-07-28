@@ -13,10 +13,7 @@ from ..__main__ import main as mordred
 Nd2D = len(Calculator(descriptors, ignore_3D=True).descriptors)
 Nd3D = len(Calculator(descriptors, ignore_3D=False).descriptors)
 
-try:
-    from importlib.metadata import version
-except ImportError:
-    from importlib_metadata import version
+from importlib.metadata import version
 
 __version__ = version("mordredcommunity")
 
@@ -83,10 +80,7 @@ def test_no_args():
     assert stdout == ""
     in_("usage:", stderr)
     # python3 or python2
-    assert (
-        "the following arguments are required: INPUT" in stderr
-        or "too few arguments" in stderr
-    )
+    assert "the following arguments are required: INPUT" in stderr or "too few arguments" in stderr
 
 
 def test_help():
@@ -151,9 +145,7 @@ def test_sdf():
         mol.SetProp("_Name", "Benzene")
         Chem.MolToMolFile(mol, "input.sdf")
 
-        stdout, stderr, exitcode = command(
-            mordred, "input.sdf", "-q", "-o", "output.csv"
-        )
+        stdout, stderr, exitcode = command(mordred, "input.sdf", "-q", "-o", "output.csv")
 
         assert exitcode == 0
         assert stdout == ""
@@ -170,9 +162,7 @@ def test_sdf_3D():
         mol.SetProp("_Name", "Benzene")
         Chem.MolToMolFile(mol, "input.sdf")
 
-        stdout, stderr, exitcode = command(
-            mordred, "input.sdf", "-q", "-o", "output.csv", "-3"
-        )
+        stdout, stderr, exitcode = command(mordred, "input.sdf", "-q", "-o", "output.csv", "-3")
 
         assert exitcode == 0
         assert stdout == ""
