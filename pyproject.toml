@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mordredcommunity"
-version = "2.0.2"
+version = "2.0.3"
 authors = [{ name = "Jackson Burns", email = "jwburns@mit.edu" }]
 license = { text = "BSD-3-Clause" }
 description = "Community-Maintained Version of mordred"
@@ -16,7 +16,7 @@ classifiers = [
 ]
 urls = { Homepage = "https://github.com/JacksonBurns/mordred-community" }
 requires-python = ">=3.8"
-dependencies = ["rdkit", "six", "numpy", "networkx"]
+dependencies = ["rdkit", "six", "numpy", "networkx", "packaging"]
 
 [project.optional-dependencies]
 full = ["pandas", "tqdm", "pyyaml"]
