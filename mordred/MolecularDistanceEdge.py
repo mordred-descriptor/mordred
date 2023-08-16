@@ -1,4 +1,5 @@
 from six import string_types, integer_types
+import warnings
 from numpy import prod
 
 from ._base import Descriptor
@@ -85,7 +86,13 @@ class MolecularDistanceEdge(Descriptor):
         n = len(Dv)
 
         with self.rethrow_zerodiv():
-            dx = prod(Dv) ** (1.0 / (2.0 * n))
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    message="overflow encountered in reduce",
+                    category=RuntimeWarning,
+                )
+                dx = prod(Dv) ** (1.0 / (2.0 * n))
 
         return n / (dx**2)
 
