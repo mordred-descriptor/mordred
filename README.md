@@ -13,6 +13,9 @@ To add support for `pandas` and progress bars, use PyPI and call `pip install mo
 
 Usage of `mordredcommunity` is the same as `mordred`.
 
+## Packages using `mordredcommunity`
+ - `mordred-gui` ([github.com/research11111/mordred-gui](https://github.com/research11111/mordred-gui)): Graphical user interface wrapper to `mordredcommunity`
+
 ## Number of Descriptors
 
 ```python
