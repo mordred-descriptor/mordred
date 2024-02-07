@@ -1,11 +1,10 @@
 import sys
 from itertools import chain
 
-import load_path
+
 from mordred import descriptors
 from mordred._base.descriptor import is_descriptor_class
 
-load_path.nop()
 
 
 class Generator(object):

@@ -1,0 +1,40 @@
+name: Documentation
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: actions-id-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    name: Build and Push Documentation
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mamba-org/setup-micromamba@main
+        with:
+          environment-name: temp
+          condarc: |
+            channels:
+              - defaults
+              - conda-forge
+            channel_priority: flexible
+          create-args: |
+            python=3.12
+      - name: Install Dependencies
+        run: |
+          conda install sphinx chardet
+          python -m pip install .[full] m2r
+      - name: Build Docs
+        run: |
+          m2r README.md
+          cd docs
+          make

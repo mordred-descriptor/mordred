@@ -21,7 +21,7 @@ import os
 import re
 import sys
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(os.path.join("..","..")))
 
 
 # -- General configuration ------------------------------------------------
@@ -63,16 +63,18 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'mordred'
-copyright = '2016, Hirotomo Moriwaki'
-author = 'Hirotomo Moriwaki'
+project = 'mordredcommunity'
+copyright = '2016-2023, Hirotomo Moriwaki; 2023+, Jackson Burns'
+author = 'Hirotomo Moriwaki, maintained by Jackson Burns'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = open('../mordred/_version.txt').read().strip()
+from importlib.metadata import version
+
+version = version("mordredcommunity")
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -81,7 +83,7 @@ release = version
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -353,8 +355,7 @@ texinfo_documents = [
 # texinfo_no_detailmenu = False
 
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'mordredcommunity': ('https://docs.python.org/', None)}
 
 autodoc_member_order = 'bysource'
 

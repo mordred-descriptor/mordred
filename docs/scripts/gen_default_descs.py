@@ -1,10 +1,13 @@
 import sys
 from packaging.version import Version as StrictVersion
 
-import load_path
-from mordred import Descriptor, __version__, descriptors, get_descriptors_in_module
 
-load_path.nop()
+from mordred import Descriptor, descriptors, get_descriptors_in_module
+
+from importlib.metadata import version
+
+__version__ = version("mordredcommunity")
+
 
 prelude = """
 Descriptor List
