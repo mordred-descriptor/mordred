@@ -37,4 +37,11 @@ jobs:
         run: |
           m2r README.md
           cd docs
-          make
+          make clean html
+      - name: Publish documentation
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          cd docs
+          touch _build/html/.nojekyll
+          cd _build/html; git add -A .; git commit -m "Automated documentation rebuild"; git push official gh-pages
